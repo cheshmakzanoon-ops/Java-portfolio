@@ -1,0 +1,69 @@
+# Acceptance matrix
+
+No acceptance passes are implied by a foundation checkpoint.
+
+| ID | Owner | Status | Implementation/test/evidence |
+|---|---|---|---|
+| P01-A1 | A01 | NOT_STARTED | See full contract; evidence pending |
+| P01-A2 | A01 | NOT_STARTED | See full contract; evidence pending |
+| P01-A3 | A01 | NOT_STARTED | See full contract; evidence pending |
+| P01-A4 | A01 | NOT_STARTED | See full contract; evidence pending |
+| P01-A5 | A01 | NOT_STARTED | See full contract; evidence pending |
+| P02-A1 | A02 | NOT_STARTED | See full contract; evidence pending |
+| P02-A2 | A02 | NOT_STARTED | See full contract; evidence pending |
+| P02-A3 | A02 | NOT_STARTED | See full contract; evidence pending |
+| P02-A4 | A02 | NOT_STARTED | See full contract; evidence pending |
+| P02-A5 | A02 | NOT_STARTED | See full contract; evidence pending |
+| P03-A1 | A03 | NOT_STARTED | See full contract; evidence pending |
+| P03-A2 | A03 | NOT_STARTED | See full contract; evidence pending |
+| P03-A3 | A03 | NOT_STARTED | See full contract; evidence pending |
+| P03-A4 | A03 | NOT_STARTED | See full contract; evidence pending |
+| P03-A5 | A03 | NOT_STARTED | See full contract; evidence pending |
+| P04-A1 | A04 | NOT_STARTED | See full contract; evidence pending |
+| P04-A2 | A04 | NOT_STARTED | See full contract; evidence pending |
+| P04-A3 | A04 | NOT_STARTED | See full contract; evidence pending |
+| P04-A4 | A04 | NOT_STARTED | See full contract; evidence pending |
+| P04-A5 | A04 | NOT_STARTED | See full contract; evidence pending |
+| P05-A1 | A05 | NOT_STARTED | See full contract; evidence pending |
+| P05-A2 | A05 | NOT_STARTED | See full contract; evidence pending |
+| P05-A3 | A05 | NOT_STARTED | See full contract; evidence pending |
+| P05-A4 | A05 | NOT_STARTED | See full contract; evidence pending |
+| P05-A5 | A05 | NOT_STARTED | See full contract; evidence pending |
+| P06-A1 | A06 | NOT_STARTED | See full contract; evidence pending |
+| P06-A2 | A06 | NOT_STARTED | See full contract; evidence pending |
+| P06-A3 | A06 | NOT_STARTED | See full contract; evidence pending |
+| P06-A4 | A06 | NOT_STARTED | See full contract; evidence pending |
+| P06-A5 | A06 | NOT_STARTED | See full contract; evidence pending |
+| P07-A1 | A07 | NOT_STARTED | See full contract; evidence pending |
+| P07-A2 | A07 | NOT_STARTED | See full contract; evidence pending |
+| P07-A3 | A07 | NOT_STARTED | See full contract; evidence pending |
+| P07-A4 | A07 | NOT_STARTED | See full contract; evidence pending |
+| P07-A5 | A07 | NOT_STARTED | See full contract; evidence pending |
+| P07-A6 | A07 | NOT_STARTED | See full contract; evidence pending |
+| P08-A1 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P08-A2 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P08-A3 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P08-A4 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P08-A5 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P08-A6 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P09-A1 | A09 | NOT_STARTED | See full contract; evidence pending |
+| P09-A2 | A09 | NOT_STARTED | See full contract; evidence pending |
+| P09-A3 | A09 | NOT_STARTED | See full contract; evidence pending |
+| P09-A4 | A09 | NOT_STARTED | See full contract; evidence pending |
+| P09-A5 | A09 | NOT_STARTED | See full contract; evidence pending |
+| P09-A6 | A09 | NOT_STARTED | See full contract; evidence pending |
+| P10-A1 | A10 | NOT_STARTED | See full contract; evidence pending |
+| P10-A2 | A10 | NOT_STARTED | See full contract; evidence pending |
+| P10-A3 | A10 | NOT_STARTED | See full contract; evidence pending |
+| P10-A4 | A10 | NOT_STARTED | See full contract; evidence pending |
+| P10-A5 | A10 | NOT_STARTED | See full contract; evidence pending |
+| R-A01 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A02 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A03 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A04 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A05 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A06 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A07 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A08 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A09 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A10 | Coordinator | NOT_STARTED | See full contract; evidence pending |

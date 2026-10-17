@@ -1,0 +1,9 @@
+name: Defect report
+description: Report a reproducible project defect
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Project, revision, command, expected and actual result
+    validations:
+      required: true
