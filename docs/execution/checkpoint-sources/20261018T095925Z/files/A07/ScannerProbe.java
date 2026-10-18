@@ -1,0 +1,2 @@
+import io.github.cheshmakzanoon.portfolio.indexforge.DeclarationScanner;
+class ScannerProbe { public static void main(String[] args){System.out.println(DeclarationScanner.names("class Handler<T>{ public <R> R transform(T input) throws java.io.IOException { return service.call(input); } int[] values(){return new int[0];} abstract void later(); void execute(){ call(); service.apply(); if(ready()) factory.build(); new Handler(); } } interface Contract {void accept();} record Key(String id){} enum Mode{ACTIVE}"));}}

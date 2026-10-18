@@ -1,0 +1,18 @@
+# Resource helper WIP snapshot — DO NOT LAUNCH
+
+Root requested a coherent snapshot/commit/push during quiet18. All A01 writes are paused after this packet. No Java/Maven/Docker/real process control ran. Product certification0bfdcf28..., full-reference source3d2df54..., prepared artifacts4ee8663d... remain frozen.
+
+Draft runner SHA: `f0106715251bdaaaecac7c6f33f05bd10b0ff87f21ab237f5ae16195f28a512a`. Original04539 runner, launcher and four test/control sources plus previous real-control result are preserved under `.work/A01/full-reference-runner-history/04539a854e9feacebeb2a94e49c1cf4630a0bfcb5cfcc34c7bac6ed5b37dc239/`, with `preserved-files.json`. All quiet16 archives/raw/results and database backups remain unchanged.
+
+Implemented DRAFT, NOT_READY: opt-in `--artifact-copy-root /tmp/<dedicated-root>` with explicit `--min-free-gib 1`; initial5.25GiB admission and forecast allocation checks; preworkload full remaining DB/WAL/raw allowances; observed DB-size+16MiB dump checks; four-second scheduled metadata monitoring during only full-jmh/full-workload, with observed-gap>5s or workspace-floor breach causing phase failure/owned cleanup; cleanup commands themselves are not floor-monitored. Default path retains legacy behavior. Secondary copy checks destination actual bytes+2GiB, absolute dedicated /tmp root without symlink ancestors, entry/file/depth/8GiB bounds, regular-file nofollow reads, exclusive target files, stable source identities and streaming source/destination SHA, plus a second source-set census. Source originals are retained; no deletion/fallback/overwrite/restamping.
+
+Executed ONLY24 existing pure compatibility controls:10 mocked cleanup/disk,10 prior orchestration controls (real-child method excluded),4 proc fixtures. Logs `.work/A01/resource-helper-draft-legacy-mocked.log`, `resource-helper-draft-legacy-pure.log`, `resource-helper-draft-proc-fixtures.log`; all0 failures/errors. AST parsing is included in the mocked suite. These tests exercise legacy behavior, NOT the new opt-in feature.
+
+Remaining work after root releases writes:
+
+- Author/run meaningful pure resource controls: initial/remaining forecast admission; maximum4s wait chunks/floor and late-gap refusal; outer-command owned cleanup on resource failure; down/cleanup exempt from monitoring; independent destination capacity; source unchanged on refusal; successful verified copy; existing destination refusal; root/source symlinks and FIFO/special refusal; entry/file/depth/byte bounds; source mutation/new-file/truncation and target verification failure; no silent workspace fallback; original failed outcome preserved with copy success/failure.
+- Inspect snapshot/copy races and bounded directory enumeration; obtain read-only review.
+- Root runs actual two descendant controls only AFTER quiet18 and records the new final helper SHA. Do not run them during the quiet reservation.
+- Refresh the draft status/plan with exact observed controls and final helper SHA, then freeze for root review/grant. No new full study is authorized yet.
+
+No performance improvement, full workload pass, completed resource verification or clean-checkout release is claimed.

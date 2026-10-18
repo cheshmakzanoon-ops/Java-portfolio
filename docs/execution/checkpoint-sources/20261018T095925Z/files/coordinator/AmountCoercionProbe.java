@@ -1,0 +1,1 @@
+import tools.jackson.databind.json.JsonMapper; public class AmountCoercionProbe { public record Amount(String amount) {} public static void main(String[] args) { var result=JsonMapper.builder().build().readValue("{\"amount\":1}",Amount.class); System.out.println("Jackson3 numeric JSON accepted as decimal String: "+result.amount()); } }

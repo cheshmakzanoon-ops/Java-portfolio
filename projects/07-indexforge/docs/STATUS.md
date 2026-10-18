@@ -1,3 +1,15 @@
+# CURRENT: wave3 development29 tests PASS; coverage certification FAIL; later source is uncompiled WIP
+
+As of 2026-10-18, development29 ran `spotless:apply test` through the ordinary wrapper and passed125 actual methods:16 ingest,42 index,45 query,2 service and20 evaluation;0 failures/errors/skips. All seven modules compiled, including CLI. The same-source `verify` rerun failed the unchanged index coverage gate:2389/2825 lines=84.566% and1483/2275 branches=65.187%, below required85%/75%. Its58 ingest/index tests passed; downstream verify modules were not reached. This is development evidence, not a full integration/PIT certification. Raw logs and fresh reports are preserved under `.work/A07/artifacts/development-build29-reports/` and `development-build29-verify-reports/`.
+
+After29, actual catalog-field lexeme/prose/endpoint handling, synthetic archive-selection/provenance/quota tests, the finite wave3 audit→DEV-fit→VAL operator and boundary tests, explicit CLI phase routing, and expanded critical extractor/binder/unknown/quota/mask/packet/selector PIT targets were source-added. These later changes are **UNCOMPILED, UNRUN WIP**. No threshold/exclusion change bypasses the failed gate. The final wave3 protocol/freeze and root-prepared `r0-reference.tsv` remain pending; operator whole-phase execution, actual packaged integration,85/75 coverage and70% strict mutation must pass before feature export or scores.
+
+**Quiet18 is active. No Java/Maven/Docker/JFR/feature export/training/validation/held-out access or new metrics are authorized until root explicitly releases execution.** Project/scratch source writes are paused for the requested checkpoint, apart from this narrow status/handoff correction. No build or Java process is queued/running by A07. Build25, both prior finals, labels, raw outputs, seals and bound historical artifacts remain immutable. No wave3 feature export, model fit, new quality metric or final evaluation has occurred. OriginalBASELINE remains the deployment recommendation; the mandatory quality targets remain unmet.
+
+The previous status body below is historical build25 evidence. Its quiet10/source-freeze statements describe that earlier checkpoint and do not describe the later authorized wave3 WIP. Current next steps and exact paths are in `.work/A07/HANDOFF-wave3-development29.md`.
+
+---
+
 # IndexForge status: certified25; finite wave2 validation complete
 
 Owner A07. Strict25 and the finite preregistered DEV/VAL wave are complete; full quality acceptance is not yet established. Root completed the exact separately reviewed versioned final at06:53:47Z: execution PASS, quality FAIL; baseline retained. All inference Java/POM/scripts, copied artifact,24 bound input files/operator/context/classes/fixtures remain frozen. No A07 final or Java invocation is active. Quiet10 is active: no Java/Maven/Docker/JFR/training/evaluation/new metrics or inference edits. Final seals/raw and all24 bound files remain immutable; only this small packet/docs/handoff update is authorized before write pause.

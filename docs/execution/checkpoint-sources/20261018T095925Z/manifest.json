@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-10-18T09:59:25.895848+00:00",
+  "baseCommit": "7780739c2635fad90d3aa79448125269195fb290",
+  "scope": "Changed authored helper/handoff byte snapshots. Uncompiled or unfinished work is not certified. Generated runtime data remains local.",
+  "files": [
+    {
+      "originalPath": ".work/A01/A02ReplayProbe.java",
+      "snapshotPath": "files/A01/A02ReplayProbe.java",
+      "bytes": 929,
+      "sha256": "b58b630392fa50f4d38c09668b9c7b34b00388244d973cd56ff0aa56918c566f",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/AccountingBenchmark.java",
+      "snapshotPath": "files/A01/AccountingBenchmark.java",
+      "bytes": 1212,
+      "sha256": "c2257376b5ab306c34a2e91c010f88410e70768939862b863529e2407b58298b",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/CrashWriter-http.java",
+      "snapshotPath": "files/A01/CrashWriter-http.java",
+      "bytes": 2740,
+      "sha256": "6e3c4219ba6fcdf63d9f02601a32c02801c178d66b7edfefde10ea13bc3770e2",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/NEXT_REFERENCE_RESOURCE_PLAN.md",
+      "snapshotPath": "files/A01/NEXT_REFERENCE_RESOURCE_PLAN.md.txt",
+      "bytes": 5241,
+      "sha256": "4d1ea5dbc5dfa7277f86c3ecc23d4eaf90b2538743f8a0afa549dcdaa94e7878",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/RESOURCE_HELPER_RESUME.md",
+      "snapshotPath": "files/A01/RESOURCE_HELPER_RESUME.md.txt",
+      "bytes": 3167,
+      "sha256": "d6dc2836cc0b9ea50e4163a8d93d22a02f53433e87719f68d2887fb3095f34d3",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/SourceAudit.java",
+      "snapshotPath": "files/A01/SourceAudit.java",
+      "bytes": 819,
+      "sha256": "1a17c5873e7541d227b8256d227283f36802b2bd7cd4fd7d5076e7195c5cbcf4",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/run-full-reference.py",
+      "snapshotPath": "files/A01/run-full-reference.py",
+      "bytes": 39323,
+      "sha256": "f0106715251bdaaaecac7c6f33f05bd10b0ff87f21ab237f5ae16195f28a512a",
+      "originalMode": "0o700"
+    },
+    {
+      "originalPath": ".work/A03/Debug.java",
+      "snapshotPath": "files/A03/Debug.java",
+      "bytes": 662,
+      "sha256": "845760eb945c1283fa2c908e630885f2aa1dd7a1e560b8e7678a7b21b323f465",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A05/LockProbe.java",
+      "snapshotPath": "files/A05/LockProbe.java",
+      "bytes": 1718,
+      "sha256": "c7370002120f93e8dc1de4c9c571d81f1882c5b80760c88f25d1d250d4d75a82",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A05/ReviewProbe.java",
+      "snapshotPath": "files/A05/ReviewProbe.java",
+      "bytes": 1044,
+      "sha256": "21239f865ac20877aa00b9f2244110148b373dbc746b5904f2561dd47b635acb",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/DeclarationScanner.java",
+      "snapshotPath": "files/A07/DeclarationScanner.java",
+      "bytes": 2874,
+      "sha256": "f9fff44a730af8c718bf0351e24f21ae9e884dae9126d3dd1ff3e7abf03e78e4",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/DeclarationScannerTest.java",
+      "snapshotPath": "files/A07/DeclarationScannerTest.java",
+      "bytes": 1930,
+      "sha256": "b888b2af4e63694c1206cd7574286c2124c2c9a5088e3e6646eb175109084922",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/HANDOFF-wave3-development29.md",
+      "snapshotPath": "files/A07/HANDOFF-wave3-development29.md.txt",
+      "bytes": 5089,
+      "sha256": "b9b8497ff0c820bd2c3a0db7d36309767dc0f56fd00711e814aa86b7f21e8fab",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/PreparePerformance.java",
+      "snapshotPath": "files/A07/PreparePerformance.java",
+      "bytes": 2459,
+      "sha256": "56db41fe97f127c2ab32dbba095e53f8d92a42c10437c72c3b944b8a21148f07",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/RebindPerformance.java",
+      "snapshotPath": "files/A07/RebindPerformance.java",
+      "bytes": 1810,
+      "sha256": "a508861c0404e5696e9426ca0f39fa0fdd80e90050ca972215e26b0ac514716c",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/ScannerProbe.java",
+      "snapshotPath": "files/A07/ScannerProbe.java",
+      "bytes": 518,
+      "sha256": "4217d8311319c39949624bcfeb149be0ce5fbc20d88acfe3788c8a30e4adf27e",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/SearchConcepts.java",
+      "snapshotPath": "files/A07/SearchConcepts.java",
+      "bytes": 3913,
+      "sha256": "2c3900380428faca0245b4202fdef6d92923483f0cc351558fd3558f1962364d",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/CollectionTest-without-redundant-constant-assertion.java",
+      "snapshotPath": "files/A08/CollectionTest-without-redundant-constant-assertion.java",
+      "bytes": 4783,
+      "sha256": "20b52c0bca7b3dacb6c5ee5784e223aadaff8bb6a2101d9a8df03f1f606a3a1b",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/JfrCostReview.java",
+      "snapshotPath": "files/A08/JfrCostReview.java",
+      "bytes": 3627,
+      "sha256": "407a04bd93246dc8e471cb883ee1431cd528b8b5320c099b785defd29b3b92b7",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/ObserverStress.pending.java",
+      "snapshotPath": "files/A08/ObserverStress.pending.java",
+      "bytes": 5416,
+      "sha256": "705173d743bfb5958ade7b916b3a42d7d36f89798492a814fe85cf360f8785c7",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/ProbeLimitsTest.pending.java",
+      "snapshotPath": "files/A08/ProbeLimitsTest.pending.java",
+      "bytes": 3050,
+      "sha256": "eafd37615929486193ea82068e1b0d8d86622e20935670939cffba15f17d8e61",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/ReportDocument-precise-timing-label.java",
+      "snapshotPath": "files/A08/ReportDocument-precise-timing-label.java",
+      "bytes": 3272,
+      "sha256": "66bbfe96f685ce14a9bcf2781758c05188f764797d3b7c9cd933b734b7879cb2",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/SafeHierarchyTest.pending.java",
+      "snapshotPath": "files/A08/SafeHierarchyTest.pending.java",
+      "bytes": 3628,
+      "sha256": "53c2cd721dce5d8b1acdedac82859905cd8a145be23643e3d0ee491aa4031db1",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A08/TransformationTest.pending.java",
+      "snapshotPath": "files/A08/TransformationTest.pending.java",
+      "bytes": 8902,
+      "sha256": "288359a33315300e48c421a8ed138e6244f98e72ad3d59031ab4acfce9e63de8",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A09/LambdaPreflight.java",
+      "snapshotPath": "files/A09/LambdaPreflight.java",
+      "bytes": 1060,
+      "sha256": "8a149e7ae572537b61ca68b6e7c4685bf806feda59c985f1dc740b9d931713a7",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A09/Preflight.java",
+      "snapshotPath": "files/A09/Preflight.java",
+      "bytes": 801,
+      "sha256": "ab0def10c0ac163cfdce679dd455805d17d93badef7f7c729e176223eda40e58",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A10/CoercionProbe.java",
+      "snapshotPath": "files/A10/CoercionProbe.java",
+      "bytes": 387,
+      "sha256": "c58a4308a062ea130dedbe52f9f219737870fdc0ab0ffc6fee19a4eaee80ce16",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A10/MissingFieldProbe.java",
+      "snapshotPath": "files/A10/MissingFieldProbe.java",
+      "bytes": 187,
+      "sha256": "4e1c309c5644a4e017e9d124a0d00c3a8231f500bc2eaef2fe763acc1f63a7ef",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A10/PollCountProbe.java",
+      "snapshotPath": "files/A10/PollCountProbe.java",
+      "bytes": 632,
+      "sha256": "f8d5d1b7e71e1581554b8bfe9dfa18d950f72a7b2a4832f9c64d90ef2fc3bf35",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/coordinator/AmountCoercionProbe.java",
+      "snapshotPath": "files/coordinator/AmountCoercionProbe.java",
+      "bytes": 337,
+      "sha256": "8a33ca150204d5c12c324bc7dcc6b8d610bc790104084c61544e0599bbc0b5ed",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/coordinator/save-authored-checkpoint.py",
+      "snapshotPath": "files/coordinator/save-authored-checkpoint.py",
+      "bytes": 3195,
+      "sha256": "f4a30803d50bb9d67091996769cf6359d3cf9542fc3ce64614ba0fbdfc89bc21",
+      "originalMode": "0o600"
+    }
+  ]
+}
