@@ -1,0 +1,61 @@
+{
+  "observedAtUtc": "2026-10-18T03:51:17.134221+00:00",
+  "operations": [
+    {
+      "command": [
+        "bash",
+        ".work/A10/preflight-no-maven.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.3249140540010558,
+      "rawLog": ".work/coordinator/routeweaver-current-live/0.log"
+    },
+    {
+      "command": [
+        "bash",
+        "projects/10-routeweaver/scripts/up.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 14.637740315998599,
+      "rawLog": ".work/coordinator/routeweaver-current-live/1.log"
+    },
+    {
+      "command": [
+        "bash",
+        "projects/10-routeweaver/scripts/reset-demo.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.8845614910005679,
+      "rawLog": ".work/coordinator/routeweaver-current-live/2.log"
+    },
+    {
+      "command": [
+        "bash",
+        "projects/10-routeweaver/scripts/demo.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 6.094697451999309,
+      "rawLog": ".work/coordinator/routeweaver-current-live/3.log"
+    },
+    {
+      "command": [
+        "python3",
+        "projects/10-routeweaver/scripts/browser-check.py"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 6.144083250999756,
+      "rawLog": ".work/coordinator/routeweaver-current-live/4.log"
+    },
+    {
+      "command": [
+        "bash",
+        "projects/10-routeweaver/scripts/down.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.7768144040001062,
+      "rawLog": ".work/coordinator/routeweaver-current-live/5.log"
+    }
+  ],
+  "sourceRevision": "working-tree-sha256:d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+  "boundary": "Actual prepared final-source lifecycle and Chromium browser; shared-host functional checks, no performance claim."
+}

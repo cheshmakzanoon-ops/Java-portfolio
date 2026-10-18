@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "project": "tenantshield",
+  "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+  "timestamp": "2026-10-18T03:51:07.949740+00:00",
+  "completedAt": "2026-10-18T03:46:35Z",
+  "command": "projects/05-tenantshield/scripts/prepare-runtime.sh",
+  "rawArtifact": "../../../.work/A05/jmh-fix-prepare.log",
+  "environment": "environment.json",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 18,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "methods": [
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.JsonConfigurationTest",
+      "method": "actualApplicationPropertiesBindAndRejectAmbiguousJson",
+      "seconds": 2.091
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.JwtSecurityTest",
+      "method": "fixedTrustVerifiesSignaturesAndAllRequiredClaimsWithoutDiscovery",
+      "seconds": 4.487
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.RequestBoundsTest",
+      "method": "encodedTenantAliasesShareTheSameQuota",
+      "seconds": 0.232
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.RequestBoundsTest",
+      "method": "unknownLengthAndDishonestLengthBodiesAreLimitedBeforeDownstreamAllocation",
+      "seconds": 0.057
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.RequestBoundsTest",
+      "method": "concurrentBoundRejectsExcessAndReleasesPermitsAfterCompletion",
+      "seconds": 0.029
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.ProtectedClaimsTest",
+      "method": "documentEnforcementRejectsCorrectlySignedMissingAudienceOrSubject",
+      "seconds": 1.96
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.ArchitectureTest",
+      "method": "policyDomainHasNoFrameworkOrPersistenceDependency",
+      "seconds": 4.069
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "contentDigestDistinguishesEverySecurityRelevantComponentAndDagReusesAncestors",
+      "seconds": 0.44
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "rejectsUnsafeOrIllTypedOrOversizedPolicies",
+      "seconds": 0.048
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "rejectsDuplicateGrantsBeforeDatabasePersistence",
+      "seconds": 0.004
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "rejectsRoleCyclesMissingParentsDuplicatesAndUnknownPredicates",
+      "seconds": 0.007
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "inheritedGrantAndAbacBothRequired",
+      "seconds": 0.008
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "orderedStringIntegerBooleanAndEscapes",
+      "seconds": 0.004
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "generatedExpressionsAndIndexedDecisionsAgreeWithOracle",
+      "seconds": 0.662
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "unknownNegationAndExplicitDenyAreConservative",
+      "seconds": 0.003
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "typedEnumsAndMissingComparisons",
+      "seconds": 0.004
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "publicationRejectsInvalidIdentifiersAndHonorsInclusiveCollectionBounds",
+      "seconds": 0.027
+    },
+    {
+      "className": "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest",
+      "method": "immutableClosureAndStableTrace",
+      "seconds": 0.005
+    }
+  ],
+  "limitations": [
+    "Default unit verify and actual -l discovery only; no new integration or benchmark measurements ran."
+  ]
+}

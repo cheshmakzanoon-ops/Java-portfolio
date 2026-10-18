@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "project": "tenantshield",
+  "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+  "timestamp": "2026-10-18T03:49:56.461081+00:00",
+  "workload": "runtime-jmh-discovery-only",
+  "command": [
+    "java",
+    "-Xmx128m",
+    "-cp",
+    "/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes:/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/lib/*",
+    "org.openjdk.jmh.Main",
+    "-l"
+  ],
+  "rawArtifact": "jmh-discovery.txt",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 3,
+    "failed": 0
+  },
+  "expectedBenchmarks": [
+    "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyBenchmark.coldCompilation",
+    "io.github.cheshmakzanoon.portfolio.tenantshield.PolicyBenchmark.warmIndexedEvaluation"
+  ],
+  "packagedMetadata": {
+    "META-INF/BenchmarkList": {
+      "archiveLocation": "META-INF/BenchmarkList",
+      "extractedLocation": "/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes/META-INF/BenchmarkList",
+      "sha256": "ed38a7c2a2f76baae7783d4b2ff21d331bdf9cd05521638b6635e7194d92291c"
+    },
+    "META-INF/CompilerHints": {
+      "archiveLocation": "META-INF/CompilerHints",
+      "extractedLocation": "/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes/META-INF/CompilerHints",
+      "sha256": "c4bf2553b8529679c326d90ca11f4a0b3d31faf14b8a58ce6ffddf43b7d7fa71"
+    }
+  },
+  "artifactManifest": {
+    "schemaVersion": 1,
+    "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+    "artifactsSha256": {
+      "decision-service/target/tenantshield-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
+      "demo-resource-server/target/tenantshield-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
+      "verification/target/tenantshield-verification-1.0.0-SNAPSHOT-exec.jar": "a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330"
+    }
+  },
+  "limitations": [
+    "JMH -l only discovers benchmark methods; no benchmark iterations or throughput/latency measurements ran.",
+    "Annotation processing was already working; repaired extraction preserves the Boot archive-root metadata on the runtime classpath."
+  ],
+  "environment": "environment.json"
+}

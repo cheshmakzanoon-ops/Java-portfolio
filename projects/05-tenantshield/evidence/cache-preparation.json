@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "tenantshield",
-  "timestamp": "2026-10-18T02:34:15.155612+00:00",
-  "sourceRevision": "working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13",
+  "timestamp": "2026-10-18T03:49:33.278967+00:00",
+  "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
   "environment": "environment.json",
   "command": "python3 .work/A05/cache-probes.py",
   "rawArtifact": "../../../.work/A05/cache-probes.log",
@@ -55,7 +55,7 @@
   ],
   "artifactManifest": {
     "schemaVersion": 1,
-    "sourceRevision": "working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13",
+    "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
     "artifactsSha256": {
       "decision-service/target/tenantshield-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
       "demo-resource-server/target/tenantshield-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
