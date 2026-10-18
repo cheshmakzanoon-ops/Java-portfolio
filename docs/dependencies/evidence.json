@@ -1,10 +1,10 @@
 {
-  "observedAtUtc": "2026-10-18T02:47:26.646820+00:00",
+  "observedAtUtc": "2026-10-18T06:40:52.148939+00:00",
   "command": "source scripts/cloud-env.sh\n./mvnw -Dmaven.repo.local=/workspace/Java-portfolio/.work/coordinator/m2 -B -ntp org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom",
   "exitCode": 0,
-  "rawLog": ".work/coordinator/sbom-aggregate.log",
-  "rawLogSha256": "e75fa5501949b4e8c5d8f177f510765ea58f2431c8ad16b11810a575c6c8b67a",
-  "completedAtUtc": "2026-10-18T02:40:12Z",
+  "rawLog": ".work/coordinator/sbom-aggregate-current.log",
+  "rawLogSha256": "bc9b1457ef07afa1438fdab68c4a10a2dca2fadcc203ad95a994605349c1a764",
+  "completedAtUtc": "2026-10-18T06:40:30Z",
   "schema": {
     "format": "CycloneDX",
     "version": "1.6"
@@ -54,19 +54,19 @@
     "projects/06-matchcore/pom.xml": "41e8ea3ea9e2349cee37eff441779ef4d49220ffbefb39cf52d55ecd13d1ea86",
     "projects/06-matchcore/simulator/pom.xml": "8971d61023adb73f8e971ef285ad755c664ea4602f79025b6bb314d04fc19ce3",
     "projects/07-indexforge/cli/pom.xml": "592698c21501f6dc76785890e6d92802cc552a06283de1ba0a4de06a080711d8",
-    "projects/07-indexforge/evaluation/pom.xml": "837ba6adc5cb24970c789569a1d1bd912d961a735d3ab170c9b838a7edb052e7",
+    "projects/07-indexforge/evaluation/pom.xml": "7d7a535db851a044b1efd7f185f5b9314d68f6629a9c322f350bf5b318af1ae1",
     "projects/07-indexforge/index/pom.xml": "a8e32783a38906f1ef43e8771b1f411f01aafc1fa8e4eef6a463ca13dceed8eb",
     "projects/07-indexforge/ingest/pom.xml": "11d44e5fccb13833995af2e7ce2339440f5ea024694edba87a8437378b5dee36",
     "projects/07-indexforge/pom.xml": "8716c90b0134c746d7cb375266372a06acbaebfb2147103bd6920cf415e8c304",
-    "projects/07-indexforge/query/pom.xml": "997780703192856044c29953b163ad49ecbdd3edd89806e2704c05f629cf2d03",
+    "projects/07-indexforge/query/pom.xml": "6a0e430f35c3a23b4cd55d170c8a6da804b4010fcdd13ff0dbd320c51152e3ed",
     "projects/07-indexforge/service/pom.xml": "ec776429a4e9c9e7515285554fd20bea1ca3bc96b3ea6b1b08dce1fdd21b85e7",
-    "projects/08-threadlens/agent/pom.xml": "23d7a8d9830e4102a5a0ec21f828a7776d523c473247f1ddfcd7c79be7bd3ec0",
+    "projects/08-threadlens/agent/pom.xml": "f7381aa2a8ccacea29bda99108f741cdcf830d518489b8ffcfd142b322be71a6",
     "projects/08-threadlens/analysis/pom.xml": "1b6144f49e2b535ed6d9f8a2422126f059da3fd2077d74fc3894aaabb13f0754",
     "projects/08-threadlens/cli/pom.xml": "91d0b78bca8f3c16e58c2ffc019ac0e9a4df2a4dbb5a4df479741065577ed020",
     "projects/08-threadlens/compatibility/pom.xml": "8befe81106b163f7732d2878aa7ca8f5ee9ef65464284b1616cee30e51b9e408",
     "projects/08-threadlens/jfr/pom.xml": "9fe498df35297e9f7df3865ab65c7bfa9d824d1bb31680a3fe2448d6710bf863",
     "projects/08-threadlens/pom.xml": "99d4330629e0a119667915f109629b310a7ee98a31610240dd80b7df48571b4d",
-    "projects/08-threadlens/probe/pom.xml": "7f85b5b48ee63ad3a4ce983ce055a333b37a2328abf721332c9cb8ac537c6caf",
+    "projects/08-threadlens/probe/pom.xml": "34b530755493ae34f2c53c4f3515eff34cac5301c4678bd93fec06e5bd55f129",
     "projects/08-threadlens/report/pom.xml": "9d77dbc81e55f7b3a3a65762a4e523acbfb0b69f56328e96c6c8b2f1a145f701",
     "projects/08-threadlens/workloads/pom.xml": "2438216c84982d958ddc2d808a29c50aecce8ff6b59ea04fa2d470076b4e76b6",
     "projects/09-byteguard/analysis-core/pom.xml": "c2afeef2c13cb4c8398eb339609a1c060b5364ea73610dbf09da474f7c0fead7",
@@ -84,5 +84,13 @@
     "No dependency vulnerability result is implied.",
     "Test scope, build-plugin dependencies and container contents are outside this executed goal.",
     "Final release must regenerate if dependency POM inputs change."
-  ]
+  ],
+  "refresh": {
+    "reason": "IndexForge wave2 and ThreadLens repair profile POM changes",
+    "previousEvidenceCommit": "29e0bbd",
+    "externalComponentIdentitiesLicensesAndHashesUnchanged": true,
+    "components": 176,
+    "dependencyGraphNodes": 177,
+    "limitations": "Executed aggregate is not a vulnerability scan. Test/build-plugin/container scopes remain outside inventory."
+  }
 }
