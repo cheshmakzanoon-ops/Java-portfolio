@@ -1,0 +1,5 @@
+Pre-held-out selection from development/validation only: NO_PROSE
+Ranking profile: SEMANTIC
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: 238e3a6b2fc712c3f6fc8d4b5667f49328981ee5e2f27067a9e2277b02c3894a
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20

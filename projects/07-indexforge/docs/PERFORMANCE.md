@@ -1,0 +1,7 @@
+# Performance methodology
+
+Target:100,000 generated UTF8 source documents over three tenants at30 scheduled searches/second, after warmup, p95 below200ms, with configured heap at most2GiB. Scripts always pass `-Xmx2g`; deterministic seed7007 and exact aggregate source byte counts are emitted. Generated document bodies perform a small maximum-of-revisions operation and are never compiled or executed during ingestion.
+
+The harness builds all tenant generations, warms150 application requests, then performs three independent fixed-rate runs. Latency starts at the scheduled open-loop arrival time, including client executor queuing;8 bounded request workers collect errors, queue peak, process CPU time and GC time. It publishes p50/p95/p99 and raw latency samples. Current harness boundary includes shared application search, generation leases, authorization, facets, explanations and bounded warm response cache; it excludes HTTP transport and is explicitly labeled. It does not constitute HTTP end-to-end acceptance by itself.
+
+Run only in a coordinator-granted quiet reference window: `projects/07-indexforge/scripts/benchmark.sh`. Set INDEXFORGE_SECONDS and INDEXFORGE_DOCUMENTS for exploratory smoke runs; such runs do not satisfy the100k target. Record OS/JDK/CPU/cgroup limits, heap flags, source fingerprint, timestamp, concurrency and other co-resident processes alongside raw results. No performance target has been claimed passed before a measurement.

@@ -1,0 +1,104 @@
+{
+  "all80Reviewed": true,
+  "rankingMetricsObserved": false,
+  "primaryLabelsRetained": true,
+  "splitRetained": true,
+  "corrections": [
+    {
+      "query": "q05",
+      "removedPath": "ingest/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/CheckpointStore.java",
+      "priorGrade": 2,
+      "reason": "Progress-text parsing is not the bounded binary source-entry collection decoder."
+    },
+    {
+      "query": "q06",
+      "removedPath": "ingest/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/CheckpointStore.java",
+      "priorGrade": 2,
+      "reason": "Progress-text parsing is not the bounded binary source-entry collection decoder."
+    },
+    {
+      "query": "q13",
+      "removedPath": "ingest/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/IngestionJob.java",
+      "priorGrade": 2,
+      "reason": "Manifest idempotency does not implement content-addressed object deduplication."
+    },
+    {
+      "query": "q14",
+      "removedPath": "ingest/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/IngestionJob.java",
+      "priorGrade": 2,
+      "reason": "Manifest idempotency does not implement content-addressed object deduplication."
+    },
+    {
+      "query": "q19",
+      "removedPath": "ingest/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/ContentAddressedStore.java",
+      "priorGrade": 2,
+      "reason": "Content storage alone does not enforce compressed archive expansion limits."
+    },
+    {
+      "query": "q20",
+      "removedPath": "ingest/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/ContentAddressedStore.java",
+      "priorGrade": 2,
+      "reason": "Content storage alone does not enforce compressed archive expansion limits."
+    },
+    {
+      "query": "q71",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q72",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q73",
+      "removedPath": "ingest/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/IngestionSafetyTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has local ingestion safety tests, but no RSA/JWT signing scenario."
+    },
+    {
+      "query": "q74",
+      "removedPath": "ingest/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/IngestionSafetyTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has local ingestion safety tests, but no RSA/JWT signing scenario."
+    },
+    {
+      "query": "q75",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q76",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q77",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q78",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q79",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    },
+    {
+      "query": "q80",
+      "removedPath": "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchSecurityTest.java",
+      "priorGrade": 1,
+      "reason": "Frozen body has engine ACL/cursor/query tests, but no HTTP raw-byte admission, JWT claim validation, future cancellation or reindex scenario."
+    }
+  ]
+}

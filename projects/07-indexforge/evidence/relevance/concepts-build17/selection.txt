@@ -1,0 +1,3 @@
+Pre-held-out selection from development/validation only: NO_IDENTIFIERS
+Model SHA256: 86a1fb5b4ab608a1432e883afc688aafcc77f622bc868effd7f417819a5e90d1
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20

@@ -1,0 +1,5 @@
+Pre-held-out selection from development/validation only: NO_COVERAGE
+Ranking profile: CONTEXTUAL
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: 977f8a9dd5849d1e42b9d9d7396aee7fc0d5e5f94b2931605909721f053e4496
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "phase": "preregistered before any ranking measurement",
+  "corpusSha256": "a979b268c886f5181d29efd70f811c36f49449b408aa2bc6c7c9975dcc325dab",
+  "judgmentsSha256": "d5555ddcd0bff0a9365e16f281984c5524775548b599a8f0fb8a59b407d6349d",
+  "queries": 80,
+  "split": {
+    "development": 40,
+    "validation": 20,
+    "held-out": 20
+  },
+  "independentReview": "REQUESTED; not yet approved",
+  "tuningPolicy": "Labels and split immutable. Compare predeclared BM25-content/source-aware/no-identifiers/no-path; select only on development and validation. Held-out opened once after selection. Retain baseline if held-out candidate does not improve."
+}

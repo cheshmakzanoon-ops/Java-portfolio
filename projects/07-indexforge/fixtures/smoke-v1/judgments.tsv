@@ -1,0 +1,80 @@
+q01	development	identifier	commitGeneration	topic00/Implementation.java:3,topic00/Guide.md:2,topic00/ContractTest.java:1
+q02	development	prose	atomic generation publication	topic00/Guide.md:3,topic00/Implementation.java:2,topic00/ContractTest.java:1
+q03	development	identifier	acquireLease	topic01/Implementation.java:3,topic01/Guide.md:2,topic01/ContractTest.java:1
+q04	development	prose	reference counted reader lease	topic01/Guide.md:3,topic01/Implementation.java:2,topic01/ContractTest.java:1
+q05	development	identifier	validateCursor	topic02/Implementation.java:3,topic02/Guide.md:2,topic02/ContractTest.java:1
+q06	development	prose	signed pagination validation	topic02/Guide.md:3,topic02/Implementation.java:2,topic02/ContractTest.java:1
+q07	development	identifier	splitIdentifier	topic03/Implementation.java:3,topic03/Guide.md:2,topic03/ContractTest.java:1
+q08	development	prose	camel case identifier tokens	topic03/Guide.md:3,topic03/Implementation.java:2,topic03/ContractTest.java:1
+q09	development	identifier	readSnapshot	topic04/Implementation.java:3,topic04/Guide.md:2,topic04/ContractTest.java:1
+q10	development	prose	bounded source directory ingestion	topic04/Guide.md:3,topic04/Implementation.java:2,topic04/ContractTest.java:1
+q11	development	identifier	expandArchive	topic05/Implementation.java:3,topic05/Guide.md:2,topic05/ContractTest.java:1
+q12	development	prose	archive expansion limit	topic05/Guide.md:3,topic05/Implementation.java:2,topic05/ContractTest.java:1
+q13	development	identifier	resumeCheckpoint	topic06/Implementation.java:3,topic06/Guide.md:2,topic06/ContractTest.java:1
+q14	development	prose	resumable ingestion checkpoint	topic06/Guide.md:3,topic06/Implementation.java:2,topic06/ContractTest.java:1
+q15	development	identifier	hashContent	topic07/Implementation.java:3,topic07/Guide.md:2,topic07/ContractTest.java:1
+q16	development	prose	content addressed deduplication	topic07/Guide.md:3,topic07/Implementation.java:2,topic07/ContractTest.java:1
+q17	development	identifier	authorizeRepository	topic08/Implementation.java:3,topic08/Guide.md:2,topic08/ContractTest.java:1
+q18	development	prose	repository authorization filter	topic08/Guide.md:3,topic08/Implementation.java:2,topic08/ContractTest.java:1
+q19	development	identifier	revokePrincipal	topic09/Implementation.java:3,topic09/Guide.md:2,topic09/ContractTest.java:1
+q20	development	prose	authorization version recheck	topic09/Guide.md:3,topic09/Implementation.java:2,topic09/ContractTest.java:1
+q21	development	identifier	buildQueryPlan	topic10/Implementation.java:3,topic10/Guide.md:2,topic10/ContractTest.java:1
+q22	development	prose	bounded boolean query parsing	topic10/Guide.md:3,topic10/Implementation.java:2,topic10/ContractTest.java:1
+q23	development	identifier	rankCandidates	topic11/Implementation.java:3,topic11/Guide.md:2,topic11/ContractTest.java:1
+q24	development	prose	deterministic relevance ranking	topic11/Guide.md:3,topic11/Implementation.java:2,topic11/ContractTest.java:1
+q25	development	identifier	createSnippet	topic12/Implementation.java:3,topic12/Guide.md:2,topic12/ContractTest.java:1
+q26	development	prose	source line excerpt	topic12/Guide.md:3,topic12/Implementation.java:2,topic12/ContractTest.java:1
+q27	development	identifier	verifyCommit	topic13/Implementation.java:3,topic13/Guide.md:2,topic13/ContractTest.java:1
+q28	development	prose	committed index integrity	topic13/Guide.md:3,topic13/Implementation.java:2,topic13/ContractTest.java:1
+q29	development	identifier	recoverPointer	topic14/Implementation.java:3,topic14/Guide.md:2,topic14/ContractTest.java:1
+q30	development	prose	startup pointer recovery	topic14/Guide.md:3,topic14/Implementation.java:2,topic14/ContractTest.java:1
+q31	development	identifier	cancelIngestion	topic15/Implementation.java:3,topic15/Guide.md:2,topic15/ContractTest.java:1
+q32	development	prose	cooperative ingestion cancellation	topic15/Guide.md:3,topic15/Implementation.java:2,topic15/ContractTest.java:1
+q33	development	identifier	registerJob	topic16/Implementation.java:3,topic16/Guide.md:2,topic16/ContractTest.java:1
+q34	development	prose	idempotent ingestion registration	topic16/Guide.md:3,topic16/Implementation.java:2,topic16/ContractTest.java:1
+q35	development	identifier	deleteSource	topic17/Implementation.java:3,topic17/Guide.md:2,topic17/ContractTest.java:1
+q36	development	prose	explicit snapshot deletion	topic17/Guide.md:3,topic17/Implementation.java:2,topic17/ContractTest.java:1
+q37	development	identifier	recordArtifact	topic18/Implementation.java:3,topic18/Guide.md:2,topic18/ContractTest.java:1
+q38	development	prose	versioned artifact coordinates	topic18/Guide.md:3,topic18/Implementation.java:2,topic18/ContractTest.java:1
+q39	development	identifier	warmReader	topic19/Implementation.java:3,topic19/Guide.md:2,topic19/ContractTest.java:1
+q40	development	prose	committed search reader warmup	topic19/Guide.md:3,topic19/Implementation.java:2,topic19/ContractTest.java:1
+q41	validation	identifier	calculateNdcg	topic20/Implementation.java:3,topic20/Guide.md:2,topic20/ContractTest.java:1
+q42	validation	prose	graded ranking evaluation	topic20/Guide.md:3,topic20/Implementation.java:2,topic20/ContractTest.java:1
+q43	validation	identifier	calculateMrr	topic21/Implementation.java:3,topic21/Guide.md:2,topic21/ContractTest.java:1
+q44	validation	prose	first relevant reciprocal rank	topic21/Guide.md:3,topic21/Implementation.java:2,topic21/ContractTest.java:1
+q45	validation	identifier	calculateRecall	topic22/Implementation.java:3,topic22/Guide.md:2,topic22/ContractTest.java:1
+q46	validation	prose	relevant document recall	topic22/Guide.md:3,topic22/Implementation.java:2,topic22/ContractTest.java:1
+q47	validation	identifier	retireGeneration	topic23/Implementation.java:3,topic23/Guide.md:2,topic23/ContractTest.java:1
+q48	validation	prose	deferred generation retirement	topic23/Guide.md:3,topic23/Implementation.java:2,topic23/ContractTest.java:1
+q49	validation	identifier	validateUtf8	topic24/Implementation.java:3,topic24/Guide.md:2,topic24/ContractTest.java:1
+q50	validation	prose	malformed source encoding	topic24/Guide.md:3,topic24/Implementation.java:2,topic24/ContractTest.java:1
+q51	validation	identifier	enforceQuota	topic25/Implementation.java:3,topic25/Guide.md:2,topic25/ContractTest.java:1
+q52	validation	prose	bounded request admission	topic25/Guide.md:3,topic25/Implementation.java:2,topic25/ContractTest.java:1
+q53	validation	identifier	verifyJwt	topic26/Implementation.java:3,topic26/Guide.md:2,topic26/ContractTest.java:1
+q54	validation	prose	OIDC token validation	topic26/Guide.md:3,topic26/Implementation.java:2,topic26/ContractTest.java:1
+q55	validation	identifier	aggregateFacets	topic27/Implementation.java:3,topic27/Guide.md:2,topic27/ContractTest.java:1
+q56	validation	prose	authorized repository facets	topic27/Guide.md:3,topic27/Implementation.java:2,topic27/ContractTest.java:1
+q57	validation	identifier	suggestSymbol	topic28/Implementation.java:3,topic28/Guide.md:2,topic28/ContractTest.java:1
+q58	validation	prose	authorized identifier suggestions	topic28/Guide.md:3,topic28/Implementation.java:2,topic28/ContractTest.java:1
+q59	validation	identifier	explainScore	topic29/Implementation.java:3,topic29/Guide.md:2,topic29/ContractTest.java:1
+q60	validation	prose	authorized ranking explanation	topic29/Guide.md:3,topic29/Implementation.java:2,topic29/ContractTest.java:1
+q61	held-out	identifier	syncMetadata	topic30/Implementation.java:3,topic30/Guide.md:2,topic30/ContractTest.java:1
+q62	held-out	prose	durable filesystem metadata	topic30/Guide.md:3,topic30/Implementation.java:2,topic30/ContractTest.java:1
+q63	held-out	identifier	normalizePath	topic31/Implementation.java:3,topic31/Guide.md:2,topic31/ContractTest.java:1
+q64	held-out	prose	canonical relative source paths	topic31/Guide.md:3,topic31/Implementation.java:2,topic31/ContractTest.java:1
+q65	held-out	identifier	detectDiskFull	topic32/Implementation.java:3,topic32/Guide.md:2,topic32/ContractTest.java:1
+q66	held-out	prose	storage exhaustion recovery	topic32/Guide.md:3,topic32/Implementation.java:2,topic32/ContractTest.java:1
+q67	held-out	identifier	replaceSnapshot	topic33/Implementation.java:3,topic33/Guide.md:2,topic33/ContractTest.java:1
+q68	held-out	prose	concurrent snapshot replacement	topic33/Guide.md:3,topic33/Implementation.java:2,topic33/ContractTest.java:1
+q69	held-out	identifier	verifyDigest	topic34/Implementation.java:3,topic34/Guide.md:2,topic34/ContractTest.java:1
+q70	held-out	prose	stored content corruption detection	topic34/Guide.md:3,topic34/Implementation.java:2,topic34/ContractTest.java:1
+q71	held-out	identifier	bindCursor	topic35/Implementation.java:3,topic35/Guide.md:2,topic35/ContractTest.java:1
+q72	held-out	prose	principal bound continuation	topic35/Guide.md:3,topic35/Implementation.java:2,topic35/ContractTest.java:1
+q73	held-out	identifier	limitQueue	topic36/Implementation.java:3,topic36/Guide.md:2,topic36/ContractTest.java:1
+q74	held-out	prose	ingestion worker backpressure	topic36/Guide.md:3,topic36/Implementation.java:2,topic36/ContractTest.java:1
+q75	held-out	identifier	searchPhrase	topic37/Implementation.java:3,topic37/Guide.md:2,topic37/ContractTest.java:1
+q76	held-out	prose	ordered phrase retrieval	topic37/Guide.md:3,topic37/Implementation.java:2,topic37/ContractTest.java:1
+q77	held-out	identifier	filterLanguage	topic38/Implementation.java:3,topic38/Guide.md:2,topic38/ContractTest.java:1
+q78	held-out	prose	typed language filtering	topic38/Guide.md:3,topic38/Implementation.java:2,topic38/ContractTest.java:1
+q79	held-out	identifier	measureLatency	topic39/Implementation.java:3,topic39/Guide.md:2,topic39/ContractTest.java:1
+q80	held-out	prose	open loop latency measurement	topic39/Guide.md:3,topic39/Implementation.java:2,topic39/ContractTest.java:1

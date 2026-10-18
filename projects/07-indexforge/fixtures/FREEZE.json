@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "phase": "BEFORE any ranking metrics or tuning",
+  "corpusSha256": "0162c35bd70d995e2ab0feb14ccf96c7cec76666338b54a6d4a8689efd786ed9",
+  "judgmentsSha256": "77a370782ec74c14036ad641f727fb41283e9baceb85ee2fdf2671a3d750b7ec",
+  "queries": 80,
+  "documents": 70,
+  "split": {
+    "development": 40,
+    "validation": 20,
+    "held-out": 20
+  },
+  "review": "PREMEASUREMENT semantic corrections audited; independent coordinator final approval requested",
+  "v1Disposition": "Smoke-only: coordinator identified empty implementation bodies and literal topic-heading queries before any measurement; hashes preserved under smoke-v1. V2 uses complete substantive original repository code with path/digest provenance and paraphrased intents.",
+  "selectionPolicy": "Predeclared SOURCE_AWARE vs BASELINE with NO_IDENTIFIERS/NO_PATH ablations. Select on development/validation before held-out access. Preserve labels regardless of outcome.",
+  "v2Disposition": "Preserved unchanged under reviewed-v2; unrelated graded support removed following coordinator review, before any ranking measurement. No query text, split, primary label or corpus was changed.",
+  "labelAudit": "V3-LABEL-AUDIT.json"
+}

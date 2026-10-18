@@ -1,0 +1,5 @@
+Pre-held-out selection from development/validation only: NO_PATH
+Ranking profile: COORDINATED
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: 93380046ebb09bec329bdde16075418f0bf47fefac63f810a32c0a855180c557
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20
