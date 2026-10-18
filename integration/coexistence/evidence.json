@@ -1,0 +1,85 @@
+{
+  "observedAtUtc": "2026-10-18T02:16:41.189252+00:00",
+  "sourceRevision": "2094ae847f4b04f3289ede0b260b4b5719e340bf",
+  "workingTreeNote": "Each service uses its owner-verified current application artifacts; root SHA alone does not identify uncommitted source. Linked project envelopes contain exact source identities.",
+  "projectEvidence": [
+    "projects/01-clearledger/evidence/integration-current.json",
+    "projects/04-pulsestream/docs/STATUS.md"
+  ],
+  "responses": {
+    "clearledger": {
+      "url": "http://127.0.0.1:18100/health",
+      "status": 200,
+      "body": {
+        "status": "UP"
+      }
+    },
+    "pulsestream": {
+      "url": "http://127.0.0.1:18400/health",
+      "status": 200,
+      "body": {
+        "healthy": true,
+        "failure": "",
+        "sourceLag": 0,
+        "queueDepth": 0,
+        "maximumQueueDepth": 1,
+        "queueUtilization": 0.0,
+        "watermark": -9223372036854775808,
+        "watermarkLagMillis": -1,
+        "lastCheckpointMillis": 296.488094,
+        "outboxDeliveryFailures": 0
+      }
+    }
+  },
+  "containers": [
+    {
+      "name": "java-portfolio-clearledger-postgres-1",
+      "project": "java-portfolio-clearledger",
+      "image": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+      "ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18101"
+          }
+        ]
+      },
+      "running": true
+    },
+    {
+      "name": "java-portfolio-pulsestream-postgres-1",
+      "project": "java-portfolio-pulsestream",
+      "image": "postgres:18.3-alpine",
+      "ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18401"
+          }
+        ]
+      },
+      "running": true
+    },
+    {
+      "name": "java-portfolio-pulsestream-kafka-1",
+      "project": "java-portfolio-pulsestream",
+      "image": "apache/kafka:4.2.1",
+      "ports": {
+        "19092/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18402"
+          }
+        ],
+        "9092/tcp": null
+      },
+      "running": true
+    }
+  ],
+  "result": "PASS for current-instance simultaneous standalone service operation",
+  "limitations": [
+    "No shared database, application port or broker namespace.",
+    "Clean-checkout demo/release checks remain separate.",
+    "PulseStream owner found Kafka volume path configuration still requires correction and recreation validation; this coexistence result does not certify that recovery path."
+  ]
+}

@@ -4,15 +4,15 @@ No acceptance passes are implied by a foundation checkpoint.
 
 | ID | Owner | Status | Implementation/test/evidence |
 |---|---|---|---|
-| P01-A1 | A01 | IN_PROGRESS | projects/01-clearledger/docs/STATUS.md; full gate evidence pending |
-| P01-A2 | A01 | IN_PROGRESS | projects/01-clearledger/docs/STATUS.md; full gate evidence pending |
-| P01-A3 | A01 | IN_PROGRESS | projects/01-clearledger/docs/STATUS.md; full gate evidence pending |
-| P01-A4 | A01 | IN_PROGRESS | projects/01-clearledger/docs/STATUS.md; full gate evidence pending |
+| P01-A1 | A01 | PASS | projects/01-clearledger/evidence/integration-current.json: 25 fresh methods including 15 PostgreSQL tests, shared source-derived audit and corruption diagnostics; A10 scoped review closed |
+| P01-A2 | A01 | PASS | projects/01-clearledger/evidence/integration-current.json: 25 fresh methods including 15 PostgreSQL tests, shared source-derived audit and corruption diagnostics; A10 scoped review closed |
+| P01-A3 | A01 | PASS | projects/01-clearledger/evidence/integration-current.json: 25 fresh methods including 15 PostgreSQL tests, shared source-derived audit and corruption diagnostics; A10 scoped review closed |
+| P01-A4 | A01 | PASS | projects/01-clearledger/evidence/integration-current.json: 25 fresh methods including 15 PostgreSQL tests, shared source-derived audit and corruption diagnostics; A10 scoped review closed |
 | P01-A5 | A01 | IN_PROGRESS | projects/01-clearledger/docs/STATUS.md; full gate evidence pending |
-| P02-A1 | A02 | IN_PROGRESS | projects/02-durableflow/docs/STATUS.md; full gate evidence pending |
-| P02-A2 | A02 | IN_PROGRESS | projects/02-durableflow/docs/STATUS.md; full gate evidence pending |
-| P02-A3 | A02 | IN_PROGRESS | projects/02-durableflow/docs/STATUS.md; full gate evidence pending |
-| P02-A4 | A02 | IN_PROGRESS | projects/02-durableflow/docs/STATUS.md; full gate evidence pending |
+| P02-A1 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A2 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A3 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A4 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
 | P02-A5 | A02 | IN_PROGRESS | projects/02-durableflow/docs/STATUS.md; full gate evidence pending |
 | P03-A1 | A03 | PASS | projects/03-quorumkv/evidence/verification-current.json and demo-current.json: 41 fresh methods, three process IT, two lifecycle rounds; scoped review recorded |
 | P03-A2 | A03 | PASS | projects/03-quorumkv/evidence/verification-current.json and demo-current.json: 41 fresh methods, three process IT, two lifecycle rounds; scoped review recorded |
@@ -24,10 +24,10 @@ No acceptance passes are implied by a foundation checkpoint.
 | P04-A3 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
 | P04-A4 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
 | P04-A5 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
-| P05-A1 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
-| P05-A2 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
-| P05-A3 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
-| P05-A4 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
+| P05-A1 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A2 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A3 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A4 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
 | P05-A5 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
 | P06-A1 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
 | P06-A2 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
@@ -40,12 +40,12 @@ No acceptance passes are implied by a foundation checkpoint.
 | P07-A4 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
 | P07-A5 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
 | P07-A6 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
-| P08-A1 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
-| P08-A2 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
-| P08-A3 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
-| P08-A4 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A1 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
+| P08-A2 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
+| P08-A3 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
+| P08-A4 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
 | P08-A5 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
-| P08-A6 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A6 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
 | P09-A1 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
 | P09-A2 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
 | P09-A3 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
@@ -57,13 +57,13 @@ No acceptance passes are implied by a foundation checkpoint.
 | P10-A3 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
 | P10-A4 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
 | P10-A5 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
-| R-A01 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A02 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A03 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A04 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A05 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A06 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A07 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A08 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A09 | Coordinator | NOT_STARTED | See full contract; evidence pending |
-| R-A10 | Coordinator | NOT_STARTED | See full contract; evidence pending |
+| R-A01 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A02 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A03 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A04 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A05 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A06 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A07 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A08 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A09 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
+| R-A10 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
