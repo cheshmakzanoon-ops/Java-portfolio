@@ -1,0 +1,11 @@
+# Trust boundaries
+
+The default `local` profile binds HTTP to 127.0.0.1 and rejects any configured non-loopback address. It trusts the explicit `X-Dev-Tenant` development header and disposable local Kafka/PostgreSQL credentials. This is a local developer fixture, not an authentication mechanism for remote use. Compose publishes dependencies to loopback only.
+
+For remote access select `--pulse.security=protected`, configure `pulse.oidc.issuer`, `pulse.oidc.jwks`, `pulse.oidc.audience`, and use HTTPS ingress. Spring Security/Nimbus verifies RSA signature, issuer, audience and expiry; each query requires `telemetry:read` and a matching `tenant` JWT claim. The integration issuer runs on an ephemeral loopback port with a real RSA key/JWKS and token endpoint. Negative tokens exercise each required claim/signature failure. The issuer fixture is not shipped as a production identity provider.
+
+Identifiers exclude delimiters and are at most 64 characters. Kafka records are bounded to 16 KiB before JSON parsing; unknown fields, wrong scalar types, trailing content, key/routing mismatch and invalid source-progress payloads are quarantined. Future timestamps have a configurable clock-skew cap. The query service accepts no HTTP request bodies, including chunked requests. Pagination is 1–1000; parameterized SQL and statement/connect/socket timeouts bound reads. A tenant must have durable membership in the run before querying its status. Per-window late counts and diagnostic rows filter tenant IDs.
+
+Administrative crash hooks exist only in the local profile and require explicit process configuration; there is no remotely callable operational/destructive HTTP endpoint. Run archival requires local database access. PostgreSQL itself, deployment configuration, Kafka routing/topic administration and local filesystem snapshots are trusted. Snapshots use a strict object-class filter; no user-supplied serialized object is read. Application errors do not return JDBC messages or stack traces.
+
+Known limits: local transport is plaintext and fixture credentials are public; Kafka production SASL/TLS and external secrets deployment are not configured by this demo. A malicious authorized Kafka writer can consume a run's finite durable quotas. This service is a portfolio implementation, not a certified security boundary or distributed execution service.

@@ -1,0 +1,13 @@
+CREATE TABLE run_owner(run_id varchar(64) PRIMARY KEY, epoch bigint NOT NULL, lease_until timestamptz NOT NULL);
+CREATE TABLE run_usage(run_id varchar(64) PRIMARY KEY REFERENCES run_owner, diagnostics bigint NOT NULL DEFAULT 0);
+CREATE TABLE run_state(run_id varchar(64) PRIMARY KEY REFERENCES run_owner, topic_id varchar(128) NOT NULL, snapshot bytea NOT NULL, committed_at timestamptz NOT NULL DEFAULT clock_timestamp());
+CREATE TABLE checkpoint(run_id varchar(64) NOT NULL, topic_id varchar(128) NOT NULL, partition_id int NOT NULL, next_offset bigint NOT NULL CHECK(next_offset>=0), PRIMARY KEY(run_id,partition_id));
+CREATE TABLE partition_progress(run_id varchar(64) NOT NULL, partition_id int NOT NULL, max_timestamp bigint NOT NULL, last_activity bigint NOT NULL, idle boolean NOT NULL, PRIMARY KEY(run_id,partition_id));
+CREATE TABLE pane_state(run_id varchar(64) NOT NULL, tenant_id varchar(64) NOT NULL, sensor_id varchar(64) NOT NULL, pane_start bigint NOT NULL, count bigint NOT NULL, sum bigint NOT NULL, minimum bigint NOT NULL, maximum bigint NOT NULL, PRIMARY KEY(run_id,tenant_id,sensor_id,pane_start));
+CREATE TABLE window_result(run_id varchar(64) NOT NULL, tenant_id varchar(64) NOT NULL, sensor_id varchar(64) NOT NULL, type varchar(16) NOT NULL, start_time bigint NOT NULL, end_time bigint NOT NULL, count bigint NOT NULL, sum bigint NOT NULL, minimum bigint NOT NULL, maximum bigint NOT NULL, revision bigint NOT NULL, final boolean NOT NULL, PRIMARY KEY(run_id,tenant_id,sensor_id,type,start_time));
+CREATE TABLE seen_event(run_id varchar(64) NOT NULL, tenant_id varchar(64) NOT NULL, event_id varchar(64) NOT NULL, payload_hash char(64) NOT NULL, PRIMARY KEY(run_id,tenant_id,event_id));
+CREATE TABLE quarantine(id bigserial PRIMARY KEY, run_id varchar(64) NOT NULL, tenant_id varchar(64) NOT NULL, event_id varchar(64), reason varchar(64) NOT NULL, window_id varchar(256));
+CREATE INDEX quarantine_page ON quarantine(run_id,tenant_id,id);
+CREATE TABLE late_record(id bigserial PRIMARY KEY, run_id varchar(64) NOT NULL, tenant_id varchar(64) NOT NULL, event_id varchar(64), reason varchar(64) NOT NULL, window_id varchar(256));
+CREATE TABLE outbox(run_id varchar(64) NOT NULL, window_id varchar(256) NOT NULL, revision bigint NOT NULL, payload bytea NOT NULL, delivered boolean NOT NULL DEFAULT false, PRIMARY KEY(run_id,window_id,revision));
+CREATE INDEX outbox_pending ON outbox(run_id) WHERE NOT delivered;
