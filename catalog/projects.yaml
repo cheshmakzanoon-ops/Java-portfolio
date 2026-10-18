@@ -188,7 +188,7 @@
       "slug": "byteguard",
       "path": "projects/09-byteguard",
       "ports": [],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up byteguard",
       "verify": "./scripts/portfolio.sh verify byteguard",
       "demo": "./scripts/portfolio.sh demo byteguard",
