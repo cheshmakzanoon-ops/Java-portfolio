@@ -16,3 +16,9 @@ Reviews are read-only outside your owned project. Send findings to owner and coo
 Before coordinator commits, acknowledge write pause. Do not change paused files until released.
 
 In this cloud environment source scripts/cloud-env.sh before Maven (sets required proxy settings and trusted system CAs). Maven settings at .work/settings.xml were generated from HTTPS_PROXY; never disable TLS checks. Use fully qualified com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply if prefix resolution causes unnecessary lookups.
+
+Mutation convention: use a project-local mutation profile to neutralize inherited default PIT execution for noncritical adapters, then explicitly activate PIT for selected original core classes with nonzero mutations and a70% threshold. Do not exclude difficult branches or pretend no-test adapters prove mutation strength. Preserve survivor reports.
+
+Cloud settings now mirror selected released dependencies to Maven Central; source cloud-env.sh before builds to regenerate secure proxy settings. Tool/classpath versions were not changed by the mirror; the new mirror ID causes one-time local cache provenance revalidation.
+
+The ordinary ./mvnw wrapper acquires one of three shared flock build slots on Linux. Always use it; do not invoke the Maven installation directly or set PORTFOLIO_BUILD_SLOT_HELD yourself. Nested inherited invocations retain their parent slot. Windows uses the ordinary Maven wrapper without this Linux-only coordination. At most two Docker integration stacks; obtain coordinator scheduling before starting a stack. Benchmarks require an explicitly quiet host with other builds/stress/services stopped.

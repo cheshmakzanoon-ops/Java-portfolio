@@ -1,0 +1,7 @@
+# ByteGuard preregistration review
+
+Coordinator inspected120matched source fixtures spanning20shapes per SQL/shell/path rule family and verified file hashes before corpus engine evaluation. V1 review found guaranteed-null SQLreceivers, shelltoken used as a complete command and path transformations after an earlier confinement guard. Owner preserved exactv1sources and labels, then corrected fixtures before any engine measurements.
+
+V2 labelsSHA256:d82a27da446265ee38a30f39265c2e71e93b4023a99849db621f0039483443da. All120source hashes verified;60positive/60negative distribution retained. SQLfixtures accept supplied JDBCinterfaces; shell fixtures combine a fixed echo command with a whitelisted token; path negatives validate the final transformed path at the sink. Review inspected changes including wide values, concatenation, builders, missing dependencies and matched direct flows. Approved for the declared narrow context-specific taint-model corpus, before tuning/results.
+
+Labels describe model flows, not proven exploits or field accuracy. Wrong-context sanitizer labels deliberately test model isolation even where lexical alphabets overlap. The path guard assumes an owned symlink-free root and is not a general filesystem confinement proof. Missing dependencies remain conservative unknown; false positives must remain visible in the matrix. Never execute analyzed targets; compiling trusted fixtures uses-proc:none. No acceptance gate passes from label review alone.

@@ -162,7 +162,7 @@
         18708,
         18709
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up indexforge",
       "verify": "./scripts/portfolio.sh verify indexforge",
       "demo": "./scripts/portfolio.sh demo indexforge",
@@ -175,7 +175,7 @@
       "slug": "threadlens",
       "path": "projects/08-threadlens",
       "ports": [],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up threadlens",
       "verify": "./scripts/portfolio.sh verify threadlens",
       "demo": "./scripts/portfolio.sh demo threadlens",
@@ -212,7 +212,7 @@
         19008,
         19009
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up routeweaver",
       "verify": "./scripts/portfolio.sh verify routeweaver",
       "demo": "./scripts/portfolio.sh demo routeweaver",

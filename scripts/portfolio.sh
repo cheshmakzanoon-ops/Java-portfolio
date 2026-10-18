@@ -20,19 +20,21 @@ case "$command" in
     ;;
   list)
     for slug in "${slugs[@]}"; do printf '%-14s %s\n' "$slug" "$(resolve "$slug")"; done
-    echo 'ThreadLens and ByteGuard are CLI tools; up does not start a web server.'
+    echo 'MatchCore, ThreadLens and ByteGuard are CLI-first; up prepares local state rather than starting a web server.'
     ;;
-  verify|integration)
+  verify|integration|mutation)
     export PORTFOLIO_TEST_RUN_STARTED=$(date +%s)
     args=(); [[ $command != integration ]] || args+=(-Pintegration)
+    [[ $command != mutation ]] || args+=(-Pmutation -DoutputFormats=XML,HTML)
     mkdir -p "$root/.work/coordinator"
     if [[ $slug == all ]]; then
       "$root/mvnw" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
-      for selected in "${slugs[@]}"; do python3 "$root/scripts/check-tests.py" "$(resolve "$selected")" "$command"; done
+      for selected in "${slugs[@]}"; do python3 "$root/scripts/check-tests.py" "$(resolve "$selected")" "$command"; if [[ $command == mutation ]]; then python3 "$root/scripts/check-mutations.py" "$(resolve "$selected")"; fi; done
     else
       path=$(resolve "$slug")
       "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
       python3 "$root/scripts/check-tests.py" "$path" "$command"
+      if [[ $command == mutation ]]; then python3 "$root/scripts/check-mutations.py" "$path"; fi
     fi
     ;;
   up|demo|down|reset-demo)
@@ -40,5 +42,5 @@ case "$command" in
     if [[ ! -f $script ]]; then echo "Project command is not implemented: $script" >&2; exit 2; fi
     if command -v timeout >/dev/null; then timeout 600 bash "$script"; else bash "$script"; fi
     ;;
-  *) echo 'Usage: portfolio.sh doctor|list|verify|integration|up|demo|down|reset-demo [slug|all]' >&2; exit 2;;
+  *) echo 'Usage: portfolio.sh doctor|list|verify|integration|mutation|up|demo|down|reset-demo [slug|all]' >&2; exit 2;;
 esac

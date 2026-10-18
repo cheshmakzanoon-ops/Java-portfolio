@@ -19,7 +19,7 @@ No acceptance passes are implied by a foundation checkpoint.
 | P03-A3 | A03 | IN_PROGRESS | projects/03-quorumkv/docs/STATUS.md; full gate evidence pending |
 | P03-A4 | A03 | IN_PROGRESS | projects/03-quorumkv/docs/STATUS.md; full gate evidence pending |
 | P03-A5 | A03 | IN_PROGRESS | projects/03-quorumkv/docs/STATUS.md; full gate evidence pending |
-| P04-A1 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
+| P04-A1 | A04 | PASS | projects/04-pulsestream/evidence/coordinator-unit-verify.json: independent tumbling/sliding oracle properties and boundary tests, source fingerprint recorded |
 | P04-A2 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
 | P04-A3 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
 | P04-A4 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
@@ -34,29 +34,29 @@ No acceptance passes are implied by a foundation checkpoint.
 | P06-A3 | A06 | IN_PROGRESS | projects/06-matchcore/docs/STATUS.md; full gate evidence pending |
 | P06-A4 | A06 | IN_PROGRESS | projects/06-matchcore/docs/STATUS.md; full gate evidence pending |
 | P06-A5 | A06 | IN_PROGRESS | projects/06-matchcore/docs/STATUS.md; full gate evidence pending |
-| P07-A1 | A07 | NOT_STARTED | See full contract; evidence pending |
-| P07-A2 | A07 | NOT_STARTED | See full contract; evidence pending |
-| P07-A3 | A07 | NOT_STARTED | See full contract; evidence pending |
-| P07-A4 | A07 | NOT_STARTED | See full contract; evidence pending |
-| P07-A5 | A07 | NOT_STARTED | See full contract; evidence pending |
-| P07-A6 | A07 | NOT_STARTED | See full contract; evidence pending |
-| P08-A1 | A08 | NOT_STARTED | See full contract; evidence pending |
-| P08-A2 | A08 | NOT_STARTED | See full contract; evidence pending |
-| P08-A3 | A08 | NOT_STARTED | See full contract; evidence pending |
-| P08-A4 | A08 | NOT_STARTED | See full contract; evidence pending |
-| P08-A5 | A08 | NOT_STARTED | See full contract; evidence pending |
-| P08-A6 | A08 | NOT_STARTED | See full contract; evidence pending |
+| P07-A1 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
+| P07-A2 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
+| P07-A3 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
+| P07-A4 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
+| P07-A5 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
+| P07-A6 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A1 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A2 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A3 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A4 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A5 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
+| P08-A6 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
 | P09-A1 | A09 | NOT_STARTED | See full contract; evidence pending |
 | P09-A2 | A09 | NOT_STARTED | See full contract; evidence pending |
 | P09-A3 | A09 | NOT_STARTED | See full contract; evidence pending |
 | P09-A4 | A09 | NOT_STARTED | See full contract; evidence pending |
 | P09-A5 | A09 | NOT_STARTED | See full contract; evidence pending |
 | P09-A6 | A09 | NOT_STARTED | See full contract; evidence pending |
-| P10-A1 | A10 | NOT_STARTED | See full contract; evidence pending |
-| P10-A2 | A10 | NOT_STARTED | See full contract; evidence pending |
-| P10-A3 | A10 | NOT_STARTED | See full contract; evidence pending |
-| P10-A4 | A10 | NOT_STARTED | See full contract; evidence pending |
-| P10-A5 | A10 | NOT_STARTED | See full contract; evidence pending |
+| P10-A1 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P10-A2 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P10-A3 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P10-A4 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P10-A5 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
 | R-A01 | Coordinator | NOT_STARTED | See full contract; evidence pending |
 | R-A02 | Coordinator | NOT_STARTED | See full contract; evidence pending |
 | R-A03 | Coordinator | NOT_STARTED | See full contract; evidence pending |

@@ -7,3 +7,7 @@
 *.iml
 __pycache__/
 *.pyc
+**/.jqwik-database
+**/dependency-reduced-pom.xml
+*.hprof
+**/javac.*.args

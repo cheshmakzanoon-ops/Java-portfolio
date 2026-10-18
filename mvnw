@@ -1,4 +1,10 @@
 #!/bin/sh
+# Portfolio patch: serialize heavy builds to three slots in this shared checkout.
+# Distribution download/checksum behavior below remains Maven Wrapper3.3.4.
+portfolio_wrapper_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ "${PORTFOLIO_BUILD_SLOT_HELD:-0}" != 1 ] && command -v flock >/dev/null 2>&1 && [ -f "$portfolio_wrapper_root/scripts/with-build-slot.sh" ]; then
+  exec bash "$portfolio_wrapper_root/scripts/with-build-slot.sh" "$0" "$@"
+fi
 # ----------------------------------------------------------------------------
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file

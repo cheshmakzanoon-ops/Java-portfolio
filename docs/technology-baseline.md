@@ -7,3 +7,9 @@ Maven: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0
 Boot: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-dependencies/4.1.1/
 
 Dependency/plugin pins are in root pom.xml. Dependency resolution and foundation gate probes are required before fan-out. Container image pins remain project-specific and must be recorded by each owner.
+
+All cloud Maven requests now use the platform HTTP proxy and the system Java CA trust store with TLS verification enabled. Released dependencies are mirrored to Maven Central to avoid dependency-declared snapshot repositories and prefix metadata delays; no snapshot dependencies are selected. The mirror identifier change causes one-time cache-origin revalidation.
+
+The PIT1.22.0/JUnit-platform plugin1.2.3 combination was executed on Java25 using the temporary foundation fixture:4 mutations,3 killed,75%. This is harness compatibility evidence only. `scripts/foundation-probes.sh` reproduces controlled test/format/coverage failures in an isolated temporary module.
+
+GitHub action pins were resolved read-only from official repositories: checkout v5 fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09; setup-java v5 b6effb05e454b25005698d916606bdc6ffcbf961; upload-artifact v5 330a01c490aca151604b8cf639adc76d48f6c5d4. CI execution remains separately verified.

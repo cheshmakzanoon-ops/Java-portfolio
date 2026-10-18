@@ -28,3 +28,21 @@ jobs:
           path: |
             target/bom.*
             target/dependency-check-report.*
+  source:
+    timeout-minutes: 60
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '25.0.4.1+1'
+      - uses: github/codeql-action/init@f051dc808ef3645eb0d08647ec751634ec2304ac
+        with:
+          languages: java-kotlin
+          build-mode: manual
+      - run: ./mvnw -B -ntp package
+      - uses: github/codeql-action/analyze@f051dc808ef3645eb0d08647ec751634ec2304ac

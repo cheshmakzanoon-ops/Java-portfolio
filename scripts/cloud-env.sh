@@ -17,7 +17,8 @@ if not proxy.hostname or not proxy.port:
 if proxy.username or proxy.password:
     raise SystemExit('Authenticated proxy requires a secure Maven credential binding; do not copy credentials')
 Path(os.environ['PORTFOLIO_PROXY_SETTINGS']).write_text(
-    '<settings><proxies><proxy><id>cloud-egress</id><active>true</active><protocol>http</protocol>'
+    '<settings><mirrors><mirror><id>verified-central</id><mirrorOf>*</mirrorOf>'
+    '<url>https://repo.maven.apache.org/maven2</url></mirror></mirrors><proxies><proxy><id>cloud-egress</id><active>true</active><protocol>http</protocol>'
     f'<host>{escape(proxy.hostname)}</host><port>{proxy.port}</port>'
     '<nonProxyHosts>localhost|127.0.0.1|[::1]</nonProxyHosts></proxy></proxies></settings>')
 PY

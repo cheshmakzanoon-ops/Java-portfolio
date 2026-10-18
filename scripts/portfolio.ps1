@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][ValidateSet('doctor','list','verify','integration','up','demo','down','reset-demo')][string]$Action,[string]$Project)
+param([Parameter(Mandatory=$true)][ValidateSet('doctor','list','verify','integration','mutation','up','demo','down','reset-demo')][string]$Action,[string]$Project)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $slugs = @('clearledger','durableflow','quorumkv','pulsestream','tenantshield','matchcore','indexforge','threadlens','byteguard','routeweaver')
@@ -6,7 +6,8 @@ Set-Location $root
 switch ($Action) {
   'doctor' { & java -version; if ($LASTEXITCODE) { exit $LASTEXITCODE }; & javac -version; if ($LASTEXITCODE) { exit $LASTEXITCODE }; & .\mvnw.cmd -version; exit $LASTEXITCODE }
   'list' { $slugs | ForEach-Object { Write-Output $_ }; exit 0 }
-  { $_ -in 'verify','integration' } {
+  { $_ -in 'verify','integration','mutation' } {
+    $env:PORTFOLIO_TEST_RUN_STARTED = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
     $mavenArgs = @('-B','-ntp')
     if ($Project -ne 'all') {
       $index = [Array]::IndexOf($slugs,$Project)
@@ -14,8 +15,21 @@ switch ($Action) {
       $mavenArgs += @('-f',('projects/{0:D2}-{1}/pom.xml' -f ($index+1),$Project))
     }
     if ($Action -eq 'integration') { $mavenArgs += '-Pintegration' }
+    if ($Action -eq 'mutation') { $mavenArgs += @('-Pmutation','-DoutputFormats=XML,HTML') }
     & .\mvnw.cmd @mavenArgs verify
-    exit $LASTEXITCODE
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    $selectedProjects = if ($Project -eq 'all') { $slugs } else { @($Project) }
+    foreach ($selected in $selectedProjects) {
+      $selectedIndex = [Array]::IndexOf($slugs,$selected)
+      $selectedPath = 'projects/{0:D2}-{1}' -f ($selectedIndex+1),$selected
+      & python scripts/check-tests.py $selectedPath $Action
+      if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      if ($Action -eq 'mutation') {
+        & python scripts/check-mutations.py $selectedPath
+        if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      }
+    }
+    exit 0
   }
   default {
     $index = [Array]::IndexOf($slugs,$Project)
