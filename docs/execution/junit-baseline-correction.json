@@ -1,0 +1,18 @@
+{
+  "observedAtUtc": "2026-10-18T01:31:43.722436+00:00",
+  "change": "Import JUnit BOM before Spring Boot BOM so declared 6.1.3 is effective. Production dependency versions unchanged.",
+  "oldRootPomSha256": "1d94d54f92155e0168aea2f827831f856617d6c94706a9a0aeafbd36bb9d79b7",
+  "newRootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "compatibilityCommand": "./mvnw -f .work/junit-compat-probe/pom.xml -Dmaven.repo.local=.work/coordinator/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pmutation verify org.apache.maven.plugins:maven-dependency-plugin:3.11.0:tree -Dincludes=org.junit.jupiter:*,org.junit.platform:*",
+  "compatibilityExitCode": 0,
+  "jupiterMethods": 1,
+  "jqwikMethods": 1,
+  "generatedCases": 20,
+  "mutationOutcomes": {
+    "KILLED": 3
+  },
+  "resolvedJUnitVersion": "6.1.3",
+  "previousEffectiveVersion": "6.0.3",
+  "rawArtifact": ".work/coordinator/junit-613-compatibility.log",
+  "limitation": "Compatibility fixture only. All projects still require fresh final validation on the corrected baseline."
+}
