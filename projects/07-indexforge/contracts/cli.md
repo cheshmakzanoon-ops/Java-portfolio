@@ -18,3 +18,16 @@ benchmark DATA OUTPUT [DOCUMENTS=100000] [SECONDS_PER_RUN=30]
 RELATIVE_PATH selects a directory or one UTF8 file within SOURCE_ROOT. Every resulting document path stays relative to SOURCE_ROOT: selecting `src/Foo.java` or directory `src` preserves `src/Foo.java`, so later partial selections replace the same stable key. Resume rebuilds persisted immutable input without reading the original checkout. Ingest imports a partial upload; absent files are preserved. Listed deletion paths are explicit. HTTP supports complete snapshots, where every missing earlier path requires a matching deletion. Evaluate requires the frozen fixture checksums and an independently approved review marker. `development` writes a selection bound to compiled ranking/retrieval bytecode and frozen fixture digests before `final` may execute held-out queries. The first final run creates HELDOUT-OPENED.txt; replay requires the same fixed model identity. No ranking output is a license to relabel data. No fixture is downloaded or executed.
 
 Artifact metadata uses UTF8 `.artifact` files within the selected snapshot/archive: first line `coordinates=GROUP:ARTIFACT`, second `version=VERSION`, followed by associated documentation text. Coordinates/version are validated and indexed as exact fields; the SHA256 covers the complete original metadata/document bytes. Query example `coordinates:"io.demo:search" AND version:2.1` or typed HTTP filters. No artifact bytecode is loaded.
+
+
+Offline wave2 implementation adds these phases, pending compilation/certification:
+
+```
+wave2-audit DATA FIXTURES OUTPUT
+wave2-fit DATA FIXTURES OUTPUT
+wave2-validate DATA FIXTURES OUTPUT
+```
+
+Use one fresh DATA/OUTPUT pair, in that order, with the same certified copied JAR. Audit exports all40 DEV authorized candidate vectors without labels; fit attaches only DEV labels and runs the frozen grouped-fold L2 grid; validate freezes the artifact/model boundary before reading20 VAL queries and checks C0's540-row replay. Each phase directory uses CREATE_NEW and cannot be overwritten by a rerun. Failed attempts remain; diagnose before registering a new attempt. No wave2 final command is implemented or authorized here, and these phases never open held-out query content or first-final seals.
+
+Runtime configuration is `indexforge.ranking-mode` (BASELINE default), `indexforge.ranking-profile` (CURRENT default), `indexforge.ranking-strategy` (CLASSIC default) and, only for PAIRWISE, `indexforge.ranking-model` (bounded checksummed numeric file). CLI uses JVM properties and Boot uses the equivalent application properties. A model is captured once at startup; replacement requires restart and changes model-bound nonbaseline cursor/cache identity. No automatic deployment follows validation.

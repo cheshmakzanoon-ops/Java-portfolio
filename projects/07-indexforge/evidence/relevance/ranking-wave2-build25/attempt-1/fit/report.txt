@@ -1,0 +1,58 @@
+status=FITTED_BEFORE_VALIDATION
+D1 comparator=Metrics[ndcg10=0.7066751871276543, identifierMrr10=0.925, recall20=0.8208333333333335]
+audit q01 retrieved=10 grade3=1 actual=Values[ndcg10=0.9508013338940992, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q02 retrieved=52 grade3=1 actual=Values[ndcg10=0.3865656572066332, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q03 retrieved=44 grade3=1 actual=Values[ndcg10=0.5625275524974368, mrr10=0.5, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q04 retrieved=67 grade3=1 actual=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q05 retrieved=31 grade3=1 actual=Values[ndcg10=0.9173194127129571, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q06 retrieved=49 grade3=1 actual=Values[ndcg10=0.7098097413968654, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q07 retrieved=31 grade3=1 actual=Values[ndcg10=0.9148570708197293, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q08 retrieved=61 grade3=1 actual=Values[ndcg10=0.030775184909865944, mrr10=0.1, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q09 retrieved=8 grade3=1 actual=Values[ndcg10=0.8688109777822239, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.9467676761267002, mrr10=1.0, recall20=0.6666666666666666]
+audit q10 retrieved=60 grade3=1 actual=Values[ndcg10=0.6520299661084721, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q11 retrieved=3 grade3=1 actual=Values[ndcg10=0.9049495058460973, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.9467676761267002, mrr10=1.0, recall20=0.6666666666666666]
+audit q12 retrieved=49 grade3=1 actual=Values[ndcg10=0.6535488062518617, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q13 retrieved=29 grade3=1 actual=Values[ndcg10=0.6182127765566525, mrr10=0.5, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q14 retrieved=59 grade3=1 actual=Values[ndcg10=0.0, mrr10=0.0, recall20=0.5] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q15 retrieved=18 grade3=1 actual=Values[ndcg10=0.8896406546730602, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q16 retrieved=60 grade3=1 actual=Values[ndcg10=0.6619480218372648, mrr10=0.5, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q17 retrieved=19 grade3=1 actual=Values[ndcg10=0.7831760069264605, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.8124242481930319, mrr10=1.0, recall20=0.6666666666666666]
+audit q18 retrieved=70 grade3=1 actual=Values[ndcg10=0.8124242481930319, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q19 retrieved=3 grade3=1 actual=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q20 retrieved=57 grade3=1 actual=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q21 retrieved=21 grade3=1 actual=Values[ndcg10=0.7831760069264605, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.8124242481930319, mrr10=1.0, recall20=0.6666666666666666]
+audit q22 retrieved=51 grade3=1 actual=Values[ndcg10=0.7911043622741996, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q23 retrieved=19 grade3=1 actual=Values[ndcg10=0.5022510502173653, mrr10=0.5, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.8124242481930319, mrr10=1.0, recall20=0.6666666666666666]
+audit q24 retrieved=53 grade3=1 actual=Values[ndcg10=0.09614715734857855, mrr10=0.1111111111111111, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q25 retrieved=1 grade3=1 actual=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.3333333333333333] retrievedOracle=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.3333333333333333]
+audit q26 retrieved=70 grade3=1 actual=Values[ndcg10=0.584858252141638, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q27 retrieved=3 grade3=1 actual=Values[ndcg10=0.9721212198129315, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q28 retrieved=70 grade3=1 actual=Values[ndcg10=0.5185832406561746, mrr10=0.3333333333333333, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q29 retrieved=6 grade3=1 actual=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q30 retrieved=70 grade3=1 actual=Values[ndcg10=0.4957844813572369, mrr10=0.5, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q31 retrieved=6 grade3=1 actual=Values[ndcg10=0.9508013338940992, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q32 retrieved=50 grade3=1 actual=Values[ndcg10=0.2612781224170634, mrr10=0.25, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q33 retrieved=1 grade3=1 actual=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.3333333333333333] retrievedOracle=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.3333333333333333]
+audit q34 retrieved=60 grade3=1 actual=Values[ndcg10=0.6904370636152268, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q35 retrieved=38 grade3=1 actual=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.3333333333333333] retrievedOracle=Values[ndcg10=0.7452525342261977, mrr10=1.0, recall20=0.3333333333333333]
+audit q36 retrieved=56 grade3=1 actual=Values[ndcg10=0.7831760069264605, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q37 retrieved=12 grade3=1 actual=Values[ndcg10=0.7984848580994977, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.8124242481930319, mrr10=1.0, recall20=0.6666666666666666]
+audit q38 retrieved=61 grade3=1 actual=Values[ndcg10=0.842828264880938, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+audit q39 retrieved=5 grade3=1 actual=Values[ndcg10=0.9049495058460973, mrr10=1.0, recall20=0.6666666666666666] retrievedOracle=Values[ndcg10=0.9467676761267002, mrr10=1.0, recall20=0.6666666666666666]
+audit q40 retrieved=64 grade3=1 actual=Values[ndcg10=0.992619504174702, mrr10=1.0, recall20=1.0] retrievedOracle=Values[ndcg10=1.0, mrr10=1.0, recall20=1.0]
+l2-0.01-fold-0 failure=null fit=model=6568602d7002200a819d0189502899c714a0128dc9ac68da007a60f88c7c1752,iterations=88,loss=0.6931471805599471->0.22630181897481996,pairs=2594,eligibleQueries=16,seed=7007
+l2-0.01-fold-1 failure=null fit=model=1ad59040482355b03e832035148d8ed382bc916b25b0e091f01bcda66514748d,iterations=67,loss=0.6931471805599494->0.19895838864715643,pairs=2625,eligibleQueries=16,seed=7007
+l2-0.01-fold-2 failure=bounded optimizer did not converge within100 iterations fit=NONE
+l2-0.1-fold-0 failure=null fit=model=8c4b4dec966b92343060f9419f6ab186e197fc82f16d5a690275d71bad20e111,iterations=19,loss=0.6931471805599471->0.2708432357721099,pairs=2594,eligibleQueries=16,seed=7007
+l2-0.1-fold-1 failure=null fit=model=a21ba33b637033db05989d9f7997b0f43c03f21402d95ec8d5818576cfbd11b0,iterations=19,loss=0.6931471805599494->0.253185251535235,pairs=2625,eligibleQueries=16,seed=7007
+l2-0.1-fold-2 failure=null fit=model=1dea4a65ed433e7db653a620b9adfb2f61bcd99a4c46f3940f950ac4fbc119cc,iterations=29,loss=0.6931471805599445->0.35452898203696953,pairs=2671,eligibleQueries=16,seed=7007
+l2-0.1-fold-3 failure=null fit=model=48fd63a75bd3c249d583eed1c53786dbacf9b508cafc216b8ef4f962672dc451,iterations=28,loss=0.6931471805599589->0.33270365645826466,pairs=2649,eligibleQueries=16,seed=7007
+l2-0.1-fold-4 failure=null fit=model=ca82eeade237496d0edf2e5bf82a8ae04e41f11d546740bc7320cd4950f6bfb7,iterations=30,loss=0.6931471805599501->0.33148406435057304,pairs=2625,eligibleQueries=16,seed=7007
+l2-1.0-fold-0 failure=null fit=model=922d46f5900a4a7f90c452f476cdc183325560e0273311430c30dfabcba6626f,iterations=13,loss=0.6931471805599471->0.3889245997481777,pairs=2594,eligibleQueries=16,seed=7007
+l2-1.0-fold-1 failure=null fit=model=0829f92cba93473b57c2fb07796700d315a32b5f7b1a22ba86099c9707d14ef2,iterations=12,loss=0.6931471805599494->0.38119762090182124,pairs=2625,eligibleQueries=16,seed=7007
+l2-1.0-fold-2 failure=null fit=model=03366cb1f03622dbf2ecb4976ef3a43ac39968a2108a882498659df828341fe7,iterations=13,loss=0.6931471805599445->0.4645376930266669,pairs=2671,eligibleQueries=16,seed=7007
+l2-1.0-fold-3 failure=null fit=model=6824bab2f2226c3232ec7d5efbe1a5aa58facd682c0e3473d75254266ef1c861,iterations=13,loss=0.6931471805599589->0.43933460147597003,pairs=2649,eligibleQueries=16,seed=7007
+l2-1.0-fold-4 failure=null fit=model=2ffc43cb68efbae3fe8ae696cbd8d920fce5f821a7ad660dcc10aca24a36ad58,iterations=13,loss=0.6931471805599501->0.4384612194256755,pairs=2625,eligibleQueries=16,seed=7007
+trial=Trial[l2=0.01, metrics=null, failure=bounded optimizer did not converge within100 iterations]
+trial=Trial[l2=0.1, metrics=Metrics[ndcg10=0.7143448006078198, identifierMrr10=0.925, recall20=0.8208333333333334], failure=null]
+trial=Trial[l2=1.0, metrics=Metrics[ndcg10=0.7311403168018562, identifierMrr10=0.925, recall20=0.8208333333333334], failure=null]

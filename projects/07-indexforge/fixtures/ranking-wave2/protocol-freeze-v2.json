@@ -1,0 +1,12 @@
+{
+  "wave": "ranking-wave2",
+  "amendment": 2,
+  "phase": "offline-preregistration",
+  "recordedUtc": "2026-10-18T04:34:00.535011+00:00",
+  "newMetricsExecuted": false,
+  "javaBuildTrainingOrPrepExecuted": false,
+  "preregistrationSha256": "c135e0c18ac54a2ee82d29e94301218d8c105b6169dc0904a66be5ce490a6448",
+  "priorPreregistrationSha256": "21352263c27af57b46749b70a10e2ae75c3ca5fc9df68704ac65c99da2e5ee1f",
+  "foldsSha256": "4b98cc3004f5944c1ff64de44f7312e3a3d7b984822af8503046c558c945f7b6",
+  "reason": "Root-authorized DEV/VAL declaration fidelity audit, no new wave2 measurements."
+}

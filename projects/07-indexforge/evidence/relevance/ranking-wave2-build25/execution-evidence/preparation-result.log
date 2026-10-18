@@ -1,0 +1,7 @@
+{
+  "result": "PREPARED_NOT_EXECUTED",
+  "context": "/workspace/Java-portfolio/.work/A07/final-operator-build25-C1/prepare-1/context.properties",
+  "contextSha256": "9ffea68f5ec220eee3a6665e474a73d001255c3c92cddab1320fb6884e9ac5ee",
+  "operatorBinarySha256": "bc1711be47cce6ef920ab7be236e8e483f6c47d2ba278fdc7bc9ec544ce35ab5",
+  "realJudgmentsOpened": false
+}

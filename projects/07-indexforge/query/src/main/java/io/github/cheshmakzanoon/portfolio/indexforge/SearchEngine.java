@@ -48,6 +48,8 @@ public final class SearchEngine implements AutoCloseable {
       new ConcurrentHashMap<>();
   private final QueryPlanner.Mode defaultMode;
   private final RankingProfile rankingProfile;
+  private final RankingConfiguration ranking;
+  private final String capturedRankingIdentity;
   private final Path root;
   private final DataDirectoryLock dataLock;
   private final ContentAddressedStore cas;
@@ -84,9 +86,21 @@ public final class SearchEngine implements AutoCloseable {
       QueryPlanner.Mode defaultMode,
       RankingProfile rankingProfile)
       throws IOException {
+    this(root, authorization, defaultMode, rankingProfile, RankingConfiguration.system());
+  }
+
+  public SearchEngine(
+      Path root,
+      AuthorizationFilter authorization,
+      QueryPlanner.Mode defaultMode,
+      RankingProfile rankingProfile,
+      RankingConfiguration ranking)
+      throws IOException {
+    this.ranking = Objects.requireNonNull(ranking);
     this.root = root;
     this.defaultMode = Objects.requireNonNull(defaultMode);
     this.rankingProfile = Objects.requireNonNull(rankingProfile);
+    capturedRankingIdentity = ranking.identity(rankingProfile);
     Files.createDirectories(root);
     dataLock = new DataDirectoryLock(root);
     try {
@@ -258,10 +272,7 @@ public final class SearchEngine implements AutoCloseable {
   public Response search(String principal, Request request, QueryPlanner.Mode mode)
       throws IOException {
     QueryAst ast = QueryAst.parse(request.text());
-    String scoringVersion =
-        mode == QueryPlanner.Mode.BASELINE
-            ? "bm25-content-v1"
-            : QueryPlanner.VERSION + "-" + rankingProfile.name();
+    String scoringVersion = scoringVersion(mode);
     String digest = requestDigest(request, mode, scoringVersion);
     for (int retry = 0; retry < 3; retry++) {
       AuthorizationFilter.Access a = authorization.current(principal);
@@ -290,21 +301,22 @@ public final class SearchEngine implements AutoCloseable {
           cacheHits.incrementAndGet();
           return cached;
         }
-        BooleanQuery.Builder qb =
-            new BooleanQuery.Builder()
-                .add(
-                    new QueryPlanner(rankingProfile).plan(ast, mode, request.text()),
-                    BooleanClause.Occur.MUST);
-        for (var f : request.filters().entrySet())
-          qb.add(new TermQuery(new Term(f.getKey(), f.getValue())), BooleanClause.Occur.FILTER);
-        Query authorized = authorization.apply(qb.build(), a);
+        Query authorized = authorizedQuery(ast, request, mode, a);
         var ranked =
-            new Ranker(rankingProfile)
+            new Ranker(rankingProfile, ranking.strategy())
                 .rank(
                     new CandidateRetriever().retrieve(lease, authorized),
                     lease,
                     request.text(),
                     mode);
+        if (ranking.strategy() == RankingStrategy.PAIRWISE
+            && mode != QueryPlanner.Mode.BASELINE
+            && PlainTextQuery.multiword(request.text())) {
+          var vectors =
+              new SearchFeatures()
+                  .extract(ranked, lease, request.text(), mode, rankingProfile, authorization, a);
+          ranked = new LearnedRanker().rank(vectors, ranking.model());
+        }
         int start = position == null ? 0 : position.offset(),
             end = Math.min(ranked.size(), start + request.pageSize());
         if (start > ranked.size()) throw new IllegalArgumentException("cursor offset");
@@ -349,6 +361,96 @@ public final class SearchEngine implements AutoCloseable {
           cache.put(cacheKey, response);
           return response;
         }
+      }
+    }
+    throw new SecurityException("authorization changed; retry");
+  }
+
+  public String rankingIdentity() {
+    return capturedRankingIdentity;
+  }
+
+  private String scoringVersion(QueryPlanner.Mode mode) {
+    return mode == QueryPlanner.Mode.BASELINE
+        ? "bm25-content-v2/" + RankingCodeIdentity.SHA256
+        : QueryPlanner.VERSION + "-" + rankingIdentity();
+  }
+
+  private Query authorizedQuery(
+      QueryAst ast, Request request, QueryPlanner.Mode mode, AuthorizationFilter.Access access) {
+    var query =
+        new BooleanQuery.Builder()
+            .add(
+                new QueryPlanner(rankingProfile, ranking.strategy())
+                    .plan(ast, mode, request.text()),
+                BooleanClause.Occur.MUST);
+    for (var filter : request.filters().entrySet())
+      query.add(
+          new TermQuery(new Term(filter.getKey(), filter.getValue())), BooleanClause.Occur.FILTER);
+    return authorization.apply(query.build(), access);
+  }
+
+  public record AuditCandidate(String key, String path, double[] features) {
+    public AuditCandidate {
+      features = SearchFeatureSchema.checked(features);
+    }
+
+    @Override
+    public double[] features() {
+      return features.clone();
+    }
+  }
+
+  public record CandidateAudit(
+      String generation,
+      String rankingIdentity,
+      String featureSchema,
+      List<AuditCandidate> candidates) {
+    public CandidateAudit {
+      candidates = List.copyOf(candidates);
+    }
+  }
+
+  /** Local evaluation seam: actual serving candidate pool, never accepts relevance labels. */
+  public CandidateAudit auditCandidates(String principal, Request request, QueryPlanner.Mode mode)
+      throws IOException {
+    if (request.cursor() != null)
+      throw new IllegalArgumentException("audit requires a first candidate pool");
+    QueryAst ast = QueryAst.parse(request.text());
+    for (int retry = 0; retry < 3; retry++) {
+      var access = authorization.current(principal);
+      try (var lease = generations(access.tenant()).acquire()) {
+        if (mode != QueryPlanner.Mode.BASELINE && mode != QueryPlanner.Mode.NO_SIMILARITY)
+          lease
+              .searcher()
+              .setSimilarity(
+                  new org.apache.lucene.search.similarities.BM25Similarity(
+                      rankingProfile.k1, rankingProfile.b));
+        var base =
+            new Ranker(rankingProfile, ranking.strategy())
+                .rank(
+                    new CandidateRetriever()
+                        .retrieve(lease, authorizedQuery(ast, request, mode, access)),
+                    lease,
+                    request.text(),
+                    mode);
+        var vectors =
+            new SearchFeatures()
+                .extract(base, lease, request.text(), mode, rankingProfile, authorization, access);
+        List<AuditCandidate> rows = new ArrayList<>();
+        for (var vector : vectors)
+          rows.add(
+              new AuditCandidate(
+                  vector.candidate().key(),
+                  lease
+                      .reader()
+                      .storedFields()
+                      .document(vector.candidate().document(), Set.of("path"))
+                      .get("path"),
+                  vector.values()));
+        if (authorization.current(access))
+          return new CandidateAudit(
+              lease.id(), rankingIdentity(), SearchFeatureSchema.VERSION, rows);
       }
     }
     throw new SecurityException("authorization changed; retry");

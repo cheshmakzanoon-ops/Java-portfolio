@@ -62,7 +62,7 @@ class SearchSecurityTest {
       var warmed = engine.search("reader", ordinary);
       assertEquals(3, warmed.totalHits());
       assertEquals(Map.of("r", 3), warmed.facets());
-      assertEquals("source-v7-code-heuristics-CODE_HIGH", warmed.scoringVersion());
+      assertEquals(QueryPlanner.VERSION + "-" + engine.rankingIdentity(), warmed.scoringVersion());
       cursor = warmed.cursor();
       assertNotNull(cursor);
       long hits = engine.cacheHits();
@@ -346,7 +346,9 @@ class SearchSecurityTest {
           noLength.results().getFirst().score(), noLength.results().getLast().score(), .00001);
       assertEquals(
           "Long.txt", noLength.results().getFirst().path(), "equal scores use stable key ordering");
-      assertTrue(noLength.scoringVersion().endsWith("BM25_NO_LENGTH"));
+      assertEquals(
+          QueryPlanner.VERSION + "-" + engine.rankingIdentity(), noLength.scoringVersion());
+      assertTrue(noLength.scoringVersion().contains("BM25_NO_LENGTH/"));
       Map<String, Float> ablated = new TreeMap<>(), unchangedBaseline = new TreeMap<>();
       engine
           .search("reader", request, QueryPlanner.Mode.NO_SIMILARITY)

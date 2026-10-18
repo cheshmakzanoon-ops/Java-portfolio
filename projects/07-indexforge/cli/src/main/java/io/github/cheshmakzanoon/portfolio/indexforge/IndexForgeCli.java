@@ -11,6 +11,13 @@ public final class IndexForgeCli {
       throw new IllegalArgumentException("command data [arguments]; see contracts/cli.md");
     String command = args[0];
     Path data = Path.of(args[1]);
+    if (command.startsWith("wave2-")) {
+      if (args.length != 4)
+        throw new IllegalArgumentException("wave2-{audit,fit,validate} data fixtures output");
+      Wave2Study.run(
+          command.substring("wave2-".length()), data, Path.of(args[2]), Path.of(args[3]));
+      return;
+    }
     if (command.equals("up")) {
       Files.createDirectories(data.resolve("sources"));
       System.out.println("Prepared local IndexForge data " + data.toAbsolutePath());

@@ -1,0 +1,47 @@
+{
+  "recordedUtc": "2026-10-18T06:57:16.460365+00:00",
+  "executor": "root coordinator",
+  "executionStatus": "COMPLETED_EXIT_0",
+  "qualityStatus": "FAIL",
+  "finishedUtc": "2026-10-18T06:53:47.012781673Z",
+  "elapsedMillis": 9620,
+  "queries": 20,
+  "modes": 9,
+  "rows": 180,
+  "baseline": {
+    "ndcg10": 0.6012721858322372,
+    "identifierMrr10": 0.8833333333333332
+  },
+  "frozenC1": {
+    "ndcg10": 0.6594266978,
+    "identifierMrr10": 0.8,
+    "note": "aggregate nDCG rounded from coordinator terminal report; exact value remains immutable heldout-summary.tsv"
+  },
+  "retainedFamily": "ORIGINAL_BASELINE",
+  "compiledDefaultsChanged": false,
+  "diagnosticSelectionPermitted": false,
+  "allNineModesTargetPass": false,
+  "perQuerySha256FromCompletion": "96db19ecb434f2059cbb358a79a422e81fdb61df3d97a82c8de611e5a2a59f0e",
+  "summarySha256": "2e58b7ebe7d3c35a905a444ba9b9276adddaa41fb2fbcd0c599897e36a2d14cd",
+  "contextSha256": "9ffea68f5ec220eee3a6665e474a73d001255c3c92cddab1320fb6884e9ac5ee",
+  "operatorBinarySha256": "bc1711be47cce6ef920ab7be236e8e483f6c47d2ba278fdc7bc9ec544ce35ab5",
+  "inferenceJarSha256": "e2d947c97a6b5b5a5fc6d6696d1ca56241eed11f9cfbb772b0d1880a6217dbc7",
+  "sourceFingerprint": "c0ab80c6a5e14d5836b9e69813f18d16acda382a97686df2d020c45622a2e8d2",
+  "firstFinalHistory": "unchanged and separately sealed",
+  "repeatedTestExposure": "explicitly versioned repeated test, not a fresh blind benchmark",
+  "heldoutPerQueryReadByWorker": false,
+  "copiedSmallFiles": {
+    "root-approval.properties": "9e6c7f9bf7f0a20e98d122cd18e62997d1a4acd07a03ba06ea33e51992eb3793",
+    "context.properties": "9ffea68f5ec220eee3a6665e474a73d001255c3c92cddab1320fb6884e9ac5ee",
+    "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preparation-checks.log": "561026b7fb7f4b88c12c4028cfcfc8b63629b1469a3ae009e5bc5bd8029c07f7",
+    "synthetic-self-test.properties": "eb6b6e765c1ffef3485be6b4fff1af20fca6a7c23a678fefa3691a78b304d870",
+    "preparation-result.log": "de6df6b77ae1784c0873d027eb236e9908d95c1ca77d0bd2588753711dc07ebf",
+    "COMPLETED.properties": "865548d2001886dcaa2d41afbfe81022c365f06857f19d708f467e5f063a14a1",
+    "deployment.properties": "90762e783c286a7a55298b26967858bb637b2752b3700cbd377ca5320c6f1996",
+    "heldout-summary.tsv": "2e58b7ebe7d3c35a905a444ba9b9276adddaa41fb2fbcd0c599897e36a2d14cd",
+    "versioned-global-seal.properties": "51867511f95ed678741559e94f40d178da9731eeea3224624f336b8af393d977",
+    "versioned-local-seal.properties": "51867511f95ed678741559e94f40d178da9731eeea3224624f336b8af393d977",
+    "final-execution.log": "f2531e3abcedc9c3df6b63179a1ea01d34d3e77d74fccf8bef12ff745cee48e7"
+  }
+}

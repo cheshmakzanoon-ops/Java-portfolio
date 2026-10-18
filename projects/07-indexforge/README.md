@@ -16,4 +16,4 @@ The demo uses20,000 deterministic documents over three tenant-owned directories 
 
 [Architecture](docs/ARCHITECTURE.md) · [security](docs/SECURITY.md) · [testing](docs/TESTING.md) · [performance](docs/PERFORMANCE.md) · [case study](docs/CASE_STUDY.md) · [exact execution status](docs/STATUS.md) · [CLI](contracts/cli.md) · [HTTP](contracts/http.md).
 
-Acceptance remains governed by observed evidence in STATUS; the benchmark targets are not assumed achieved.
+Observed status: strict25 passes88 tests and declared coverage/mutation gates. Relevance acceptance still FAILS after two preserved final waves; baseline is retained because the fixed C1 candidate regresses identifier MRR despite higher nDCG. Frozen24 baseline reference passed100k/30RPS/2GiB at its documented application boundary. Exact artifacts, scope and remaining gaps are in [STATUS](docs/STATUS.md).

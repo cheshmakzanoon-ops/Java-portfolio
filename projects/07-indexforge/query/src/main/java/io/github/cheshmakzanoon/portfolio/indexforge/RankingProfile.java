@@ -81,4 +81,14 @@ public enum RankingProfile {
   public static RankingProfile current() {
     return valueOf(System.getProperty("indexforge.ranking-profile", "CURRENT"));
   }
+
+  /** Actual finite numeric configuration, independent of the enum label alone. */
+  public String parametersIdentity() {
+    StringBuilder values = new StringBuilder("ranking-profile-v1/").append(name());
+    for (float value :
+        new float[] {
+          identifiers, symbols, paths, declarations, prose, concepts, coverage, k1, b, codeFeatures
+        }) values.append('/').append(Float.toHexString(value));
+    return Digests.sha256(values.toString());
+  }
 }

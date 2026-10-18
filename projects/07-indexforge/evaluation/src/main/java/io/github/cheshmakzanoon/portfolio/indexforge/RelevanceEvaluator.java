@@ -40,10 +40,31 @@ public final class RelevanceEvaluator {
   }
 
   public static String modelFingerprint() throws IOException {
+    return modelFingerprint(RankingConfiguration.system().identity(RankingProfile.current()));
+  }
+
+  public static String modelFingerprint(String rankingIdentity) throws IOException {
     StringBuilder model = new StringBuilder();
     for (String type :
         List.of(
             "RelevanceEvaluator",
+            "PlainTextQuery",
+            "RankingStrategy",
+            "RankingConfiguration",
+            "SearchFeatureSchema",
+            "LinearRankingModel",
+            "SearchFeatures",
+            "SearchFeatures$Vector",
+            "LearnedRanker",
+            "RankingCodeIdentity",
+            "PairwiseData",
+            "PairwiseTrainer",
+            "PairwiseSelection",
+            "DevelopmentScaler",
+            "GroupedFolds",
+            "Wave2Inputs",
+            "FeaturePacket",
+            "Wave2Study",
             "RankingProfile",
             "GenerationLease",
             "GenerationBuilder",
@@ -87,7 +108,7 @@ public final class RelevanceEvaluator {
     } catch (java.net.URISyntaxException invalid) {
       throw new IOException("invalid model artifact location", invalid);
     }
-    model.append("profile:").append(RankingProfile.current().name());
+    model.append("ranking:").append(rankingIdentity);
     return Digests.sha256(model.toString());
   }
 
@@ -99,6 +120,7 @@ public final class RelevanceEvaluator {
     var a = auth.update("evaluator", "evaluation", Set.of("corpus"), true);
     List<Judged> queries = judgments(fixtures);
     try (SearchEngine engine = new SearchEngine(data, auth)) {
+      String capturedModel = modelFingerprint(engine.rankingIdentity());
       List<SnapshotManifest.Entry> entries = new ArrayList<>();
       for (String line : Files.readAllLines(fixtures.resolve("corpus.tsv"))) {
         String[] p = line.split("\t", -1);
@@ -120,7 +142,7 @@ public final class RelevanceEvaluator {
               + Digests.sha256(
                   Digests.sha256(Files.readAllBytes(fixtures.resolve("corpus.tsv")))
                       + "\n"
-                      + modelFingerprint()),
+                      + capturedModel),
           new SnapshotManifest("evaluation", "corpus", "frozen-v2", true, entries, Set.of()),
           GenerationBuilder.Fault.none(),
           () -> false);
@@ -210,7 +232,7 @@ public final class RelevanceEvaluator {
               + "\nRanking profile: "
               + RankingProfile.current().name()
               + "\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: "
-              + modelFingerprint()
+              + capturedModel
               + "\nFrozen fixture SHA256: "
               + Digests.sha256(Files.readAllBytes(fixtures.resolve("FREEZE.sha256")))
               + "\n";

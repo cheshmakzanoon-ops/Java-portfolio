@@ -1,0 +1,158 @@
+{
+  "seed": 7007,
+  "developmentQueries": 40,
+  "groups": 17,
+  "foldCount": 5,
+  "foldQueryCounts": [
+    8,
+    8,
+    8,
+    8,
+    8
+  ],
+  "assignment": [
+    {
+      "judgmentVectorSha256": "c940177fe999187452edfdb5200434cbb53a754fc379e497a6f146779c47f68f",
+      "queryIds": [
+        "q25",
+        "q26"
+      ],
+      "fold": 0
+    },
+    {
+      "judgmentVectorSha256": "f1dac0ec8453001c67229e952e1c508fa0849ce02e0699aab76a4cc492c1775f",
+      "queryIds": [
+        "q03",
+        "q04"
+      ],
+      "fold": 1
+    },
+    {
+      "judgmentVectorSha256": "955ad548f88e9f1db86b73a2dc33e1b57b5b361e9a2f2fca08c69ad41790e876",
+      "queryIds": [
+        "q35",
+        "q36"
+      ],
+      "fold": 2
+    },
+    {
+      "judgmentVectorSha256": "2c4798aa7b3a273b55d0066827c8de91f121de83e00e029a76be65a74c3e26d4",
+      "queryIds": [
+        "q33",
+        "q34"
+      ],
+      "fold": 3
+    },
+    {
+      "judgmentVectorSha256": "18743ca3391cd1bcf64e22959516b2c45f609ff9b7129664557957ccf976b6be",
+      "queryIds": [
+        "q17",
+        "q18",
+        "q21",
+        "q22"
+      ],
+      "fold": 4
+    },
+    {
+      "judgmentVectorSha256": "348e7a9b3f154d46ae204772098634ad8752fd6dd68698121ac923c428b6ded6",
+      "queryIds": [
+        "q15",
+        "q16"
+      ],
+      "fold": 0
+    },
+    {
+      "judgmentVectorSha256": "55b8d04aca48249a2841344072dc5d9bbfd4945714b25fcdde8005759bc5c70a",
+      "queryIds": [
+        "q31",
+        "q32"
+      ],
+      "fold": 1
+    },
+    {
+      "judgmentVectorSha256": "ebe9a379079f213196e952afda7721591bd9b34d17bc0938d921bd5c75c01ce4",
+      "queryIds": [
+        "q37",
+        "q38",
+        "q39",
+        "q40"
+      ],
+      "fold": 2
+    },
+    {
+      "judgmentVectorSha256": "f517356cbee271c39942ca726b8ada27d4b81be5dc0bb75453b97488cf5874d6",
+      "queryIds": [
+        "q09",
+        "q10",
+        "q11",
+        "q12"
+      ],
+      "fold": 3
+    },
+    {
+      "judgmentVectorSha256": "6f49f531dd1abb45b49e3f86b8419503c2f1b295deb56bc31c17a5ee2aeef92d",
+      "queryIds": [
+        "q13",
+        "q14"
+      ],
+      "fold": 0
+    },
+    {
+      "judgmentVectorSha256": "7f91c41a1422c91e7baca6018e84ef895075d89913d67a057d829c87b268d822",
+      "queryIds": [
+        "q01",
+        "q02"
+      ],
+      "fold": 1
+    },
+    {
+      "judgmentVectorSha256": "df5b5733e6796ae90a205aa104d281f2b34afaec886a632e91672980633d2e95",
+      "queryIds": [
+        "q29",
+        "q30"
+      ],
+      "fold": 4
+    },
+    {
+      "judgmentVectorSha256": "813da3cc9c7a6338fb086fa4acfc22f2a34905b1527eaee0db2bb391323c6679",
+      "queryIds": [
+        "q27",
+        "q28"
+      ],
+      "fold": 0
+    },
+    {
+      "judgmentVectorSha256": "ff12013477fa2f613d4df2329c55eb3fbf51585c2b77fad8bb6cad8e39b33520",
+      "queryIds": [
+        "q07",
+        "q08"
+      ],
+      "fold": 1
+    },
+    {
+      "judgmentVectorSha256": "ed4a9af00d56cdd5acada72b30400b98e40ea7f2f96ed749684a3ba7fd74d544",
+      "queryIds": [
+        "q05",
+        "q06"
+      ],
+      "fold": 2
+    },
+    {
+      "judgmentVectorSha256": "0e07512cbb0aeaa374aaec6713da1dcdfee019401b744b138d08aa3cccea2f78",
+      "queryIds": [
+        "q23",
+        "q24"
+      ],
+      "fold": 3
+    },
+    {
+      "judgmentVectorSha256": "a0d4685617e044494ae69fae5a0a08fc546c98eb167f0a818346feeba3b0470d",
+      "queryIds": [
+        "q19",
+        "q20"
+      ],
+      "fold": 4
+    }
+  ],
+  "sourceFilteredNotesSha256": "2c971f7af390942ce21299be3853bc7c6ff53088e3d0b4711a3642d608c8654c"
+}

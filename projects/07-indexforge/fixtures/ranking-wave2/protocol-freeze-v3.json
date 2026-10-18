@@ -1,0 +1,12 @@
+{
+  "wave": "ranking-wave2",
+  "amendment": 3,
+  "phase": "offline-preregistration",
+  "recordedUtc": "2026-10-18T04:48:01.335598+00:00",
+  "newMetricsExecuted": false,
+  "javaBuildTrainingOrPrepExecuted": false,
+  "preregistrationSha256": "8a322c7cc2ca36e53c91dfecc237c9f9149af5d705c5f0884c8c176bf443534d",
+  "priorPreregistrationSha256": "c135e0c18ac54a2ee82d29e94301218d8c105b6169dc0904a66be5ce490a6448",
+  "foldsSha256": "4b98cc3004f5944c1ff64de44f7312e3a3d7b984822af8503046c558c945f7b6",
+  "reason": "Offline numerical analysis before any training/metrics: bounded1/L2 line-search initialization; explicit D1 float tie preservation."
+}

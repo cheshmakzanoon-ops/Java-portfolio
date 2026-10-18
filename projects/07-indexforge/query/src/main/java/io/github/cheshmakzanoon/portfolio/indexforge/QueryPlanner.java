@@ -17,16 +17,22 @@ public final class QueryPlanner {
     NO_CODE_FEATURES
   }
 
-  public static final String VERSION = "source-v7-code-heuristics";
+  public static final String VERSION = "source-v8-syntax-gated";
 
   private final RankingProfile profile;
+  private final RankingStrategy strategy;
 
   public QueryPlanner() {
     this(RankingProfile.current());
   }
 
   public QueryPlanner(RankingProfile profile) {
+    this(profile, RankingStrategy.CLASSIC);
+  }
+
+  public QueryPlanner(RankingProfile profile, RankingStrategy strategy) {
     this.profile = Objects.requireNonNull(profile);
+    this.strategy = Objects.requireNonNull(strategy);
   }
 
   public Query plan(QueryAst ast, Mode mode) {
@@ -39,7 +45,7 @@ public final class QueryPlanner {
             && term.field().equals("all")
             && !term.phrase()
             && term.value().matches("[\\p{L}_$][\\p{L}\\p{N}_$]{0,127}");
-    Query lexical = plan(ast, mode, navigational);
+    Query lexical = plan(ast, mode, navigational, strategy.suppressIdentifierWeights(raw));
     if (mode != Mode.BASELINE && mode != Mode.NO_CONCEPTS && mode != Mode.NO_PROSE) {
       var related = SearchConcepts.expansion(raw);
       if (related.isPresent())
@@ -62,6 +68,36 @@ public final class QueryPlanner {
     return lexical;
   }
 
+  Map<String, Query> featureChannels(String raw) {
+    QueryAst.parse(raw);
+    Set<String> words = new LinkedHashSet<>();
+    for (var part : CodeIdentifierAnalyzer.parts(raw)) {
+      words.add(part.term());
+      if (words.size() > 64) throw new IllegalArgumentException("feature term quota");
+    }
+    var symbol = new BooleanQuery.Builder();
+    var declaration = new BooleanQuery.Builder();
+    for (String word : words) {
+      symbol.add(new TermQuery(new Term("symbol", word)), BooleanClause.Occur.SHOULD);
+      declaration.add(new TermQuery(new Term("declaration", word)), BooleanClause.Occur.SHOULD);
+    }
+    Query identifiers =
+        new BooleanQuery.Builder()
+            .add(analyzed("identifiers", raw, false), BooleanClause.Occur.SHOULD)
+            .add(symbol.build(), BooleanClause.Occur.SHOULD)
+            .build();
+    Map<String, Query> result = new LinkedHashMap<>();
+    result.put("content", analyzed("content", raw, false));
+    result.put("prose", prose(raw, false));
+    result.put("identifiers", identifiers);
+    result.put("path", analyzed("path_tokens", raw, false));
+    result.put("code", CodeFeatureQuery.plan(raw).orElseGet(MatchNoDocsQuery::new));
+    result.put("phrase", prose(raw, true));
+    result.put("declaration", declaration.build());
+    for (Query query : result.values()) query.visit(new ClauseBudget());
+    return Collections.unmodifiableMap(result);
+  }
+
   private static final class ClauseBudget extends QueryVisitor {
     private int terms;
 
@@ -77,20 +113,22 @@ public final class QueryPlanner {
     }
   }
 
-  private Query plan(QueryAst ast, Mode mode, boolean navigational) {
+  private Query plan(QueryAst ast, Mode mode, boolean navigational, boolean suppressIdentifiers) {
     if (ast instanceof QueryAst.BooleanNode n)
       return new BooleanQuery.Builder()
           .add(
-              plan(n.left(), mode, navigational),
+              plan(n.left(), mode, navigational, suppressIdentifiers),
               n.or() ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST)
           .add(
-              plan(n.right(), mode, navigational),
+              plan(n.right(), mode, navigational, suppressIdentifiers),
               n.or() ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST)
           .build();
     if (ast instanceof QueryAst.Negation n)
       return new BooleanQuery.Builder()
           .add(new MatchAllDocsQuery(), BooleanClause.Occur.MUST)
-          .add(plan(n.child(), mode, navigational), BooleanClause.Occur.MUST_NOT)
+          .add(
+              plan(n.child(), mode, navigational, suppressIdentifiers),
+              BooleanClause.Occur.MUST_NOT)
           .build();
     QueryAst.Term t = (QueryAst.Term) ast;
     String value = t.value().toLowerCase(Locale.ROOT);
@@ -103,7 +141,7 @@ public final class QueryPlanner {
             .add(analyzed("content", value, t.phrase()), BooleanClause.Occur.SHOULD);
     if (mode != Mode.NO_PROSE)
       b.add(new BoostQuery(prose(value, t.phrase()), profile.prose), BooleanClause.Occur.SHOULD);
-    if (mode != Mode.NO_IDENTIFIERS) {
+    if (mode != Mode.NO_IDENTIFIERS && !suppressIdentifiers) {
       if (navigational)
         b.add(
             new BoostQuery(new TermQuery(new Term("declaration", value)), profile.declarations),

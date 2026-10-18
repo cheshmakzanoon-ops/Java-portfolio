@@ -1,0 +1,5 @@
+Exception in thread "main" java.io.IOException: wave2 changed identity: model
+	at io.github.cheshmakzanoon.portfolio.indexforge.Wave2Study.check(Wave2Study.java:546)
+	at io.github.cheshmakzanoon.portfolio.indexforge.Wave2Study.validate(Wave2Study.java:251)
+	at io.github.cheshmakzanoon.portfolio.indexforge.Wave2Study.run(Wave2Study.java:26)
+	at io.github.cheshmakzanoon.portfolio.indexforge.IndexForgeCli.main(IndexForgeCli.java:17)

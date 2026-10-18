@@ -1,0 +1,46 @@
+# Ranking wave2: finite offline preregistration
+
+Status: preregistered before any wave2 build, candidate export, training, evaluation or preparation. Root prohibits Java/Maven/Docker/training/evaluation/preparation during the active ThreadLens quiet interval; no invocation is queued. This document is the fixed experiment, not evidence of an improvement. First-final24 source/artifact/results/global+local seals and all labels remain immutable. Future final evaluation needs explicit coordinator authorization and a separately versioned wave context, with repeated-test exposure disclosed rather than described as a fresh blind test.
+
+## Provenance and candidates
+
+Design uses A06's `.work/A06/indexforge-ranking-recommendation.md` and its filtered60-query development/validation notes. Earlier validation has been repeatedly consulted. No new feature or candidate is chosen from held-out diagnostics or a held-out-winning ablation. The first final's aggregate failure is preserved; before the latest prohibition, two held-out identifier failures were inspected for reporting and disclosed to the coordinator. They are excluded from design/training/selection. No further held-out per-query inspection is authorized in this wave.
+
+Fixed candidate order: original content BASELINE; C0 CLASSIC+SOURCE_AWARE+CODE_HIGH (frozen24 feature/weight behavior); C1 SYNTAX_GATED+SOURCE_AWARE+CODE_HIGH; C2 PAIRWISE+SOURCE_AWARE+CODE_HIGH, conditional below. Default runtime remains BASELINE/CLASSIC; no automatic deployment. All existing nine feature modes remain diagnostic, and C2→C1 is the NO_LTR ablation. No per-query validation winner or synthetic sum of old rows is a claimed new result.
+
+C1 suppresses only the handcrafted identifier/symbol/declaration scoring lane when the actual runtime query is plain unfielded multiword text. Exact classifier: raw length<=512,2–64 Java-whitespace-delimited nonempty tokens, each token Unicode letters/numbers/underscore/dollar optionally joined by interior hyphens, no exact uppercase AND/OR/NOT token, and no quotes/colon/grouping or unsupported operator syntax. It is a syntax heuristic, not semantic language detection. Query IDs and fixture `type` never reach it. Single identifiers, explicit Boolean/grouping/phrase/field syntax preserve CLASSIC behavior. Explicit field clauses are never rewritten. Content/prose/path/concepts/API-topic behavior and existing quotas remain unchanged.
+
+C2 shares C1's label-blind authorized top500 retrieval. It is active only on the same plain multiword syntax; single identifiers/explicit syntax bypass it exactly. No union with judged answers, insertion of missing positives, document/project priors, raw token ID dimensions, query/document IDs, source hashes, independent document intercept or annotation/role flags. Grade0 for unjudged candidates follows the existing pooled-gain policy, not universal irrelevance. A training/query ID may order metadata or folds; it is never a scoring feature.
+
+## Fixed10-feature schema shared-v1
+
+Every value is an interaction of the actual query and an authorized candidate. Field score lanes use the current lease/similarity and full tenant/repository filters; explanations emit fixed feature names/contributions, not raw collection counts. No raw source-body scan or new indexed field is used. All scorer lanes are built once per query and iterated by candidate document ID; term vectors are limited to those500 candidates. Fields containing comments/literals remain lexical evidence, not proof of executable behavior or same-method relations.
+
+0. log1p clipped nonnegative C1 candidate score.
+1. log1p content-only analyzed query score.
+2. log1p stemmed prose query score.
+3. log1p combined split-identifier/exact-symbol query score.
+4. log1p analyzed path-token query score (overlap only; no raw path/name dimension).
+5. log1p existing generic API-topic query score, requiring its existing two-topic-term rule.
+6. Fraction of distinct normalized query terms present in the candidate prose term vector.
+7. Matched-query-term frequency divided by total prose term frequency; unavailable totals yield0.
+8. Binary indexed ordered stemmed prose-phrase match; no same-method/correctness claim.
+9. Binary exact declaration equality with at least one actual query token.
+
+Raw field/candidate scores are clipped[0,1000000] before log1p; other values are bounded[0,1]. Normalized distinct query terms<=64. No IDF/count feature is exported; existing BM25 tenant-reader statistical coupling remains documented. NO_IDENTIFIERS zeros lane3/declaration9; NO_PROSE zeros2/6/7/8; NO_PATH zeros4; NO_CODE_FEATURES zeros5; NO_COVERAGE zeros6/7. NO_CONCEPTS changes its actual retrieval score, and NO_SIMILARITY restores default BM25 for all lanes. BASELINE bypasses learned ranking. C2 may learn a bounded contribution from lane3; C1's suppression concerns the handcrafted fixed-weight lane, not an assertion that identifier evidence is never useful.
+
+## Audit, training and fixed budgets
+
+After root release and strict source certification, first export all40development queries' actual C1 authorized top500 candidates and fixed vectors WITHOUT labels in the extractor. Freeze source/artifact/config/corpus/export/schema hashes before the trainer attaches unchanged development judgments. Report grade3 candidate presence, pooled recall and graded oracle ceiling without inserting answers. C2 proceeds only if at least10 syntax-eligible development queries have a retrieved positive and negative, and at least one has a retrieved grade3 candidate below rank1. Otherwise report C2 not attempted by this preregistered condition; no alternative feature branch is improvised.
+
+Use five deterministic grouped folds: identical complete DEVELOPMENT judgment vectors stay together;17 groups expected. `folds.json` assigns group hashes/IDs before training. Split IDs are metadata only. Feature mean/variance are fitted only on syntax-eligible training-fold candidates, with equal total weight per query; standard deviation floor1e-6, inference clip[-8,8]. No validation/held-out fitting, query reweighting or feature selection.
+
+Optimize pairwise logistic loss plus L2/2 times squared coefficient norm, no intercept. Graded pair weight=absolute gain difference, gain=2^grade-1; normalize each query's summed pair weights, then average eligible queries. Deterministic reservoir of at most512 unequal-grade pairs/query, fixed seed7007 and sorted stable candidate keys. Do not inject absent positives. Fixed L2 grid[.01,.1,1], zero initial coefficients, max100 full-batch iterations, Armijo1e-4 backtracking from step1 with max20 halvings. Converge at gradient infinity norm<=1e-6 OR relative loss improvement<=1e-9; nonconvergence/invalid finite arithmetic/line-search failure is an explicit failed candidate. Per fit30-second wall budget; full training600seconds maximum. No optimizer rescue chosen after validation.
+
+Select L2 only by mean out-of-fold DEVELOPMENT nDCG/identifierMRR, requiring neither below C1; maximize the same min(nDCG/.75,identifierMRR/.90) objective, stronger/larger L2 wins ties. No passing L2 means C2 fails this wave. Fit only that selected L2 once on all eligible development queries. Freeze exact weight/scaler/feature-version/provenance bytes, training export/folds/code/dependency identities before validation. The production loader accepts only bounded checksummed finite-schema model data, captures an immutable snapshot once and binds its exact digest to cache/cursor/scoring identity.
+
+## Validation, review and versioned final
+
+Evaluate every20validation queries and all40development queries for C0/C1/eligibleC2 and all declared ablations. Validation never supplies gradients/scalers/feature changes. A selectable challenger must not regress either validation metric against BOTH original BASELINE and C0. Maximize min(validation nDCG/.75,identifierMRR/.90); original baseline wins equal objective, then fixed C0/C1/C2 order resolves ties. Report C1/C2 versus C0 and original baseline separately, including prose/identifier subsets without dropping any query. C2 bypasses single identifiers, so their generic ambiguity is explicitly unresolved, not promised improved.
+
+Independent review inspects the exact extractor/model/scaler/folds/export/actual service configuration and ACL/cache/cursor/restart tests. A future final is a separately preregistered, once-per-selected-model wave after coordinator authorization; never clear or overwrite first-final seals/results, silently reuse stale model identity, relabel, or select an ablation from held-out. Repeated evaluation of known published queries is disclosed as a limitation. Acceptance remains actual .75heldoutnDCG/.90identifierMRR; dev/validation improvements alone do not pass it. Operational latency/heap evidence must be remeasured for any selected new boundary.

@@ -53,7 +53,10 @@ public class IndexForgeApplication {
         Path.of(env.getProperty("indexforge.data", ".runtime/indexforge")),
         auth,
         QueryPlanner.Mode.valueOf(env.getProperty("indexforge.ranking-mode", "BASELINE")),
-        RankingProfile.valueOf(env.getProperty("indexforge.ranking-profile", "CURRENT")));
+        RankingProfile.valueOf(env.getProperty("indexforge.ranking-profile", "CURRENT")),
+        RankingConfiguration.from(
+            env.getProperty("indexforge.ranking-strategy", "CLASSIC"),
+            env.getProperty("indexforge.ranking-model")));
   }
 
   @Bean

@@ -1,0 +1,15 @@
+{
+  "wave": "ranking-wave2",
+  "amendment": 5,
+  "phase": "offline-preregistration-correctness-fix",
+  "recordedUtc": "2026-10-18T05:19:57.893765+00:00",
+  "newMetricsExecuted": false,
+  "javaBuildTrainingOrPrepExecuted": false,
+  "preregistrationSha256": "2528feedca5c2e048fc4e773f0a4dd666f71de399f00a7efdef573547736903a",
+  "priorPreregistrationSha256": "316daf8ae569ac201bc8442a64f09eb8ca7f3a44900fd5150e06987ced2cfe7a",
+  "foldsSha256": "4b98cc3004f5944c1ff64de44f7312e3a3d7b984822af8503046c558c945f7b6",
+  "foldsTsvSha256": "6a192f8f2323a2ff3ec8c5c9c1a79ea9ac311d2ea432fb0f7fee310202c14d2c",
+  "comparatorReferenceSha256": "fd1dae1b159d8f5634bd39bc3d4fdff95ec2c748ea33d929c7f35e1b8520997a",
+  "filteredNotesSha256": "2c971f7af390942ce21299be3853bc7c6ff53088e3d0b4711a3642d608c8654c",
+  "reason": "Accepted A06 static MEDIUM incomplete inference identity: complete supported artifact/all exploded original classes plus actual numeric profile, authored real changed-weight restart/cursor regression. No ranking candidates, labels or metrics changed."
+}
