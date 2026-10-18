@@ -27,6 +27,11 @@ public final class DocumentMapper {
     exact(d, "coordinates", s.entry().coordinates());
     exact(d, "version", s.entry().version());
     if (s.entry().language().equals("java")) {
+      d.add(
+          new TextField(
+              "code_features",
+              CodeFeatures.topics(CodeFeatures.features(s.content())),
+              Field.Store.NO));
       for (String declaration : DeclarationScanner.names(s.content()))
         exact(d, "declaration", declaration.toLowerCase(Locale.ROOT));
     }

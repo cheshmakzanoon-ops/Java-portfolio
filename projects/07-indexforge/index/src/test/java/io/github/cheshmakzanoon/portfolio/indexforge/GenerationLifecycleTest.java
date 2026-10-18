@@ -218,8 +218,8 @@ class GenerationLifecycleTest {
               org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute.class);
       stream.reset();
       List<String> actual = new ArrayList<>();
-      while (stream.incrementToken()) {
-        if (actual.size() > 64) fail("token stream failed to terminate");
+      for (int token = 0; token < 4; token++) {
+        assertTrue(stream.incrementToken(), "expected identifier token " + token);
         actual.add(
             term.toString()
                 + ":"
@@ -229,6 +229,8 @@ class GenerationLifecycleTest {
                 + ":"
                 + offset.endOffset());
       }
+      assertFalse(stream.incrementToken(), "token stream must end after four tokens");
+      assertFalse(stream.incrementToken(), "EOF must remain stable on repeated reads");
       assertEquals(List.of("foobar:1:0:6", "foo:0:0:3", "bar:0:3:6", "baz:1:7:10"), actual);
       stream.end();
       assertEquals(10, offset.startOffset());
@@ -466,10 +468,13 @@ class GenerationLifecycleTest {
               org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute.class);
       tokens.reset();
       List<String> values = new ArrayList<>();
-      while (tokens.incrementToken()) {
+      for (int token = 0; token < 3; token++) {
+        assertTrue(tokens.incrementToken(), "expected identifier token " + token);
         values.add(term.toString());
         assertTrue(position.getPositionIncrement() >= 0);
       }
+      assertFalse(tokens.incrementToken(), "token stream must end after three tokens");
+      assertFalse(tokens.incrementToken(), "EOF must remain stable on repeated reads");
       tokens.end();
       assertEquals(List.of("foobar", "foo", "bar"), values);
     }

@@ -1,0 +1,317 @@
+{
+  "certifiedBuild": 22,
+  "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+  "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+  "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae",
+  "phase": "development-validation-only",
+  "state": "IN_PROGRESS",
+  "heldOutOpened": false,
+  "profileOrder": [
+    "CODE_NONE",
+    "CODE_LOW",
+    "CODE_MEDIUM",
+    "CODE_HIGH"
+  ],
+  "selectedProfile": "CODE_HIGH",
+  "selectedMode": "SOURCE_AWARE",
+  "selection": "Pre-held-out selection from development/validation only: SOURCE_AWARE\nRanking profile: CODE_HIGH\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+  "profiles": [
+    {
+      "identity": {
+        "certifiedBuild": 22,
+        "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+        "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+        "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae"
+      },
+      "profile": "CODE_NONE",
+      "selectedMode": "NO_PATH",
+      "validation": {
+        "ndcg10": 0.5532469484631737,
+        "identifierMRR10": 0.7833333333333333
+      },
+      "objective": 0.7376625979508983,
+      "modes": {
+        "BASELINE": {
+          "ndcg10": 0.4369789084142504,
+          "identifierMRR10": 0.75
+        },
+        "SOURCE_AWARE": {
+          "ndcg10": 0.5523154629166996,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_IDENTIFIERS": {
+          "ndcg10": 0.555764901884786,
+          "identifierMRR10": 0.7
+        },
+        "NO_PATH": {
+          "ndcg10": 0.5532469484631737,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_PROSE": {
+          "ndcg10": 0.4836436701351396,
+          "identifierMRR10": 0.75
+        },
+        "NO_CONCEPTS": {
+          "ndcg10": 0.5088927626037897,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_COVERAGE": {
+          "ndcg10": 0.5523154629166996,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_SIMILARITY": {
+          "ndcg10": 0.5417399157401148,
+          "identifierMRR10": 0.7666666666666666
+        },
+        "NO_CODE_FEATURES": {
+          "ndcg10": 0.5523154629166996,
+          "identifierMRR10": 0.7833333333333333
+        }
+      },
+      "decision": "Pre-held-out selection from development/validation only: NO_PATH\nRanking profile: CODE_NONE\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: 40f2af1627ba33470563b060c3737b2ff32049eca4eaa438ed3873520690a6af\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+      "command": [
+        "/workspace/.tools/jdk-25/bin/java",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Xms128m",
+        "-Xmx2g",
+        "-Dindexforge.ranking-profile=CODE_NONE",
+        "-jar",
+        "/workspace/Java-portfolio/.work/A07/artifacts/build22-cli.jar",
+        "evaluate",
+        ".work/A07/code-build22-code_none",
+        "projects/07-indexforge/fixtures",
+        "projects/07-indexforge/evidence/relevance/code-build22/code_none/attempt-1",
+        "development"
+      ],
+      "rawLog": ".work/A07/code-build22-code_none-attempt-1.log",
+      "rawLogSha256": "f0671f4a7d6ebde2e2bd3df2d5e2e2f60ccbd04095e4f46f96adefe1a4a861d7",
+      "perQuery": "projects/07-indexforge/evidence/relevance/code-build22/code_none/attempt-1/development-per-query.csv",
+      "perQuerySha256": "e6bdb05da4b40312467b7f77b754a7ea75ee8d9d1fa2d33fb38d45f5d1f6b447",
+      "selectionFile": "projects/07-indexforge/evidence/relevance/code-build22/code_none/attempt-1/selection.txt",
+      "selectionFileSha256": "47e0970f538638606fdb8a2f7ffb87f2c0b53c472b5a8598d170ba00dc9b489f"
+    },
+    {
+      "identity": {
+        "certifiedBuild": 22,
+        "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+        "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+        "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae"
+      },
+      "profile": "CODE_LOW",
+      "selectedMode": "SOURCE_AWARE",
+      "validation": {
+        "ndcg10": 0.5534573992198107,
+        "identifierMRR10": 0.7833333333333333
+      },
+      "objective": 0.7379431989597477,
+      "modes": {
+        "BASELINE": {
+          "ndcg10": 0.4369789084142504,
+          "identifierMRR10": 0.75
+        },
+        "SOURCE_AWARE": {
+          "ndcg10": 0.5534573992198107,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_IDENTIFIERS": {
+          "ndcg10": 0.5603423516014068,
+          "identifierMRR10": 0.7
+        },
+        "NO_PATH": {
+          "ndcg10": 0.5532469484631737,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_PROSE": {
+          "ndcg10": 0.4860687306350839,
+          "identifierMRR10": 0.75
+        },
+        "NO_CONCEPTS": {
+          "ndcg10": 0.515039507012025,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_COVERAGE": {
+          "ndcg10": 0.5534573992198107,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_SIMILARITY": {
+          "ndcg10": 0.5451281309272347,
+          "identifierMRR10": 0.7666666666666666
+        },
+        "NO_CODE_FEATURES": {
+          "ndcg10": 0.5523154629166996,
+          "identifierMRR10": 0.7833333333333333
+        }
+      },
+      "decision": "Pre-held-out selection from development/validation only: SOURCE_AWARE\nRanking profile: CODE_LOW\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: c415565a84dc37dea652147f15803314dd7fb78ae9206ffa31cb211a7d752910\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+      "command": [
+        "/workspace/.tools/jdk-25/bin/java",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Xms128m",
+        "-Xmx2g",
+        "-Dindexforge.ranking-profile=CODE_LOW",
+        "-jar",
+        "/workspace/Java-portfolio/.work/A07/artifacts/build22-cli.jar",
+        "evaluate",
+        ".work/A07/code-build22-code_low",
+        "projects/07-indexforge/fixtures",
+        "projects/07-indexforge/evidence/relevance/code-build22/code_low/attempt-1",
+        "development"
+      ],
+      "rawLog": ".work/A07/code-build22-code_low-attempt-1.log",
+      "rawLogSha256": "ceff536ae5b676dc9a53efe24a7bdbbfaac14310b1dfa5ce94f2e55c942b4040",
+      "perQuery": "projects/07-indexforge/evidence/relevance/code-build22/code_low/attempt-1/development-per-query.csv",
+      "perQuerySha256": "451b6aba7f9f6ea71040f4353097454b7df7bbf97d18d1da3e8f0d27f32b1a64",
+      "selectionFile": "projects/07-indexforge/evidence/relevance/code-build22/code_low/attempt-1/selection.txt",
+      "selectionFileSha256": "75d36f5171219e1ad5d2d8f42c100825fedb9006f6be2f35125d9f5357a79b71"
+    },
+    {
+      "identity": {
+        "certifiedBuild": 22,
+        "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+        "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+        "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae"
+      },
+      "profile": "CODE_MEDIUM",
+      "selectedMode": "SOURCE_AWARE",
+      "validation": {
+        "ndcg10": 0.562965192093163,
+        "identifierMRR10": 0.7833333333333333
+      },
+      "objective": 0.7506202561242173,
+      "modes": {
+        "BASELINE": {
+          "ndcg10": 0.4369789084142504,
+          "identifierMRR10": 0.75
+        },
+        "SOURCE_AWARE": {
+          "ndcg10": 0.562965192093163,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_IDENTIFIERS": {
+          "ndcg10": 0.567671453416255,
+          "identifierMRR10": 0.7
+        },
+        "NO_PATH": {
+          "ndcg10": 0.5627547413365259,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_PROSE": {
+          "ndcg10": 0.4944406536596505,
+          "identifierMRR10": 0.75
+        },
+        "NO_CONCEPTS": {
+          "ndcg10": 0.5237027666865988,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_COVERAGE": {
+          "ndcg10": 0.562965192093163,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_SIMILARITY": {
+          "ndcg10": 0.5506530462029346,
+          "identifierMRR10": 0.7666666666666666
+        },
+        "NO_CODE_FEATURES": {
+          "ndcg10": 0.5523154629166996,
+          "identifierMRR10": 0.7833333333333333
+        }
+      },
+      "decision": "Pre-held-out selection from development/validation only: SOURCE_AWARE\nRanking profile: CODE_MEDIUM\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: 844ab25c289b0b69f51c1ea386c18a4579b27880c0a95fa774703fcb59df1ddc\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+      "command": [
+        "/workspace/.tools/jdk-25/bin/java",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Xms128m",
+        "-Xmx2g",
+        "-Dindexforge.ranking-profile=CODE_MEDIUM",
+        "-jar",
+        "/workspace/Java-portfolio/.work/A07/artifacts/build22-cli.jar",
+        "evaluate",
+        ".work/A07/code-build22-code_medium",
+        "projects/07-indexforge/fixtures",
+        "projects/07-indexforge/evidence/relevance/code-build22/code_medium/attempt-1",
+        "development"
+      ],
+      "rawLog": ".work/A07/code-build22-code_medium-attempt-1.log",
+      "rawLogSha256": "1137edad80ad8f27b4c1eabd73faf13a1fb2c5fe180e8959b3d9031ef7c5b9da",
+      "perQuery": "projects/07-indexforge/evidence/relevance/code-build22/code_medium/attempt-1/development-per-query.csv",
+      "perQuerySha256": "fa6819ca7f55113041c8f1ac14fa5fdc81d7c84bba597e3635580ee825d41c7e",
+      "selectionFile": "projects/07-indexforge/evidence/relevance/code-build22/code_medium/attempt-1/selection.txt",
+      "selectionFileSha256": "beb701fc40cd3e464d6249d018e912ce002795eff23cbe95c9f1f362207194f1"
+    },
+    {
+      "identity": {
+        "certifiedBuild": 22,
+        "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+        "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+        "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae"
+      },
+      "profile": "CODE_HIGH",
+      "selectedMode": "SOURCE_AWARE",
+      "validation": {
+        "ndcg10": 0.5804173420415929,
+        "identifierMRR10": 0.7833333333333333
+      },
+      "objective": 0.7738897893887905,
+      "modes": {
+        "BASELINE": {
+          "ndcg10": 0.4369789084142504,
+          "identifierMRR10": 0.75
+        },
+        "SOURCE_AWARE": {
+          "ndcg10": 0.5804173420415929,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_IDENTIFIERS": {
+          "ndcg10": 0.5859381353011086,
+          "identifierMRR10": 0.7
+        },
+        "NO_PATH": {
+          "ndcg10": 0.5804173420415929,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_PROSE": {
+          "ndcg10": 0.5271683049443928,
+          "identifierMRR10": 0.75
+        },
+        "NO_CONCEPTS": {
+          "ndcg10": 0.550844676787754,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_COVERAGE": {
+          "ndcg10": 0.5804173420415929,
+          "identifierMRR10": 0.7833333333333333
+        },
+        "NO_SIMILARITY": {
+          "ndcg10": 0.573440460808765,
+          "identifierMRR10": 0.7666666666666666
+        },
+        "NO_CODE_FEATURES": {
+          "ndcg10": 0.5523154629166996,
+          "identifierMRR10": 0.7833333333333333
+        }
+      },
+      "decision": "Pre-held-out selection from development/validation only: SOURCE_AWARE\nRanking profile: CODE_HIGH\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+      "command": [
+        "/workspace/.tools/jdk-25/bin/java",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Xms128m",
+        "-Xmx2g",
+        "-Dindexforge.ranking-profile=CODE_HIGH",
+        "-jar",
+        "/workspace/Java-portfolio/.work/A07/artifacts/build22-cli.jar",
+        "evaluate",
+        ".work/A07/code-build22-code_high",
+        "projects/07-indexforge/fixtures",
+        "projects/07-indexforge/evidence/relevance/code-build22/code_high/attempt-1",
+        "development"
+      ],
+      "rawLog": ".work/A07/code-build22-code_high-attempt-1.log",
+      "rawLogSha256": "edae422429848890af7fab32f89782440ae84a43f4a1f6f650991231ddd6191f",
+      "perQuery": "projects/07-indexforge/evidence/relevance/code-build22/code_high/attempt-1/development-per-query.csv",
+      "perQuerySha256": "6daf6022bc3e274f399a76eb75a094b4e4686a9781416a1a2e1feb587c69945f",
+      "selectionFile": "projects/07-indexforge/evidence/relevance/code-build22/code_high/attempt-1/selection.txt",
+      "selectionFileSha256": "7bab66117e937dd2427d9063972315a24c9aa2e7020681254c80c0770b0acef5"
+    }
+  ],
+  "recordedUtc": "2026-10-18T03:46:33.063783+00:00"
+}

@@ -1,0 +1,74 @@
+{
+  "identity": {
+    "certifiedBuild": 22,
+    "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+    "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+    "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae"
+  },
+  "profile": "CODE_HIGH",
+  "selectedMode": "SOURCE_AWARE",
+  "validation": {
+    "ndcg10": 0.5804173420415929,
+    "identifierMRR10": 0.7833333333333333
+  },
+  "objective": 0.7738897893887905,
+  "modes": {
+    "BASELINE": {
+      "ndcg10": 0.4369789084142504,
+      "identifierMRR10": 0.75
+    },
+    "SOURCE_AWARE": {
+      "ndcg10": 0.5804173420415929,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_IDENTIFIERS": {
+      "ndcg10": 0.5859381353011086,
+      "identifierMRR10": 0.7
+    },
+    "NO_PATH": {
+      "ndcg10": 0.5804173420415929,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_PROSE": {
+      "ndcg10": 0.5271683049443928,
+      "identifierMRR10": 0.75
+    },
+    "NO_CONCEPTS": {
+      "ndcg10": 0.550844676787754,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_COVERAGE": {
+      "ndcg10": 0.5804173420415929,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_SIMILARITY": {
+      "ndcg10": 0.573440460808765,
+      "identifierMRR10": 0.7666666666666666
+    },
+    "NO_CODE_FEATURES": {
+      "ndcg10": 0.5523154629166996,
+      "identifierMRR10": 0.7833333333333333
+    }
+  },
+  "decision": "Pre-held-out selection from development/validation only: SOURCE_AWARE\nRanking profile: CODE_HIGH\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+  "command": [
+    "/workspace/.tools/jdk-25/bin/java",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Xms128m",
+    "-Xmx2g",
+    "-Dindexforge.ranking-profile=CODE_HIGH",
+    "-jar",
+    "/workspace/Java-portfolio/.work/A07/artifacts/build22-cli.jar",
+    "evaluate",
+    ".work/A07/code-build22-code_high",
+    "projects/07-indexforge/fixtures",
+    "projects/07-indexforge/evidence/relevance/code-build22/code_high/attempt-1",
+    "development"
+  ],
+  "rawLog": ".work/A07/code-build22-code_high-attempt-1.log",
+  "rawLogSha256": "edae422429848890af7fab32f89782440ae84a43f4a1f6f650991231ddd6191f",
+  "perQuery": "projects/07-indexforge/evidence/relevance/code-build22/code_high/attempt-1/development-per-query.csv",
+  "perQuerySha256": "6daf6022bc3e274f399a76eb75a094b4e4686a9781416a1a2e1feb587c69945f",
+  "selectionFile": "projects/07-indexforge/evidence/relevance/code-build22/code_high/attempt-1/selection.txt",
+  "selectionFileSha256": "7bab66117e937dd2427d9063972315a24c9aa2e7020681254c80c0770b0acef5"
+}

@@ -24,7 +24,7 @@ public final class SearchCursor {
     String payload =
         a.tenant()
             + "\n"
-            + a.principal()
+            + principalScope(a)
             + "\n"
             + a.version()
             + "\n"
@@ -52,7 +52,7 @@ public final class SearchCursor {
       String[] p = new String(b, StandardCharsets.UTF_8).split("\n");
       if (p.length != 7
           || !p[0].equals(a.tenant())
-          || !p[1].equals(a.principal())
+          || !p[1].equals(principalScope(a))
           || Long.parseLong(p[2]) != a.version()
           || !p[3].equals(digest)
           || Long.parseLong(p[6]) <= clock.instant().getEpochSecond()
@@ -63,6 +63,19 @@ public final class SearchCursor {
     } catch (RuntimeException e) {
       throw new IllegalArgumentException("invalid cursor");
     }
+  }
+
+  private static String principalScope(AuthorizationFilter.Access a) {
+    // Hex UTF16 code units are unambiguous even for unusual local principal strings.
+    StringBuilder identity = new StringBuilder();
+    for (int i = 0; i < a.principal().length(); i++)
+      identity.append(Integer.toHexString(a.principal().charAt(i))).append(',');
+    identity
+        .append('\n')
+        .append(String.join("\n", new TreeSet<>(a.repositories())))
+        .append('\n')
+        .append(a.administrator());
+    return Digests.sha256(identity.toString());
   }
 
   private byte[] sign(byte[] data) {

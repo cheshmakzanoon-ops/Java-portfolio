@@ -1,0 +1,5 @@
+Pre-held-out selection from development/validation only: SOURCE_AWARE
+Ranking profile: CODE_HIGH
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20

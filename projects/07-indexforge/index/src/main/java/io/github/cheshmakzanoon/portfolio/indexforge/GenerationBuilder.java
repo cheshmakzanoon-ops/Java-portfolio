@@ -118,7 +118,7 @@ public final class GenerationBuilder {
         Analyzer prose = new SourceProseAnalyzer();
         Analyzer analyzer =
             new org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper(
-                identifiers, Map.of("prose", prose));
+                identifiers, Map.of("prose", prose, "code_features", prose));
         IndexWriter writer =
             new IndexWriter(
                 fs,

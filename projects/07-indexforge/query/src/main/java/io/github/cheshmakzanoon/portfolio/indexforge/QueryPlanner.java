@@ -12,10 +12,12 @@ public final class QueryPlanner {
     NO_PATH,
     NO_PROSE,
     NO_CONCEPTS,
-    NO_COVERAGE
+    NO_COVERAGE,
+    NO_SIMILARITY,
+    NO_CODE_FEATURES
   }
 
-  public static final String VERSION = "source-v5-coverage";
+  public static final String VERSION = "source-v7-code-heuristics";
 
   private final RankingProfile profile;
 
@@ -45,6 +47,15 @@ public final class QueryPlanner {
             new BooleanQuery.Builder()
                 .add(lexical, BooleanClause.Occur.SHOULD)
                 .add(new BoostQuery(related.get(), profile.concepts), BooleanClause.Occur.SHOULD)
+                .build();
+    }
+    if (profile.codeFeatures > 0 && mode != Mode.BASELINE && mode != Mode.NO_CODE_FEATURES) {
+      var hints = CodeFeatureQuery.plan(raw);
+      if (hints.isPresent())
+        lexical =
+            new BooleanQuery.Builder()
+                .add(lexical, BooleanClause.Occur.SHOULD)
+                .add(new BoostQuery(hints.get(), profile.codeFeatures), BooleanClause.Occur.SHOULD)
                 .build();
     }
     lexical.visit(new ClauseBudget());

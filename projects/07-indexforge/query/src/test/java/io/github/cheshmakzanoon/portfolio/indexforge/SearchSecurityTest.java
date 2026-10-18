@@ -32,6 +32,261 @@ class SearchSecurityTest {
   }
 
   @Test
+  void codeHintsRequireTwoTopicsIgnoreDecoysAndPreserveExplicitSyntaxAndAuthorization()
+      throws Exception {
+    var auth = new AuthorizationFilter();
+    var admin = auth.update("admin", "t", Set.of("r", "hidden"), true);
+    auth.update("reader", "t", Set.of("r"), false);
+    String pattern =
+        "StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT);";
+    var request = new SearchEngine.Request("unicode encoding", 10, null, Map.of());
+    try (var engine =
+        new SearchEngine(root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.CODE_MEDIUM)) {
+      List<SnapshotManifest.Entry> entries = new ArrayList<>();
+      for (var source :
+          Map.of(
+                  "Real.java",
+                  "class Real { void read(){" + pattern + "} }",
+                  "Quoted.java",
+                  "class Quoted { String example=\"" + pattern + "\"; }",
+                  "Comment.java",
+                  "//" + pattern,
+                  "Archive.java",
+                  "class Archive { void read(){new ZipInputStream(input);} }")
+              .entrySet())
+        entries.add(
+            new SnapshotManifest.Entry(
+                source.getKey(),
+                engine.contentStore().put(source.getValue().getBytes(StandardCharsets.UTF_8)),
+                "java",
+                "source",
+                List.of(),
+                "",
+                ""));
+      engine.ingest(
+          admin,
+          "hints",
+          new SnapshotManifest("t", "r", "v1", false, entries, Set.of()),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      String hiddenHash =
+          engine
+              .contentStore()
+              .put(
+                  ("class Hidden { void read(){" + pattern + "} }")
+                      .getBytes(StandardCharsets.UTF_8));
+      engine.ingest(
+          admin,
+          "hidden",
+          new SnapshotManifest(
+              "t",
+              "hidden",
+              "v1",
+              false,
+              List.of(
+                  new SnapshotManifest.Entry(
+                      "Hidden.java", hiddenHash, "java", "source", List.of(), "", "")),
+              Set.of()),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      var ablated = engine.search("reader", request, QueryPlanner.Mode.NO_CODE_FEATURES);
+      assertEquals(3, ablated.totalHits(), "existing topic expansion still matches API mentions");
+      Map<String, Float> previous = new TreeMap<>();
+      ablated.results().forEach(hit -> previous.put(hit.path(), hit.score()));
+      var result = engine.search("reader", request);
+      assertEquals(3, result.totalHits());
+      for (var hit : result.results()) {
+        if (hit.path().equals("Real.java")) assertTrue(hit.score() > previous.get(hit.path()));
+        else {
+          assertEquals(previous.get(hit.path()), hit.score());
+          assertFalse(hit.explanation().contains("code_features:"));
+        }
+      }
+      assertEquals("Real.java", result.results().getFirst().path());
+      assertEquals(Map.of("r", 3), result.facets());
+      assertTrue(result.results().getFirst().explanation().contains("code_features:"));
+      assertFalse(result.toString().contains("Hidden.java"));
+      assertEquals(result, engine.search("reader", request));
+      for (String explicit :
+          List.of(
+              "\"unicode encoding\"",
+              "unicode AND encoding",
+              "content:unicode OR content:encoding",
+              "unicode"))
+        assertEquals(
+            0,
+            engine
+                .search("reader", new SearchEngine.Request(explicit, 10, null, Map.of()))
+                .totalHits(),
+            explicit);
+      assertEquals(
+          0,
+          engine
+              .search("reader", new SearchEngine.Request("astronomy telescope", 10, null, Map.of()))
+              .totalHits());
+      auth.update("reader", "t", Set.of(), false);
+      assertTrue(engine.search("reader", request).results().isEmpty());
+    }
+    assertTrue(CodeFeatureQuery.plan(null).isEmpty());
+    assertTrue(CodeFeatureQuery.plan("unicode unicode").isEmpty());
+    assertThrows(IllegalArgumentException.class, () -> CodeFeatureQuery.plan("a".repeat(513)));
+  }
+
+  @Test
+  void cursorScopeCanonicalizationSeparatesAmbiguousCodeUnitsAndPreservesRepositorySetOrder() {
+    var clock = Clock.fixed(Instant.parse("2026-10-18T00:00:00Z"), ZoneOffset.UTC);
+    var cursor = new SearchCursor(new byte[32], clock);
+    var first =
+        new AuthorizationFilter.Access(
+            String.valueOf((char) 1) + "#", "t", Set.of("a", "z"), 1, false);
+    String token = cursor.encode(first, "q", UUID.randomUUID().toString(), 1);
+    var reordered =
+        new AuthorizationFilter.Access(
+            first.principal(), "t", new LinkedHashSet<>(List.of("z", "a")), 1, false);
+    assertEquals(1, cursor.decode(token, reordered, "q").offset());
+    var collision =
+        new AuthorizationFilter.Access(
+            new String(new char[] {0x12, 3}), "t", Set.of("a", "z"), 1, false);
+    assertThrows(IllegalArgumentException.class, () -> cursor.decode(token, collision, "q"));
+    var surrogate =
+        new AuthorizationFilter.Access(String.valueOf((char) 0xd800), "t", Set.of("a"), 1, false);
+    String opaque = cursor.encode(surrogate, "q", UUID.randomUUID().toString(), 1);
+    var replacement =
+        new AuthorizationFilter.Access(String.valueOf((char) 0xfffd), "t", Set.of("a"), 1, false);
+    assertThrows(IllegalArgumentException.class, () -> cursor.decode(opaque, replacement, "q"));
+  }
+
+  @Test
+  void cursorRejectsChangedRankingProfileAcrossRestartButSameProfileContinues() throws Exception {
+    var auth = new AuthorizationFilter();
+    var access = auth.update("reader", "t", Set.of("r"), true);
+    var request = new SearchEngine.Request("shared", 1, null, Map.of());
+    String cursor, first;
+    try (var engine =
+        new SearchEngine(root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.BM25_DEFAULT)) {
+      engine.ingest(
+          access,
+          "cursor",
+          manifest(engine, "t", "r", 2, "method"),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      var page = engine.search("reader", request);
+      cursor = page.cursor();
+      first = page.results().getFirst().key();
+      assertNotNull(cursor);
+    }
+    var next = new SearchEngine.Request("shared", 1, cursor, Map.of());
+    try (var engine =
+        new SearchEngine(root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.BM25_DEFAULT)) {
+      var continuation = engine.search("reader", next);
+      assertEquals(1, continuation.results().size());
+      assertNotEquals(first, continuation.results().getFirst().key());
+    }
+    try (var engine =
+        new SearchEngine(
+            root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.BM25_NO_LENGTH)) {
+      assertThrows(IllegalArgumentException.class, () -> engine.search("reader", next));
+    }
+  }
+
+  @Test
+  void cursorBindsActualScopeDespiteRestartVersionReuseAndSupportsNewlinePrincipals() {
+    var clock = Clock.fixed(Instant.parse("2026-10-18T00:00:00Z"), ZoneOffset.UTC);
+    var cursor = new SearchCursor(new byte[32], clock);
+    var access = new AuthorizationFilter.Access("line\nprincipal", "t", Set.of("r"), 1, false);
+    String generation = UUID.randomUUID().toString();
+    String token = cursor.encode(access, "query", generation, 1);
+    assertEquals(new SearchCursor.Position(generation, 1), cursor.decode(token, access, "query"));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            cursor.decode(
+                token,
+                new AuthorizationFilter.Access("line\nprincipal", "t", Set.of("other"), 1, false),
+                "query"));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            cursor.decode(
+                token,
+                new AuthorizationFilter.Access("line\nprincipal", "t", Set.of("r"), 1, true),
+                "query"));
+  }
+
+  @Test
+  void perLeaseSimilarityControlsLengthNormalizationAndAblationRestoresDefault() throws Exception {
+    var auth = new AuthorizationFilter();
+    var access = auth.update("reader", "t", Set.of("r"), true);
+    var request = new SearchEngine.Request("needle", 10, null, Map.of());
+    Map<String, Float> defaults = new TreeMap<>(), baseline = new TreeMap<>();
+    try (var engine =
+        new SearchEngine(root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.BM25_DEFAULT)) {
+      List<SnapshotManifest.Entry> entries = new ArrayList<>();
+      for (var source :
+          Map.of("Long.txt", "needle " + "padding ".repeat(90), "Short.txt", "needle").entrySet())
+        entries.add(
+            new SnapshotManifest.Entry(
+                source.getKey(),
+                engine.contentStore().put(source.getValue().getBytes(StandardCharsets.UTF_8)),
+                "text",
+                "source",
+                List.of(),
+                "",
+                ""));
+      engine.ingest(
+          access,
+          "bm25",
+          new SnapshotManifest("t", "r", "v1", false, entries, Set.of()),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      try (var lease = engine.generations("t").acquire()) {
+        assertSame(
+            lease.searcher(),
+            lease.searcher(),
+            "all response operations share one configured searcher");
+      }
+      engine
+          .search("reader", request)
+          .results()
+          .forEach(hit -> defaults.put(hit.path(), hit.score()));
+      engine
+          .search("reader", request, QueryPlanner.Mode.BASELINE)
+          .results()
+          .forEach(hit -> baseline.put(hit.path(), hit.score()));
+      assertTrue(defaults.get("Short.txt") > defaults.get("Long.txt"));
+    }
+    try (var engine =
+        new SearchEngine(
+            root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.BM25_NO_LENGTH)) {
+      var noLength = engine.search("reader", request);
+      assertEquals(2, noLength.totalHits());
+      assertEquals(
+          noLength.results().getFirst().score(), noLength.results().getLast().score(), .00001);
+      assertEquals(
+          "Long.txt", noLength.results().getFirst().path(), "equal scores use stable key ordering");
+      assertTrue(noLength.scoringVersion().endsWith("BM25_NO_LENGTH"));
+      Map<String, Float> ablated = new TreeMap<>(), unchangedBaseline = new TreeMap<>();
+      engine
+          .search("reader", request, QueryPlanner.Mode.NO_SIMILARITY)
+          .results()
+          .forEach(hit -> ablated.put(hit.path(), hit.score()));
+      engine
+          .search("reader", request, QueryPlanner.Mode.BASELINE)
+          .results()
+          .forEach(hit -> unchangedBaseline.put(hit.path(), hit.score()));
+      assertEquals(defaults, ablated);
+      assertEquals(baseline, unchangedBaseline);
+      assertEquals(
+          noLength, engine.search("reader", request), "warmed configuration remains stable");
+      assertEquals(
+          0,
+          engine
+              .search("reader", new SearchEngine.Request("astronomy", 10, null, Map.of()))
+              .totalHits());
+    }
+  }
+
+  @Test
   void coverageRewardsDistinctAuthorizedTermsAndAblationRestoresOriginalScores() throws Exception {
     var auth = new AuthorizationFilter();
     var admin = auth.update("admin", "t", Set.of("r", "denied"), true);
@@ -880,15 +1135,29 @@ class SearchSecurityTest {
         codec.decode(codec.encode(a, "digest", gen, 500), a, "digest"));
     var exactExpiry = new SearchCursor(key, Clock.offset(clock, Duration.ofSeconds(300)));
     assertThrows(IllegalArgumentException.class, () -> exactExpiry.decode(c, a, "digest"));
+    Map<Integer, String> boundaryTokens = new HashMap<>();
+    Map<Integer, String> boundaryDigests = new HashMap<>();
     for (int length = 1; length < 1600; length++) {
-      var principal =
-          new AuthorizationFilter.Access("p".repeat(length), "t", Set.of("r"), 1, false);
-      String boundary = codec.encode(principal, "digest", gen, 0);
-      if (boundary.length() == 2048) {
-        assertEquals(0, codec.decode(boundary, principal, "digest").offset());
-        break;
+      String digest = "d".repeat(length);
+      String boundary = codec.encode(a, digest, gen, 0);
+      if (boundary.length() == 2047 || boundary.length() == 2048) {
+        boundaryTokens.put(boundary.length(), boundary);
+        boundaryDigests.put(boundary.length(), digest);
       }
     }
+    for (int length : List.of(2047, 2048)) {
+      String boundary = boundaryTokens.get(length);
+      assertNotNull(boundary, "the signed boundary token must actually be constructed");
+      assertEquals(length, boundary.length());
+      assertEquals(0, codec.decode(boundary, a, boundaryDigests.get(length)).offset());
+    }
+    // SHA256 signature has one legal optional base64 padding byte. It remains signed
+    // correctly, but crosses the raw-token limit and must fail before any parsing.
+    String oversized = boundaryTokens.get(2048) + "=";
+    assertEquals(2049, oversized.length());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> codec.decode(oversized, a, boundaryDigests.get(2048)));
 
     assertThrows(IllegalArgumentException.class, () -> codec.decode(c + "x", a, "digest"));
     assertThrows(IllegalArgumentException.class, () -> codec.decode(c, a, "other"));

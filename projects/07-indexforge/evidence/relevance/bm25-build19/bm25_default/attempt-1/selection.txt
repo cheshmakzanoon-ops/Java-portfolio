@@ -1,0 +1,5 @@
+Pre-held-out selection from development/validation only: SOURCE_AWARE
+Ranking profile: BM25_DEFAULT
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: 914330d42884528788d6cd2d06a1678a6b3a89d40a2409c5b3665d1544dbd3d4
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20

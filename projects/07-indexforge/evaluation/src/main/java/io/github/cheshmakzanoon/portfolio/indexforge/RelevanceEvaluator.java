@@ -45,6 +45,11 @@ public final class RelevanceEvaluator {
         List.of(
             "RelevanceEvaluator",
             "RankingProfile",
+            "GenerationLease",
+            "GenerationBuilder",
+            "SourceDocument",
+            "CodeFeatures",
+            "CodeFeatureQuery",
             "SourceProseAnalyzer",
             "SearchEngine",
             "AuthorizationFilter",
@@ -72,6 +77,15 @@ public final class RelevanceEvaluator {
         if (resource == null) throw new IOException("missing model bytecode");
         model.append(type).append(':').append(Digests.sha256(resource.readAllBytes())).append('\n');
       }
+    }
+    // The supported shaded CLI binds dependencies/indexing helpers as well as original class bytes.
+    try {
+      Path artifact =
+          Path.of(
+              RelevanceEvaluator.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+      if (Files.isRegularFile(artifact)) model.append("artifact:").append(Digests.sha256(artifact));
+    } catch (java.net.URISyntaxException invalid) {
+      throw new IOException("invalid model artifact location", invalid);
     }
     model.append("profile:").append(RankingProfile.current().name());
     return Digests.sha256(model.toString());
@@ -206,11 +220,7 @@ public final class RelevanceEvaluator {
       } else {
         if (!Files.exists(selection) || !Files.readString(selection).equals(decision))
           throw new IOException("run development phase and freeze selection before held-out");
-        Path opened = output.resolve("HELDOUT-OPENED.txt");
-        if (Files.exists(opened)) {
-          if (!Files.readString(opened).equals(decision))
-            throw new IOException("held-out already opened for a different model");
-        } else Files.writeString(opened, decision, StandardOpenOption.CREATE_NEW);
+        EvaluationSeal.claim(fixtures, output, decision);
         for (var mode : QueryPlanner.Mode.values()) {
           double ndcg = 0, identifierMrr = 0, recall = 0;
           int n = 0, ids = 0;

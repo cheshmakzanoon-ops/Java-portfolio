@@ -1,0 +1,4 @@
+462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae  fixtures/CODE-FEATURES-v1.md
+c43b06b9bcc2ba0510a64f2b022683619abd38f96c7fec3765bc3a5382fa92de  index/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/CodeFeatures.java
+1a3930d72599e5bd161bc45092604897687e8eb7cd240b67dcd2b8ec60b305fb  query/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/CodeFeatureQuery.java
+3c85ec9bee166e60eed5edb0795b7a5a231b952aca761e9765394e404f722aa1  query/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/RankingProfile.java

@@ -1,0 +1,48 @@
+{
+  "phase": "preparation-only",
+  "seed": 7007,
+  "documents": 100000,
+  "tenantCounts": [
+    33334,
+    33333,
+    33333
+  ],
+  "generations": [
+    "37a685be-8457-4ece-9d6a-bc4f5894eba1",
+    "a9122352-abe8-4766-8534-bc686ff41c78",
+    "b82df0fd-e1b3-42e5-ae25-ace4a4d66991"
+  ],
+  "sourceBytes": 22266651,
+  "heapMaxBytes": 2147483648,
+  "rankingMode": "SOURCE_AWARE",
+  "rankingProfile": "CODE_HIGH",
+  "scoringVersion": "source-v7-code-heuristics-CODE_HIGH",
+  "compiledModelSha256": "fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e",
+  "sanityQueries": 1,
+  "measuredRuns": 0,
+  "command": [
+    "/workspace/.tools/jdk-25/bin/java",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Xms128m",
+    "-Xmx2g",
+    "-Dindexforge.ranking-mode=SOURCE_AWARE",
+    "-Dindexforge.ranking-profile=CODE_HIGH",
+    "-cp",
+    "/workspace/Java-portfolio/.work/A07/artifacts/build23-cli.jar",
+    "/workspace/Java-portfolio/.work/A07/PreparePerformance.java",
+    "/workspace/Java-portfolio/projects/07-indexforge/.runtime/performance-build23"
+  ],
+  "dataDirectory": "/workspace/Java-portfolio/projects/07-indexforge/.runtime/performance-build23",
+  "startedUtc": "2026-10-18T03:50:56.720459+00:00",
+  "elapsedSeconds": 161.5578182850004,
+  "sourceFingerprint": "0c4de2732b86d267a24ca81025e507015857c8619cdcd7fbaf01987478d31d59",
+  "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+  "preparationHelperSha256": "56db41fe97f127c2ab32dbba095e53f8d92a42c10437c72c3b944b8a21148f07",
+  "rawLog": ".work/A07/prepare-performance-build23.log",
+  "rawLogSha256": "0968c86677c83c9346949353d76fa929debb538cf1afec61611ceca577b44cdc",
+  "preparedPointers": {
+    "index/tenant2/CURRENT": "02d68b862cd9669dc3abda2066506b38d0d304ecbfbf07c558a75daceeed6241",
+    "index/tenant1/CURRENT": "adc4fd52f8b3e1a642f7abf697bda26fd4f10bd71d80d5a9a2dfc0beacc631a4",
+    "index/tenant0/CURRENT": "6a5f2d850d28ab9231286f2086c06e3e1a147d9d6103ff7e52e68558dadc5830"
+  }
+}

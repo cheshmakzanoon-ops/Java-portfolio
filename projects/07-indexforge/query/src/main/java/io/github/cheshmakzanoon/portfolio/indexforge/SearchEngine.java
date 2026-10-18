@@ -258,6 +258,10 @@ public final class SearchEngine implements AutoCloseable {
   public Response search(String principal, Request request, QueryPlanner.Mode mode)
       throws IOException {
     QueryAst ast = QueryAst.parse(request.text());
+    String scoringVersion =
+        mode == QueryPlanner.Mode.BASELINE
+            ? "bm25-content-v1"
+            : QueryPlanner.VERSION + "-" + rankingProfile.name();
     String digest =
         Digests.sha256(
             request.text()
@@ -266,13 +270,21 @@ public final class SearchEngine implements AutoCloseable {
                 + "\n"
                 + request.pageSize()
                 + "\n"
-                + mode);
+                + mode
+                + "\n"
+                + scoringVersion);
     for (int retry = 0; retry < 3; retry++) {
       AuthorizationFilter.Access a = authorization.current(principal);
       SearchCursor.Position position =
           request.cursor() == null ? null : cursors.decode(request.cursor(), a, digest);
       try (GenerationLease lease =
           generations(a.tenant()).acquire(position == null ? null : position.generation())) {
+        if (mode != QueryPlanner.Mode.BASELINE && mode != QueryPlanner.Mode.NO_SIMILARITY)
+          lease
+              .searcher()
+              .setSimilarity(
+                  new org.apache.lucene.search.similarities.BM25Similarity(
+                      rankingProfile.k1, rankingProfile.b));
         String cacheKey =
             a.toString()
                 + "/"
@@ -337,9 +349,7 @@ public final class SearchEngine implements AutoCloseable {
         Response response =
             new Response(
                 lease.id(),
-                mode == QueryPlanner.Mode.BASELINE
-                    ? "bm25-content-v1"
-                    : QueryPlanner.VERSION + "-" + rankingProfile.name(),
+                scoringVersion,
                 count,
                 "EQUAL_TO",
                 List.copyOf(hits),

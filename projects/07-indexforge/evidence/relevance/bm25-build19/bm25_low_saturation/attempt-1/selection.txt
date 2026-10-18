@@ -1,0 +1,5 @@
+Pre-held-out selection from development/validation only: NO_SIMILARITY
+Ranking profile: BM25_LOW_SATURATION
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: 6f9a2ea203a38e66d5de67e329a169272fbd6963fe1edac16f6b62eb5d225d67
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20

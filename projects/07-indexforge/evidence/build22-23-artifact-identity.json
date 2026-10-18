@@ -1,0 +1,12 @@
+{
+  "evaluatedBuild": 22,
+  "certifiedBuild": 23,
+  "byteIdenticalArtifact": true,
+  "sha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+  "sourceFingerprint22": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+  "sourceFingerprint23": "0c4de2732b86d267a24ca81025e507015857c8619cdcd7fbaf01987478d31d59",
+  "delta": "Only test EOF termination and explicit signed token-length boundary oracles; no production byte changes. Every ZIP entry identical, entire JAR bytes identical.",
+  "modelSha256": "fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e",
+  "selectedRankingMode": "SOURCE_AWARE",
+  "selectedRankingProfile": "CODE_HIGH"
+}

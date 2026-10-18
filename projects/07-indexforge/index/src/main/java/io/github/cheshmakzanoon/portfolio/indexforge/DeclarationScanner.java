@@ -12,7 +12,7 @@ public final class DeclarationScanner {
   private static final Set<String> CONTROLS =
       Set.of("if", "while", "for", "switch", "catch", "synchronized", "try", "this", "super");
 
-  public static Set<String> names(String source) {
+  static List<String> tokens(String source) {
     if (source.length() > 1_048_576) throw new IllegalArgumentException("source quota");
     List<String> tokens = new ArrayList<>();
     for (int i = 0; i < source.length() && tokens.size() < 100_000; ) {
@@ -59,6 +59,11 @@ public final class DeclarationScanner {
         i++;
       }
     }
+    return List.copyOf(tokens);
+  }
+
+  public static Set<String> names(String source) {
+    List<String> tokens = tokens(source);
     Set<String> names = new LinkedHashSet<>();
     for (int i = 1; i + 1 < tokens.size() && names.size() < 256; i++) {
       String name = tokens.get(i), previous = tokens.get(i - 1);

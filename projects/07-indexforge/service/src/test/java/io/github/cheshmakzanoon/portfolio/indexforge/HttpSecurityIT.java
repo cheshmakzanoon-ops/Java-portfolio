@@ -156,7 +156,10 @@ class HttpSecurityIT {
             dir.resolve("sources").toString(),
             "spring.main.banner-mode",
             "off"));
-    try (ConfigurableApplicationContext context = app.run()) {
+    try (ConfigurableApplicationContext context =
+        app.run(
+            "--indexforge.ranking-mode=NO_COVERAGE",
+            "--indexforge.ranking-profile=BM25_NO_LENGTH")) {
       String base = "http://127.0.0.1:" + context.getEnvironment().getProperty("local.server.port");
       HttpClient client = HttpClient.newHttpClient();
       LocalOidcIssuer issuer = context.getBean(LocalOidcIssuer.class);
@@ -238,6 +241,8 @@ class HttpSecurityIT {
               "{\"text\":\"findAtomicGeneration\",\"pageSize\":10}");
       assertEquals(200, response.statusCode(), response.body());
       assertTrue(response.body().contains("Demo.java"));
+      assertTrue(
+          response.body().contains("source-v7-code-heuristics-BM25_NO_LENGTH"), response.body());
       assertEquals(
           200, request(client, base, "/v1/suggest", token, "{\"prefix\":\"find\"}").statusCode());
       assertEquals(
