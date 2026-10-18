@@ -1,0 +1,823 @@
+{
+  "sourceFingerprint": "ab5534dd111bf63b606b5da53c2cd870d6d0bf5c3549e8f6db2cf4e509a89ca9",
+  "outcomes": {
+    "KILLED": 261,
+    "SURVIVED": 79,
+    "NO_COVERAGE": 8,
+    "TIMED_OUT": 3
+  },
+  "strictKilledPercent": 74.35897435897436,
+  "xmlSha256": "c65b587328f741558d1f44c180a0a4de946146282ca4c06b8a0985c21840d8ff",
+  "allNonKilledMutations": [
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "<init>",
+      "lineNumber": "94",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long multiplication with division",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "<init>",
+      "lineNumber": "94",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "<init>",
+      "lineNumber": "103",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::resetDeadline",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "accept",
+      "lineNumber": "111",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "accept",
+      "lineNumber": "146",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "accept",
+      "lineNumber": "123",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "accept",
+      "lineNumber": "127",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "accept",
+      "lineNumber": "128",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator",
+      "description": "replaced return value with Collections.emptyList for io/github/cheshmakzanoon/portfolio/quorumkv/Raft::accept",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "advance",
+      "lineNumber": "378",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "TIMED_OUT",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "advance",
+      "lineNumber": "378",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator",
+      "description": "Changed increment from 1 to -1",
+      "killingTest": ""
+    },
+    {
+      "status": "TIMED_OUT",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "advance",
+      "lineNumber": "385",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long subtraction with addition",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "advance",
+      "lineNumber": "382",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::broadcast",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "append",
+      "lineNumber": "334",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "append",
+      "lineNumber": "344",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "append",
+      "lineNumber": "321",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "append",
+      "lineNumber": "321",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::stepDown",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "appended",
+      "lineNumber": "367",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "appended",
+      "lineNumber": "368",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "appended",
+      "lineNumber": "368",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "appended",
+      "lineNumber": "358",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "appended",
+      "lineNumber": "369",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "appended",
+      "lineNumber": "369",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long subtraction with addition",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "apply",
+      "lineNumber": "480",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::completeReads",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "compact",
+      "lineNumber": "484",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "compact",
+      "lineNumber": "490",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "completeReads",
+      "lineNumber": "457",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "completeReads",
+      "lineNumber": "459",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Iterator::remove",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "elect",
+      "lineNumber": "232",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Set::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "elect",
+      "lineNumber": "234",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "elect",
+      "lineNumber": "235",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Collection::forEach",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "id",
+      "lineNumber": "177",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.PrimitiveReturnsMutator",
+      "description": "replaced int return with 0 for io/github/cheshmakzanoon/portfolio/quorumkv/Raft::id",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "521",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "522",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "525",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "524",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced integer addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "552",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "518",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::stepDown",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "520",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::resetDeadline",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "install",
+      "lineNumber": "556",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/ArrayList::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "installed",
+      "lineNumber": "581",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "installed",
+      "lineNumber": "587",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "lambda$install$0",
+      "lineNumber": "553",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "lambda$install$0",
+      "lineNumber": "553",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "lambda$install$0",
+      "lineNumber": "553",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator",
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/quorumkv/Raft::lambda$install$0",
+      "killingTest": ""
+    },
+    {
+      "status": "NO_COVERAGE",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "leader",
+      "lineNumber": "173",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.PrimitiveReturnsMutator",
+      "description": "replaced int return with 0 for io/github/cheshmakzanoon/portfolio/quorumkv/Raft::leader",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "mutate",
+      "lineNumber": "424",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "mutate",
+      "lineNumber": "424",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "mutate",
+      "lineNumber": "432",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::broadcast",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "read",
+      "lineNumber": "444",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "replicate",
+      "lineNumber": "394",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "replicate",
+      "lineNumber": "399",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "replicate",
+      "lineNumber": "413",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long subtraction with addition",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "replicate",
+      "lineNumber": "397",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Iterator::remove",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "request",
+      "lineNumber": "189",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced Shift Left with Shift Right",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "request",
+      "lineNumber": "189",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "sendSnapshot",
+      "lineNumber": "500",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "247",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "254",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Set::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "257",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Collection::forEach",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "258",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "259",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Collection::forEach",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "260",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "261",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Collection::forEach",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "262",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "stepDown",
+      "lineNumber": "263",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "termAt",
+      "lineNumber": "198",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "termAt",
+      "lineNumber": "197",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.PrimitiveReturnsMutator",
+      "description": "replaced long return with 0 for io/github/cheshmakzanoon/portfolio/quorumkv/Raft::termAt",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "termAt",
+      "lineNumber": "198",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.PrimitiveReturnsMutator",
+      "description": "replaced long return with 0 for io/github/cheshmakzanoon/portfolio/quorumkv/Raft::termAt",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "tick",
+      "lineNumber": "215",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "tick",
+      "lineNumber": "220",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "tick",
+      "lineNumber": "221",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "tick",
+      "lineNumber": "223",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "tick",
+      "lineNumber": "217",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Iterator::remove",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "vote",
+      "lineNumber": "286",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "vote",
+      "lineNumber": "291",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/quorumkv/Raft::resetDeadline",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "voted",
+      "lineNumber": "305",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "voted",
+      "lineNumber": "313",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "TIMED_OUT",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Raft",
+      "mutatedMethod": "voted",
+      "lineNumber": "307",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "<init>",
+      "lineNumber": "16",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/NavigableMap::forEach",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "25",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "38",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "38",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "35",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced integer addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "35",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced integer subtraction with addition",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "38",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced integer addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "38",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "38",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "apply",
+      "lineNumber": "44",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "lambda$new$0",
+      "lineNumber": "16",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced integer addition with subtraction",
+      "killingTest": ""
+    },
+    {
+      "status": "SURVIVED",
+      "mutatedClass": "io.github.cheshmakzanoon.portfolio.quorumkv.Registers",
+      "mutatedMethod": "lambda$new$0",
+      "lineNumber": "16",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced integer addition with subtraction",
+      "killingTest": ""
+    }
+  ]
+}

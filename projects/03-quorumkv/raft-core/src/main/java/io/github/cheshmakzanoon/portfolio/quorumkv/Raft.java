@@ -74,7 +74,8 @@ public final class Raft {
   private final Map<Integer, Long> voteRequests = new HashMap<>();
   private final Map<Integer, SnapshotRequest> snapshotRequests = new HashMap<>();
   private final Map<Integer, Long> next = new HashMap<>(), match = new HashMap<>();
-  private final Map<Integer, Map<Long, Sent>> sent = new HashMap<>();
+  private final Map<Integer, Map<Long, Sent>> sent =
+      Map.of(0, new LinkedHashMap<>(), 1, new LinkedHashMap<>(), 2, new LinkedHashMap<>());
   private final Map<Long, Long> clients = new HashMap<>();
   private final Map<Long, Reading> reads = new LinkedHashMap<>();
   private final ArrayDeque<Event> deferred = new ArrayDeque<>();
@@ -98,7 +99,6 @@ public final class Raft {
     log.addAll(d.log());
     registers = new Registers(snapshot);
     applied = snapshot.index();
-    for (int p = 0; p < 3; p++) sent.put(p, new LinkedHashMap<>());
     applyRecovered();
     resetDeadline();
   }

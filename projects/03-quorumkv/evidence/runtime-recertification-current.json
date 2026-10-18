@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "observedAtUtc": "2026-10-18T06:52:03.307300+00:00",
+  "sourceFingerprint": "ab5534dd111bf63b606b5da53c2cd870d6d0bf5c3549e8f6db2cf4e509a89ca9",
+  "wrapperOnlyFingerprint": "d12c4f202497a5c7d492c430888c7bbbd8a1b69fe5b1e4b649bc1801c9bec649",
+  "previousPreparedFingerprint": "c2fa4c96f74db0a7ca20facb579713eb2c79cd12e4d8c52b264befa6f380b7ac",
+  "scope": "Fresh recertification after shared Ryuk wrapper default and coordinator-authorized fixed-three-key sent-map representation; no timing/heap/target changes.",
+  "verification": {
+    "command": "source scripts/cloud-env.sh; export PORTFOLIO_TEST_RUN_STARTED=$(date +%s); ./mvnw -f projects/03-quorumkv/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A03/m2 -B -ntp -Pextended,integration,mutation -DoutputFormats=XML,HTML verify",
+    "freshCutoffUnix": 1792306111,
+    "mavenExitCode": 0,
+    "testCheckerExitCode": 0,
+    "mutationCheckerExitCode": 0,
+    "counts": {
+      "tests": 43,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "extendedSeeds": 1000,
+    "seedRange": [
+      0,
+      999
+    ],
+    "actionsPerSeed": 180,
+    "tlsProcessIntegrationMethods": 3,
+    "reports": [
+      {
+        "path": "projects/03-quorumkv/kv-client/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.MutationIdentityTest.xml",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "81a521a9f8f17c98a5b38a47173b28d3ce83bab8e88cd5c1d977f9113a79bc72"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.CodecTest.xml",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "8868ace9c0da14960dc521eaf3b6668f8b47e0fa75d2f91e8c746e414d9e9cd7"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.RaftTest.xml",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "c0736c542f410021d979419f7fab13945b961c70eecd813b8388fd2c2537d046"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.RegistersPropertyTest.xml",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "98e0eb4b430ce8507e46bf724f3cdfa4d1f8b237afee3c865da484126185041c"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest.xml",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "4dcdda2652f6ccc1a20ffe6913b767515db645599791ec13504597e590c13981"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-storage/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.JournalTest.xml",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "3baafaafbc9b53914d4851e4a94c68d198a4e1a8394e568ea6c50f71d26a2ac5"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-transport/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.BinaryTest.xml",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "2fab32ab376274f8e1c9dd5f2e3278649adf93de6a5269a5409259d462e048d8"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.ProcessFaultIT.xml",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "a0e6185113203d27799d7a670656d55d0f54e002e6a26410dc715ee73e4e9204"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.BoundaryTest.xml",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "181f959d92288782326629d9054bda6f51b6803050520c7e3ce5a2dbb68e3005"
+      },
+      {
+        "path": "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.HistoryCheckerTest.xml",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "188722280f7252b3e62f71cb364d24c8c5e63c78067f912bc6af13db5a85f7c5"
+      }
+    ],
+    "log": ".work/A03/recertification-20261018T064341Z/verify-fixed.log",
+    "logSha256": "bae44606e38bdbd1588dee22a322f43af08907f387df1af51e72de6d36cd8c24"
+  },
+  "mutation": {
+    "selectedClasses": [
+      "Raft",
+      "Registers"
+    ],
+    "outcomes": {
+      "KILLED": 261,
+      "SURVIVED": 79,
+      "NO_COVERAGE": 8,
+      "TIMED_OUT": 3
+    },
+    "strictKilledPercent": 74.35897435897436,
+    "thresholdPercent": 70,
+    "runnerErrors": 0,
+    "xml": "projects/03-quorumkv/raft-core/target/pit-reports/mutations.xml",
+    "sha256": "c65b587328f741558d1f44c180a0a4de946146282ca4c06b8a0985c21840d8ff",
+    "allNonKilled": ".work/A03/recertification-20261018T064341Z/fixed-nonkilled.json",
+    "representationDelta": "Constructor membership-initialization loop replaced by fixed-key Map.of; its3mutants (1KILLED,1SURVIVED,1MEMORY_ERROR) disappear structurally. No PIT target/exclusion/heap/timeout change."
+  },
+  "coverage": {
+    "BRANCH": {
+      "covered": 446,
+      "total": 526,
+      "ratio": 0.8479087452471483
+    },
+    "LINE": {
+      "covered": 758,
+      "total": 779,
+      "ratio": 0.9730423620025674
+    }
+  },
+  "jarsSha256": {
+    "projects/03-quorumkv/kv-client/target/quorumkv-kv-client-1.0.0-SNAPSHOT.jar": "736ca59a88106b63e241ab7a3e4ff6624ff874a88ae749ca9c7903d1880a84f7",
+    "projects/03-quorumkv/kv-server/target/quorumkv-kv-server-1.0.0-SNAPSHOT.jar": "c73e3500f3fe45bd42c629765c028c455dd4a4e7b2d0cbad1b63ef216d82cca5",
+    "projects/03-quorumkv/raft-core/target/quorumkv-raft-core-1.0.0-SNAPSHOT.jar": "21e7152187ff864efa140a92a122655604c62458941ea195622eb941eed5f0d9",
+    "projects/03-quorumkv/raft-storage/target/quorumkv-raft-storage-1.0.0-SNAPSHOT.jar": "b5388716090f40a6babf784ade698824c6489e95df2b4bd1af50669e8d4e860e",
+    "projects/03-quorumkv/raft-transport/target/quorumkv-raft-transport-1.0.0-SNAPSHOT.jar": "37239ce8ec8bc2316173be491966d98da15535ee950c92016897be51b2fe1661",
+    "projects/03-quorumkv/raft-verification/target/quorumkv-raft-verification-1.0.0-SNAPSHOT.jar": "6454d36fd0965408f9dad4a951301204ed777023f73a1c18497daeeaca30aecf"
+  },
+  "runtimeReceipt": {
+    "artifactCount": 82,
+    "sha256": "d94ae99c29cc361fea25e24f70452a7aa2178c1462e014feaf27d053ba2fedc6",
+    "status": "PASS actual artifact check after successful fresh strict verify"
+  },
+  "preservedFailedFirstRun": {
+    "directory": ".work/A03/recertification-20261018T064341Z",
+    "summary": "first-run-summary.json",
+    "mutations": "mutations-first.xml",
+    "outcomes": {
+      "KILLED": 262,
+      "SURVIVED": 80,
+      "MEMORY_ERROR": 1,
+      "NO_COVERAGE": 8,
+      "TIMED_OUT": 3
+    },
+    "strictMutationCheckerExitCode": 1,
+    "diagnosis": "Constructor p++ to p-- unbounded negative-key outer map allocation; cgroup events oom=0/oom_kill=0. Failed run remains failed."
+  },
+  "archive": ".work/A03/recertification-20261018T064341Z/previous",
+  "limitations": [
+    "No full workload or benchmark launched.",
+    "Historical smoke/raw and historical verification envelopes retain their original fingerprints.",
+    "Five small control checks passed; full runner performance/process/cleanup paths remain unexecuted."
+  ],
+  "preparationControls": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "exitCode": 0,
+    "log": ".work/A03/recertification-20261018T064341Z/control-tests.log",
+    "sha256": "da741ce572b92d6cda7520e8cb50b2877885b415e41cac75f57c37d95bf4b729",
+    "scope": "Actual prepared-artifact positive validation; old source-stamp refusal before process launch; modified runner-receipt refusal; small smoke refusal; unrelated Java not signaled by cleanup."
+  },
+  "teardown": {
+    "exitCode": 0,
+    "log": ".work/A03/recertification-20261018T064341Z/stopped-check.log",
+    "sha256": "66e28455423180855e8b5deaecdecccad16d8f3ce7f0c046c5a49e73852824b8",
+    "assertion": "No QuorumKV Java processes, running project containers or catalog listeners."
+  },
+  "fullRunner": {
+    "path": ".work/A03/execute-prepared-full.py",
+    "sha256": "6fd1609c700f5a17ea0c095816dce7446bd9904a4debc99233724ecb8a25c91f",
+    "state": "PREPARED_NOT_EXECUTED",
+    "command": "python3 .work/coordinator/run-quiet.py .work/coordinator/quiet-quorumkv-full-1 python3 .work/A03/execute-prepared-full.py"
+  },
+  "preparedManifestSha256": "050b7ce562fed6bf45708a8454aee9951a02714b738691b20952fc1ab16c55cb"
+}

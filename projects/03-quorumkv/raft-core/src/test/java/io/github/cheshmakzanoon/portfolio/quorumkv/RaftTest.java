@@ -16,6 +16,71 @@ class RaftTest {
   }
 
   @Test
+  void everyFixedMemberCanReplicateCommitAndReusePeerCorrelationsAfterStepDown() {
+    for (int id = 0; id < 3; id++) {
+      Raft node = new Raft(id, 1, Durable.empty());
+      Set<Integer> peers = new HashSet<>(Set.of(0, 1, 2));
+      peers.remove(id);
+      List<Effect> election = stable(node, new Tick(1000));
+      assertEquals(
+          peers,
+          election.stream()
+              .map(Send.class::cast)
+              .map(Send::peer)
+              .collect(java.util.stream.Collectors.toSet()));
+      Send request = (Send) election.getFirst();
+      List<Effect> replication =
+          stable(
+              node,
+              new Receive(request.peer(), new VoteResponse(1, request.rpc().request(), true)));
+      assertEquals(Role.LEADER, node.role());
+      assertEquals(
+          peers,
+          replication.stream()
+              .map(Send.class::cast)
+              .map(Send::peer)
+              .collect(java.util.stream.Collectors.toSet()));
+      for (Effect effect : replication) {
+        Send send = (Send) effect;
+        AppendRequest append = (AppendRequest) send.rpc();
+        stable(
+            node,
+            new Receive(
+                send.peer(),
+                new AppendResponse(
+                    1,
+                    append.request(),
+                    true,
+                    append.previousIndex() + append.entries().size(),
+                    0)));
+      }
+      assertEquals(1, node.commit());
+      assertEquals(1, node.applied());
+      stable(node, new Receive(request.peer(), new VoteRequest(2, 99, request.peer(), 1, 1)));
+      assertEquals(Role.FOLLOWER, node.role());
+      Send reelection = (Send) stable(node, new Tick(3000)).getFirst();
+      List<Effect> renewed =
+          stable(
+              node,
+              new Receive(
+                  reelection.peer(), new VoteResponse(3, reelection.rpc().request(), true)));
+      assertEquals(Role.LEADER, node.role());
+      assertEquals(
+          peers,
+          renewed.stream()
+              .map(Send.class::cast)
+              .map(Send::peer)
+              .collect(java.util.stream.Collectors.toSet()));
+    }
+  }
+
+  @Test
+  void memberIdsOutsideFixedConfigurationAreRejected() {
+    for (int id : new int[] {-1, 3, Integer.MIN_VALUE, Integer.MAX_VALUE})
+      assertThrows(IllegalArgumentException.class, () -> new Raft(id, 1, Durable.empty()));
+  }
+
+  @Test
   void voteWaitsForFlushAndRestrictsLog() {
     Raft n = new Raft(0, 1, Durable.empty());
     List<Effect> e = n.accept(new Receive(1, new VoteRequest(1, 9, 1, 0, 0)));
