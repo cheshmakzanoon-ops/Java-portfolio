@@ -1,0 +1,28 @@
+{
+  "requestedAtUtc": "2026-10-18T04:16:09.842216+00:00",
+  "command": [
+    "env",
+    "INDEXFORGE_QUIET_GRANT=quiet-reference-8-indexforge",
+    "python3",
+    ".work/A07/run-reference-build24.py"
+  ],
+  "sourceRevision": "c3fe9d06cbf33e08bd6ae500b4b49d66056760c3",
+  "lockPaths": [
+    "/workspace/Java-portfolio/.work/build-slots/0.lock",
+    "/workspace/Java-portfolio/.work/build-slots/1.lock",
+    "/workspace/Java-portfolio/.work/build-slots/2.lock"
+  ],
+  "startedAtUtc": "2026-10-18T04:16:09.845070+00:00",
+  "otherJavaProcessesAtReservation": [],
+  "otherApplicationContainersAtReservation": [],
+  "cpuQuota": "400000 100000",
+  "memoryLimit": "34359738368",
+  "filesystemType": "overlayfs",
+  "freeDiskBytes": 7562752000,
+  "exitCode": 0,
+  "completedAtUtc": "2026-10-18T04:17:57.046075+00:00",
+  "elapsedSeconds": 107.2013691079992,
+  "remainingJavaProcesses": [],
+  "remainingApplicationContainers": [],
+  "result": "PASS"
+}

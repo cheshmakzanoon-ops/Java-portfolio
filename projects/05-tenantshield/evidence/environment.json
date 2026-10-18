@@ -16,12 +16,12 @@
     "Services:-Xmx256m",
     "JMH:-Xms128m -Xmx256m"
   ],
-  "sourceRevision": "working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13",
+  "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
   "containersShareHost": true,
   "integrationConcurrentStacks": 2,
   "performanceIsolation": "Coordinator explicitly granted quiet host; no other active Java process at protocol entry; own PostgreSQL/Keycloak and two required services run during measurements",
   "poolSize": 8,
-  "capturedAt": "2026-10-18T03:44:33.396435+00:00",
+  "capturedAt": "2026-10-18T03:54:53.313421+00:00",
   "containers": {
     "postgres": "18.3",
     "keycloak": "26.8.1",
@@ -41,7 +41,7 @@
   "kernel": "6.18.55",
   "runtimeArtifactManifest": {
     "schemaVersion": 1,
-    "sourceRevision": "working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13",
+    "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
     "artifactsSha256": {
       "decision-service/target/tenantshield-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
       "demo-resource-server/target/tenantshield-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
@@ -49,7 +49,7 @@
     }
   },
   "ownServicePids": {
-    "decision-service": 335418,
-    "demo-resource-server": 335419
+    "decision-service": 341409,
+    "demo-resource-server": 341410
   }
 }

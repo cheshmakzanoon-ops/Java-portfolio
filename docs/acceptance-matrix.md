@@ -28,7 +28,7 @@ No acceptance passes are implied by a foundation checkpoint.
 | P05-A2 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
 | P05-A3 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
 | P05-A4 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
-| P05-A5 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
+| P05-A5 | A05 | PASS | projects/05-tenantshield/evidence/reference-20261018/measurement-envelope.json and projects/05-tenantshield/docs/REVIEW.md: real protected demo,three100k HTTP trials/expectedDENY/zeroerrors,two3-fork JMH methods,full raw lineage and A04 measured-artifact closure; observed slowdown retained |
 | P06-A1 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |
 | P06-A2 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |
 | P06-A3 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |

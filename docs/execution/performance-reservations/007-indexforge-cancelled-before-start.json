@@ -1,0 +1,6 @@
+{
+  "timestampUtc": "2026-10-18T03:57:56.986589+00:00",
+  "status": "CANCELLED_BEFORE_RESERVATION_OR_MEASUREMENT",
+  "pid": 342861,
+  "reason": "Independent review found filter digest collision on frozen artifact; fix before timing. All build locks remained held by TenantShield reservation6."
+}

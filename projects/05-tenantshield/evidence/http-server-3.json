@@ -1,0 +1,13 @@
+{
+  "sourceRevision" : "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+  "rawArtifact" : "/workspace/Java-portfolio/.work/A05/runtime/http-server-3.jfr",
+  "boundary" : "decision-service JVM during authenticated HTTP workload",
+  "cpuSamples" : 279,
+  "meanJvmCpuFraction" : 0.1803556099370469,
+  "maximumJvmCpuFraction" : 0.27290838956832886,
+  "garbageCollections" : 351,
+  "totalGcEventMillis" : 2861.509481999997,
+  "allocationSamples" : 78466,
+  "sampledAllocationWeightBytes" : 68489084256,
+  "limitations" : [ "CPU is periodic JFR sampling normalized by JVM processor count; this is not exact cgroup utilization.", "Allocation weight is sampled estimation, not exact allocation per decision.", "GC event duration includes collector-specific concurrent work and is not total application pause time." ]
+}

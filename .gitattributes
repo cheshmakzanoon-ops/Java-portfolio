@@ -2,3 +2,5 @@
 *.sh text eol=lf
 mvnw text eol=lf
 *.cmd text eol=crlf
+# Preserve the exact published measurement bytes and their recorded hashes.
+projects/**/evidence/**/*.csv -text
