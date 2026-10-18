@@ -1,0 +1,5 @@
+# Fresh snapshots over cached allow decisions
+
+An immutable compiled AST is useful to reuse; a prior membership decision is unsafe to reuse under revocation. The baseline therefore caches only `(tenant,immutable version,digest) -> compiled policy`, with a hard size bound. Every request still starts a database snapshot and reads epoch, membership and attributes. This pays database/network latency on every request and makes database availability necessary. It gives an explicit, testable revocation boundary without distributed invalidation claims.
+
+We rejected cached allow responses with TTL because they create a revocation window, and asynchronous invalidation because lost notifications require another consistency protocol. Requests already evaluating an old snapshot can finish; we do not claim cancellation of in-flight resource actions. Publication conflicts use a known expected prior version; rollback atomically copies and publishes old content at a new version under an expected-prior check, preserving monotonic audit history.

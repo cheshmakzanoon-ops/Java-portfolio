@@ -1,0 +1,90 @@
+openapi: 3.1.0
+info: {title: TenantShield, version: 1.0.0}
+servers: [{url: 'http://127.0.0.1:18500'}]
+security: [{bearer: []}]
+components:
+  securitySchemes:
+    bearer: {type: http, scheme: bearer, bearerFormat: JWT}
+  schemas:
+    DecisionRequest:
+      type: object
+      additionalProperties: false
+      required: [action, resource]
+      properties:
+        action: {type: string, maxLength: 128}
+        resource:
+          type: object
+          additionalProperties: false
+          required: [type, id]
+          properties: {type: {type: string, maxLength: 128}, id: {type: string, maxLength: 128}}
+        context:
+          type: object
+          additionalProperties: false
+          properties: {purpose: {type: string, maxLength: 256}, hour: {type: integer, format: int64}}
+    Decision:
+      type: object
+      required: [decision, reason, tenantEpoch, policyVersion, resourceVersion, matchedRuleIds, decisionId]
+      properties:
+        decision: {enum: [ALLOW, DENY]}
+        reason: {type: string}
+        tenantEpoch: {type: integer, format: int64}
+        policyVersion: {type: integer, format: int64}
+        resourceVersion: {type: integer, format: int64}
+        matchedRuleIds: {type: array, items: {type: string}}
+        decisionId: {type: string, format: uuid}
+paths:
+  /v1/tenants/{tenant}/decisions:
+    parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
+    post:
+      operationId: decide
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DecisionRequest'}}}}
+      responses:
+        '200': {description: Fresh snapshot decision, content: {application/json: {schema: {$ref: '#/components/schemas/Decision'}}}}
+        '400': {description: Invalid body or unapproved context}
+        '401': {description: Invalid bearer token}
+        '403': {description: Unknown or forbidden tenant}
+        '429': {description: Quota or concurrency bound exceeded}
+        '503': {description: Dependency or mandatory audit unavailable; never allow}
+  /v1/tenants/{tenant}/policy-versions:
+    parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
+    post:
+      operationId: createDraft
+      description: Current tenant admin only. Body is policy Definition plus 1..100 regression examples; fixtures/policy.json is executable example.
+      responses: {'200': {description: Immutable validated draft version}, '400': {description: Invalid type or failed regression}, '403': {description: Current admin permission required}}
+  /v1/tenants/{tenant}/policy-versions/{version}/publish:
+    parameters:
+      - {name: tenant, in: path, required: true, schema: {type: string}}
+      - {name: version, in: path, required: true, schema: {type: integer, format: int64}}
+    post:
+      operationId: publish
+      parameters: [{name: If-Match, in: header, required: true, schema: {type: string}, description: 'Quoted prior active version, or "0" for initial publication.'}]
+      responses: {'200': {description: Committed new epoch/version}, '409': {description: Prior version mismatch or serialization conflict}, '403': {description: Admin permission required}}
+  /v1/tenants/{tenant}/memberships/{subject}:
+    parameters:
+      - {name: tenant, in: path, required: true, schema: {type: string}}
+      - {name: subject, in: path, required: true, schema: {type: string}}
+    put:
+      operationId: updateMembership
+      description: Current admin only; target issuer is the validated actor issuer. Fields roles, department, clearance, suspended, administrative, active. Revocation sets active=false. Commits epoch and audit atomically.
+      responses: {'200': {description: Committed tenant epoch}, '403': {description: Admin permission required}}
+  /v1/tenants/{tenant}/simulate:
+    parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
+    post:
+      operationId: simulate
+      description: Current admin only; policy and example evaluated without state changes or permission grants.
+      responses: {'200': {description: Simulated decision}, '403': {description: Admin permission required}}
+  /v1/tenants/{tenant}/audit:
+    parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
+    get:
+      operationId: audit
+      description: Current admin only, latest 100 tenant-local redacted entries.
+      responses: {'200': {description: Redacted audit page}, '403': {description: Admin permission required}}
+  /v1/tenants/{tenant}/policy-versions/{version}/rollback:
+    parameters:
+      - {name: tenant, in: path, required: true, schema: {type: string}}
+      - {name: version, in: path, required: true, schema: {type: integer, format: int64}}
+    post:
+      operationId: rollback
+      description: Atomically copy selected immutable contents to a new higher version and publish at a higher epoch; current tenant administrator only.
+      parameters: [{name: If-Match, in: header, required: true, schema: {type: string}}]
+      responses: {'200': {description: New published policyVersion and tenantEpoch}, '409': {description: Prior version conflict}, '403': {description: Admin permission required}}

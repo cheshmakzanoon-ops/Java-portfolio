@@ -1,0 +1,77 @@
+{
+  "realm": "tenantshield",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "clients": [
+    {
+      "clientId": "portfolio-demo",
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "protocolMappers": [
+        {
+          "name": "tenantshield-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "tenantshield",
+            "access.token.claim": "true"
+          }
+        }
+      ],
+      "protocol": "openid-connect"
+    }
+  ],
+  "users": [
+    {
+      "id": "alice",
+      "username": "alice",
+      "enabled": true,
+      "firstName": "alice",
+      "lastName": "Demo",
+      "email": "alice@example.invalid",
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-pass",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "admin",
+      "username": "admin",
+      "enabled": true,
+      "firstName": "admin",
+      "lastName": "Demo",
+      "email": "admin@example.invalid",
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-pass",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "mallory",
+      "username": "mallory",
+      "enabled": true,
+      "firstName": "mallory",
+      "lastName": "Demo",
+      "email": "mallory@example.invalid",
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-pass",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "accessTokenLifespan": 1800
+}

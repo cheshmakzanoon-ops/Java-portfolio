@@ -1,0 +1,14 @@
+{
+  "policy": {
+    "parents": {"reader":[],"editor":["reader"]},
+    "grants": [{"role":"reader","action":"document:read","resourceType":"document"}],
+    "rules": [
+      {"id":"read-department","action":"document:read","resourceType":"document","effect":"ALLOW","condition":"hasRole(\"reader\") and resource.department == subject.department and subject.clearance >= resource.classification"},
+      {"id":"suspension","action":"document:read","resourceType":"document","effect":"DENY","condition":"subject.suspended"}
+    ]
+  },
+  "examples": [
+    {"roles":["editor"],"action":"document:read","resourceType":"document","fields":{"subject.department":"support","subject.clearance":3,"subject.suspended":false,"resource.department":"support","resource.classification":2},"allowed":true,"reason":"MATCHED_ALLOW"},
+    {"roles":["reader"],"action":"document:read","resourceType":"document","fields":{"subject.department":"support","subject.clearance":3,"subject.suspended":true,"resource.department":"support","resource.classification":2},"allowed":false,"reason":"EXPLICIT_DENY"}
+  ]
+}

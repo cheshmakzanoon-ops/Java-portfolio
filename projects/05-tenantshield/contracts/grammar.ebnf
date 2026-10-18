@@ -1,0 +1,16 @@
+condition   = disjunction ;
+disjunction = conjunction, { "or", conjunction } ;
+conjunction = unary, { "and", unary } ;
+unary       = "not", unary | "(", condition, ")" | comparison ;
+comparison  = atom, [ ("=="|"!="|"<"|"<="|">"|">="), atom | "in", "[", literal, {",", literal}, "]" ] ;
+atom        = literal | approved-field | "exists", "(", approved-field, ")" | "hasRole", "(", string, ")" ;
+literal     = boolean | signed-int64 | string | "PUBLIC" | "INTERNAL" | "CONFIDENTIAL" ;
+string      = '"', { unicode-printable | '\\"' | '\\\\' }, '"' ;
+
+Approved fields and static types are PolicyLanguage.FIELDS, an immutable schema. Enum literals
+have a distinct ENUM type. Enum/boolean ordered comparisons are rejected. Parentheses contain
+boolean conditions, not dynamic arbitrary values. `in` sets are nonempty and homogeneous.
+UTF-8 max 16384 bytes/condition; 512 AST nodes; 32 parser nesting levels; 256 characters/string;
+64 literals/set; 100 roles, 200 rules and 2000 RBAC grants/revision; 262144 byte HTTP body.
+`and`/`or` use strong Kleene three-valued logic. not UNKNOWN=UNKNOWN. exists distinguishes
+missing from false/zero. Applicable rule UNKNOWN is INDETERMINATE after explicit deny priority.

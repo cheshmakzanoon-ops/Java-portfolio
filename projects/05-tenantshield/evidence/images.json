@@ -1,0 +1,23 @@
+{
+  "images": [
+    {
+      "image": "postgres:18.3",
+      "imageId": "sha256:fbaa243599038521bbda8f6fa286d2a8fc1236509606f22de81d0739b0610ba7",
+      "repoDigests": [
+        "postgres@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db"
+      ]
+    },
+    {
+      "image": "quay.io/keycloak/keycloak:26.8.1",
+      "imageId": "sha256:817e41712252d6d3a2a61ac5d2a011be561d7942cee8227ee418ababa5f52b9a",
+      "repoDigests": [
+        "quay.io/keycloak/keycloak@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"
+      ]
+    }
+  ],
+  "observedAt": "2026-10-18",
+  "source": "docker image inspect after verified docker pull",
+  "limitations": [
+    "Full version tags in runtime contract; these observed registry digests identify artifacts used in this environment."
+  ]
+}
