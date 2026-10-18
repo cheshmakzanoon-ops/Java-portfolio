@@ -24,6 +24,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.oauth2.jwt.*;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 import tools.jackson.databind.ObjectMapper;
 
@@ -43,7 +44,10 @@ class AuthorizationIT {
   @BeforeAll
   void start() throws Exception {
     db =
-        new PostgreSQLContainer("postgres:18.3")
+        new PostgreSQLContainer(
+                DockerImageName.parse(
+                        "postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db")
+                    .asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("tenantshield")
             .withUsername("migration")
             .withPassword("local-migration-only");
@@ -54,7 +58,9 @@ class AuthorizationIT {
         .load()
         .migrate();
     keycloak =
-        new GenericContainer<>("quay.io/keycloak/keycloak:26.8.1")
+        new GenericContainer<>(
+                DockerImageName.parse(
+                    "quay.io/keycloak/keycloak:26.8.1@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"))
             .withExposedPorts(8080)
             .withEnv("JAVA_OPTS_KC_HEAP", "-Xms256m -Xmx768m -XX:ActiveProcessorCount=2")
             .withCopyFileToContainer(

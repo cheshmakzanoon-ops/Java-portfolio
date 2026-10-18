@@ -3,10 +3,7 @@ set -euo pipefail
 source "$(dirname -- "$0")/common.sh"
 command -v docker >/dev/null || { echo 'Docker with Compose is required' >&2; exit 1; }
 command -v java >/dev/null || { echo 'JDK 25 is required' >&2; exit 1; }
-if [[ ! -f "$RUNTIME_DIR/build.fingerprint" ]] || [[ "$(cat "$RUNTIME_DIR/build.fingerprint")" != "$(fingerprint)" ]] || [[ ! -f "$PROJECT_DIR/verification/target/tenantshield-verification-1.0.0-SNAPSHOT-exec.jar" ]]; then
-  "$REPO_DIR/mvnw" -f "$PROJECT_DIR/pom.xml" "-Dmaven.repo.local=$M2_DIR" -B -ntp verify
-  fingerprint > "$RUNTIME_DIR/build.fingerprint"
-fi
+"$PROJECT_DIR/scripts/prepare-runtime.sh"
 compose up -d --wait --wait-timeout 420
 export TENANTSHIELD_MIGRATION_URL=jdbc:postgresql://127.0.0.1:18503/tenantshield
 export TENANTSHIELD_MIGRATION_USER=migration

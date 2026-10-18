@@ -1,14 +1,17 @@
 # TenantShield execution checkpoint
 
-Current project checkpoint: correctness and real protected-resource demonstration verified; full prescribed measurements and final independent review remain open. Owned paths: `projects/05-tenantshield/**` and `.work/A05/**`; coordinator owns shared files and all Git writes.
+Current source is `working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13`. All owned paths are write-paused after runtime preparation; no A05 build, service or container is running. The full seeded PostgreSQL volume is retained.
 
-- Final real PostgreSQL/Keycloak integration passed 27 methods at 02:02:23 UTC under effective JUnit 6.1.3, including unchanged post-revocation snapshot and pooled-connection/concurrent-publication assertions. Earlier 01:29:50 UTC JUnit 6.0.3 evidence is preserved separately.
-- Current-root default verify passed 18 methods at 01:52:03 UTC under JUnit 6.1.3. Production Java/tests are unchanged; executable fingerprint `working-tree-sha256:4bd439735ed2a4399ba8c0f9d7abfa3d28dcbec9bec81130d6472dfa27ea124d` includes explicit service-readiness and owned-zombie shutdown repairs.
-- Original core coverage is 343/348 lines and 267/291 branches, above enforced 85%/75%. Selected original PolicyEngine mutation analysis killed 58/58; parser/adapters were not mutation targets.
-- Earlier real live demo passed 21 HTTP assertions; protected dependency refusal/recovery passed 403 → 503 → 403. Full preparation passed: 50 tenants / 10,000 revisions / 1,000,000 roles / 990,000 edges / 50,000 resources, two 21-assertion demo runs, and demo reset preserving every workload row. Own services and containers stopped after the round.
-- No performance result is claimed yet. Full JMH plus three 100,000-request authenticated HTTP runs require the coordinator's quiet-host grant. Final independent review remains pending.
+- Core correctness: 18 unit plus nine real PostgreSQL/Keycloak integration methods passed under JUnit 6.1.3 at 02:02:23 UTC on source `4bd4397…`. A04 closed the scoped independent correctness/security review of that source. No production Java changed during subsequent maintenance.
+- Core coverage: 343/348 lines and 267/291 branches, above enforced 85%/75%. Selected original top-level PolicyEngine PIT killed 58/58; its historical source/framework and parser/adapter exclusion are explicit in evidence.
+- Full seed and demo preparation passed: 50 tenants, 10,000 immutable revisions, 1,000,000 role rows, 990,000 inheritance edges and 50,000 resources. Both 21-assertion HTTP demo runs passed; resetting Harbor/Orchard preserved all workload rows.
+- Maintenance default verify passed 18 methods under JUnit 6.1.3 at 02:33:30 UTC. Compose and Testcontainers now pin the exact tested image digests. This configuration compiles and resolves the same image IDs; a new digest-spelling integration run was not performed.
+- Eight actual cache checks passed, including rejection of stale source/manifest, modified executable JAR, modified extracted class, extra dependency and symlink, then successful exact restoration without Maven. Artifacts are bound to the successful unchanged-source verification. No process/container starts occurred during these probes.
+- Full JMH and three 100,000-request HTTP measurements remain unrun. Quiet-host reservation, actual metric review and clean-checkout/remote validation remain open. No complete M1–M5 or release claim is made.
 
-The serious independent-oracle UNKNOWN/unboxing defect and PostgreSQL epoch-lock/audit-FK conflict were fixed with preserved failure evidence and substantive regressions. Detailed chronological checkpoints below distinguish earlier failures from later successful verification.
+Current handoff: `.work/A05/HANDOFF.md`; prepared exact runner: `.work/A05/run-reference-window.sh`. Evidence: `maintenance-verification.json`, `cache-preparation.json`, historical `correctness.json`, `mutation.json`, `demo.json` and `preparation.json`. Coordinator owns all Git/shared changes.
+
+The chronological record below preserves earlier failures and subsequent corrections; its old pending statements describe those historical checkpoints.
 
 ## Unit checkpoint, 2026-10-18 00:12 UTC
 
@@ -89,3 +92,11 @@ This is preparation only. No JMH or HTTP performance measurements ran, and no qu
 Fresh full `-Pintegration verify` completed **BUILD SUCCESS at 02:02:23 UTC**, 18 unit plus nine real PostgreSQL/Keycloak methods, zero failures/errors/skips. All test XML classpaths explicitly contain JUnit 6.1.3. The unchanged held old snapshot, 30 new post-revocation decisions, 160 concurrent readers and 100 alternating pooled-connection reads passed again. Current `correctness.json` and `correctness-methods.json` contain this run; earlier 6.0.3 envelopes are preserved with `-junit603` suffixes. Raw current log `.work/A05/integration-5.log`; exact historical/current root POM copies remain in `.work/A05/`.
 
 Both isolated test containers stopped. The application stack remains stopped; its full workload volume is `java-portfolio-tenantshield_tenantshield-data`, created 2026-10-18T01:34:48Z. No measurement was run. All owned paths are write-paused for the coordinator handoff; `.work/A05/HANDOFF.md` fixes source/runner hashes, commands, retained fixture identity and remaining gates. Final A04→A05 read-only review and quiet full measurements are still required; this is not full M1–M5 completion.
+
+## Immutable image and verified runtime maintenance
+
+Root resumed ownership for preparation after committing the reviewed correctness milestone. Existing PostgreSQL18.3 and Keycloak26.8.1 were pinned to their observed immutable registry digests in both Compose and Testcontainers; local inspection returned the exact previous image IDs. No image upgrade or seeded-volume mutation occurred.
+
+A source-only build stamp and unchecked `.complete` cache could previously accept altered outputs. The new manifest records the source and all three executable JAR hashes only after a successful ordinary verify with unchanged inputs. Every runtime extraction reuse compares exact classes/dependencies to the packaged bytes and rejects extra, missing, changed or symlinked entries. No-Maven preparation fails before Docker when the verified build is stale. Actual negative and restoration probes all passed (eight checks); the final verified cache is ready without starting a JVM/service/container. These are trusted local integrity checks, not remote signed supply-chain attestation.
+
+Final maintenance source `6e348ba5…` passed 18 unit methods at 02:33:30 UTC; historical 27-method integration/selected58-mutant evidence remains accurately scoped. The prepared full reference protocol requires explicit coordinator quiet permission and checks no other live Java process at entry, artifact/source identity, all three full request counts and expected denials, with owned teardown even on failure. It has not been run. All owned writes are paused until explicit resume.

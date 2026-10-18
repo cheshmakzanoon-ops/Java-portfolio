@@ -49,3 +49,9 @@ unset TENANTSHIELD_MIGRATION_URL TENANTSHIELD_MIGRATION_USER TENANTSHIELD_MIGRAT
 ```
 
 The seed mode's output argument is reserved; row-count validation happens directly in PostgreSQL. Expected totals are 50 tenants, 10,000 immutable policy revisions, 1,000,000 role rows, 990,000 inheritance edges, 50,000 resources and 50 active policy pointers. A demo reset removes Harbor/Orchard only; these workload totals must remain unchanged. Repeat up/demo after reset to prove the interactive fixture is reproducible.
+
+For a scheduled reference run, prepare outside the quiet window using `scripts/prepare-runtime.sh`. It starts no containers or application services: a missing/stale build runs the ordinary reactor verification, then records the unchanged source fingerprint and SHA256 of all three executable JARs. Every reuse checks those bytes. Extracted runtime classes and dependencies are checked against their exact packaged contents, including rejection of added, missing, modified or symlinked entries. A source stamp or `.complete` file alone is insufficient.
+
+Use `TENANTSHIELD_NO_MAVEN=1 projects/05-tenantshield/scripts/up.sh` during the quiet reservation. This mode refuses an absent, changed or stale verified build before starting Docker; it never performs a surprise Maven rebuild. If the extracted runtime is damaged, preserve its evidence and explicitly remove only the identified owned cache directory before preparing again outside the reference window. The manifest provides local verification provenance, not remotely signed artifact attestation.
+
+Compose and Testcontainers now pin PostgreSQL 18.3 and Keycloak 26.8.1 to the exact immutable registry digests observed in the passing real suite. These pins select the same tested image IDs; no version upgrade occurred. The retained seeded volume is unchanged.

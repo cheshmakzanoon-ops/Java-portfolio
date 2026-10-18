@@ -10,8 +10,8 @@ if [[ -x /workspace/.tools/jdk-25/bin/java && -f "$REPO_DIR/scripts/cloud-env.sh
 compose() { docker compose -f "$PROJECT_DIR/infra/compose.yaml" "$@"; }
 bounded() { python3 "$PROJECT_DIR/scripts/run-bounded.py" "$@"; }
 fingerprint() { python3 "$PROJECT_DIR/scripts/fingerprint.py"; }
-classpath() { python3 "$PROJECT_DIR/scripts/extract-runtime.py" "$PROJECT_DIR/verification/target/tenantshield-verification-1.0.0-SNAPSHOT-exec.jar" "$RUNTIME_DIR"; }
-require_current_build() { [[ -f "$RUNTIME_DIR/build.fingerprint" ]] && [[ "$(cat "$RUNTIME_DIR/build.fingerprint")" == "$(fingerprint)" ]] || { echo 'Executable inputs changed or no verified build recorded; run scripts/up.sh' >&2; return 1; }; }
+classpath() { require_current_build; python3 "$PROJECT_DIR/scripts/extract-runtime.py" "$PROJECT_DIR/verification/target/tenantshield-verification-1.0.0-SNAPSHOT-exec.jar" "$RUNTIME_DIR"; }
+require_current_build() { python3 "$PROJECT_DIR/scripts/build-cache.py" verify || { echo 'Verified artifacts are absent, stale or modified; run scripts/prepare-runtime.sh outside the quiet window' >&2; return 1; }; }
 require_running_build() { [[ -f "$RUNTIME_DIR/services.fingerprint" ]] && [[ "$(cat "$RUNTIME_DIR/services.fingerprint")" == "$(fingerprint)" ]] || { echo 'Running services must match current executable inputs; rerun scripts/up.sh' >&2; return 1; }; }
 owned_process_running() {
   local pid="$1" jar="$2" state

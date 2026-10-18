@@ -18,6 +18,10 @@
   "observedAt": "2026-10-18",
   "source": "docker image inspect after verified docker pull",
   "limitations": [
-    "Full version tags in runtime contract; these observed registry digests identify artifacts used in this environment."
-  ]
+    "Runtime Compose and Testcontainers now pin these exact observed immutable registry digests; no image version upgrade occurred."
+  ],
+  "runtimePins": {
+    "postgres": "postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db",
+    "keycloak": "quay.io/keycloak/keycloak:26.8.1@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"
+  }
 }
