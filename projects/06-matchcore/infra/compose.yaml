@@ -1,0 +1,3 @@
+# MatchCore uses retained local files and JDK HTTP; it requires no container services.
+name: java-portfolio-matchcore
+services: {}

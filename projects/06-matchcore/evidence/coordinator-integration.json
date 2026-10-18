@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "project": "matchcore",
+  "sourceRevision": "working-tree:java-pom-sha256:9f29712a58c5a11bdae6fc4576d842127b04c724a37b64ce1fd7b8d05c3af4d8",
+  "sourceHashScope": "sorted project-relative Java and POM paths+NUL+bytes+NUL, excluding target; runner scripts are not certified by this Maven run",
+  "rootPomSha256": "1d94d54f92155e0168aea2f827831f856617d6c94706a9a0aeafbd36bb9d79b7",
+  "baseCommit": "00f3011",
+  "observedAtUtc": "2026-10-18T00:57:42Z",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/06-matchcore/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A06/m2 -B -ntp -Pintegration verify",
+  "exitCode": 0,
+  "consoleTestMethods": 18,
+  "xmlReportedMethods": 16,
+  "generatedHistories": 120,
+  "oracleTransitions": 42000,
+  "additionalInvariantTransitions": 12000,
+  "suites": [
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.GatewayTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.HttpApiTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.JournalTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.BookTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.InvariantsTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.CrashIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.matchcore.AgreementTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "coreCoverage": {
+    "line": {
+      "covered": 252,
+      "missed": 8
+    },
+    "branch": {
+      "covered": 175,
+      "missed": 13
+    }
+  },
+  "actualProcessKillBoundaries": [
+    "BEFORE_APPEND",
+    "DURING_FRAME",
+    "AFTER_FORCE",
+    "AFTER_APPLY"
+  ],
+  "rawArtifact": ".work/coordinator/matchcore-integration.log",
+  "limitations": [
+    "Bounded schedules on one shared Linux host, not physical storage failure proof.",
+    "Jupiter and jqwik same-class report collision: console confirms2Jupiter+1property in AgreementTest; finalXMLkeeps1property.",
+    "Mutation, quiet million-command core/durable workloads, JMH/JFR, script demo and final independent review remain release obligations.",
+    "Final clean-checkout/repository/CI validation remains pending."
+  ]
+}

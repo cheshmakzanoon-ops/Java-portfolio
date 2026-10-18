@@ -1,0 +1,123 @@
+{
+  "sourceRevision": "working-tree:184d3914a93771b32b5198093a4bba9c6347480f92c2d7dcf969c7af2a40bc27",
+  "effectiveJUnit": "6.1.3",
+  "outcomes": {
+    "KILLED": 119,
+    "SURVIVED": 14
+  },
+  "allNonKilledMutations": [
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "apply",
+      "line": 58,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 135,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 108,
+      "description": "Replaced long subtraction with addition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 108,
+      "description": "Replaced long subtraction with addition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 96,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 107,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 179,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 92,
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Book::remove",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 85,
+      "description": "replaced return value with \"\" for io/github/cheshmakzanoon/portfolio/matchcore/Book::transition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 88,
+      "description": "replaced return value with \"\" for io/github/cheshmakzanoon/portfolio/matchcore/Book::transition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 93,
+      "description": "replaced return value with \"\" for io/github/cheshmakzanoon/portfolio/matchcore/Book::transition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 96,
+      "description": "replaced return value with \"\" for io/github/cheshmakzanoon/portfolio/matchcore/Book::transition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 97,
+      "description": "replaced return value with \"\" for io/github/cheshmakzanoon/portfolio/matchcore/Book::transition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 102,
+      "description": "replaced return value with \"\" for io/github/cheshmakzanoon/portfolio/matchcore/Book::transition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.EmptyObjectReturnValsMutator"
+    }
+  ],
+  "interpretation": "Survivors include test gaps and potentially equivalent changes; none is individually asserted equivalent. All remain in the denominator. A threshold pass is not exhaustive correctness proof."
+}

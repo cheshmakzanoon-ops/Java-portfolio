@@ -1,0 +1,16 @@
+# HTTP v1
+
+All endpoints bind loopback by default, port 18600 (`MATCHCORE_PORT`). Except health, requests require a valid protected bearer token or explicit `trusted-local-demo` with `X-Demo-Account`. Audience: `matchcore`; subject: account ID. Identifiers match `[a-zA-Z0-9_-]{1,64}`. POST JSON <=65536 bytes.
+
+- `POST /commands`: Model.Command JSON. NEW, CANCEL, REPLACE, INIT. `clientCommandId`, `accountId`, `type`, `orderId`, `side`, integral `priceTicks`, integral `quantityLots`, `timeInForce` GTC/IOC/FOK, `postOnly`, initialCash/initialLots. In REPLACE, `quantityLots` means **new remaining lots**, never total lifetime quantity; zero cancels. Side changes reject. INITIALIZATION requires admin. Tick size 0.01; unpriced market orders excluded.
+- `GET /commands/{id}`: authenticated subject's immutable durable outcome, including sequence, code, canonical payload hash and that command's executions. Unknown/other-owner IDs return 404.
+- `GET /book?depth=20&minimumSequence=0`: immutable aggregate depth with lastAppliedSequence. Depth 1..100; wait up to two seconds for a minimum sequence.
+- `GET /account`: subject's immutable cash/lots/reservations and applied sequence.
+- `GET /executions?offset=0&limit=20`: only subject's executions; limit 1..100, nonnegative offset, tagged applied sequence.
+- `GET /health`: 200 healthy or 503 recovery required.
+
+Business rejections are sequenced durable outcomes with HTTP 200 (RISK, OVERFLOW, POST_ONLY, FOK_UNFILLED, TERMINAL, NOT_FOUND, ORDER_ID_USED, SIDE_CHANGE, OPEN_ORDER_CAP). Identical retries return the original sequence/result; changed payload under the same identity gives 409 CONFLICT. Malformed input 400; body limit 413; authentication 401; ownership/scope 403; pre-admission overload/run cap 429; failed writer 503. Waiting timeout 202 OUTCOME_UNKNOWN_QUERY_STABLE_ID. Timeout is never proof of cancellation. Prices and quantity products must fit signed 64-bit integers.
+
+Replacement preserves the resting GTC policy. An existing order's positive-quantity replacement with IOC or FOK returns durable `TIF_CHANGE` and leaves the original untouched; submit a new order ID after cancellation to change policy. Zero remains cancellation. Protected tokens require both `exp` and `iat`; future issued-at values outside the 60-second skew reject. Saturated HTTP dispatch returns 429 `OVERLOADED_RETRYABLE` using bounded workers, a 64-task queue and a four-handler permit gate.
+
+HTTP REPLACE uses the required field `newRemainingQtyLots`, with `quantityLots` rejected as ambiguous. The adapter normalizes that explicit remaining quantity into the internal deterministic command representation; CLI/internal records continue using `quantityLots` with the documented remaining semantics. Example: `{"clientCommandId":"r-1","accountId":"alice","type":"REPLACE","orderId":"a-1","side":"BUY","priceTicks":10200,"newRemainingQtyLots":2,"timeInForce":"GTC"}`.

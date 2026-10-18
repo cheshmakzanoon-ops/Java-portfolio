@@ -1,0 +1,1 @@
+Run `../scripts/demo.sh` from this directory. It creates an isolated retained journal and asserts the full five-step master fixture, including unknown cancellation outcome and stable-ID recovery. It exits nonzero on any mismatch. `CrashIT` additionally uses separate JVM processes and actual forced process termination; the demo itself labels its injected storage fault.
