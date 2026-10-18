@@ -1,0 +1,32 @@
+{
+  "classification": "actual-supported-capture-preparation-byte-proof",
+  "timestamp": "2026-10-18T08:41:02.164978+00:00",
+  "sourceRevision": "working-tree-sha256:bf8294af855673e08feb586894e30e1ed22f77ff065af8c2714c8ffd0e2e6ace",
+  "preparationMethodsPassed": 15,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "rootCheckerExitCode": 0,
+  "positiveCutoff": 1792312732,
+  "purePythonControlsPassed": 13,
+  "independentDirectByteComparison": {
+    "classFiles": 44,
+    "otherMainResources": 4,
+    "jars": 6,
+    "allIdentical": true
+  },
+  "preparedRuntimeInputsHashVerified": 129,
+  "originalEngineManifestAndAllFilesVerified": true,
+  "oldQuiet12RunnerAndReadyUnchanged": true,
+  "qualified20AndSemantic4PacketSealsUnchanged": true,
+  "allObservedLiveJavaToolPids": [],
+  "newMeasurementExecuted": false,
+  "microReady": "/workspace/Java-portfolio/.work/A04/capture-fix-20261018T083044Z/MICRO_READY.json",
+  "microReadySha256": "48039112c65937a0ce6b82739c0fb0ada3db64252b1a0188a6c53bad31c2a62a",
+  "helperSha256": "c90a278ab87a8d24dd288a9424067ea97a3c8198e7d2f8c1ff04b875c49b7ed1",
+  "proofBuilderSha256": "e150201c48b41ee4a6ca7d707796ba1e1fe1429b75561fc26ec2894999fd7321",
+  "controlsSha256": "0935eca27eae1c5f4f03bb4b6b4ede725ffe0403463ecad6539462b01e97b894",
+  "productScriptSha256": "025f24aa519db2c72c620bfa8c2ce2c3d26c31893d48d653b8bda551cd4a7a47",
+  "baselineScriptSha256": "de63a04d6823328a47332d984b7259b055a80a6f39f5ab906bf830d08ff4baff",
+  "next": "WRITE_PAUSED pending root review and new explicit all-lock micro-only quiet reservation"
+}

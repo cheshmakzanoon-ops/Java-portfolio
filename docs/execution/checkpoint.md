@@ -2,6 +2,24 @@
 
 Continue the full ten-project directive; root owns Git/shared files on main. Source scripts/cloud-env.sh before Maven and always use the ordinary FIFO wrapper. The CURRENT active reservation below supersedes all older scheduling notes. No Java/build/Docker/evaluation/training outside the active study until root releases it.
 
+## Supplemental checkpoint during reference16
+
+Owner source writers paused at a saved boundary for a follow-up commit/push. [Additional authored helper snapshots](checkpoint-sources/20261018T085207Z/README.md) preserve the new zombie-census fix/tests, capture verifier/handoff and ThreadLens study9 handoff. The new capture evidence has independent closure; ThreadLens current stress/preparation is included. IndexForge development27's105-method result applies to its earlier development slice. Subsequent SourceFeatureView/SourceSearchFeatures/SearchEngine/facts-v3 changes are explicitly uncompiled WIP; SourceRelations itself was tested in27. No final certification, metric export, training, validation or held-out execution is inferred. Small coordinator source/evidence/Git I/O during16 is disclosed as background activity; no competing Java/Maven/apps start.
+
+## CURRENT active reservation16 — ClearLedger full study
+
+Root session10020 started08:48:21.183624UTC under all3 original build locks; no live Java/apps initially and7,236,542,464freebytes. Actual runner04539a854e9feacebeb2a94e49c1cf4630a0bfcb5cfcc34c7bac6ed5b37dc239; source47936597…/rootPOM3743d1ba… unchanged. Both runtime/JMH prepared checks and corrected quiet census pass. Archive `.work/A01/full-reference/20261018T084821Z-d8958190`. Execute all4cases×3forks and all9×100k writes with1/8/32writers, no workload reduction. No other Java/Maven/Docker/evaluation/training while active. A07 continues source implementation offline only. No completion/pass is inferred before the real runner terminates and validates every run/cleanup.
+
+The preceding15preflight failure remains unchanged. A01's narrow scratch correction excludes only matching-PID/full-stat verified stateZ; live and unknown Java entries remain.24pure controls and2real child-cleanup controls pass; root independently ran the4new proc fixtures. Historical839020 runner/control result preserved. PulseStream capture14 now has A03 independent10file/93,791byte closure under seal1a38fc41…; prior20full-study and4semantic packets remain preserved. ThreadLens study9 inputs are ready but84-JVM performance remains unrun.
+
+## Latest execution after pushed checkpoint78d9e35
+
+All user-requested changes through08:38UTC were committed/pushed as78d9e35afaeea66a9c22c9254ac69f7c2b0416c3; local/remote matched with clean tree. Work then resumed. PulseStream capture14 PASS45.477s: exact6distinctforkJFRs/12officialchecks/current15tests/compiled-byte equivalence, independent stopped check; root receipt014. Separate owner packet/independent closure is underway; prior full quiet12 is unchanged. ThreadLens study9 prepared with manifestb94afe8a… and all actualcause/stress/helper/certificate proofs, not executed.
+
+IndexForge development build27 passes all7modules/105methods,0fail/errors/skips,55.910s; this was spotless+test, not verify/integration/coverage/PIT certification. Serving/evaluation implementation continues offline; no metric export/training/VAL/heldout access.
+
+ClearLedger quiet15 FAILED PREFLIGHT in0.755s before JMH or PostgreSQL. A scratch process census counted old stateZ Java entries as active; root initial/final census correctly showed no live Java/apps. Actual caches/fingerprints passed. Failure receipt015 and original runner are preserved. A01 has only a narrow scratch census fix/control grant, no product changes. No active quiet reservation remains; other builds/measurements still require root scheduling. Root will use a new reservation for retry.
+
 ## Current user-requested commit and push checkpoint
 
 All active writers paused for the user's commit/push request. The earlier checkpoint c87ee5ed99c59983b83469ba04da7862c794bd63 was pushed and local/remote main matched. This supplemental checkpoint preserves every subsequent tracked/untracked source and documentation change, the qualified PulseStream evidence, and [new or changed authored helper sources](checkpoint-sources/20261018T083704Z/README.md). Generated dependency caches, compiled artifacts, recordings and databases remain ignored and retained locally under evidence locators; Git alone does not transfer those runtime files.

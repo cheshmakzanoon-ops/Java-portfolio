@@ -50,7 +50,7 @@ The GC text logs cover complete JVM lifetimes, including preparation, validation
 
 The observed current/original mean throughput ratio is6.646; normalized allocation is61.761%lower. Between-fork variability is high and warmup/measurement durations are short. All nine measurements per variant and JMH's original confidence/error fields are retained; within-fork measurements are not nine independent forks. This fresh-state microbenchmark does not exercise a million-ID dedup table or establish a6.646×durable-service benefit. No old-engine durable control was run.
 
-Each durable run retains its complete workload JFR, GC log and environment/result/console files. The JMH profiler printed the same pathname for each fork within a variant; exactly one JFR remains per variant, so separate recordings for all three forks are not available. Numeric primary and GC-profiler samples retain all forks. JFR semantic inspection awaits the coordinator's Java grant; byte hashes/header checks alone do not establish profile coverage or sampled hotspots.
+Each durable run retains its complete workload JFR, GC log and environment/result/console files. The JMH profiler printed the same pathname for each fork within a variant; exactly one JFR remains per variant, so separate recordings for all three forks are not available. Numeric primary and GC-profiler samples retain all forks. The subsequent [bounded semantic addendum](../evidence/reference-20261018-quiet12-jfr-addendum/README.md) successfully parsed all five retained recordings with official JDK25tools. A03 independently closed its output/hash/sample interpretation review. This does not recover the overwritten fork profiles or establish unsampled/profile-complete hotspots.
 
 ## Environment, resources and interpretation
 
@@ -61,3 +61,20 @@ Approximately60GB allocated per full run is an allocation observation. Full dedu
 The raw index verifies25files/70,859,616bytes with exact local paths/SHA256/sizes. Large raw files remain outside Git under `.work/A04/runtime`; small JSON copies are published. Source identity is `working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc`; envelope records runner/READY/baseline identities. Failed quiet10 is preserved separately and contributes no measurements here.
 
 The earlier10k/100key shared-host smoke remains [diagnostic evidence](../evidence/smoke-before-optimization.json), not a substitute for this prescribed study. Preparation explicitly generates managed JMH metadata/classpath and never silently runs a benchmark. Reproduction requires a fresh coordinator-granted quiet host and the frozen input checks; no Maven rebuild belongs inside the measurement reservation.
+
+
+## Separate capture repair verification
+
+Quiet14on2026-10-18 validated a capture-only script change at source `working-tree-sha256:bf8294af855673e08feb586894e30e1ed22f77ff065af8c2714c8ffd0e2e6ace`. The two scripts replace JMH's same-path built-in recording profiler with launch-enabled `StartFlightRecording` and literal `profile-%p.jfr`; the JDK expands `%p` to each fork PID. Three forks, two1second warmups, three1second measurements, GC profiler and original/current classpaths remain. No application Java/workload changed. Supported preparation passed15ordinary methods with a fresh-cutoff root checker; direct byte comparison preserved44classes/four resources/sixJARs and129runtime hashes.
+
+The separate all-three-lock reservation passed08:41:51–08:42:37UTC in45.477seconds. [Capture evidence](../evidence/capture-20261018-quiet14/README.md) indexes14raw files/4,792,650bytes. Six distinct files match observed fork PID/start ticks and official JVMInformation/ForkedMain identities. All12capped official summary/identity checks passed; recording durations round to5–6seconds with positive execution/allocation samples. Both variants retain3×3finite primary/GC sample sets. All175preflight input hashes matched; the outer reservation recorded no other Java/apps initially or remaining. No dependency stack started.
+
+| Capture-only observation | Original engine | Current engine |
+|---|---:|---:|
+| Distinct PID-named JFRs |3|3|
+| Mean normalized event operations/s |39472.925|278588.980|
+| Sample CV across three fork means |3.658%|12.492%|
+
+These launch-enabled recordings include JMH warmup/measurement/shutdown after recorder initialization; early JVM bootstrap can precede recording. The observation window and profiling overhead differ from quiet12's built-in profiler. These scores stay separate and do not replace, extend or form a same-profiler comparison with quiet12rows. No new stable-capacity, durable-speedup or dominant-cause claim follows. The accepted three-million durable study retains its original source2f7d… and all semantic-projection/positive-revision qualifications; no durable workload was rerun or relabeled. Keeping all forks' recordings was a capture-specific improvement, not a newly invented missing mandatory gate on the earlier accepted study.
+
+The exact prior qualified20file documentation/evidence bytes were preserved before these two current documentation updates; its seal remains reproducible from the archive recorded by the new capture packet. Original copied result/JMH/analysis JSON and the separate semantic addendum remain unchanged. Capture raw/code review passed independently; final public-packet/release review is separate.

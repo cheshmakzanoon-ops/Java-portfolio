@@ -20,7 +20,18 @@ public final class QueryPlanner {
     NO_RELATIONS,
     NO_MEMBER_USAGE;
 
-    public static List<Mode> legacyValues(){return List.of(BASELINE,SOURCE_AWARE,NO_IDENTIFIERS,NO_PATH,NO_PROSE,NO_CONCEPTS,NO_COVERAGE,NO_SIMILARITY,NO_CODE_FEATURES);}
+    public static List<Mode> legacyValues() {
+      return List.of(
+          BASELINE,
+          SOURCE_AWARE,
+          NO_IDENTIFIERS,
+          NO_PATH,
+          NO_PROSE,
+          NO_CONCEPTS,
+          NO_COVERAGE,
+          NO_SIMILARITY,
+          NO_CODE_FEATURES);
+    }
   }
 
   public static final String VERSION = "source-v9-bounded-structure";

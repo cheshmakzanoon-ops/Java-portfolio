@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "rootLocator": ".work/A08/repair-observer-stress-v3",
+  "files": [
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent-output/methods.tsv",
+      "bytes": 124,
+      "sha256": "31c3626ec2f50f1a3e15b4db91f373a7b3ddecf4cf683ac7a4a2ae6451b460b7"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent-output/observer-status.txt",
+      "bytes": 504,
+      "sha256": "36bc816243cde64ea6c9f924145fe7602d6f4c8454c19ef0547dc83cb728f37d"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent-output/timing-histograms.hlog",
+      "bytes": 1286,
+      "sha256": "2c051f1bbe326efc3336cbde72912e2e1fe992dcf0ed5ee1ff82d06ad453c72a"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent-output/timing-summary.tsv",
+      "bytes": 121,
+      "sha256": "3f71b730a52cf859faa81e5e76b233eda2bc54c708e240f06101810983985b02"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent-output/timings.tsv",
+      "bytes": 311230,
+      "sha256": "3eb7b45779d9caa0fd88d1adb0ad85e6c707e33f2d806bd68a77040d41f00a1a"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent.yaml",
+      "bytes": 240,
+      "sha256": "bb0b1a5208ed09eb8ac1999cd5ccef2a2eb4f5d6c97bc9670b2cce1a1836505c"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/command.json",
+      "bytes": 1508,
+      "sha256": "d9a721d35e645c4171696ab556cd064df89caa86ffbb6ea8b45a2bac25460043"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/completed.json",
+      "bytes": 2097,
+      "sha256": "c3fa6dca17e2390c7d1cb2feacb6075d4475bb220e4fa0e30cf1fcb54293df85"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/context.json",
+      "bytes": 538,
+      "sha256": "7edcbd72aace6ff28b1fde16535b6e3984aef9011ac522d82745407d9d0619bc"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/observer/observer.jfr",
+      "bytes": 29677582,
+      "sha256": "040a1df2637482d50c94e2c4dfbcca3f0609fcefeeacaf4bf6dbbdd7a943ba9a"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/observer/report.html",
+      "bytes": 2472901,
+      "sha256": "2944823e07a8340f3e836e1c7a6b569aa51954b13c2d237a7534c067199ec301"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/observer/report.json",
+      "bytes": 2378874,
+      "sha256": "f362c2b04a416699cf45c38827105930d01ad6a93b5e5963073a731d34adc368"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/observer/stress-summary.json",
+      "bytes": 1171,
+      "sha256": "0c73852c4fec70c270ad8161258ec5fa9a77ce9a4d4e0d74164fac905e2f290c"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/process.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/replayed-report/report.html",
+      "bytes": 243656,
+      "sha256": "d86eca359c275e534cfdb5f7dacb30e27ff63d1548e85bad981175b02dee21e0"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/replayed-report/report.json",
+      "bytes": 426725,
+      "sha256": "f4473e1ce976bd9a94fa5c9a696c5ec4844537d8f18f2b86aec3873465fa1328"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/replayed-report.log",
+      "bytes": 90,
+      "sha256": "571c18f2e84c9c629394f3754e4fa2070d1a3ab2eb70653965c3993a58d89c91"
+    }
+  ]
+}

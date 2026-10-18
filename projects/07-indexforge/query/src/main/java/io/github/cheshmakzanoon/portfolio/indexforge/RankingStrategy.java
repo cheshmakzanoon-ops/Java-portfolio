@@ -10,9 +10,17 @@ public enum RankingStrategy {
   SOURCE_RELATIONS,
   SOURCE_USAGE;
 
-  public boolean learned(){return this==PAIRWISE||structural();}
-  public boolean structural(){return this==SOURCE_MEMBERS||this==SOURCE_RELATIONS||this==SOURCE_USAGE;}
-  public int dimensions(){return this==SOURCE_MEMBERS?12:structural()?16:10;}
+  public boolean learned() {
+    return this == PAIRWISE || structural();
+  }
+
+  public boolean structural() {
+    return this == SOURCE_MEMBERS || this == SOURCE_RELATIONS || this == SOURCE_USAGE;
+  }
+
+  public int dimensions() {
+    return this == SOURCE_MEMBERS ? 12 : structural() ? 16 : 10;
+  }
 
   public boolean suppressIdentifierWeights(String raw) {
     return this != CLASSIC && PlainTextQuery.multiword(raw);

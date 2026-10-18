@@ -56,7 +56,8 @@ public class IndexForgeApplication {
         RankingProfile.valueOf(env.getProperty("indexforge.ranking-profile", "CURRENT")),
         RankingConfiguration.from(
             env.getProperty("indexforge.ranking-strategy", "CLASSIC"),
-            env.getProperty("indexforge.ranking-model"),env.getProperty("indexforge.api-catalog")));
+            env.getProperty("indexforge.ranking-model"),
+            env.getProperty("indexforge.api-catalog")));
   }
 
   @Bean

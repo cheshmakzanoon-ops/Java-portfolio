@@ -1,0 +1,11 @@
+# Separate per-fork capture verification — quiet14
+
+Quiet14passed08:41:51–08:42:37UTC on2026-10-18 (45.477seconds), with source `working-tree-sha256:bf8294af855673e08feb586894e30e1ed22f77ff065af8c2714c8ffd0e2e6ace`. This capture-specific script change leaves all44compiled classes/four main resources/sixJARs and129runtime hashes byte-identical to quiet12. Actual supported preparation ran15tests with no failures/errors/skips and a fresh-cutoff root checker;13pure control methods also passed.
+
+[Envelope](envelope.json), [verification](verification.json), and [preparation](preparation.json) record actual source/outer-reservation/receipt identity,14raw files/4,792,650bytes, exact output hashes/locators and checks. Large raw JFR/console files remain outside Git at the indexed `.work/A04/runtime` paths; original/current numeric JSON and environments are copied here unchanged.
+
+Each variant retained exactly3distinct PID-named JFRs (six total). All6filename PIDs match observed phase-descendant PIDs/start ticks and recorded official `jdk.JVMInformation` identities/ForkedMain/profile arguments. Twelve capped official JFR summary/identity commands succeeded; positive CPU/allocation event counts and5–6second recording durations were observed. All3forks×3measurements retain finite numeric primary and GC-profiler samples. All175preflight input hashes matched; root's outer reservation recorded all3locks, no other Java/apps initially, and none remaining. No dependencies were started; owned descendant cleanup completed.
+
+Launch-enabled recordings include JMH warmup/measurement/shutdown after recorder initialization; earliest JVM bootstrap can precede recording. This differs from quiet12's built-in profiler. These are separate capture observations, not replacement or comparable-profiler continuation rows. Quiet12's three-million durable results retain source2f7d… and their semantic-projection/positive-revision qualifications. No durable workload was rerun or relabeled. The optional capture repair does not invent a missing mandatory all-fork recording gate on the original accepted study. Independent capture-artifact/release review remains separate.
+
+Owner verification was Python-only bounded SHA/small JSON/text after the completed reservation; no Java/Maven/Docker/new measurement ran during postprocessing.

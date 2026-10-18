@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "observedAtUtc": "2026-10-18T08:37:42.118942+00:00",
+  "observedAtUtc": "2026-10-18T08:43:58.725130+00:00",
   "reservation": "quiet-validation-13-threadlens-stress",
   "sourceFiles": {
     ".work/A08/prepare-reference-9.py": "e0c29aca2eb67cdd84370ea809b1ff3e63f23ec07e449ae2ec6fa6759d83476f",
@@ -24,8 +24,8 @@
     "failures": 0,
     "errors": 0,
     "exitCode": 0,
-    "elapsedSeconds": 0.193,
-    "scope": "Owner-reported tiny-filesystem/AST mock controls; root independently observed prior10-method pass."
+    "elapsedSeconds": 0.245,
+    "scope": "Root independently executed all15 tiny-filesystem/AST mocked controls on the same bound source; actual clean checkout remains unrun."
   },
   "cleanCheckoutActualProcessControls": {
     "status": "PASS",

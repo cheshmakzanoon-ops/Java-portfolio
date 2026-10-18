@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "timestamp": "2026-10-18T08:42:15.600615+00:00",
+  "os": "Linux",
+  "kernel": "6.18.55",
+  "architecture": "x86_64",
+  "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logicalCpuCount": 5,
+  "affinityCpuCount": 5,
+  "cgroupCpuMax": "400000 100000",
+  "cgroupMemoryMax": "34359738368",
+  "jdk": {
+    "exitCode": 0,
+    "output": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)"
+  },
+  "sourceRevision": "working-tree-sha256:bf8294af855673e08feb586894e30e1ed22f77ff065af8c2714c8ffd0e2e6ace",
+  "containerImages": {
+    "exitCode": 0,
+    "output": "[\"postgres@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7\"]\n[\"apache/kafka@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0\"]"
+  },
+  "limits": {
+    "heap": "512MiB",
+    "partitions": 8,
+    "fullKeys": 10000,
+    "fullMeasurements": 1000000,
+    "queueBatches": 8,
+    "maximumFetchedRecords": 1000
+  },
+  "boundary": "single shared host; PostgreSQL and Kafka containers share CPU/memory; Java process CPU excludes their work"
+}

@@ -26,7 +26,7 @@ public record DevelopmentScaler(double[] means, double[] scales) {
 
   public double[] apply(double[] features) {
     double[] values = SearchFeatureSchema.checked(features);
-    if(values.length!=means.length)throw new IllegalArgumentException("scaler schema mismatch");
+    if (values.length != means.length) throw new IllegalArgumentException("scaler schema mismatch");
     for (int i = 0; i < values.length; i++)
       values[i] = Math.clamp((values[i] - means[i]) / scales[i], -8.0, 8.0);
     return values;
@@ -40,10 +40,12 @@ public record DevelopmentScaler(double[] means, double[] scales) {
             .toList();
     if (eligible.isEmpty())
       throw new IllegalArgumentException("no eligible development observations");
-    int dimensions=eligible.getFirst().rows().getFirst().features().length;
-    for(var query:eligible)for(var row:query.rows())if(row.features().length!=dimensions)throw new IllegalArgumentException("mixed development schema");
-    double[] means = new double[dimensions],
-        scales = new double[dimensions];
+    int dimensions = eligible.getFirst().rows().getFirst().features().length;
+    for (var query : eligible)
+      for (var row : query.rows())
+        if (row.features().length != dimensions)
+          throw new IllegalArgumentException("mixed development schema");
+    double[] means = new double[dimensions], scales = new double[dimensions];
     for (var query : eligible)
       for (var row : query.rows()) {
         double[] values = row.features();

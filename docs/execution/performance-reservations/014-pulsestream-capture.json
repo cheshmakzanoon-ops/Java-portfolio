@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-18T08:43:41.529010+00:00",
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T08:41:51.532430+00:00",
+    "command": [
+      "env",
+      "PULSE_MICRO_RESERVATION=quiet-reference-14-pulsestream-micro",
+      "python3",
+      ".work/A04/run-micro-capture.py",
+      ".work/A04/capture-fix-20261018T083044Z/MICRO_READY.json"
+    ],
+    "sourceRevision": "78d9e35afaeea66a9c22c9254ac69f7c2b0416c3",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T08:41:51.538744+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 7242956800,
+    "exitCode": 0,
+    "completedAtUtc": "2026-10-18T08:42:37.015440+00:00",
+    "elapsedSeconds": 45.47713599700364,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "PASS"
+  },
+  "sourceRevision": "working-tree-sha256:bf8294af855673e08feb586894e30e1ed22f77ff065af8c2714c8ffd0e2e6ace",
+  "result": "CAPTURE_VERIFIED",
+  "verifiedForkRecordings": 6,
+  "officialJfrCommands": 12,
+  "scope": [
+    "Three forks/variant,2x1s warmup,3x1s measurement and GC profiler preserved. Explicit JFR starts at fork JVM startup and includes warmup/shutdown; different from quiet12 built-in-profiler boundary.",
+    "No durable workloads or old-study relabeling. New score rows are separate capture observations, not same-profiler continuation of quiet12.",
+    "Official JFR validation uses256MiB/oneCPU/max45s/command180s total/1MiB combined output, sequential after each variant.",
+    "All3root build locks required; no other JVM/apps/containers; descendant supervision overhead included, not independently quantified."
+  ],
+  "rawSummary": {
+    "path": ".work/A04/micro-capture-runs/20261018T084151Z-706053/summary.json",
+    "bytes": 64257,
+    "sha256": "624bffd3e6c15aca393e1e63a3b9f727dae1280928b5731c01f946d0e9aea10d"
+  },
+  "ready": {
+    "path": ".work/A04/capture-fix-20261018T083044Z/MICRO_READY.json",
+    "sha256": "48039112c65937a0ce6b82739c0fb0ada3db64252b1a0188a6c53bad31c2a62a"
+  },
+  "independentStopped": true,
+  "originalFullStudyIdentity": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "comparisonRule": "Capture followup has a different profiling window; no quiet12 replacement or mixing. The unchanged compiled byte/runtime equivalence is separately bound by MICRO_READY.",
+  "independentReview": {
+    "reviewer": "A03",
+    "status": "CLOSED_NO_FINDING",
+    "publicPacketFiles": 10,
+    "publicPacketBytes": 93791,
+    "packetSeal": "1a38fc41424b7fbf5be29607071611555179629840c9e0ea2f47f544dd218c28",
+    "ownerPacketSha256": "602462fca639ca6e9e969b6730f9c70e007338e93ad4dafb6a077e1003fb77e2",
+    "scope": "Actual raw/code/source/compiled-byte equivalence, six distinct fork/JVM identities, official output inventory, all metrics arithmetic, public copies/claims, preserved prior full-study packet; final global/release remains separate."
+  }
+}

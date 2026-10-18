@@ -63,7 +63,9 @@ public final class LinearRankingModel {
     return l2;
   }
 
-  public int dimensions(){return means.length;}
+  public int dimensions() {
+    return means.length;
+  }
 
   public double[] means() {
     return means.clone();
@@ -79,7 +81,8 @@ public final class LinearRankingModel {
 
   public double[] normalized(double[] input) {
     double[] values = SearchFeatureSchema.checked(input);
-    if(values.length!=means.length)throw new IllegalArgumentException("inference model schema dimension");
+    if (values.length != means.length)
+      throw new IllegalArgumentException("inference model schema dimension");
     for (int i = 0; i < values.length; i++)
       values[i] = Math.clamp((values[i] - means[i]) / scales[i], -8.0, 8.0);
     return values;
@@ -98,7 +101,10 @@ public final class LinearRankingModel {
     StringJoiner out = new StringJoiner(" ", "linearModel=" + identity + " ", "");
     for (int i = 0; i < values.length; i++)
       if (values[i] * weights[i] != 0)
-        out.add(SearchFeatureSchema.names(values.length).get(i) + "Contribution=" + values[i] * weights[i]);
+        out.add(
+            SearchFeatureSchema.names(values.length).get(i)
+                + "Contribution="
+                + values[i] * weights[i]);
     return out.toString();
   }
 
@@ -149,9 +155,11 @@ public final class LinearRankingModel {
         Arrays.copyOfRange(bytes, body.length, bytes.length)))
       throw new IOException("model checksum");
     try (var in = new DataInputStream(new ByteArrayInputStream(body))) {
-      if(in.readInt()!=MAGIC||in.readInt()!=1)throw new IOException("model schema");
-      String schema=in.readUTF();int dimensions=in.readInt();
-      if(!schema.equals(SearchFeatureSchema.version(dimensions)))throw new IOException("model schema");
+      if (in.readInt() != MAGIC || in.readInt() != 1) throw new IOException("model schema");
+      String schema = in.readUTF();
+      int dimensions = in.readInt();
+      if (!schema.equals(SearchFeatureSchema.version(dimensions)))
+        throw new IOException("model schema");
       double[][] arrays = new double[3][dimensions];
       for (double[] array : arrays)
         for (int i = 0; i < array.length; i++) array[i] = in.readDouble();

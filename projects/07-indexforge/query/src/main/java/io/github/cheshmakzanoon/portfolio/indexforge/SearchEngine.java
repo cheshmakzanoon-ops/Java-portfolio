@@ -246,7 +246,8 @@ public final class SearchEngine implements AutoCloseable {
       reconcile(publisher);
       if (jobs.completed(job.id())) return job;
       GenerationBuilder builder =
-          new GenerationBuilder(root.resolve("index").resolve(a.tenant()), cas);
+          new GenerationBuilder(root.resolve("index").resolve(a.tenant()), cas,
+              GenerationBuilder.MAX_SOURCE_BYTES, ranking.strategy().structural());
       var built = builder.build(m, publisher.sources(), fault, cancelled, job.id());
       authorization.require(a, m.tenantId(), m.repositoryId());
       if (cancelled.getAsBoolean() || Thread.currentThread().isInterrupted())
@@ -309,13 +310,23 @@ public final class SearchEngine implements AutoCloseable {
                     lease,
                     request.text(),
                     mode);
-        if (ranking.strategy() == RankingStrategy.PAIRWISE
+        if (ranking.strategy().learned()
             && mode != QueryPlanner.Mode.BASELINE
             && PlainTextQuery.multiword(request.text())) {
           var vectors =
               new SearchFeatures()
                   .extract(ranked, lease, request.text(), mode, rankingProfile, authorization, a);
-          ranked = new LearnedRanker().rank(vectors, ranking.model());
+          if(ranking.strategy().structural()) {
+            var extraction=new SourceSearchFeatures().extract(vectors,lease,request.text(),mode,ranking,authorization,a);
+            if(extraction.usableNewEvidence())ranked=new LearnedRanker().rank(extraction.vectors(),ranking.model());
+          }else ranked = new LearnedRanker().rank(vectors, ranking.model());
+        }
+        if(ranking.strategy()==RankingStrategy.SOURCE_USAGE&&PlainTextQuery.identifier(request.text())
+            &&!Set.of(QueryPlanner.Mode.BASELINE,QueryPlanner.Mode.NO_IDENTIFIERS,
+                QueryPlanner.Mode.NO_CODE_FEATURES,QueryPlanner.Mode.NO_MEMBER_USAGE).contains(mode)) {
+          try(var view=new SourceFeatureView(ranked,lease,ranking.catalog(),authorization,a)) {
+            ranked=new SourceUsageRanker().rank(ranked,request.text(),view.usage(request.text()));
+          }
         }
         int start = position == null ? 0 : position.offset(),
             end = Math.min(ranked.size(), start + request.pageSize());
@@ -437,6 +448,8 @@ public final class SearchEngine implements AutoCloseable {
         var vectors =
             new SearchFeatures()
                 .extract(base, lease, request.text(), mode, rankingProfile, authorization, access);
+        if(ranking.strategy().structural())vectors=new SourceSearchFeatures().extract(vectors,lease,request.text(),mode,
+            ranking,authorization,access).vectors();
         List<AuditCandidate> rows = new ArrayList<>();
         for (var vector : vectors)
           rows.add(
@@ -450,7 +463,7 @@ public final class SearchEngine implements AutoCloseable {
                   vector.values()));
         if (authorization.current(access))
           return new CandidateAudit(
-              lease.id(), rankingIdentity(), SearchFeatureSchema.VERSION, rows);
+              lease.id(), rankingIdentity(), SearchFeatureSchema.version(ranking.strategy().dimensions()), rows);
       }
     }
     throw new SecurityException("authorization changed; retry");

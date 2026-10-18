@@ -46,15 +46,16 @@ public final class GenerationBuilder {
 
   public GenerationBuilder(Path root, ContentAddressedStore cas, long sourceByteLimit)
       throws IOException {
-    this(root,cas,sourceByteLimit,false);
+    this(root, cas, sourceByteLimit, false);
   }
 
-  public GenerationBuilder(Path root,ContentAddressedStore cas,long sourceByteLimit,boolean structural)
+  public GenerationBuilder(
+      Path root, ContentAddressedStore cas, long sourceByteLimit, boolean structural)
       throws IOException {
     if (sourceByteLimit < 1 || sourceByteLimit > MAX_SOURCE_BYTES)
       throw new IllegalArgumentException("source byte limit");
     this.sourceByteLimit = sourceByteLimit;
-    this.structural=structural;
+    this.structural = structural;
     this.root = root;
     this.cas = cas;
     this.checkpoints = new CheckpointStore(root.resolve("checkpoints"));
@@ -120,7 +121,8 @@ public final class GenerationBuilder {
     checkpoints.read(hash); // Validated hints never override the authoritative manifest/commit.
     byte[] snapshot = fullSnapshot(docs.values());
     DurableFiles.atomicWrite(dir.resolve("snapshot.bin"), snapshot);
-    try (SourceParserClient parser=structural?new SourceParserClient(root.resolve("source-workers")):null;
+    try (SourceParserClient parser =
+            structural ? new SourceParserClient(root.resolve("source-workers")) : null;
         Directory fs = FSDirectory.open(dir);
         Analyzer identifiers = new CodeIdentifierAnalyzer();
         Analyzer prose = new SourceProseAnalyzer();
@@ -132,38 +134,54 @@ public final class GenerationBuilder {
                 fs,
                 new IndexWriterConfig(analyzer).setOpenMode(IndexWriterConfig.OpenMode.CREATE))) {
       int n = 0;
-      SourceRepositoryFacts.Builder graph=null;String graphScope="";
+      SourceRepositoryFacts.Builder graph = null;
+      String graphScope = "";
       for (SourceDocument s : docs.values()) {
         if (cancelled.getAsBoolean() || Thread.currentThread().isInterrupted())
           throw new IOException("cancelled");
-        SourceFacts.Unit facts=null;
-        if(parser!=null) {
-          String scope=s.tenant()+"/"+s.repository();
-          if(!scope.equals(graphScope)) {
-            if(graph!=null)SourceRepositoryFacts.write(dir,graph.finish());
-            graph=new SourceRepositoryFacts.Builder(s.tenant(),s.repository());graphScope=scope;
+        SourceFacts.Unit facts = null;
+        if (parser != null) {
+          String scope = s.tenant() + "/" + s.repository();
+          if (!scope.equals(graphScope)) {
+            if (graph != null) SourceRepositoryFacts.write(dir, graph.finish());
+            graph = new SourceRepositoryFacts.Builder(s.tenant(), s.repository());
+            graphScope = scope;
           }
-          facts=s.entry().language().equals("java")?parser.parse(s.content()):
-              new SourceFacts.Unit(SourceFacts.Status.OBSERVED,"",List.of(),List.of(),List.of());
-          facts=SourceAnchors.checked(facts);
-          graph.add(s,facts);
+          facts =
+              s.entry().language().equals("java")
+                  ? parser.parse(s.content())
+                  : new SourceFacts.Unit(
+                      SourceFacts.Status.OBSERVED, "", List.of(), List.of(), List.of());
+          facts = SourceAnchors.checked(facts);
+          graph.add(s, facts);
         }
-        writer.addDocument(DocumentMapper.map(s,facts));
+        writer.addDocument(DocumentMapper.map(s, facts));
         fault.at(Boundary.DOCUMENT);
         if (++n % 1000 == 0) checkpoints.save(hash, n);
       }
-      if(graph!=null)SourceRepositoryFacts.write(dir,graph.finish());
-      Map<String,String> metadata=new HashMap<>(Map.of(
-          "manifest",hash,"snapshot",Digests.sha256(snapshot),"schema",Integer.toString(SnapshotManifest.SCHEMA),
-          "count",Integer.toString(docs.size()),"generation",id,"job",jobId));
-      if(parser!=null) {
-        metadata.put("source_schema",SourceFacts.SCHEMA);
-        metadata.put("source_graph",SourceSymbolGraph.SCHEMA);
-        metadata.put("source_worker",parser.identity());
-        metadata.put("source_jdk",System.getProperty("java.runtime.version"));
+      if (graph != null) SourceRepositoryFacts.write(dir, graph.finish());
+      Map<String, String> metadata =
+          new HashMap<>(
+              Map.of(
+                  "manifest",
+                  hash,
+                  "snapshot",
+                  Digests.sha256(snapshot),
+                  "schema",
+                  Integer.toString(SnapshotManifest.SCHEMA),
+                  "count",
+                  Integer.toString(docs.size()),
+                  "generation",
+                  id,
+                  "job",
+                  jobId));
+      if (parser != null) {
+        metadata.put("source_schema", SourceFacts.SCHEMA);
+        metadata.put("source_graph", SourceSymbolGraph.SCHEMA);
+        metadata.put("source_worker", parser.identity());
+        metadata.put("source_jdk", System.getProperty("java.runtime.version"));
       }
-      writer.setLiveCommitData(
-          metadata.entrySet());
+      writer.setLiveCommitData(metadata.entrySet());
       fault.at(Boundary.BEFORE_COMMIT);
       writer.commit();
       fault.at(Boundary.AFTER_COMMIT);
