@@ -1,5 +1,33 @@
 # Coordinator checkpoint
 
+Continue the full ten-project directive; root owns Git/shared files on main. Source scripts/cloud-env.sh before Maven and always use the ordinary FIFO wrapper. The CURRENT active reservation below supersedes all older scheduling notes. No Java/build/Docker/evaluation/training outside the active study until root releases it.
+
+## Active checkpoint,2026-10-18T04:22Z
+
+Latest pushed HEAD2b59670 publishes TenantShield full study/A04 closure after e9ec63f IndexForge24/cachefix/finalquality/baselinelatency, c3fe9d0 setupnetworkdraft/PowerShell preparation,4785384 cleancheckout/benchmarkworkflow fixes. Working tree was clean before A07 offlinewave2 edits. Rootverification forA07 uses projectverify.sh;A10 uses nonmutating verify with before/after source-bound stamp;PowerShell parity requiresGitBash and remainsnativeUNTESTED. RawmeasurementCSV bytes are preserved by .gitattributes, includingCRLF; actualJMH trailing newline retained.
+
+Quiet6TenantShield PASS814.079964s ended04:07:30Z:3x100kHTTP,0errors/20kDENYeach,two3forkJMH. Rates593.274713/504.958010/367.263479req/s,CV23.316551%,progressivedecline38.095545% disclosed, no stablecapacity/causalclaim. A04 finalactual22rawfile/JAR/statisticsreview CLOSED. P05-A5 nowPASS;clean/globalrelease separate.
+
+IndexForge24 strict65methods/98of98PIT sourcea94bed568597a6746b3d01bee127e3157a2f2c34255b3d6d867a321ee765f0de; CLI6c2ae0c414013a55e8d83bcfd9e65707ccfb984fa684054bf83910f08c4d564d. A06closedcanonicalfilterdigest collisionfix. Exact540dev/valrows match22; once-onlyfrozen firstheldout measured baseline.601272nDCG/.883333identifierMRR, candidate.626796/.8. Baseline retained;P07-A4FAILED. No relabeling or winningablation substitution. Actual2k/20kdemos passed, verified100kreuse. Quiet8baseline PASS107.201369s ended04:17:57Z:3x900requests30RPS,-Xmx2g,0errors,p954.727653/6.977346/2.607306ms. P07-A1/A2/A3/A5/A6 nowPASS. Quiet7 was CANCELLED_BEFORE_RESERVATION afterreviewfoundcollision, no measurements;preserved.
+
+Quiet9ThreadLens IS NOW RUNNING,started04:17:57.181064Z,sourceinputs/executor fromimmutable8handoff;holdsALL3buildlocks,nootherJVM/apps atentry. Rootsession14409; `.work/A08/reference-study-8/run-order.json` contains active rows without exitCode: count only rows WITHexitCode as completed. At04:22 two completed0,thirdactive. All84x90sec mandatory(~126minplusstartup),expectedfinisharound06:25UTC. NoMaven/Java/Docker/othermeasurements untilrootrelease. Rootpreparedexecutorupdatesmanifest;do notwriteactivefiles. FullP08-A5 remainsOPENuntilall8gatesvalidated;preserveanyfailure.
+
+During09quiet,A07 is explicitlyauthorized OFFLINEsource/test/protocol implementation of development/validation-only rankingwave2, basedon `.work/A06/indexforge-ranking-recommendation.md`. NoJava/Maven/evaluation/training/prep mayrunorqueue untilrootrelease. Masterdoesnotrequireone-modelever;firstfinalseals/results/labels remainimmutablehistory. Newversionmustpreregisterfinitecandidates,freezeallchoicesbeforeexplicitversionedevaluation,discloserepeated-testlimits,neverchooseheldoutwinningablation or relabel. Ownerhadinspectedonlyq61/q65postfinalbefore steering; no furtherheldoutrowsallowed. A06 coldreadonlydevvalrecommendation: syntax-gatedidentifier/symbolsuppression forplainmultiwordnaturalquery,thenboundedshared-featurepairwiselinearLTR withgroupedDEVfolds/devonlyscaling/tinyL2grid/frozenVALselection. Noidentifyingfeature/fixturepriors. Rootwillreview/testafter09.
+
+Allotherownerspaused. Preparedfullrunners,NOTEXECUTED:
+- A01 `.work/A01/run-full-reference.sh --execute --reservation LABEL` (rootquiethelperoutside);11offlinetests,full3forkJMH+nine100k writes,priorDBdumps/alwaysdown. `.work/A01/FULL_REFERENCE_HANDOFF.md`.
+- A02 `python3 .work/A02/run-full-reference.py --quiet-reservation LABEL`;3fresh10kx8rounds/providerindependentaudit/alwaysdown. Exit2meansall3passbutnoisy/nobudget;notincompleterun. `.work/A02/FULL_RUN_PROTOCOL.md`.
+- A03 `python3 .work/A03/execute-prepared-full.py`;18full100k×1KiBscenarios,exact82artifacts,3GiBinitialdisk/512MiBmidfloor,ownTLSmemberscleanup. `.work/A03/FULL_RUN_PROTOCOL.md`.
+- A04 `env PULSE_QUIET_RESERVATION=LABEL python3 .work/A04/run-quiet.py`;old/current3forkJMH+3million-eventruns,ownPG/Kafka,8GiBinitial/3GiBphase/1.5GiBfloor,14mockedtests. `.work/A04/PERFORMANCE_HANDOFF.md`.
+- A10 `python3 .work/A10/quiet-run.py --execute-quiet`;fullbothJMHboundaries+30actual30sec-budgetsolves,alwaysdown,4GiBdisk,5stubtests. `.work/A10/QUIET_RUN_HANDOFF.md`.
+Do notcalltheseoutsideactualquietroothelper. Monitorfreedisk(last7.1GiB),reclaimonlyrecoverableverifiedignoredartifactsifneeded,neverdeleteevidence. A04initial8GiBrequireslegitimatecapacityworkbeforeitcanrun. Full01/02/03/04/10+08complete+new07quality/retainedmeasurements andglobalcleancheckout/integration/mutation/demos/CIremain.
+
+Onboardingsetupdraftreadbackconfirmedinstall/startinstructions persistedrevision2. Restrictedpackage-managerpresetomittedapi.github.com/NVD/CISA;additivecustomdomainsapi.github.com,services.nvd.nist.gov,www.cisa.gov saved(statussaved,requires_publishtrue),presetsretained. Draftdoesnotactivate/publishruntime. Userreview/save/publicationneededafterindependentwork;do notclaim403fixedorvulnerabilityclean. SBOMstillmatchesall65currentPOMhashes. PublicActionspage04:01observed4785384CIpending/integration+securityqueued,nohostedpasses. Finalrefreshstillrequired.
+
+## Earlier context, superseded where noted
+
+# Earlier baseline and project handoffs
+
 Continue until all ten projects and all mandatory acceptance gates are complete. The user explicitly authorizes implementation, specialized owner delegation, fixes, commits and pushes on main. Do not stop at a partial milestone. Automated ByteGuard worker screening interrupted legitimate local parser work; root adopted it and completed its source/tests/review. Do not repeat that interruption as an application security blocker.
 
 Use `/workspace/Java-portfolio` on `main`, no worktrees. Root owns all Git/shared files; workers own their project paths and pause before staging. Always source `scripts/cloud-env.sh` before Maven and use the ordinary three-slot FIFO wrapper. At most two application Docker stacks. All quiet studies use `.work/coordinator/run-quiet.py`, which drains/holds all three locks and records actual JVM/container isolation. Prepared entrypoints must not invoke Maven inside the reservation.
@@ -8,7 +36,7 @@ Use `/workspace/Java-portfolio` on `main`, no worktrees. Root owns all Git/share
 
 Temurin25.0.4.1+1, checksum-pinned Maven3.10.0, effective JUnit6.1.3; root POM SHA `3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d`. Historical6.0.3 evidence remains historical. Shared tooling tests9/9 and architecture checks pass. Real deliberate foundation assertion/format/coverage failures plus baseline/restored success were observed. Required integration discovery and mutation-denominator gates are enforced.
 
-Latest pushed HEAD at2026-10-18T03:47Z: `63d005b` DurableFlow prepared/lifecycle, after `25a5869` MatchCore full study and `61eac32` ByteGuard complete implementation/measurement. Previous `badaaff` RouteWeaver54-method correctness, `e16b8a4` PulseStream correctness, `29e0bbd` realSBOM/licenses/feedfailure, `7621fbd` Quorum/MatchCorecache, `a1e28a9` TenantShieldcache/images, `5efd580` ClearLedger audited correctness, `fbe9630` IndexForge18, `dbab3a1` rootpresentation. All ten implementations now have substantive committed source; acceptance/release is incomplete.
+Historical pushed HEAD at2026-10-18T03:47Z: `63d005b` DurableFlow prepared/lifecycle, after `25a5869` MatchCore full study and `61eac32` ByteGuard complete implementation/measurement. Previous `badaaff` RouteWeaver54-method correctness, `e16b8a4` PulseStream correctness, `29e0bbd` realSBOM/licenses/feedfailure, `7621fbd` Quorum/MatchCorecache, `a1e28a9` TenantShieldcache/images, `5efd580` ClearLedger audited correctness, `fbe9630` IndexForge18, `dbab3a1` rootpresentation. All ten implementations now have substantive committed source; acceptance/release is incomplete.
 
 ## Current project state
 
@@ -32,3 +60,4 @@ A05 and A07 may build/prep now; no quiet reservation active after failed5, all T
 Root acceptance matrix now reflects ByteGuard allsix local gates, PulseStream1–4 and MatchCore5 measured completion. Source/method freshness scopes remain explicit. Final clean-checkout builds/root+independent, full required integration/mutation checks, allcurrentdemos/coexistence, links/architecture/security/dependency checks, final Git/remoteCI still required. Never mark all63rows passed merely because files exist.
 
 Local CycloneDX aggregate actually passed:176components,113external allwithpublishedlicensemetadata. `docs/dependencies/{portfolio.cdx.json,LICENSES.md,evidence.json}` and exact tested image digests are committed. OWASP actualscan exit1: CISA KEVHTTP403/NoDataException; NVD access also403. `security-scan.json` correctlyBLOCKED_EXTERNAL_DATA_ACCESS with nullvulnerabilityconclusion. Do not disable feeds or pretend clean scan. Gitpush works; GitHub REST403/directDNS unavailable, publicActionsHTML works. Actualhostedpassesunverified; refresh finalrun statuses. NativeWindows/macOS unavailable/unverified. Complete unaffected work before reporting concrete externalblockers.
+
