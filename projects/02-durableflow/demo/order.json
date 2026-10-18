@@ -1,0 +1,55 @@
+{
+  "name": "order-fulfilment",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "reserve",
+      "kind": "ACTIVITY",
+      "requires": [],
+      "activity": "reserve",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": "release",
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "approval",
+      "kind": "SIGNAL",
+      "requires": [
+        "reserve"
+      ],
+      "activity": null,
+      "safety": null,
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 3600,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "ship",
+      "kind": "ACTIVITY",
+      "requires": [
+        "approval"
+      ],
+      "activity": "ship",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": "refund",
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    }
+  ],
+  "variables": {
+    "order": "TEXT"
+  }
+}

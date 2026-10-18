@@ -1,0 +1,19 @@
+name: java-portfolio-durableflow
+services:
+  postgres:
+    image: postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7
+    environment:
+      POSTGRES_DB: durableflow
+      POSTGRES_USER: durableflow
+      POSTGRES_PASSWORD: disposable-local-only
+    ports:
+      - "127.0.0.1:${DURABLEFLOW_DB_PORT:-18202}:5432"
+    volumes:
+      - durableflow-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U durableflow -d durableflow"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  durableflow-data:

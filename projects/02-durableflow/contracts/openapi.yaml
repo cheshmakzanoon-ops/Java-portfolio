@@ -1,0 +1,568 @@
+openapi: 3.1.0
+info:
+  title: DurableFlow
+  version: 1.2.0
+  description: Finite typed workflow control plane; semantics 3 uses validated typed
+    root/context values and predecessor dataflow. Existing semantics 1 and 2 remain pinned; semantics 3 cancellation records an INTEGER forward-lease count.
+servers:
+- url: http://127.0.0.1:18200
+security:
+- bearer: []
+paths:
+  /health:
+    get:
+      security: []
+      responses:
+        '200':
+          description: Process readiness
+  /v1/definitions:
+    post:
+      description: Deployer scope; immutable name/version. Returns content hash; conflicting
+        content rejected.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Definition'
+      responses:
+        '200':
+          description: Definition hash
+        '400':
+          $ref: '#/components/responses/Invalid'
+        '403':
+          description: Deployer permission required
+  /v1/executions:
+    post:
+      description: Operator scope; same key and changed hash/input conflicts.
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Start'
+      responses:
+        '200':
+          description: Execution UUID
+        '400':
+          $ref: '#/components/responses/Invalid'
+  /v1/executions/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    get:
+      description: Viewer scope in authenticated tenant.
+      responses:
+        '200':
+          description: Pinned definition hash
+          semantic version: null
+          current state/version and derived values: null
+        '404':
+          description: Missing in authenticated tenant
+  /v1/executions/{id}/history:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    get:
+      description: Viewer scope; at most 10000 bounded events in sequence order.
+      responses:
+        '200':
+          description: Ordered append-only typed history
+  /v1/executions/{id}/signals:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    post:
+      description: Operator scope; first serialized signal/timer wins. Early/unmatched
+        signals are rejected with durable late evidence, never silently buffered.
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signal'
+      responses:
+        '200':
+          description: Accepted boolean; repeated same-key request returns original
+            decision
+  /v1/executions/{id}/cancel:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    post:
+      description: Operator scope; cooperative cancellation waits for outstanding
+        leases before reverse-order compensation.
+      responses:
+        '200':
+          description: Cancellation recorded
+  /v1/executions/{id}/resolve:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    post:
+      description: Operator scope; appends an audited APPLIED/NOT_APPLIED decision
+        for an unknown task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resolution'
+      responses:
+        '200':
+          description: Decision recorded
+  /v1/executions/{id}/retry-compensation:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    post:
+      description: Operator scope; explicit audited new capped retry window for failed
+        compensation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resolution'
+      responses:
+        '200':
+          description: Retry authorization recorded
+  /v1/worker/claim:
+    post:
+      description: Worker scope; bounded SKIP LOCKED claim. Empty does not establish
+        execution completion.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClaimRequest'
+      responses:
+        '200':
+          description: Claims with task identity
+          attempt: null
+          generation and unguessable credential: null
+  /v1/worker/dispatch:
+    post:
+      description: Worker scope; verifies a complete Claim object then commits intent
+        before external I/O.
+      requestBody:
+        $ref: '#/components/requestBodies/Claim'
+      responses:
+        '200':
+          description: Dispatch authorized
+        '409':
+          $ref: '#/components/responses/Stale'
+  /v1/worker/heartbeat:
+    post:
+      description: Worker scope; complete Claim object; expired/stale credentials
+        rejected.
+      requestBody:
+        $ref: '#/components/requestBodies/Claim'
+      responses:
+        '200':
+          description: Lease extended ten seconds using database time
+        '409':
+          $ref: '#/components/responses/Stale'
+  /v1/worker/complete:
+    post:
+      description: Worker scope; body contains claim and result; exact identity and
+        current generation required.
+      responses:
+        '200':
+          description: History and next scheduling committed atomically
+        '409':
+          $ref: '#/components/responses/Stale'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Completion'
+  /v1/worker/fail:
+    post:
+      description: Worker scope; body contains claim, definitive boolean and bounded
+        reason. A timeout is not definitive rejection.
+      responses:
+        '200':
+          description: Retry
+          failure or uncertainty recorded: null
+        '409':
+          $ref: '#/components/responses/Stale'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Failure'
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    ExecutionId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+        pattern: ^[a-zA-Z0-9_-]+$
+  responses:
+    Invalid:
+      description: Invalid bounded request; RFC 9457 ProblemDetail without stack trace
+      content:
+        application/problem+json:
+          schema:
+            type: object
+    Stale:
+      description: State conflict; STALE_GENERATION implies no history/state change
+      content:
+        application/problem+json:
+          schema:
+            type: object
+  requestBodies:
+    Claim:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Claim'
+  schemas:
+    Claim:
+      type: object
+      additionalProperties: false
+      required:
+      - instance
+      - tenant
+      - task
+      - activity
+      - safety
+      - parameters
+      - generation
+      - attempt
+      - worker
+      - credential
+      - semantics
+      - outputType
+      properties:
+        instance:
+          type: string
+          format: uuid
+        tenant:
+          type: string
+          maxLength: 64
+        task:
+          type: string
+          maxLength: 69
+        activity:
+          type: string
+        safety:
+          type: string
+          enum:
+          - PURE
+          - IDEMPOTENT_WITH_KEY
+          - NON_IDEMPOTENT
+        parameters:
+          type: string
+          maxLength: 4096
+        generation:
+          type: integer
+          minimum: 1
+        attempt:
+          type: integer
+          minimum: 1
+        worker:
+          type: string
+          maxLength: 64
+        credential:
+          type: string
+          format: uuid
+        semantics:
+          type: string
+          enum:
+          - '1'
+          - '2'
+          - '3'
+        outputType:
+          type: string
+          enum:
+          - TEXT
+          - INTEGER
+          - BOOLEAN
+    Resolution:
+      type: object
+      additionalProperties: false
+      required:
+      - task
+      - reason
+      properties:
+        task:
+          type: string
+        decision:
+          type: string
+          enum:
+          - APPLIED
+          - NOT_APPLIED
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 256
+        result:
+          type: array
+          maxItems: 128
+          items:
+            $ref: '#/components/schemas/Value'
+      description: APPLIED requires a nonempty result of the task output type. NOT_APPLIED
+        requires an empty result. Retry-compensation uses task/reason only.
+    Definition:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - version
+      - nodes
+      properties:
+        name:
+          type: string
+          pattern: ^[a-z][a-z0-9-]{0,63}$
+        version:
+          type: integer
+          minimum: 1
+        nodes:
+          type: array
+          minItems: 1
+          maxItems: 128
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - id
+            - kind
+            - requires
+            - inputType
+            - outputType
+            - delaySeconds
+            properties:
+              id:
+                type: string
+                pattern: ^[a-z][a-z0-9-]{0,63}$
+              kind:
+                type: string
+                enum:
+                - ACTIVITY
+                - TIMER
+                - SIGNAL
+                - BRANCH
+                - PARALLEL_ALL
+              requires:
+                type: array
+                maxItems: 16
+                uniqueItems: true
+                items:
+                  type: string
+              activity:
+                type:
+                - string
+                - 'null'
+              safety:
+                type:
+                - string
+                - 'null'
+                enum:
+                - PURE
+                - IDEMPOTENT_WITH_KEY
+                - NON_IDEMPOTENT
+                - null
+              compensation:
+                type:
+                - string
+                - 'null'
+              inputType:
+                type: string
+                enum:
+                - TEXT
+                - BOOLEAN
+                - INTEGER
+              outputType:
+                type: string
+                enum:
+                - TEXT
+                - BOOLEAN
+                - INTEGER
+              delaySeconds:
+                type: integer
+                minimum: 0
+                maximum: 604800
+              signal:
+                type:
+                - string
+                - 'null'
+              expression:
+                type:
+                - string
+                - 'null'
+              when:
+                type:
+                - string
+                - 'null'
+        variables:
+          type: object
+          maxProperties: 32
+          additionalProperties:
+            type: string
+            enum:
+            - TEXT
+            - INTEGER
+            - BOOLEAN
+    Value:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+        - type
+        - data
+        properties:
+          type:
+            const: TEXT
+          data:
+            type: string
+            maxLength: 1024
+      - type: object
+        additionalProperties: false
+        required:
+        - type
+        - data
+        properties:
+          type:
+            const: INTEGER
+          data:
+            type: integer
+            minimum: -9223372036854775808
+            maximum: 9223372036854775807
+      - type: object
+        additionalProperties: false
+        required:
+        - type
+        - data
+        properties:
+          type:
+            const: BOOLEAN
+          data:
+            type: boolean
+    ExecutionInput:
+      type: object
+      additionalProperties: false
+      required:
+      - payload
+      - context
+      properties:
+        payload:
+          $ref: '#/components/schemas/Value'
+        context:
+          type: object
+          maxProperties: 32
+          additionalProperties:
+            $ref: '#/components/schemas/Value'
+    Output:
+      type: object
+      additionalProperties: false
+      required:
+      - outcome
+      - values
+      properties:
+        outcome:
+          type: string
+          enum:
+          - VALUE
+          - SKIPPED
+          - TIMED_OUT
+        values:
+          type: array
+          maxItems: 128
+          items:
+            $ref: '#/components/schemas/Value'
+      description: VALUE has a nonempty homogeneous vector. SKIPPED/TIMED_OUT have
+        no values.
+    Start:
+      type: object
+      additionalProperties: false
+      required:
+      - definitionHash
+      - input
+      properties:
+        definitionHash:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        input:
+          $ref: '#/components/schemas/ExecutionInput'
+    Signal:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        value:
+          $ref: '#/components/schemas/Value'
+    Completion:
+      type: object
+      additionalProperties: false
+      required:
+      - claim
+      - result
+      properties:
+        claim:
+          $ref: '#/components/schemas/Claim'
+        result:
+          type: array
+          minItems: 1
+          maxItems: 128
+          items:
+            $ref: '#/components/schemas/Value'
+    Failure:
+      type: object
+      additionalProperties: false
+      required:
+      - claim
+      - definitive
+      - reason
+      properties:
+        claim:
+          $ref: '#/components/schemas/Claim'
+        definitive:
+          type: boolean
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 256
+    ClaimRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - worker
+      - batch
+      - leaseSeconds
+      properties:
+        worker:
+          type: string
+          maxLength: 64
+        batch:
+          type: integer
+          minimum: 1
+          maximum: 16
+        leaseSeconds:
+          type: integer
+          minimum: 1
+          maximum: 120

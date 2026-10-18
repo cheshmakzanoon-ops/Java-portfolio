@@ -1,0 +1,86 @@
+{
+  "name": "media-processing",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "upload",
+      "kind": "ACTIVITY",
+      "requires": [],
+      "activity": "pure",
+      "safety": "PURE",
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "transcode",
+      "kind": "ACTIVITY",
+      "requires": [
+        "upload"
+      ],
+      "activity": "transcode",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "thumbnail",
+      "kind": "ACTIVITY",
+      "requires": [
+        "upload"
+      ],
+      "activity": "thumbnail",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "join",
+      "kind": "PARALLEL_ALL",
+      "requires": [
+        "transcode",
+        "thumbnail"
+      ],
+      "activity": null,
+      "safety": null,
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "publish",
+      "kind": "ACTIVITY",
+      "requires": [
+        "join"
+      ],
+      "activity": "publish",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    }
+  ],
+  "variables": {}
+}
