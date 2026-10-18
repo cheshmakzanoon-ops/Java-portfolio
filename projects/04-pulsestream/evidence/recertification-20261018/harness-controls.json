@@ -1,0 +1,24 @@
+{
+  "classification": "offline-harness-only",
+  "timestamp": "2026-10-18T07:05:33.108927+00:00",
+  "methods": 22,
+  "failures": 0,
+  "errors": 0,
+  "exitCode": 0,
+  "actualFunctionalStartup": "PENDING_ROOT_RELEASE",
+  "noJavaMavenDockerStarted": true,
+  "files": {
+    "run-quiet.py": "3be9d084510d2156cb8d2c8d1cba1fda0628b807b6d529604e2a5a1da3a3baa8",
+    "test-quiet-runner.py": "e4ec246727f41d52f248b0c0eba77e377073cf310acb32386cfd5a6a19366cf2",
+    "check-container-ownership.py": "e284aec3748f03b389b71abd8d79cdff40057f81e0a038d8755b5f3e5108d451",
+    "quiet-runner-python-tests.log": "cebd615adbd58ea07e7b253bdecb68590833d0e9dfbf57e07f82ce6244b7fe03"
+  },
+  "counterexamples": [
+    "permission-denied optional proc links retain Java stat/comm",
+    "unknown start ticks never grant ownership",
+    "foreign Java and same namespace remain foreign",
+    "wrong image and missing init reject container adoption",
+    "stale container PID start ticks reject reuse",
+    "inventory replacement removes stale exemptions"
+  ]
+}

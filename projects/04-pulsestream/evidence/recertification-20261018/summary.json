@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "classification": "runtime-recertification-only",
+  "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "timestamp": "2026-10-18T06:57:39.131363+00:00",
+  "exitCode": 0,
+  "rawArchive": ".work/A04/recert-20261018T064318Z",
+  "recordedGates": {
+    "coldCleanSpotlessIntegration": {
+      "methods": 23,
+      "unitPropertyMethods": 15,
+      "realIntegrationMethods": 8,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "completed": "2026-10-18T06:47:55Z",
+      "positiveCutoff": 1792305811,
+      "rootCheckerExitCode": 0,
+      "evidence": "integration.json"
+    },
+    "selectedCoreMutation": {
+      "repeatedCoreMethods": 10,
+      "outcomes": {
+        "KILLED": 131,
+        "SURVIVED": 1,
+        "TIMED_OUT": 1
+      },
+      "strictKilledPercent": 98.49624060150376,
+      "completed": "2026-10-18T06:50:10Z",
+      "positiveCutoff": 1792306144,
+      "rootTestsCheckerExitCode": 0,
+      "rootMutationCheckerExitCode": 0,
+      "evidence": "mutation.json"
+    },
+    "supportedRuntimePreparation": {
+      "repeatedUnitPropertyMethods": 15,
+      "completed": "2026-10-18T06:52:03Z",
+      "actualJmhListDiscoveryPassed": true,
+      "benchmarkMeasurementIterationsExecuted": 0,
+      "preparedRuntimeInputHashes": 129,
+      "evidence": "prepared-inputs.json"
+    },
+    "orchestrationMocks": {
+      "methods": 14,
+      "exitCode": 0,
+      "boundary": "Python-only control-flow fixtures; not application or benchmark evidence."
+    }
+  },
+  "artifactComparison": {
+    "mainClassFilesCompared": 44,
+    "mainClassOrResourceDifferences": 0,
+    "byteIdenticalProjectJars": 6,
+    "coldEvidence": "cold-payloads.json",
+    "preparedEvidence": "prepared-payloads.json"
+  },
+  "inputChange": {
+    "previousSource": "working-tree-sha256:1dcc6557f80d9025111654ae5041d99c2bd6321752a6caa39db207103838fb99",
+    "coordinatorReportedCommit": "a152090",
+    "difference": "Only two shared mvnw lines add/export immutable Ryuk default; removing exactly those reproduces previous aggregate fingerprint. Product source was not edited or tuned.",
+    "evidence": "input-drift.json"
+  },
+  "preservedOriginalEngineManifestSha256": "0815eee01b6a35130d3bac586e071ca9cf27ed79ce59e35f5f205e8253baffbb",
+  "quietRunnerSha256": "83b5a1572d19cedb901472480b9e49f284a430c419f2c9d1031b2c32a0dc6ca6",
+  "quietReadyReceiptSha256": "dca81d0f4b203059812d43f48106fd706caebe8605764b5debaa0886e2da5dd7",
+  "measurementStatus": {
+    "state": "FAILED",
+    "reservation": "quiet10",
+    "exitCode": 1,
+    "ended": "2026-10-18T06:56:23Z",
+    "failedAttempt": ".work/A04/quiet-runs/20261018T065452Z-395501",
+    "boundary": "Both three-fork engine phases completed; dependency startup watcher then failed on permission-denied /proc container namespace. Scoped teardown succeeded. No full-million durable phase executed. A future fresh reservation must rerun every phase; no combined or full performance pass is claimed."
+  },
+  "limitations": [
+    "23distinct application test methods; subsequent10core and15preparation methods repeat portions of that suite, not48unique methods.",
+    "One mutation survivor and one timeout remain penalized. No runner/memory errors or branch exclusions.",
+    "Byte-identical rebuild is an observed result for these artifacts; not a general cross-machine reproducibility guarantee.",
+    "Historical demo/smoke evidence retains its original source identities. Current full1m\u00d73/JMH results and final release gates are not certified by recertification.",
+    "No Java/Maven/Docker/control tests/benchmarks or big artifact rereads were performed during this docs/evidence publication."
+  ],
+  "harnessRepair": {
+    "classification": "orchestration-only",
+    "productSourceChanged": false,
+    "runtimeInputsRehashedUnchanged": 129,
+    "pythonControlFlowMethods": 22,
+    "actualFunctionalOwnershipObservations": 3,
+    "actualFunctionalExitCode": 0,
+    "actualComposeStopExitCode": 0,
+    "fallbackStops": 0,
+    "teardownErrors": 0,
+    "runnerSha256": "3be9d084510d2156cb8d2c8d1cba1fda0628b807b6d529604e2a5a1da3a3baa8",
+    "readyReceiptSha256": "a6f41eecfdb8d1e96764a7d0c152b29ace9874b06953e5202e524e46c6fee0b9",
+    "controls": "harness-controls.json",
+    "functional": "harness-functional.json",
+    "validation": "harness-validation.json",
+    "failedAttempt": "quiet10-failure.json",
+    "nextFullRun": "quiet12 requires fresh all-phase reservation; no prior engine rows may be combined",
+    "boundary": "Only exact validated Docker host PID identities with non-null matching start ticks exempt owned container JVMs. Optional /proc exe/ns permission denial preserves comm/stat. Two-second Docker inspect/top/process supervision overhead is included, not independently quantified."
+  }
+}

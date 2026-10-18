@@ -1,0 +1,379 @@
+{
+  "classification": "functional-container-ownership-only",
+  "started": "2026-10-18T07:05:37.563821+00:00",
+  "measurementsExecuted": false,
+  "buildsExecuted": false,
+  "quietReservationClaimed": false,
+  "latestContainerInventory": {
+    "observed": "2026-10-18T07:06:07.251433+00:00",
+    "containers": [
+      {
+        "id": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+        "service": "kafka",
+        "configuredImage": "apache/kafka:4.2.1@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0",
+        "initPid": 402411,
+        "processes": {
+          "402411": {
+            "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "start": "2781163"
+          }
+        }
+      },
+      {
+        "id": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+        "service": "postgres",
+        "configuredImage": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+        "initPid": 402410,
+        "processes": {
+          "402410": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781163"
+          },
+          "402748": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781219"
+          },
+          "402749": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781219"
+          },
+          "402750": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781219"
+          },
+          "402752": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781219"
+          },
+          "402753": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781219"
+          },
+          "402784": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781222"
+          },
+          "402785": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781222"
+          },
+          "402787": {
+            "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "start": "2781222"
+          }
+        }
+      }
+    ]
+  },
+  "observations": [
+    {
+      "time": "2026-10-18T07:06:02.730795+00:00",
+      "containers": {
+        "observed": "2026-10-18T07:06:02.709291+00:00",
+        "containers": [
+          {
+            "id": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "configuredImage": "apache/kafka:4.2.1@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0",
+            "initPid": 402411,
+            "processes": {
+              "402411": {
+                "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+                "service": "kafka",
+                "start": "2781163"
+              }
+            }
+          },
+          {
+            "id": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "configuredImage": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+            "initPid": 402410,
+            "processes": {
+              "402410": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781163"
+              },
+              "402748": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402749": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402750": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402752": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402753": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402784": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              },
+              "402785": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              },
+              "402787": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              }
+            }
+          }
+        ]
+      },
+      "ownedJava": {
+        "402411": {
+          "identity": {
+            "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "start": "2781163"
+          },
+          "proc": {
+            "ppid": 402363,
+            "start": "2781163",
+            "state": "S",
+            "comm": "java",
+            "executable": null,
+            "namespace": null,
+            "readErrors": {
+              "executable": "PermissionError",
+              "namespace": "PermissionError"
+            }
+          }
+        }
+      },
+      "foreignJava": []
+    },
+    {
+      "time": "2026-10-18T07:06:05.013492+00:00",
+      "containers": {
+        "observed": "2026-10-18T07:06:05.000234+00:00",
+        "containers": [
+          {
+            "id": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "configuredImage": "apache/kafka:4.2.1@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0",
+            "initPid": 402411,
+            "processes": {
+              "402411": {
+                "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+                "service": "kafka",
+                "start": "2781163"
+              }
+            }
+          },
+          {
+            "id": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "configuredImage": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+            "initPid": 402410,
+            "processes": {
+              "402410": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781163"
+              },
+              "402748": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402749": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402750": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402752": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402753": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402784": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              },
+              "402785": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              },
+              "402787": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              }
+            }
+          }
+        ]
+      },
+      "ownedJava": {
+        "402411": {
+          "identity": {
+            "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "start": "2781163"
+          },
+          "proc": {
+            "ppid": 402363,
+            "start": "2781163",
+            "state": "S",
+            "comm": "java",
+            "executable": null,
+            "namespace": null,
+            "readErrors": {
+              "executable": "PermissionError",
+              "namespace": "PermissionError"
+            }
+          }
+        }
+      },
+      "foreignJava": []
+    },
+    {
+      "time": "2026-10-18T07:06:07.270946+00:00",
+      "containers": {
+        "observed": "2026-10-18T07:06:07.251433+00:00",
+        "containers": [
+          {
+            "id": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "configuredImage": "apache/kafka:4.2.1@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0",
+            "initPid": 402411,
+            "processes": {
+              "402411": {
+                "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+                "service": "kafka",
+                "start": "2781163"
+              }
+            }
+          },
+          {
+            "id": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+            "service": "postgres",
+            "configuredImage": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+            "initPid": 402410,
+            "processes": {
+              "402410": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781163"
+              },
+              "402748": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402749": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402750": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402752": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402753": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781219"
+              },
+              "402784": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              },
+              "402785": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              },
+              "402787": {
+                "containerId": "962ecf0023992aeada8bbf69cc1209b1631c2bac8caa9c20c6d7d3e8999c687b",
+                "service": "postgres",
+                "start": "2781222"
+              }
+            }
+          }
+        ]
+      },
+      "ownedJava": {
+        "402411": {
+          "identity": {
+            "containerId": "cd0e8fb7e0aa2cb50f160ab275064b980d36552bd2cf8d4ca99416a40672489c",
+            "service": "kafka",
+            "start": "2781163"
+          },
+          "proc": {
+            "ppid": 402363,
+            "start": "2781163",
+            "state": "S",
+            "comm": "java",
+            "executable": null,
+            "namespace": null,
+            "readErrors": {
+              "executable": "PermissionError",
+              "namespace": "PermissionError"
+            }
+          }
+        }
+      },
+      "foreignJava": []
+    }
+  ],
+  "status": "FUNCTIONAL_OWNERSHIP_PASSED",
+  "teardown": {
+    "attempted": true,
+    "composeStopExitCode": 0,
+    "fallbackContainerIds": [],
+    "errors": [],
+    "success": true
+  },
+  "exitCode": 0,
+  "ended": "2026-10-18T07:06:13.155118+00:00",
+  "runnerSha256": "3be9d084510d2156cb8d2c8d1cba1fda0628b807b6d529604e2a5a1da3a3baa8"
+}

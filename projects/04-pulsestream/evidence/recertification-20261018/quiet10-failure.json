@@ -1,0 +1,35 @@
+{
+  "failedAttempt": "/workspace/Java-portfolio/.work/A04/quiet-runs/20261018T065452Z-395501",
+  "attemptStatus": "FAILED",
+  "attemptExit": 1,
+  "error": "PermissionError: [Errno 13] Permission denied: '/proc/396725/ns/pid'",
+  "teardown": {
+    "attempted": true,
+    "composeStopExitCode": 0,
+    "fallbackContainerIds": [],
+    "errors": [],
+    "success": true
+  },
+  "preservation": "Original attempt and referenced JMH outputs remain untouched in place; only small summaries/inputs copied during A08 hold.",
+  "phases": [
+    {
+      "name": "engine-original",
+      "artifacts": [
+        "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792306494395565"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "engine-current",
+      "artifacts": [
+        "/workspace/Java-portfolio/.work/A04/runtime/engine-1792306523396001"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "dependencies-up",
+      "artifacts": null,
+      "exitCode": 130
+    }
+  ]
+}

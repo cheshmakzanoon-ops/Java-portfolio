@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-18T07:08:04.021210+00:00",
+  "classification": "harness-repair-only",
+  "runnerSha256": "3be9d084510d2156cb8d2c8d1cba1fda0628b807b6d529604e2a5a1da3a3baa8",
+  "controls": {
+    "methods": 22,
+    "failures": 0,
+    "errors": 0,
+    "exitCode": 0,
+    "evidence": "/workspace/Java-portfolio/.work/A04/harness-repair-20261018T070033Z/offline-proof.json"
+  },
+  "functionalOwnershipEvidence": "/workspace/Java-portfolio/.work/A04/harness-repair-20261018T070033Z/functional-402310/summary.json",
+  "functionalOwnershipEvidenceSha256": "017095568dc005c523bf5decb5468058d3135f225269751ead66a687c1012a27",
+  "functionalOwnershipObservations": 3,
+  "actualComposeStopExitCode": 0,
+  "actualTeardownSucceeded": true,
+  "runtimeGuardInputsVerified": 129,
+  "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "sourceChanged": false,
+  "runtimeArtifactsChanged": false,
+  "allObservedLiveJavaToolPids": [],
+  "runningContainerBoundary": "Root confirmed none remain after actual scoped teardown; no Docker probe launched by owner while refreshing receipt.",
+  "nextFullReservation": "quiet12; every engine/durable phase must rerun; quiet10 cannot be combined"
+}

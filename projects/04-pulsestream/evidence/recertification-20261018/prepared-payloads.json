@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "comparison": "Preserved prepared artifacts versus actual cold/repackaged rebuild; no product source changes",
+  "mainClassFilesCompared": 44,
+  "mainClassOrResourceDifferences": [],
+  "jars": [
+    {
+      "module": "engine",
+      "jar": "pulsestream-engine-1.0.0-SNAPSHOT.jar",
+      "previousSha256": "3fd945210ad145c47c4ac98cc6380eb2f84e84f60a466663edaaab2f211293c6",
+      "rebuiltSha256": "3fd945210ad145c47c4ac98cc6380eb2f84e84f60a466663edaaab2f211293c6",
+      "binaryIdentical": true,
+      "recursiveEntryPayloadIdentical": true,
+      "contentDifferences": [],
+      "zipMetadataDifferences": []
+    },
+    {
+      "module": "kafka-adapter",
+      "jar": "pulsestream-kafka-adapter-1.0.0-SNAPSHOT.jar",
+      "previousSha256": "876eaaea2ca1352f488aa091033768f428c948f07c960bf2f3c181f25d594e8f",
+      "rebuiltSha256": "876eaaea2ca1352f488aa091033768f428c948f07c960bf2f3c181f25d594e8f",
+      "binaryIdentical": true,
+      "recursiveEntryPayloadIdentical": true,
+      "contentDifferences": [],
+      "zipMetadataDifferences": []
+    },
+    {
+      "module": "postgres-store",
+      "jar": "pulsestream-postgres-store-1.0.0-SNAPSHOT.jar",
+      "previousSha256": "6227ed1f3c49215a2a939a8ed20e74788fea2ce8aaa6f9f6bdc3789c794f12d5",
+      "rebuiltSha256": "6227ed1f3c49215a2a939a8ed20e74788fea2ce8aaa6f9f6bdc3789c794f12d5",
+      "binaryIdentical": true,
+      "recursiveEntryPayloadIdentical": true,
+      "contentDifferences": [],
+      "zipMetadataDifferences": []
+    },
+    {
+      "module": "service",
+      "jar": "pulsestream-service-1.0.0-SNAPSHOT-exec.jar",
+      "previousSha256": "4d484f0fb339b1558792e641579f97f3f23d6c5673675e8b8962f51aa6e7e411",
+      "rebuiltSha256": "4d484f0fb339b1558792e641579f97f3f23d6c5673675e8b8962f51aa6e7e411",
+      "binaryIdentical": true,
+      "recursiveEntryPayloadIdentical": true,
+      "contentDifferences": [],
+      "zipMetadataDifferences": []
+    },
+    {
+      "module": "service",
+      "jar": "pulsestream-service-1.0.0-SNAPSHOT.jar",
+      "previousSha256": "0f0afb90af1144c03dcaf31783aeac3daee251674c0f6ad899282c7acccf8481",
+      "rebuiltSha256": "0f0afb90af1144c03dcaf31783aeac3daee251674c0f6ad899282c7acccf8481",
+      "binaryIdentical": true,
+      "recursiveEntryPayloadIdentical": true,
+      "contentDifferences": [],
+      "zipMetadataDifferences": []
+    },
+    {
+      "module": "verification",
+      "jar": "pulsestream-verification-1.0.0-SNAPSHOT.jar",
+      "previousSha256": "572240e2cc7c674546e0aa006a3595928f78f031798bd036ef3de2f23404c38f",
+      "rebuiltSha256": "572240e2cc7c674546e0aa006a3595928f78f031798bd036ef3de2f23404c38f",
+      "binaryIdentical": true,
+      "recursiveEntryPayloadIdentical": true,
+      "contentDifferences": [],
+      "zipMetadataDifferences": []
+    }
+  ],
+  "allRecursiveJarPayloadsIdentical": true,
+  "allJarBinaryHashesIdentical": true,
+  "limitation": "ZIP metadata/order differences are disclosed; unchanged source alone is not asserted to imply byte-identical JARs."
+}
