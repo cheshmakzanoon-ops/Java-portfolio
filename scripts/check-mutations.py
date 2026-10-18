@@ -7,7 +7,13 @@ import sys
 import xml.etree.ElementTree as ET
 
 root = Path(sys.argv[1])
-started = int(os.environ.get('PORTFOLIO_TEST_RUN_STARTED', '0'))
+try:
+    started = int(os.environ['PORTFOLIO_TEST_RUN_STARTED'])
+    if started <= 0:
+        raise ValueError('nonpositive run cutoff')
+except (KeyError, ValueError):
+    print('Set PORTFOLIO_TEST_RUN_STARTED to the actual run start before Maven.', file=sys.stderr)
+    sys.exit(1)
 reports = [p for p in root.glob('**/target/pit-reports/**/mutations.xml') if p.stat().st_mtime >= started]
 counts = Counter()
 for report in reports:
@@ -16,6 +22,7 @@ for report in reports:
 valid = sum(counts.values()) - counts['NON_VIABLE']
 rate = 100 * counts['KILLED'] / valid if valid else 0
 print({'reports': len(reports), 'outcomes': dict(counts), 'killedPercent': rate})
-if not valid or rate < 70 or any(counts[x] for x in ['RUN_ERROR', 'MEMORY_ERROR', 'UNKNOWN']):
+known = {'KILLED', 'SURVIVED', 'NO_COVERAGE', 'TIMED_OUT', 'NON_VIABLE', 'RUN_ERROR', 'MEMORY_ERROR'}
+if not valid or rate < 70 or set(counts) - known or any(counts[x] for x in ['RUN_ERROR', 'MEMORY_ERROR']):
     print('Mutation evidence missing, below70% killed, or contains unexplained runner errors.', file=sys.stderr)
     sys.exit(1)

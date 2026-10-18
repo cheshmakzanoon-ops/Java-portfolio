@@ -4,7 +4,20 @@ on:
 permissions:
   contents: read
 jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+  integration:
+    uses: ./.github/workflows/integration.yml
+  mutation:
+    uses: ./.github/workflows/mutation.yml
+  security:
+    uses: ./.github/workflows/security.yml
+    permissions:
+      contents: read
+      security-events: write
   audit:
+    if: always()
+    needs: [ci, integration, mutation, security]
     timeout-minutes: 90
     runs-on: ubuntu-24.04
     steps:
@@ -14,13 +27,34 @@ jobs:
           distribution: temurin
           java-version: '25.0.4.1+1'
           cache: maven
-      - run: python3 scripts/release-audit.py
-      - run: ./scripts/portfolio.sh verify all
-      - run: python3 scripts/check-architecture.py
+      - name: Require every current-commit prerequisite
+        env:
+          GATE_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          results = json.loads(os.environ['GATE_RESULTS'])
+          failed = [key for key in ('ci','integration','mutation','security') if results.get(key, {}).get('result') != 'success']
+          if failed:
+              raise SystemExit('Required release gates failed, were cancelled, or never ran: ' + ', '.join(failed))
+          PY
+      - id: acceptance
+        run: python3 scripts/release-audit.py
+      - id: tooling
+        run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - id: links
+        run: python3 scripts/check-links.py
+      - id: verification
+        run: ./scripts/portfolio.sh verify all
+      - id: architecture
+        run: python3 scripts/check-architecture.py
       - name: Assert all standalone demos
+        id: demos
         run: |
           set -euo pipefail
+          mkdir -p .work/release
           for project in clearledger durableflow quorumkv pulsestream tenantshield matchcore indexforge threadlens byteguard routeweaver; do
+            printf '%s\n' "$project" >> .work/release/attempted-projects
             trap './scripts/portfolio.sh down "$project"' EXIT
             ./scripts/portfolio.sh up "$project"
             # QuorumKV's demo starts its own three processes on the catalog ports.
@@ -29,9 +63,55 @@ jobs:
             fi
             ./scripts/portfolio.sh demo "$project"
             ./scripts/portfolio.sh reset-demo "$project"
+            ./scripts/portfolio.sh up "$project"
+            if [[ "$project" == quorumkv ]]; then
+              ./scripts/portfolio.sh down "$project"
+            fi
+            ./scripts/portfolio.sh demo "$project"
             ./scripts/portfolio.sh down "$project"
+            python3 scripts/check-stopped.py "$project"
             trap - EXIT
           done
+      - name: Independently clean and assert every attempted project
+        id: cleanup
+        if: always()
+        run: |
+          set -uo pipefail
+          status=0
+          if [[ -f .work/release/attempted-projects ]]; then
+            while IFS= read -r project; do
+              timeout 90 ./scripts/portfolio.sh down "$project" || status=1
+              timeout 30 python3 scripts/check-stopped.py "$project" || status=1
+            done < .work/release/attempted-projects
+          fi
+          exit "$status"
+      - name: Record observed release gate results for this commit
+        if: always()
+        env:
+          RELEASE_GATE_RESULTS: ${{ toJSON(needs) }}
+          RELEASE_STEP_RESULTS: ${{ toJSON(steps) }}
+          RELEASE_SOURCE_SHA: ${{ github.sha }}
+          RELEASE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          gates = json.loads(os.environ['RELEASE_GATE_RESULTS'])
+          steps = json.loads(os.environ['RELEASE_STEP_RESULTS'])
+          head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          passed = head == os.environ['RELEASE_SOURCE_SHA']
+          passed &= all(gates.get(key, {}).get('result') == 'success' for key in ('ci','integration','mutation','security'))
+          passed &= all(steps.get(key, {}).get('outcome') == 'success' for key in ('acceptance','tooling','links','verification','architecture','demos','cleanup'))
+          reports = sorted(Path('projects').glob('**/target/surefire-reports/TEST-*.xml'))
+          receipt = {'sourceRevision': head, 'expectedSourceRevision': os.environ['RELEASE_SOURCE_SHA'],
+                     'workflowRun': os.environ['RELEASE_RUN_URL'], 'gateResults': gates, 'stepResults': steps,
+                     'status': 'PASS' if passed else 'FAIL',
+                     'testReportHashes': {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in reports}}
+          output = Path('.work/release/receipt.json')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(receipt, indent=2) + '\n')
+          raise SystemExit(0 if passed else 1)
+          PY
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         if: always()
         with:
@@ -39,3 +119,9 @@ jobs:
           path: |
             projects/**/evidence/
             projects/**/target/surefire-reports/
+            projects/**/target/failsafe-reports/
+            projects/**/target/*.log
+            projects/**/.runtime/*.log
+            .work/A*/runtime/*.log
+            .work/release/receipt.json
+          include-hidden-files: true

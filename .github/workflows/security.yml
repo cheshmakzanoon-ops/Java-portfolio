@@ -1,5 +1,6 @@
 name: Security and SBOM
 on:
+  workflow_call:
   push:
     branches: [main]
   pull_request:
@@ -8,6 +9,43 @@ on:
 permissions:
   contents: read
 jobs:
+  container-inventory:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.images.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - id: images
+        name: Select the actual pinned application dependency images
+        run: python3 scripts/container-images.py --github-output "$GITHUB_OUTPUT"
+  containers:
+    needs: container-inventory
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix: ${{ fromJSON(needs.container-inventory.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Scan pinned image; missing scanner data is a failure
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: v0.70.0
+          scan-type: image
+          image-ref: ${{ matrix.image }}
+          scanners: vuln
+          format: json
+          output: container-scan.json
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: '1'
+          timeout: 15m
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        if: always()
+        with:
+          name: container-scan-${{ matrix.id }}
+          path: container-scan.json
   dependencies:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
@@ -40,9 +78,19 @@ jobs:
         with:
           distribution: temurin
           java-version: '25.0.4.1+1'
-      - uses: github/codeql-action/init@f051dc808ef3645eb0d08647ec751634ec2304ac
+      - uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
         with:
           languages: java-kotlin
           build-mode: manual
       - run: ./mvnw -B -ntp package
-      - uses: github/codeql-action/analyze@f051dc808ef3645eb0d08647ec751634ec2304ac
+      - uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          output: .work/codeql-sarif
+      - name: Enforce source finding severity policy
+        run: python3 scripts/check-source-sarif.py .work/codeql-sarif
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        if: always()
+        with:
+          name: source-scan
+          path: .work/codeql-sarif/
+          include-hidden-files: true

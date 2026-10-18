@@ -1,0 +1,30 @@
+name: Critical mutations
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mutation:
+    timeout-minutes: 45
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        project: [clearledger, durableflow, quorumkv, pulsestream, tenantshield, matchcore, indexforge, threadlens, byteguard, routeweaver]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '25.0.4.1+1'
+          cache: maven
+      - run: ./scripts/portfolio.sh mutation "${{ matrix.project }}"
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        if: always()
+        with:
+          name: mutations-${{ matrix.project }}
+          path: |
+            projects/**/target/pit-reports/
+            projects/**/target/surefire-reports/

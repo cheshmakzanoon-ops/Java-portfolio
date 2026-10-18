@@ -1,6 +1,8 @@
 #!/bin/sh
 # Portfolio patch: serialize heavy builds to three slots in this shared checkout.
 # Distribution download/checksum behavior below remains Maven Wrapper3.3.4.
+: "${TESTCONTAINERS_RYUK_CONTAINER_IMAGE:=testcontainers/ryuk:0.14.0@sha256:7c1a8a9a47c780ed0f983770a662f80deb115d95cce3e2daa3d12115b8cd28f0}"
+export TESTCONTAINERS_RYUK_CONTAINER_IMAGE
 portfolio_wrapper_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 if [ "${PORTFOLIO_BUILD_SLOT_HELD:-0}" != 1 ] && command -v flock >/dev/null 2>&1 && [ -f "$portfolio_wrapper_root/scripts/with-build-slot.sh" ]; then
   exec bash "$portfolio_wrapper_root/scripts/with-build-slot.sh" "$0" "$@"

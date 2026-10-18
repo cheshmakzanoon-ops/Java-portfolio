@@ -1,5 +1,6 @@
 name: CI
 on:
+  workflow_call:
   push:
     branches: [main]
   pull_request:
@@ -7,9 +8,17 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  tooling:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - run: python3 scripts/check-links.py
+      - run: python3 scripts/container-images.py
+      - run: python3 scripts/check-architecture.py
   projects:
     timeout-minutes: 30
     runs-on: ubuntu-24.04
@@ -36,7 +45,9 @@ jobs:
             projects/**/target/site/jacoco/
   required:
     if: always()
-    needs: projects
+    needs: [projects, tooling]
     runs-on: ubuntu-24.04
     steps:
-      - run: test '${{ needs.projects.result }}' = success
+      - run: |
+          test '${{ needs.projects.result }}' = success
+          test '${{ needs.tooling.result }}' = success

@@ -37,10 +37,25 @@
       "imageId": "sha256:55c1b9c10383fbe90c4cf5f68cf02e6813f645fddd553483dcc66e8c3d3c6f24",
       "architecture": "amd64",
       "os": "linux"
+    },
+    {
+      "tag": "testcontainers/ryuk:0.14.0",
+      "repoDigests": [
+        "testcontainers/ryuk@sha256:7c1a8a9a47c780ed0f983770a662f80deb115d95cce3e2daa3d12115b8cd28f0"
+      ],
+      "imageId": "sha256:9a5f93e8f9300530b91866bcf41c0b8a5d72f0e5a7b4365167a48df9816cd36e",
+      "architecture": "amd64",
+      "os": "linux",
+      "role": "Testcontainers cleanup helper",
+      "digestObservedAtUtc": "2026-10-18T05:09:30.474395+00:00",
+      "limitations": [
+        "Earlier integration logs prove use of the tag; exact wrapper pin is newly configured and awaits fresh integration execution."
+      ]
     }
   ],
   "limitations": [
     "This records observed content identities; it is not a signed image provenance or vulnerability attestation.",
-    "Project Compose/Testcontainers definitions must pin the listed tested identities before release."
+    "Project Compose/Testcontainers definitions must pin the listed tested identities before release.",
+    "The Maven wrappers now select the inspected Ryuk cleanup-helper digest by default; explicit environment overrides are outside this default inventory."
   ]
 }

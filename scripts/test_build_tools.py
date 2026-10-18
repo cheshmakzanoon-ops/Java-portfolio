@@ -10,6 +10,15 @@ import subprocess
 spec = importlib.util.spec_from_file_location('architecture', Path(__file__).with_name('check-architecture.py'))
 architecture = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(architecture)
+spec = importlib.util.spec_from_file_location('container_images', Path(__file__).with_name('container-images.py'))
+container_images = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(container_images)
+spec = importlib.util.spec_from_file_location('markdown_links', Path(__file__).with_name('check-links.py'))
+markdown_links = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(markdown_links)
+spec = importlib.util.spec_from_file_location('source_sarif', Path(__file__).with_name('check-source-sarif.py'))
+source_sarif = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(source_sarif)
 
 
 class ArchitectureGateTest(unittest.TestCase):
@@ -59,7 +68,7 @@ class ArchitectureGateTest(unittest.TestCase):
 
 
 class MutationEvidenceGateTest(unittest.TestCase):
-    def invoke(self, statuses, started='0', timestamp=None):
+    def invoke(self, statuses, started='1', timestamp=None):
         with tempfile.TemporaryDirectory() as temp:
             report = Path(temp) / 'core/target/pit-reports/mutations.xml'
             report.parent.mkdir(parents=True)
@@ -67,9 +76,13 @@ class MutationEvidenceGateTest(unittest.TestCase):
                 f'<mutation status="{status}"/>' for status in statuses) + '</mutations>')
             if timestamp is not None:
                 os.utime(report, (timestamp, timestamp))
+            env = {**os.environ}
+            env.pop('PORTFOLIO_TEST_RUN_STARTED', None)
+            if started is not None:
+                env['PORTFOLIO_TEST_RUN_STARTED'] = started
             return subprocess.run(
                 ['python3', str(Path(__file__).with_name('check-mutations.py')), temp],
-                env={**os.environ, 'PORTFOLIO_TEST_RUN_STARTED': started},
+                env=env,
                 capture_output=True, text=True).returncode
 
     def test_nonviable_is_excluded_but_survivors_are_counted(self):
@@ -83,6 +96,144 @@ class MutationEvidenceGateTest(unittest.TestCase):
     def test_empty_and_stale_reports_fail(self):
         self.assertEqual(1, self.invoke([]))
         self.assertEqual(1, self.invoke(['KILLED'], started='200', timestamp=100))
+
+    def test_invalid_cutoff_and_unfinished_mutants_fail(self):
+        self.assertEqual(1, self.invoke(['KILLED'], started=None))
+        self.assertEqual(1, self.invoke(['KILLED'], started='0'))
+        self.assertEqual(1, self.invoke(['KILLED'], started='invalid'))
+        self.assertEqual(1, self.invoke(['KILLED'] * 99 + ['NOT_STARTED']))
+
+
+class TestEvidenceGateTest(unittest.TestCase):
+    def invoke(self, suites, action='verify', started='1', timestamp=None):
+        with tempfile.TemporaryDirectory() as temp:
+            for index, (kind, tests, skipped) in enumerate(suites):
+                report = Path(temp) / f'core/target/{kind}-reports/TEST-suite{index}.xml'
+                report.parent.mkdir(parents=True, exist_ok=True)
+                report.write_text(f'<testsuite tests="{tests}" failures="0" errors="0" skipped="{skipped}"/>')
+                if timestamp is not None:
+                    os.utime(report, (timestamp, timestamp))
+            env = {**os.environ}
+            env.pop('PORTFOLIO_TEST_RUN_STARTED', None)
+            if started is not None:
+                env['PORTFOLIO_TEST_RUN_STARTED'] = started
+            return subprocess.run(
+                ['python3', str(Path(__file__).with_name('check-tests.py')), temp, action],
+                env=env, capture_output=True, text=True).returncode
+
+    def test_current_nonempty_selection_passes(self):
+        self.assertEqual(0, self.invoke([('surefire', 3, 0)]))
+        self.assertEqual(0, self.invoke([('surefire', 3, 0), ('failsafe', 2, 0)], 'integration'))
+
+    def test_mixed_required_skips_cannot_hide_behind_executed_tests(self):
+        self.assertEqual(1, self.invoke([('surefire', 3, 1)]))
+        self.assertEqual(1, self.invoke([('surefire', 3, 0), ('failsafe', 2, 1)], 'integration'))
+
+    def test_missing_stale_or_invalid_run_identity_fails(self):
+        self.assertEqual(1, self.invoke([]))
+        self.assertEqual(1, self.invoke([('surefire', 3, 0)], started=None))
+        self.assertEqual(1, self.invoke([('surefire', 3, 0)], started='0'))
+        self.assertEqual(1, self.invoke([('surefire', 3, 0)], started='invalid'))
+        self.assertEqual(1, self.invoke([('surefire', 3, 0)], started='200', timestamp=100))
+
+    def test_integration_requires_executed_integration_suite(self):
+        self.assertEqual(1, self.invoke([('surefire', 3, 0)], 'integration'))
+        self.assertEqual(1, self.invoke([('surefire', 3, 0), ('failsafe', 2, 2)], 'integration'))
+
+
+class ContainerInventoryGateTest(unittest.TestCase):
+    def make_root(self, directory, image):
+        import json
+        root = Path(directory)
+        inventory = root / 'docs/execution/container-images.json'
+        inventory.parent.mkdir(parents=True)
+        inventory.write_text(json.dumps({'images': [{'repoDigests': ['postgres@sha256:' + 'a' * 64]}]}))
+        compose = root / 'projects/01-clearledger/infra/compose.yaml'
+        compose.parent.mkdir(parents=True)
+        compose.write_text('services:\n  postgres:\n    image: ' + image + '\n')
+        return root
+
+    def test_exact_tag_and_digest_select_canonical_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'postgres:18.3@sha256:' + 'a' * 64)
+            self.assertEqual([{'id': 'image-01', 'image': 'postgres@sha256:' + 'a' * 64}],
+                             container_images.inspect(root)['include'])
+
+    def test_mutable_image_and_undeclared_digest_fail(self):
+        for image in ('postgres:18.3', 'postgres:18.3@sha256:' + 'b' * 64):
+            with self.subTest(image=image), tempfile.TemporaryDirectory() as temp:
+                with self.assertRaises(ValueError):
+                    container_images.inspect(self.make_root(temp, image))
+
+    def test_mutable_testcontainers_reference_fails(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'postgres:18.3@sha256:' + 'a' * 64)
+            source = root / 'projects/01-clearledger/verification/src/test/java/DatabaseIT.java'
+            source.parent.mkdir(parents=True)
+            source.write_text('DockerImageName.parse(\n"postgres:18.3");')
+            with self.assertRaises(ValueError):
+                container_images.inspect(root)
+
+    def test_flow_yaml_and_unresolved_container_arguments_fail_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'postgres:18.3@sha256:' + 'a' * 64)
+            extra = root / 'projects/01-clearledger/infra/extra.yaml'
+            extra.write_text('services: {extra: {image: "postgres:latest"}}\n')
+            with self.assertRaises(ValueError):
+                container_images.inspect(root)
+            extra.unlink()
+            source = root / 'projects/01-clearledger/verification/src/test/java/DatabaseIT.java'
+            source.parent.mkdir(parents=True)
+            for text in ('new PostgreSQLContainer<>(IMAGE);', 'DockerImageName.parse(IMAGE);'):
+                source.write_text(text)
+                with self.subTest(text=text), self.assertRaises(ValueError):
+                    container_images.inspect(root)
+
+
+class MarkdownLinkGateTest(unittest.TestCase):
+    def test_targets_and_duplicate_heading_anchors(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / 'README.md'
+            other = root / 'Other File.md'
+            other.write_text('# Hello, world!\n# Hello, world!\n')
+            source.write_text('[one](<Other File.md#hello-world>)\n[two](Other%20File.md#hello-world-1)\n')
+            self.assertEqual([], markdown_links.inspect(root, [source, other]))
+            source.write_text('[bad](Other%20File.md#missing)\n[absent](absent.md)\n')
+            self.assertEqual(2, len(markdown_links.inspect(root, [source, other])))
+
+    def test_fenced_examples_are_not_live_links(self):
+        self.assertEqual([], list(markdown_links.destinations('```md\n[x](absent.md)\n```\n')))
+
+    def test_inline_examples_and_fenced_anchors_are_not_live(self):
+        self.assertEqual([], list(markdown_links.destinations('Use `[x](absent.md)` as an example.')))
+        self.assertEqual([], list(markdown_links.destinations('Use ``[x](absent.md)`` as an example.')))
+        self.assertNotIn('example', markdown_links.anchors('```html\n<a id="example"></a>\n```\n'))
+        self.assertNotIn('example', markdown_links.anchors('Use `<a id="example"></a>` as an example.'))
+        self.assertEqual(['missing.md'], list(markdown_links.destinations('Use ``[broken](missing.md)`')))
+
+
+class SourceSarifGateTest(unittest.TestCase):
+    def document(self, severity='8.0', results=None):
+        rule = {'id': 'java/example', 'properties': {'security-severity': severity}}
+        return {'version': '2.1.0', 'runs': [{'tool': {'driver': {'rules': [rule]}},
+                                           'results': [] if results is None else results}]}
+
+    def test_completed_scan_without_findings_passes(self):
+        self.assertEqual([], source_sarif.inspect([('scan.sarif', self.document())])['failures'])
+
+    def test_high_findings_are_not_hidden_by_success_or_suppression(self):
+        document = self.document(results=[{'ruleId': 'java/example', 'level': 'warning',
+                                           'suppressions': [{'status': 'accepted'}]}])
+        self.assertTrue(source_sarif.inspect([('scan.sarif', document)])['failures'])
+
+    def test_missing_failed_or_invalid_scan_cannot_pass(self):
+        self.assertTrue(source_sarif.inspect([])['failures'])
+        document = self.document()
+        document['runs'][0]['invocations'] = [{'executionSuccessful': False}]
+        self.assertTrue(source_sarif.inspect([('scan.sarif', document)])['failures'])
+        document = self.document(severity='NaN', results=[{'ruleId': 'java/example'}])
+        self.assertTrue(source_sarif.inspect([('scan.sarif', document)])['failures'])
 
 
 if __name__ == '__main__':

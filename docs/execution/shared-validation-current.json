@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "observedAtUtc": "2026-10-18T06:28:41.720856+00:00",
+  "sourceRevision": "195146640916ce4862aacb602ea73105279870c9 plus reviewed working-tree shared validation changes",
+  "checks": [
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_*.py' -v",
+      "exitCode": 0,
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "observedDurationSeconds": 1.055
+    },
+    {
+      "command": "python3 scripts/check-links.py",
+      "exitCode": 0,
+      "trackedDocuments": 179,
+      "unresolvedLocalTargetsAndAnchors": 0
+    },
+    {
+      "command": "python3 scripts/container-images.py",
+      "exitCode": 0,
+      "exactInventoryImages": 5
+    },
+    {
+      "command": "python3 scripts/check-architecture.py",
+      "exitCode": 0,
+      "observedViolations": 0
+    }
+  ],
+  "inputSha256": {
+    ".github/workflows/benchmark.yml": "59dedf606ff4324854fe2893e2a9e30e5e118b7200690b9463b9dd92e55cc813",
+    ".github/workflows/ci.yml": "ca6118490188b30d1196a0d647a8dc704632a1556c4a38ac01f328a2db87aa9d",
+    ".github/workflows/integration.yml": "7f0da4ffa85c2e0239d2e3f25a465d8a567e7883baf47a8d55973ddae9b4fd40",
+    ".github/workflows/mutation.yml": "aac69d839eb4cc5de8b42ac1cb77e20b68614088e4e453bfa503b17be3ca1c72",
+    ".github/workflows/release-check.yml": "7ea52cdd69805dc092d7ad8e559aeef6a489f6cf64374501fc1f3c3be3123689",
+    ".github/workflows/security.yml": "406db11d3c17b427330705a573b2619aff917e84c0cfd9128b16dd76164584ad",
+    "docs/execution/container-images.json": "47699e1aecfc462d65cfcad583323f3538a5241b114b012784bc963fb605f7d6",
+    "mvnw": "c30af25684ed209b0c75b889bef71706e5da7dae993cf2a924f8fc1990d9dc71",
+    "mvnw.cmd": "b65408b4546c338bd55507a46c2f71872dfd71dd3de98dec1ba6e8f15521b0b2",
+    "pom.xml": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+    "scripts/check-architecture.py": "1fba2c32e8fcb647268e5e0b60bdcda7b2acb68e285a5f13d777470ea20d457f",
+    "scripts/check-links.py": "6ec685e9b43e77791855bd2713438038b71b313b5e0e0a63d046ad729ecc622e",
+    "scripts/check-mutations.py": "02c2427d5b4d83022ffc2a4e1b4894be45958937d635dc7104297c7091307e34",
+    "scripts/check-source-sarif.py": "e2dd5287854e49fbf62f7bee22ed5ba88befd6ff743f5dbe1198b9d829f9efc1",
+    "scripts/check-stopped.py": "a8af9a2a1e0f030c5e81630cab6a027585b6133509f539758dd0e187665bd9a7",
+    "scripts/check-tests.py": "1b5de39754c7b1165978007d742554a76a0ccda9127393ed79f4c466ba05c303",
+    "scripts/container-images.py": "d5c12396440980d042a71d76b0dd2465eeecc965031456210a31d1c20332b6a6",
+    "scripts/release-audit.py": "bc3cf5bc7aaeae06fbebd90cd0d661f66ef1ead63e0ccb6e4eba0ebbe0e807f7",
+    "scripts/test_build_tools.py": "868c7021cf25dfbcdb02fedcefdb3548f725501b54fdac0ff104354a23c6e745"
+  },
+  "limits": [
+    "These checks validate shared tooling and observed repository structure; Java application certification, actual vulnerability scans and hosted CI have separate gates.",
+    "New untracked project documentation is included in the final link check after its reviewed commit.",
+    "Maven wrapper Ryuk pin has inventory/syntax validation; fresh integration execution is still pending."
+  ]
+}
