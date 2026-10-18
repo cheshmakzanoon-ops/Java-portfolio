@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "recordedAtUtc": "2026-10-18T10:23:40.182962+00:00",
-  "status": "PURE_AND_SCOPED_STATIC_REVIEW_PASS_ACTUAL_PROCESS_CONTROLS_PENDING",
+  "recordedAtUtc": "2026-10-18T10:43:54.365529+00:00",
+  "status": "PURE_SCOPED_REVIEW_AND_TWO_ACTUAL_PROCESS_CONTROLS_PASS_FULL_STUDY_PENDING",
   "runner": {
     "path": ".work/A01/run-full-reference.py",
     "sha256": "cba178dd10490acebea80a48f86a69d99b5d1db7274b8df3d17c59ef8f85d3b3"
@@ -57,7 +57,24 @@
     ],
     "scope": "Resource-only new opt-in helper. Default workload/dimensions/assertions unchanged. No actual child/Java/Docker execution in this review."
   },
-  "actualDescendantControls": "NOT_RUN on new helper; root must run after reservation18",
+  "actualDescendantControls": {
+    "scope": "tiny real process-control checks; no Java or Docker",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "runnerSha256": "cba178dd10490acebea80a48f86a69d99b5d1db7274b8df3d17c59ef8f85d3b3",
+    "elapsedSeconds": 0.605,
+    "executedBy": "root",
+    "executedAfterReservation18Terminal": true,
+    "resultPath": ".work/A01/resource-helper-real-descendants-cba-root.json",
+    "resultSha256": "cf95672d54595b0b53a4d62d0ba6643675c78830831aa55cc04aaa90ccbee836",
+    "log": ".work/A01/resource-helper-real-descendants-cba-root.log",
+    "logSha256": "dc08ed74e395ae12c6afb08011fc799e62318edef40650740ea1948ccd75308b",
+    "cases": [
+      "Already-exited launcher retaining TERM-resistant owned grandchild identity",
+      "TERM-exiting launcher retaining TERM-resistant owned grandchild identity"
+    ]
+  },
   "fullReference": "NOT_RUN on repaired application/resource helper; all nine100000 input-group trials remain required. Earlier quiet16 failure remains immutable.",
   "limitations": [
     "Pure mocks and scoped static review do not prove all filesystem/process races.",

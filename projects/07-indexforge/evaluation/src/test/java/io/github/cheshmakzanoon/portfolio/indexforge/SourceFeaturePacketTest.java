@@ -164,21 +164,30 @@ class SourceFeaturePacketTest {
     Files.writeString(invalid, text.replaceFirst("cTA=", "*invalid*"));
     assertThrows(IOException.class, () -> SourceFeaturePacket.read(invalid));
   }
+
   @Test
-  void exportBindsActualInteractionSchemaAndRejectsStaleFeatureOrMalformedSchemaTags() throws Exception {
-    Path valid=root.resolve("current-schema");packet(true).writeNew(valid);
-    String text=Files.readString(valid);int newline=text.indexOf('\n');
-    assertEquals("indexforge-source-export-v1\t"+SourceRelations.SCHEMA,text.substring(0,newline));
-    assertEquals(40,SourceFeaturePacket.read(valid).queries().size());
-    Path invalid=root.resolve("wrong-schema");
-    for(String header:List.of("indexforge-source-export-v1\tsource-relations-v1",
-        "indexforge-source-export-v1\tsource-interactions-v1",
-        "indexforge-source-export-v1\tsource-interactions-v999",
-        "indexforge-source-export-v0\t"+SourceRelations.SCHEMA,
-        "indexforge-source-export-v1\t"+SourceRelations.SCHEMA+"\tunexpected")) {
-      Files.writeString(invalid,header+text.substring(newline));
-      assertTrue(assertThrows(IOException.class,()->SourceFeaturePacket.read(invalid)).getMessage().contains("schema"));
+  void exportBindsActualInteractionSchemaAndRejectsStaleFeatureOrMalformedSchemaTags()
+      throws Exception {
+    Path valid = root.resolve("current-schema");
+    packet(true).writeNew(valid);
+    String text = Files.readString(valid);
+    int newline = text.indexOf('\n');
+    assertEquals(
+        "indexforge-source-export-v1\t" + SourceRelations.SCHEMA, text.substring(0, newline));
+    assertEquals(40, SourceFeaturePacket.read(valid).queries().size());
+    Path invalid = root.resolve("wrong-schema");
+    for (String header :
+        List.of(
+            "indexforge-source-export-v1\tsource-relations-v1",
+            "indexforge-source-export-v1\tsource-interactions-v1",
+            "indexforge-source-export-v1\tsource-interactions-v999",
+            "indexforge-source-export-v0\t" + SourceRelations.SCHEMA,
+            "indexforge-source-export-v1\t" + SourceRelations.SCHEMA + "\tunexpected")) {
+      Files.writeString(invalid, header + text.substring(newline));
+      assertTrue(
+          assertThrows(IOException.class, () -> SourceFeaturePacket.read(invalid))
+              .getMessage()
+              .contains("schema"));
     }
   }
-
 }

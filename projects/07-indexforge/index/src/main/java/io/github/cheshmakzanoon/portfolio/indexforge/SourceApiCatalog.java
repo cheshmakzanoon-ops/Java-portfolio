@@ -63,12 +63,12 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
         });
     this.types = Collections.unmodifiableSet(new TreeSet<>(types));
     this.entries = List.copyOf(entries);
-    long encodedBytes=metadataBytes(sourceHash,workerHash,jdk,license,this.types);
-    if(encodedBytes>MAX_BYTES-32)throw new IOException("API catalog byte quota");
+    long encodedBytes = metadataBytes(sourceHash, workerHash, jdk, license, this.types);
+    if (encodedBytes > MAX_BYTES - 32) throw new IOException("API catalog byte quota");
     Set<String> signatures = new HashSet<>();
     for (var entry : entries) {
-      encodedBytes+=entryBytes(entry);
-      if(encodedBytes>MAX_BYTES-32)throw new IOException("API catalog byte quota");
+      encodedBytes += entryBytes(entry);
+      if (encodedBytes > MAX_BYTES - 32) throw new IOException("API catalog byte quota");
       if (!types.contains(entry.owner())) throw new IOException("API entry owner not in catalog");
       StringBuilder key = new StringBuilder();
       for (String value :
@@ -163,7 +163,7 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
         if (types.size() > 16384) throw new IOException("API catalog type quota");
       }
     List<Entry> entries = new ArrayList<>();
-    long encodedBytes=metadataBytes(sourceHash,workerHash,jdk,license,types);
+    long encodedBytes = metadataBytes(sourceHash, workerHash, jdk, license, types);
     for (var unit : units)
       for (var type : unit.types())
         for (var member : type.members()) {
@@ -181,10 +181,16 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
                             : resolved;
                       })
                   .toList();
-          var entry=new Entry(type.name(),member.name(),parameters,returns,
-              terms(type.description()+" "+member.description()),member.field());
-          encodedBytes+=entryBytes(entry);
-          if(encodedBytes>MAX_BYTES-32)throw new IOException("API catalog byte quota");
+          var entry =
+              new Entry(
+                  type.name(),
+                  member.name(),
+                  parameters,
+                  returns,
+                  terms(type.description() + " " + member.description()),
+                  member.field());
+          encodedBytes += entryBytes(entry);
+          if (encodedBytes > MAX_BYTES - 32) throw new IOException("API catalog byte quota");
           entries.add(entry);
           if (entries.size() > 131072) throw new IOException("API entry quota");
         }
@@ -254,24 +260,31 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
   }
 
   private static long utfBytes(String text) {
-    long bytes=2; // DataOutput.writeUTF's unsigned length prefix and modified-UTF8 payload.
-    for(int i=0;i<text.length();i++) {
-      char c=text.charAt(i);bytes+=c>=1&&c<=127?1:c<=2047?2:3;
+    long bytes = 2; // DataOutput.writeUTF's unsigned length prefix and modified-UTF8 payload.
+    for (int i = 0; i < text.length(); i++) {
+      char c = text.charAt(i);
+      bytes += c >= 1 && c <= 127 ? 1 : c <= 2047 ? 2 : 3;
     }
     return bytes;
   }
 
-  private static long metadataBytes(String source,String worker,String jdk,String license,Set<String> types) {
-    long bytes=utfBytes(SCHEMA)+utfBytes(source)+utfBytes(worker)+utfBytes(jdk)
-        +12L+license.getBytes(StandardCharsets.UTF_8).length;
-    for(String type:types)bytes+=utfBytes(type);
+  private static long metadataBytes(
+      String source, String worker, String jdk, String license, Set<String> types) {
+    long bytes =
+        utfBytes(SCHEMA)
+            + utfBytes(source)
+            + utfBytes(worker)
+            + utfBytes(jdk)
+            + 12L
+            + license.getBytes(StandardCharsets.UTF_8).length;
+    for (String type : types) bytes += utfBytes(type);
     return bytes;
   }
 
   private static long entryBytes(Entry entry) {
-    long bytes=utfBytes(entry.owner())+utfBytes(entry.name())+utfBytes(entry.returns())+9L;
-    for(String parameter:entry.parameters())bytes+=utfBytes(parameter);
-    for(String term:entry.terms())bytes+=utfBytes(term);
+    long bytes = utfBytes(entry.owner()) + utfBytes(entry.name()) + utfBytes(entry.returns()) + 9L;
+    for (String parameter : entry.parameters()) bytes += utfBytes(parameter);
+    for (String term : entry.terms()) bytes += utfBytes(term);
     return bytes;
   }
 

@@ -306,23 +306,44 @@ class SourceSymbolGraphTest {
             .orElseThrow();
     assertEquals("implicit", member.calls().getFirst().expression().children().getFirst().kind());
   }
+
   @Test
-  void provenThirtyTwoCallersSaturateWithoutPoolingRepeatedSitesAndUnknownInventoryRemainsExplicit() throws Exception {
-    var documents=new ArrayList<SourceSymbolGraph.Document>();
-    var target=document("Target.java","final class Target {static void pulse(int value){}}");documents.add(target);
-    for(int i=0;i<33;i++)documents.add(document("Caller"+i+".java","final class Caller"+i+" {void run(){Target.pulse(1);Target.pulse(1);}}"));
-    documents.add(new SourceSymbolGraph.Document("tenant/repository/Unknown.java",SourceFacts.Unit.unknown(SourceFacts.Status.SOURCE_QUOTA)));
-    var graph=new SourceSymbolGraph("tenant","repository",documents,LANGUAGE_ONLY);
-    var usage=graph.observe(List.of(target.key()),"pulse").get(target.key()).members().getFirst();
-    assertTrue(usage.usable());assertEquals(32,usage.observedCallers());
-    var work=new SourceSymbolGraph.Work();for(int i=0;i<65_536;i++)work.step();assertThrows(SourceSymbolGraph.Budget.class,work::step);
-    assertThrows(IllegalArgumentException.class,()->new SourceSymbolGraph("../tenant","repository",documents,LANGUAGE_ONLY));
-    assertThrows(IllegalArgumentException.class,()->graph.observe(List.of(target.key()),"x".repeat(129)));
+  void provenThirtyTwoCallersSaturateWithoutPoolingRepeatedSitesAndUnknownInventoryRemainsExplicit()
+      throws Exception {
+    var documents = new ArrayList<SourceSymbolGraph.Document>();
+    var target = document("Target.java", "final class Target {static void pulse(int value){}}");
+    documents.add(target);
+    for (int i = 0; i < 33; i++)
+      documents.add(
+          document(
+              "Caller" + i + ".java",
+              "final class Caller" + i + " {void run(){Target.pulse(1);Target.pulse(1);}}"));
+    documents.add(
+        new SourceSymbolGraph.Document(
+            "tenant/repository/Unknown.java",
+            SourceFacts.Unit.unknown(SourceFacts.Status.SOURCE_QUOTA)));
+    var graph = new SourceSymbolGraph("tenant", "repository", documents, LANGUAGE_ONLY);
+    var usage =
+        graph.observe(List.of(target.key()), "pulse").get(target.key()).members().getFirst();
+    assertTrue(usage.usable());
+    assertEquals(32, usage.observedCallers());
+    var work = new SourceSymbolGraph.Work();
+    for (int i = 0; i < 65_536; i++) work.step();
+    assertThrows(SourceSymbolGraph.Budget.class, work::step);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new SourceSymbolGraph("../tenant", "repository", documents, LANGUAGE_ONLY));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> graph.observe(List.of(target.key()), "x".repeat(129)));
   }
 
   @Test
   void recordAccessorAndPrimitiveOverloadBindingNeverMergeSameTerminalNames() throws Exception {
-    var source=document("Values.java","""
+    var source =
+        document(
+            "Values.java",
+            """
       record Box(int value) {}
       final class Values {
         private static int take(int n){return n;}
@@ -332,9 +353,13 @@ class SourceSymbolGraphTest {
         void unrelated(String value){value.take(1,2);}
       }
       """);
-    var inventory=graph(source).observe(List.of(source.key()),"take").get(source.key());
-    assertEquals(2,inventory.members().size());assertTrue(inventory.members().stream().allMatch(m->m.usable()&&m.observedCallers()==1));
-    var copy=document("Renamed.java","""
+    var inventory = graph(source).observe(List.of(source.key()), "take").get(source.key());
+    assertEquals(2, inventory.members().size());
+    assertTrue(inventory.members().stream().allMatch(m -> m.usable() && m.observedCallers() == 1));
+    var copy =
+        document(
+            "Renamed.java",
+            """
       record Holder(int component) {}
       final class Renamed {
         private static int perform(int n){return n;}
@@ -343,38 +368,106 @@ class SourceSymbolGraphTest {
         boolean right(){return perform(true);}
       }
       """);
-    var renamed=graph(copy).observe(List.of(copy.key()),"perform").get(copy.key());
-    assertEquals(inventory.members().stream().map(SourceSymbolGraph.Usage::observedCallers).toList(),renamed.members().stream().map(SourceSymbolGraph.Usage::observedCallers).toList());
+    var renamed = graph(copy).observe(List.of(copy.key()), "perform").get(copy.key());
+    assertEquals(
+        inventory.members().stream().map(SourceSymbolGraph.Usage::observedCallers).toList(),
+        renamed.members().stream().map(SourceSymbolGraph.Usage::observedCallers).toList());
   }
 
   @Test
-  void ambiguousImportsDuplicateOwnersUnknownWildcardsAndMethodReferencesNeverYieldPartialCompleteCounts() throws Exception {
-    var a=document("p/A.java","package p; final class A {static void pulse(int n){}static void known(){pulse(1);}}");
-    var b=document("q/A.java","package q; final class A {static void pulse(int n){}}");
-    for(String imports:List.of("import p.A;import q.A;","import p.*;import q.*;","import p.*;import missing.*;")) {
-      var caller=document("Caller.java",imports+"final class Caller {void run(){A.pulse(1);}}");
-      var usage=graph(a,b,caller).observe(List.of(a.key()),"pulse").get(a.key()).members().getFirst();
-      assertEquals(1,usage.observedCallers());assertFalse(usage.usable(),imports);
+  void
+      ambiguousImportsDuplicateOwnersUnknownWildcardsAndMethodReferencesNeverYieldPartialCompleteCounts()
+          throws Exception {
+    var a =
+        document(
+            "p/A.java",
+            "package p; final class A {static void pulse(int n){}static void known(){pulse(1);}}");
+    var b = document("q/A.java", "package q; final class A {static void pulse(int n){}}");
+    for (String imports :
+        List.of(
+            "import p.A;import q.A;", "import p.*;import q.*;", "import p.*;import missing.*;")) {
+      var caller =
+          document("Caller.java", imports + "final class Caller {void run(){A.pulse(1);}}");
+      var usage =
+          graph(a, b, caller).observe(List.of(a.key()), "pulse").get(a.key()).members().getFirst();
+      assertEquals(1, usage.observedCallers());
+      assertFalse(usage.usable(), imports);
     }
-    var duplicate=document("duplicate/A.java","package p; final class A {static void pulse(int n){}}");
-    assertTrue(graph(a,duplicate).observe(List.of(a.key()),"pulse").get(a.key()).members().stream().noneMatch(SourceSymbolGraph.Usage::usable));
-    var reference=document("Ref.java","final class Ref {private static void pulse(int n){}void known(){pulse(1);}Object ref(){return Ref::pulse;}}");
-    var observed=graph(reference).observe(List.of(reference.key()),"pulse").get(reference.key()).members().getFirst();
-    assertEquals(1,observed.observedCallers());assertFalse(observed.usable());
-    assertThrows(IllegalArgumentException.class,()->graph(a).observe(Collections.nCopies(501,a.key()),"pulse"));
-    assertFalse(graph(a).observe(List.of("tenant/repository/Absent.java"),"pulse").values().iterator().next().membershipKnown());
+    var duplicate =
+        document("duplicate/A.java", "package p; final class A {static void pulse(int n){}}");
+    assertTrue(
+        graph(a, duplicate).observe(List.of(a.key()), "pulse").get(a.key()).members().stream()
+            .noneMatch(SourceSymbolGraph.Usage::usable));
+    var reference =
+        document(
+            "Ref.java",
+            "final class Ref {private static void pulse(int n){}void known(){pulse(1);}Object ref(){return Ref::pulse;}}");
+    var observed =
+        graph(reference)
+            .observe(List.of(reference.key()), "pulse")
+            .get(reference.key())
+            .members()
+            .getFirst();
+    assertEquals(1, observed.observedCallers());
+    assertFalse(observed.usable());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> graph(a).observe(Collections.nCopies(501, a.key()), "pulse"));
+    assertFalse(
+        graph(a)
+            .observe(List.of("tenant/repository/Absent.java"), "pulse")
+            .values()
+            .iterator()
+            .next()
+            .membershipKnown());
   }
 
   @Test
-  void nonfinalVirtualReceiversAndWideningOverloadAmbiguityAbstainWhileUniqueStaticCallsRemainUsable() throws Exception {
-    var virtual=document("Virtual.java","class Virtual {void pulse(int n){}void caller(){pulse(1);}}");
-    assertFalse(graph(virtual).observe(List.of(virtual.key()),"pulse").get(virtual.key()).members().getFirst().usable());
-    var statik=document("Static.java","class Static {static void pulse(int n){}void caller(){pulse(1);}}");
-    var unique=graph(statik).observe(List.of(statik.key()),"pulse").get(statik.key()).members().getFirst();assertTrue(unique.usable());assertEquals(1,unique.observedCallers());
-    var widening=document("Widening.java","final class Widening {static void pulse(int n){}static void pulse(long n){}void call(){pulse(1);}}");
-    assertTrue(graph(widening).observe(List.of(widening.key()),"pulse").get(widening.key()).members().stream().noneMatch(SourceSymbolGraph.Usage::usable));
-    var unrelated=document("Unrelated.java","final class Unrelated {private static void pulse(int n){}void known(){pulse(1);}void other(String value){value.pulse(1);}}");
-    var isolated=graph(unrelated).observe(List.of(unrelated.key()),"pulse").get(unrelated.key()).members().getFirst();assertTrue(isolated.usable());assertEquals(1,isolated.observedCallers());
+  void
+      nonfinalVirtualReceiversAndWideningOverloadAmbiguityAbstainWhileUniqueStaticCallsRemainUsable()
+          throws Exception {
+    var virtual =
+        document("Virtual.java", "class Virtual {void pulse(int n){}void caller(){pulse(1);}}");
+    assertFalse(
+        graph(virtual)
+            .observe(List.of(virtual.key()), "pulse")
+            .get(virtual.key())
+            .members()
+            .getFirst()
+            .usable());
+    var statik =
+        document(
+            "Static.java", "class Static {static void pulse(int n){}void caller(){pulse(1);}}");
+    var unique =
+        graph(statik)
+            .observe(List.of(statik.key()), "pulse")
+            .get(statik.key())
+            .members()
+            .getFirst();
+    assertTrue(unique.usable());
+    assertEquals(1, unique.observedCallers());
+    var widening =
+        document(
+            "Widening.java",
+            "final class Widening {static void pulse(int n){}static void pulse(long n){}void call(){pulse(1);}}");
+    assertTrue(
+        graph(widening)
+            .observe(List.of(widening.key()), "pulse")
+            .get(widening.key())
+            .members()
+            .stream()
+            .noneMatch(SourceSymbolGraph.Usage::usable));
+    var unrelated =
+        document(
+            "Unrelated.java",
+            "final class Unrelated {private static void pulse(int n){}void known(){pulse(1);}void other(String value){value.pulse(1);}}");
+    var isolated =
+        graph(unrelated)
+            .observe(List.of(unrelated.key()), "pulse")
+            .get(unrelated.key())
+            .members()
+            .getFirst();
+    assertTrue(isolated.usable());
+    assertEquals(1, isolated.observedCallers());
   }
-
 }

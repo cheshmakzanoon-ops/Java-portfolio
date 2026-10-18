@@ -15,7 +15,7 @@ No fabricated evidence, metrics, gate passes, or blanket skips. A partial milest
 Reviews are read-only outside your owned project. Send findings to owner and coordinator.
 Before coordinator commits, acknowledge write pause. Do not change paused files until released.
 
-In this cloud environment source scripts/cloud-env.sh before Maven (sets required proxy settings and trusted system CAs). Maven settings at .work/settings.xml were generated from HTTPS_PROXY; never disable TLS checks. Use fully qualified com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply if prefix resolution causes unnecessary lookups.
+In this cloud environment source scripts/cloud-env.sh before Maven (sets required proxy settings and trusted system CAs). Preserve the MAVEN_OPTS it exports, including its trustStore properties: set initial heap options before sourcing, or append required options afterward; do not replace MAVEN_OPTS after sourcing. Maven settings at .work/settings.xml were generated from HTTPS_PROXY; never disable TLS checks. Use fully qualified com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply if prefix resolution causes unnecessary lookups.
 
 Mutation convention: use a project-local mutation profile to neutralize inherited default PIT execution for noncritical adapters, then explicitly activate PIT for selected original core classes with nonzero mutations and a70% threshold. Do not exclude difficult branches or pretend no-test adapters prove mutation strength. Preserve survivor reports.
 

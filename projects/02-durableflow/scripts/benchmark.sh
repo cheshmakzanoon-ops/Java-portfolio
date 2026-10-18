@@ -20,7 +20,7 @@ capture_evidence() {
     if ! jcmd "$profile_pid" JFR.stop name=durableflow > "$capture/jfr-stop.txt" 2>&1; then outcome=1; fi
     if [[ -s "$capture/worker-1.jfr" ]]; then
       jfr summary "$capture/worker-1.jfr" > "$capture/jfr-summary.txt" || outcome=1
-      jfr print --json --events jdk.ObjectAllocationSample "$capture/worker-1.jfr" > "$capture/allocation-samples.json" || outcome=1
+      bash "$PROJECT/scripts/capture-allocation-samples.sh" "$capture/worker-1.jfr" "$capture" || outcome=1
     else outcome=1
     fi
   fi

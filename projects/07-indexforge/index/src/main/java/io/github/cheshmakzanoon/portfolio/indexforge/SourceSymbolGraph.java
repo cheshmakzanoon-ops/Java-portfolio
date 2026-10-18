@@ -179,10 +179,16 @@ public final class SourceSymbolGraph {
     Document document = documents.get(sourceKey);
     if (document == null || !document.facts().members().contains(member))
       throw new IllegalArgumentException("field source identity");
-    if (!(platform instanceof SourceApiCatalog catalog) || member.bindingUnknown()
+    if (!(platform instanceof SourceApiCatalog catalog)
+        || member.bindingUnknown()
         || !expression.kind().equals("select")) return Optional.empty();
-    Bound receiver = typeOf(expression.children().getFirst(), new MemberRef(document, member),
-        work, 0, new HashSet<>());
+    Bound receiver =
+        typeOf(
+            expression.children().getFirst(),
+            new MemberRef(document, member),
+            work,
+            0,
+            new HashSet<>());
     if (receiver.source() != null || !catalog.types().contains(receiver.name()))
       return Optional.empty();
     return catalog.field(receiver.name(), expression.text());

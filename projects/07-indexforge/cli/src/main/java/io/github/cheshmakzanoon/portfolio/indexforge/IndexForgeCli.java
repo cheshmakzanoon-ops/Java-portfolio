@@ -28,8 +28,15 @@ public final class IndexForgeCli {
       return;
     }
     if (command.startsWith("wave3-")) {
-      if(args.length!=5)throw new IllegalArgumentException("wave3-{audit,fit,validate} data fixtures output catalogFile");
-      SourceWave3Study.run(command.substring("wave3-".length()),data,Path.of(args[2]),Path.of(args[3]),Path.of(args[4]));
+      if (args.length != 5)
+        throw new IllegalArgumentException(
+            "wave3-{audit,fit,validate} data fixtures output catalogFile");
+      SourceWave3Study.run(
+          command.substring("wave3-".length()),
+          data,
+          Path.of(args[2]),
+          Path.of(args[3]),
+          Path.of(args[4]));
       return;
     }
     if (command.startsWith("wave2-")) {

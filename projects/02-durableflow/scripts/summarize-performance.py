@@ -8,6 +8,8 @@ import re
 import statistics
 import sys
 
+from allocation_recording import load_allocation_events
+
 if len(sys.argv) != 4:
     raise SystemExit('Usage: summarize-performance.py RUN1_DIRECTORY RUN2_DIRECTORY RUN3_DIRECTORY')
 runs = []
@@ -54,7 +56,7 @@ for argument in sys.argv[1:]:
         pauses = [float(value) for value in re.findall(r'GC\(\d+\) Pause[^\n]*? ([\d.]+)ms\s*$', file.read_text(), re.M)]
         if pauses:
             gc[file.name] = dict(pauses=len(pauses), totalPauseMs=sum(pauses), maxPauseMs=max(pauses))
-    events = json.loads((directory / 'allocation-samples.json').read_text())['recording']['events']
+    events = load_allocation_events(directory)
     allocation = [event['values']['weight'] for event in events if event['type'] == 'jdk.ObjectAllocationSample']
     def p95(name):
         values = [float(value) for value in measurements[name].strip('{}').split(',')]

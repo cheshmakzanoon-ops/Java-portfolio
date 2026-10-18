@@ -1,0 +1,373 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_ORDINARY_SUPPORTED_PREPARATION_FULL_STUDY_PENDING",
+  "recordedAtUtc": "2026-10-18T11:00:55.595326+00:00",
+  "sourceRevision": "sha256:5493b24d2999922c49e64ffb6e4d28d07c38f84e8f26fadd87f66485157c1e3d",
+  "previousCertifiedSource": "sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187",
+  "oldFullRunnerUnchanged": true,
+  "newFullRunner": ".work/A02/run-full-reference-gzip-v2.py",
+  "newFullRunnerSha256": "b302de6d879f421b5aef7fd7d7c1c7ec7e4a7d6ebd3d35ddf7f410a2ab738f5e",
+  "priorManifestChangedEntries": [
+    "scripts/benchmark.sh",
+    "scripts/summarize-performance.py"
+  ],
+  "priorManifestUnchangedEntries": 57,
+  "allJavaSqlPomResourcesUnchanged": true,
+  "modifiedCaptureInputs": {
+    "scripts/benchmark.sh": "05363fa440dbf6187d5bd61f83029b892ec858fa90c7023515c7dda522e67d90",
+    "scripts/summarize-performance.py": "bc270bb86038017aa0236659c47092a2ae8d0da95c62365475defe7a399de51c",
+    "scripts/capture-allocation-samples.sh": "fcd976dcce698a202930269ca2b6a4c6cdb09942131dd87c136da7f9c9305e5b",
+    "scripts/allocation_recording.py": "2b2c83764b9c91b01db532b50cb7fa323f4045c0251c6028e02c77caebc8acd5"
+  },
+  "controls": [
+    {
+      "source": ".work/A02/test-full-runner-gzip-v2.py",
+      "sourceSha256": "f0e7128a0b066b42ea468c7a2aff82b281d5d75578e5d8d150f02282ea23dd71",
+      "log": ".work/A02/gzip-v2-runner-controls.log",
+      "logSha256": "d8726becc3e6d0bec836751061bd7402ac7a92aee52d3f7c658a2b2908f5aa2f",
+      "methods": 19,
+      "seconds": 0.09,
+      "exitCode": 0,
+      "scope": "synthetic pure schema/mocked processes or tiny fake Python producer/compressor; no application measurement"
+    },
+    {
+      "source": ".work/A02/test-allocation-capture-v2.py",
+      "sourceSha256": "74348e2dadc5c84bf893f4473342f63fc505c21f7e38b8e25bada214677edbcd",
+      "log": ".work/A02/gzip-v2-capture-controls.log",
+      "logSha256": "ffb1d757b338015a5ab484f475e6662aeff5c8533d600a20a32554fb1f6f49be",
+      "methods": 5,
+      "seconds": 0.132,
+      "exitCode": 0,
+      "scope": "synthetic pure schema/mocked processes or tiny fake Python producer/compressor; no application measurement"
+    }
+  ],
+  "failedQuiet18": {
+    "attempt": ".work/A02/full-reference-20261018T095104-746011",
+    "overallExitCode": 1,
+    "successfulFullRuns": 2,
+    "thirdRun": "refused before reset:1651793920<2147483648",
+    "reuseForNextReference": false
+  },
+  "originalInputsPreservation": ".work/A02/gzip-v2-original-preservation.json",
+  "storageReplacement": "projects/02-durableflow/evidence/quiet18-storage/replacement.json",
+  "remaining": [
+    "three fresh full runs with one source identity and unchanged CV<=10% gate",
+    "independent final review and clean-checkout release"
+  ],
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "ordinary": {
+    "exitCode": 0,
+    "cutoffEpoch": 1792321043,
+    "counts": {
+      "tests": 68,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "reports": [
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.InterpreterTest.xml",
+        "sha256": "02a40f1052b29e7383ef0e93e1bbf41f5d1ae959273d7fd757d8efd34986acd3",
+        "counts": {
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyInterpreterV1Test.xml",
+        "sha256": "ab25e7a729cd3084b8d2986a94d7db9bf2fcc9f6f10851a5301709675ec082a5",
+        "counts": {
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyInterpreterV2Test.xml",
+        "sha256": "9cca84aa2779f505d8adffa79f1caab3bd480c459e5ea057d99b586cbe8c9a68",
+        "counts": {
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyReplayPropertyTest.xml",
+        "sha256": "d040421d724d70c03d769eff9f0f37d55eed28d83ff1cb5ed534baec9805b2cf",
+        "counts": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyTypedReplayV2PropertyTest.xml",
+        "sha256": "90d97b04ab43fc3d17cb86a362df896c4f6615f9c0acb01f51e7506ba588f182",
+        "counts": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyTypedReplayV2Test.xml",
+        "sha256": "b4faaff713acf1be2eab891f7f5ba35632294459dfbf9f428bf579ba4fcde2f1",
+        "counts": {
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ReplayPropertyTest.xml",
+        "sha256": "6eaa051d05ad8c3e6467754786e778e11a7aa11330137b00289a587fccd1fd47",
+        "counts": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.TypedReplayTest.xml",
+        "sha256": "31168cf382e8713a1c2447a2eaa1157d03903e9637d8236d5e15ed7eddabcf19",
+        "counts": {
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.DataTest.xml",
+        "sha256": "17d90dda1e08f70ea8ef91dd83ccefdd0a730d6b439db0bdf77a1a888dd2b865",
+        "counts": {
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.DefinitionTest.xml",
+        "sha256": "cd51e3eb7681f4440e275c921ead6099fdb9f5ecd8c82d55b43d6e23afe5cb98",
+        "counts": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyDefinitionV1Test.xml",
+        "sha256": "fab6d37902cd643b8849b0b1b6cfc10c9e1f6d94f962b03eab13206b213bc7e7",
+        "counts": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ArchitectureTest.xml",
+        "sha256": "a64a3b8dad302dab40312281a2fb8e72d213e4406913e4f6ad980c36daf88a37",
+        "counts": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ContractTest.xml",
+        "sha256": "78a5c35f2543a961f3594c45027305df085b1a54767f5e3af86fd8d8f7a84b2e",
+        "counts": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.PreparedBuildTest.xml",
+        "sha256": "9f840ebdaaf9118e0c5bd774056a5097218cc05bc732d62148cb9bb64ed06084",
+        "counts": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": ".work/A02/gzip-v2-ordinary-reports/workflow-worker-sdk/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.FakeProviderTest.xml",
+        "sha256": "e4c5d13239a9f8c132f8d6a5e21188227f2f5ce830b3342a1d4b98bd3b4edba7",
+        "counts": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      }
+    ],
+    "log": ".work/A02/gzip-v2-ordinary.log",
+    "logSha256": "69c44d737b4c649fdd98e8b85326eb9175625ddac12cf4af361bd82cfed96fb4",
+    "junitApiVersions": [
+      "6.1.3"
+    ]
+  },
+  "supportedPreparation": {
+    "exitCode": 0,
+    "cutoffEpoch": 1792321103,
+    "log": ".work/A02/gzip-v2-supported-prepare.log",
+    "logSha256": "1d017c10e93fb3e9a45d99817466bf92d438316d722d85361b9273c67f74134b",
+    "receipt": {
+      "schemaVersion": 1,
+      "timestamp": "2026-10-18T10:59:44.591620+00:00",
+      "sourceFingerprint": "sha256:5493b24d2999922c49e64ffb6e4d28d07c38f84e8f26fadd87f66485157c1e3d",
+      "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+      "artifacts": {
+        "workflow-model/target/durableflow-workflow-model-1.0.0-SNAPSHOT.jar": "587867025f6137fe41c46d237e4a56f320d5f523ccd3c06cad26159388587b41",
+        "workflow-engine/target/durableflow-workflow-engine-1.0.0-SNAPSHOT.jar": "45cc8b3eeeab23c65a3f7342bb042255192f76241d5b0585891a0dc33b343bcb",
+        "workflow-persistence/target/durableflow-workflow-persistence-1.0.0-SNAPSHOT.jar": "31043d394f5544a9f4bb5e01c9342ec8d95e11825d6fabb4f677f21bea061354",
+        "workflow-worker-sdk/target/durableflow-workflow-worker-sdk-1.0.0-SNAPSHOT.jar": "71cf2dbb73e8be72a4993cc32d189ae1162678a5eaa4b0500c57df86928fdb1e",
+        "workflow-api/target/durableflow-workflow-api-1.0.0-SNAPSHOT.jar": "4e0f51ff21346537e5ce25a561f79a9f08c2c1d929357db920ed847a64ece34c",
+        "workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT.jar": "53884861a36fa960ce5e3151fadc54cbecbd3d25872ca1f5a84fd3f28aef54ef",
+        "workflow-api/target/durableflow-workflow-api-1.0.0-SNAPSHOT-exec.jar": "5935e6a4b0a37c63351dc6c65b586566af63d54f169bf18293597bcc2d878395",
+        "workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT-exec.jar": "36765ffcbbc6511628ddd6442cf6d36d377d66f0f76bd3486cdb2096f5af5699"
+      },
+      "verification": {
+        "command": "./mvnw -f projects/02-durableflow/pom.xml -Dmaven.repo.local=.work/A02/m2 -B -ntp verify",
+        "exitCode": 0,
+        "logSha256": "aca517741b99598d10ecf396042582b55a19c6d3df14305a6f259ffd2a2349fb"
+      }
+    },
+    "preparedValidationLogSha256": "d7fe2835d1fe4b789aaabd382c5f314f1823992d4da3273a22a9c778b2cc4d73",
+    "note": "Separate real ordinary verification by supported prepare; original ordinary XML preserved before reports were refreshed."
+  },
+  "coverage": {
+    "workflow-model": {
+      "path": "projects/02-durableflow/workflow-model/target/site/jacoco/jacoco.xml",
+      "sha256": "6418dff55d8bf01ba0b6fd95d7818c9701c890f948ddc3d13f1e94946b6d11f3",
+      "metrics": {
+        "BRANCH": {
+          "covered": 369,
+          "missed": 47,
+          "percent": 88.70192307692308
+        },
+        "LINE": {
+          "covered": 325,
+          "missed": 20,
+          "percent": 94.20289855072464
+        }
+      }
+    },
+    "workflow-engine": {
+      "path": "projects/02-durableflow/workflow-engine/target/site/jacoco/jacoco.xml",
+      "sha256": "9cf7f38a1e3183c1d0fd695f6d82600c86460d2b20ce976ce8f1db5dacc8d36f",
+      "metrics": {
+        "BRANCH": {
+          "covered": 545,
+          "missed": 98,
+          "percent": 84.75894245723173
+        },
+        "LINE": {
+          "covered": 658,
+          "missed": 25,
+          "percent": 96.33967789165446
+        }
+      }
+    }
+  },
+  "artifactContinuity": [
+    {
+      "path": "projects/02-durableflow/workflow-model/target/durableflow-workflow-model-1.0.0-SNAPSHOT.jar",
+      "previousJarSha256": "587867025f6137fe41c46d237e4a56f320d5f523ccd3c06cad26159388587b41",
+      "currentJarSha256": "587867025f6137fe41c46d237e4a56f320d5f523ccd3c06cad26159388587b41",
+      "jarBytesIdentical": true,
+      "classEntries": 17,
+      "oldClassEntryAggregateSha256": "5f8351a1e76aa47cbd72065193e91fe3c74062d647fec650b29a9171f1efcdf5",
+      "currentClassEntryAggregateSha256": "5f8351a1e76aa47cbd72065193e91fe3c74062d647fec650b29a9171f1efcdf5",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-engine/target/durableflow-workflow-engine-1.0.0-SNAPSHOT.jar",
+      "previousJarSha256": "45cc8b3eeeab23c65a3f7342bb042255192f76241d5b0585891a0dc33b343bcb",
+      "currentJarSha256": "45cc8b3eeeab23c65a3f7342bb042255192f76241d5b0585891a0dc33b343bcb",
+      "jarBytesIdentical": true,
+      "classEntries": 18,
+      "oldClassEntryAggregateSha256": "92a89d01689563d94842631b6392e63472f6677eb08cd5940e4356972c726cd7",
+      "currentClassEntryAggregateSha256": "92a89d01689563d94842631b6392e63472f6677eb08cd5940e4356972c726cd7",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-persistence/target/durableflow-workflow-persistence-1.0.0-SNAPSHOT.jar",
+      "previousJarSha256": "31043d394f5544a9f4bb5e01c9342ec8d95e11825d6fabb4f677f21bea061354",
+      "currentJarSha256": "31043d394f5544a9f4bb5e01c9342ec8d95e11825d6fabb4f677f21bea061354",
+      "jarBytesIdentical": true,
+      "classEntries": 7,
+      "oldClassEntryAggregateSha256": "cd9ed570406dcb584f739dcb7e9151877614adf0707b529c7a67d0943f80753e",
+      "currentClassEntryAggregateSha256": "cd9ed570406dcb584f739dcb7e9151877614adf0707b529c7a67d0943f80753e",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-worker-sdk/target/durableflow-workflow-worker-sdk-1.0.0-SNAPSHOT.jar",
+      "previousJarSha256": "71cf2dbb73e8be72a4993cc32d189ae1162678a5eaa4b0500c57df86928fdb1e",
+      "currentJarSha256": "71cf2dbb73e8be72a4993cc32d189ae1162678a5eaa4b0500c57df86928fdb1e",
+      "jarBytesIdentical": true,
+      "classEntries": 4,
+      "oldClassEntryAggregateSha256": "7ecc38328c0677deb2f60242f4c0b678741cb58dbad9843c5f8c64daf6a0d1f8",
+      "currentClassEntryAggregateSha256": "7ecc38328c0677deb2f60242f4c0b678741cb58dbad9843c5f8c64daf6a0d1f8",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-api/target/durableflow-workflow-api-1.0.0-SNAPSHOT.jar",
+      "previousJarSha256": "4e0f51ff21346537e5ce25a561f79a9f08c2c1d929357db920ed847a64ece34c",
+      "currentJarSha256": "4e0f51ff21346537e5ce25a561f79a9f08c2c1d929357db920ed847a64ece34c",
+      "jarBytesIdentical": true,
+      "classEntries": 11,
+      "oldClassEntryAggregateSha256": "c57f535675c48df23c083964cad5c1a69bc50e942cf0c78c1e6cbc6ef8d7dda8",
+      "currentClassEntryAggregateSha256": "c57f535675c48df23c083964cad5c1a69bc50e942cf0c78c1e6cbc6ef8d7dda8",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT.jar",
+      "previousJarSha256": "53884861a36fa960ce5e3151fadc54cbecbd3d25872ca1f5a84fd3f28aef54ef",
+      "currentJarSha256": "53884861a36fa960ce5e3151fadc54cbecbd3d25872ca1f5a84fd3f28aef54ef",
+      "jarBytesIdentical": true,
+      "classEntries": 5,
+      "oldClassEntryAggregateSha256": "7f02e9b76f2f303580ca6e0a950e7245d1b8d46a99607ea056fea277f3736aac",
+      "currentClassEntryAggregateSha256": "7f02e9b76f2f303580ca6e0a950e7245d1b8d46a99607ea056fea277f3736aac",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-api/target/durableflow-workflow-api-1.0.0-SNAPSHOT-exec.jar",
+      "previousJarSha256": "5935e6a4b0a37c63351dc6c65b586566af63d54f169bf18293597bcc2d878395",
+      "currentJarSha256": "5935e6a4b0a37c63351dc6c65b586566af63d54f169bf18293597bcc2d878395",
+      "jarBytesIdentical": true,
+      "classEntries": 110,
+      "oldClassEntryAggregateSha256": "2af3f329d37bb27459a65901d88e631fdc325a961bef7eb4bfbd348474ee6d8d",
+      "currentClassEntryAggregateSha256": "2af3f329d37bb27459a65901d88e631fdc325a961bef7eb4bfbd348474ee6d8d",
+      "changedClassEntries": []
+    },
+    {
+      "path": "projects/02-durableflow/workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT-exec.jar",
+      "previousJarSha256": "36765ffcbbc6511628ddd6442cf6d36d377d66f0f76bd3486cdb2096f5af5699",
+      "currentJarSha256": "36765ffcbbc6511628ddd6442cf6d36d377d66f0f76bd3486cdb2096f5af5699",
+      "jarBytesIdentical": true,
+      "classEntries": 104,
+      "oldClassEntryAggregateSha256": "6d3fea8251041bc5f36d5704b58f9ed2abe883decdda776a6b7de03fb52514c8",
+      "currentClassEntryAggregateSha256": "6d3fea8251041bc5f36d5704b58f9ed2abe883decdda776a6b7de03fb52514c8",
+      "changedClassEntries": []
+    }
+  ],
+  "allEightJarBytesIdentical": true,
+  "allClassEntriesIdentical": true,
+  "noIntegrationOrFullStudyExecutedForRepair": true
+}

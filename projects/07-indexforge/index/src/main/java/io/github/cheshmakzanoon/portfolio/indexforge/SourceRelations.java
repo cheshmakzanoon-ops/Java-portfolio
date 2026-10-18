@@ -84,7 +84,8 @@ public final class SourceRelations {
         member.calls().forEach(call -> expressions.add(call.expression()));
         member.guards().forEach(guard -> expressions.add(guard.condition()));
         member.returned().forEach(returned -> expressions.add(returned.expression()));
-        for (var expression : expressions) fieldAnchors(context, expression, executableTerms, apiTerms);
+        for (var expression : expressions)
+          fieldAnchors(context, expression, executableTerms, apiTerms);
       }
       result[0] = Math.max(result[0], coverage(executableTerms));
       result[1] = Math.max(result[1], coverage(apiTerms));
@@ -323,8 +324,12 @@ public final class SourceRelations {
     return out;
   }
 
-  private void fieldAnchors(Context context, SourceFacts.Expression expression,
-      Set<String> identifiers, Set<String> documentation) throws IOException {
+  private void fieldAnchors(
+      Context context,
+      SourceFacts.Expression expression,
+      Set<String> identifiers,
+      Set<String> documentation)
+      throws IOException {
     var pending = new ArrayDeque<SourceFacts.Expression>();
     pending.push(expression);
     while (!pending.isEmpty()) {
@@ -333,7 +338,8 @@ public final class SourceRelations {
       if (next.kind().equals("select")) {
         var field = graph.field(key, context.member(), next, work);
         if (field.isPresent()) {
-          if (options.identifiers()) add(identifiers, SourceAnchors.terms(List.of(field.get().name())));
+          if (options.identifiers())
+            add(identifiers, SourceAnchors.terms(List.of(field.get().name())));
           if (options.apiDocumentation()) add(documentation, field.get().terms());
         }
       }

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_LOSSLESS_STORAGE_REPLACEMENT",
+  "startedAtUtc": "2026-10-18T10:52:52.909915+00:00",
+  "classification": "Lossless storage finalization of FAILED incomplete quiet18; no performance pass",
+  "persistentArchiveRoot": "/workspace/Java-portfolio/.work/A02/archive/quiet18/20261018T105252896249Z",
+  "mutations": [
+    {
+      "action": "exact-verified-original-directory-removal",
+      "path": "/workspace/Java-portfolio/projects/02-durableflow/target/performance/20261018T095149-10000-746947"
+    },
+    {
+      "action": "exact-verified-original-directory-removal",
+      "path": "/workspace/Java-portfolio/projects/02-durableflow/target/performance/20261018T101046-10000-760867"
+    },
+    {
+      "action": "own-generated-physical-restore-removal",
+      "path": "/tmp/durableflow-quiet18-preservation-6f1_cbot/physical-restore-1"
+    },
+    {
+      "action": "own-generated-physical-restore-removal",
+      "path": "/tmp/durableflow-quiet18-preservation-6f1_cbot/physical-restore-2"
+    }
+  ],
+  "originalsRemoved": true,
+  "sourceAttempt": "/workspace/Java-portfolio/.work/A02/full-reference-20261018T095104-746011",
+  "freeWorkspaceBytesBefore": 6236270592,
+  "independentRecoveryReceipt": "/workspace/Java-portfolio/.work/coordinator/durableflow-quiet18-archive-recovery.json",
+  "independentRecoveryReceiptSha256": "369ec5b0821e4d92f9b400ccafabebba9b24c635da652fbed5ddfa89035f9dc4",
+  "captures": [
+    {
+      "source": "/workspace/Java-portfolio/projects/02-durableflow/target/performance/20261018T095149-10000-746947",
+      "archive": "/workspace/Java-portfolio/.work/A02/archive/quiet18/20261018T105252896249Z/20261018T095149-10000-746947.tar.gz",
+      "archiveSha256": "2890dc149177f59cfc6bd049b76b60db10c7e871b56f1e30baf03c5864a2240d",
+      "manifest": "/workspace/Java-portfolio/.work/A02/archive/quiet18/20261018T105252896249Z/20261018T095149-10000-746947-manifest.json",
+      "manifestSha256": "277f027d6868ad148b0f85d95996b080cddc581c46748aecbe78d4da7911c028",
+      "originalFiles": 22,
+      "originalBytes": 1959535911
+    },
+    {
+      "source": "/workspace/Java-portfolio/projects/02-durableflow/target/performance/20261018T101046-10000-760867",
+      "archive": "/workspace/Java-portfolio/.work/A02/archive/quiet18/20261018T105252896249Z/20261018T101046-10000-760867.tar.gz",
+      "archiveSha256": "37a99f19534748febc7efbc56e9174fe67dd6f0a8827f251fc89efde75468b13",
+      "manifest": "/workspace/Java-portfolio/.work/A02/archive/quiet18/20261018T105252896249Z/20261018T101046-10000-760867-manifest.json",
+      "manifestSha256": "fb1e2a33ba455b6558ff1369f37a8e0d85476f0567c5102f2f6e9e8fd54fc25d",
+      "originalFiles": 22,
+      "originalBytes": 1953165976
+    }
+  ],
+  "persistentCopiesVerifiedBeforeRemoval": true,
+  "elapsedSeconds": 22.375224268995225,
+  "completedAtUtc": "2026-10-18T10:53:15.271356+00:00",
+  "freeWorkspaceBytesAfter": 9787674624,
+  "freeTmpBytesAfter": 17070202880
+}

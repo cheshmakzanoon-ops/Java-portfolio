@@ -1,6 +1,7 @@
 package io.github.cheshmakzanoon.portfolio.indexforge;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.*;
 import org.apache.lucene.analysis.*;
@@ -20,16 +21,28 @@ public final class CodeIdentifierAnalyzer extends Analyzer {
     int position = 0;
     while (words.find()) {
       String original = words.group();
-      out.add(new Part(original.toLowerCase(Locale.ROOT), words.start(), words.end(), ++position));
+      String normalized = original.toLowerCase(Locale.ROOT);
+      ++position;
+      if (indexable(normalized))
+        out.add(new Part(normalized, words.start(), words.end(), position));
       Matcher pieces = IDENTIFIER_PIECES.matcher(original);
       while (pieces.find()) {
         String p = pieces.group().toLowerCase(Locale.ROOT);
-        if (!p.equals(original.toLowerCase(Locale.ROOT)))
+        if (!p.equals(normalized) && indexable(p))
           out.add(
               new Part(p, words.start() + pieces.start(), words.start() + pieces.end(), position));
       }
     }
     return out;
+  }
+
+  private static boolean indexable(String normalized) {
+    // Lucene's bound applies AFTER case normalization and counts UTF8 bytes, not Java chars.
+    // Drop the entire term: a truncated prefix would create false matches. The char precheck
+    // also bounds the temporary UTF8 allocation to less than98KiB.
+    return normalized.length() <= org.apache.lucene.index.IndexWriter.MAX_TERM_LENGTH
+        && normalized.getBytes(StandardCharsets.UTF_8).length
+            <= org.apache.lucene.index.IndexWriter.MAX_TERM_LENGTH;
   }
 
   @Override

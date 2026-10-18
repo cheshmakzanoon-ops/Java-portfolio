@@ -32,26 +32,59 @@ class SourceRelationsTest {
     entries.add(
         new SourceApiCatalog.Entry(
             "java.io.DataOutputStream", "flush", List.of(), "void", Set.of("flush"), false));
-    entries.add(new SourceApiCatalog.Entry("java.nio.charset.CodingErrorAction", "REPORT", List.of(),
-        "java.nio.charset.CodingErrorAction", Set.of("reject"), true));
-    entries.add(new SourceApiCatalog.Entry("java.nio.charset.CodingErrorAction", "REPLACE", List.of(),
-        "java.nio.charset.CodingErrorAction", Set.of("substitut"), true));
-    entries.add(new SourceApiCatalog.Entry("java.lang.Integer", "MAX_VALUE", List.of(), "int",
-        Set.of("maximum"), true));
-    entries.add(new SourceApiCatalog.Entry("java.lang.Math", "abs", List.of("int"), "int",
-        Set.of("absolut"), false));
-    entries.add(new SourceApiCatalog.Entry("java.nio.charset.CharsetDecoder", "onMalformedInput",
-        List.of("java.nio.charset.CodingErrorAction"), "java.nio.charset.CharsetDecoder", Set.of("configur"), false));
-    entries.add(new SourceApiCatalog.Entry("java.nio.charset.CharsetDecoder", "decode",
-        List.of("java.nio.ByteBuffer"), "java.nio.CharBuffer", Set.of("decod"), false));
+    entries.add(
+        new SourceApiCatalog.Entry(
+            "java.nio.charset.CodingErrorAction",
+            "REPORT",
+            List.of(),
+            "java.nio.charset.CodingErrorAction",
+            Set.of("reject"),
+            true));
+    entries.add(
+        new SourceApiCatalog.Entry(
+            "java.nio.charset.CodingErrorAction",
+            "REPLACE",
+            List.of(),
+            "java.nio.charset.CodingErrorAction",
+            Set.of("substitut"),
+            true));
+    entries.add(
+        new SourceApiCatalog.Entry(
+            "java.lang.Integer", "MAX_VALUE", List.of(), "int", Set.of("maximum"), true));
+    entries.add(
+        new SourceApiCatalog.Entry(
+            "java.lang.Math", "abs", List.of("int"), "int", Set.of("absolut"), false));
+    entries.add(
+        new SourceApiCatalog.Entry(
+            "java.nio.charset.CharsetDecoder",
+            "onMalformedInput",
+            List.of("java.nio.charset.CodingErrorAction"),
+            "java.nio.charset.CharsetDecoder",
+            Set.of("configur"),
+            false));
+    entries.add(
+        new SourceApiCatalog.Entry(
+            "java.nio.charset.CharsetDecoder",
+            "decode",
+            List.of("java.nio.ByteBuffer"),
+            "java.nio.CharBuffer",
+            Set.of("decod"),
+            false));
     return new SourceApiCatalog(
         "a".repeat(64),
         "b".repeat(64),
         "synthetic-test-signatures",
         "test",
-        Set.of("java.util.Arrays", "java.io.DataInputStream", "java.io.DataOutputStream",
-            "java.nio.charset.CodingErrorAction", "java.nio.charset.CharsetDecoder", "java.nio.ByteBuffer",
-            "java.nio.CharBuffer", "java.lang.Integer", "java.lang.Math"),
+        Set.of(
+            "java.util.Arrays",
+            "java.io.DataInputStream",
+            "java.io.DataOutputStream",
+            "java.nio.charset.CodingErrorAction",
+            "java.nio.charset.CharsetDecoder",
+            "java.nio.ByteBuffer",
+            "java.nio.CharBuffer",
+            "java.lang.Integer",
+            "java.lang.Math"),
         entries);
   }
 
@@ -269,44 +302,75 @@ class SourceRelationsTest {
             query,
             options)[2]);
   }
+
   @Test
-  void catalogFieldsUseActualLexemesAndProseWithIndependentMasksAndConnectedEndpoints() throws Exception {
-    String header="import java.nio.*; import java.nio.charset.*; final class S { void run(CharsetDecoder decoder, ByteBuffer input){";
-    String report=header+"decoder.onMalformedInput(CodingErrorAction.REPORT);decoder.decode(input);}}";
-    String replace=header+"decoder.onMalformedInput(CodingErrorAction.REPLACE);decoder.decode(input);}}";
-    var all=new SourceRelations.Options(true,true,true);
-    var prose=SourceApiCatalog.terms("reject decode");
-    assertEquals(1,features(report,prose,all)[3]);
-    assertEquals(0,features(replace,prose,all)[3]);
-    assertEquals(1,features(report,prose,new SourceRelations.Options(false,true,true))[3]);
-    assertEquals(0,features(report,prose,new SourceRelations.Options(true,false,true))[3]);
-    assertEquals(1,features(report,SourceApiCatalog.terms("REPORT decode"),
-        new SourceRelations.Options(true,false,true))[3]);
-    assertEquals(0,features(report,SourceApiCatalog.terms("REPORT decode"),
-        new SourceRelations.Options(false,true,true))[3]);
-    String other="final class S {int run(){return Math.abs(Integer.MAX_VALUE);}}";
-    assertEquals(1,features(other,SourceApiCatalog.terms("MAX_VALUE"),all)[0]);
-    assertEquals(1,features(other,SourceApiCatalog.terms("maximum"),all)[1]);
-    assertEquals(0,features(other,SourceApiCatalog.terms("maximum"),
-        new SourceRelations.Options(true,false,true))[1]);
+  void catalogFieldsUseActualLexemesAndProseWithIndependentMasksAndConnectedEndpoints()
+      throws Exception {
+    String header =
+        "import java.nio.*; import java.nio.charset.*; final class S { void run(CharsetDecoder decoder, ByteBuffer input){";
+    String report =
+        header + "decoder.onMalformedInput(CodingErrorAction.REPORT);decoder.decode(input);}}";
+    String replace =
+        header + "decoder.onMalformedInput(CodingErrorAction.REPLACE);decoder.decode(input);}}";
+    var all = new SourceRelations.Options(true, true, true);
+    var prose = SourceApiCatalog.terms("reject decode");
+    assertEquals(1, features(report, prose, all)[3]);
+    assertEquals(0, features(replace, prose, all)[3]);
+    assertEquals(1, features(report, prose, new SourceRelations.Options(false, true, true))[3]);
+    assertEquals(0, features(report, prose, new SourceRelations.Options(true, false, true))[3]);
+    assertEquals(
+        1,
+        features(
+            report,
+            SourceApiCatalog.terms("REPORT decode"),
+            new SourceRelations.Options(true, false, true))[3]);
+    assertEquals(
+        0,
+        features(
+            report,
+            SourceApiCatalog.terms("REPORT decode"),
+            new SourceRelations.Options(false, true, true))[3]);
+    String other = "final class S {int run(){return Math.abs(Integer.MAX_VALUE);}}";
+    assertEquals(1, features(other, SourceApiCatalog.terms("MAX_VALUE"), all)[0]);
+    assertEquals(1, features(other, SourceApiCatalog.terms("maximum"), all)[1]);
+    assertEquals(
+        0,
+        features(
+            other,
+            SourceApiCatalog.terms("maximum"),
+            new SourceRelations.Options(true, false, true))[1]);
   }
 
   @Test
   void catalogFieldReferencesOutsideAnEdgeCannotInventReceiverOrGuardRelations() throws Exception {
-    var all=new SourceRelations.Options(true,true,true);
-    var query=SourceApiCatalog.terms("reject decode");
-    String header="import java.nio.*; import java.nio.charset.*; final class S { void run(CharsetDecoder first, CharsetDecoder second, ByteBuffer input){";
-    assertEquals(0,features(header+"first.onMalformedInput(CodingErrorAction.REPORT);second.decode(input);}}",query,all)[3]);
-    String unused=header+"var unused=CodingErrorAction.REPORT;first.onMalformedInput(CodingErrorAction.REPLACE);first.decode(input);}}";
-    var vector=features(unused,query,all);
-    assertEquals(1,vector[1],"R1 may observe an actually referenced field elsewhere in this member");
-    for(int i=2;i<6;i++)assertEquals(0,vector[i],"unused field cannot fabricate relation dimension "+i);
-    String shadow="import java.nio.*; import java.nio.charset.*; final class CodingErrorAction {static CodingErrorAction REPORT;} final class S {void run(CharsetDecoder first, ByteBuffer input){first.onMalformedInput(CodingErrorAction.REPORT);first.decode(input);}}";
-    assertEquals(0,features(shadow,query,all)[3]);
-    String local=header+"Object CodingErrorAction=new Object();first.onMalformedInput(CodingErrorAction.REPORT);first.decode(input);}}";
-    assertEquals(0,features(local,query,all)[3]);
-    String strings=header+"String unrelated=\"CodingErrorAction.REPORT reject\";first.onMalformedInput(CodingErrorAction.REPLACE);first.decode(input);}}";
-    assertEquals(0,features(strings,query,all)[3]);
+    var all = new SourceRelations.Options(true, true, true);
+    var query = SourceApiCatalog.terms("reject decode");
+    String header =
+        "import java.nio.*; import java.nio.charset.*; final class S { void run(CharsetDecoder first, CharsetDecoder second, ByteBuffer input){";
+    assertEquals(
+        0,
+        features(
+            header + "first.onMalformedInput(CodingErrorAction.REPORT);second.decode(input);}}",
+            query,
+            all)[3]);
+    String unused =
+        header
+            + "var unused=CodingErrorAction.REPORT;first.onMalformedInput(CodingErrorAction.REPLACE);first.decode(input);}}";
+    var vector = features(unused, query, all);
+    assertEquals(
+        1, vector[1], "R1 may observe an actually referenced field elsewhere in this member");
+    for (int i = 2; i < 6; i++)
+      assertEquals(0, vector[i], "unused field cannot fabricate relation dimension " + i);
+    String shadow =
+        "import java.nio.*; import java.nio.charset.*; final class CodingErrorAction {static CodingErrorAction REPORT;} final class S {void run(CharsetDecoder first, ByteBuffer input){first.onMalformedInput(CodingErrorAction.REPORT);first.decode(input);}}";
+    assertEquals(0, features(shadow, query, all)[3]);
+    String local =
+        header
+            + "Object CodingErrorAction=new Object();first.onMalformedInput(CodingErrorAction.REPORT);first.decode(input);}}";
+    assertEquals(0, features(local, query, all)[3]);
+    String strings =
+        header
+            + "String unrelated=\"CodingErrorAction.REPORT reject\";first.onMalformedInput(CodingErrorAction.REPLACE);first.decode(input);}}";
+    assertEquals(0, features(strings, query, all)[3]);
   }
-
 }

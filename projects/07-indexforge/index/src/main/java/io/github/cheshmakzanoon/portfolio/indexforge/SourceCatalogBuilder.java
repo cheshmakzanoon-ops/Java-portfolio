@@ -13,12 +13,14 @@ public final class SourceCatalogBuilder {
 
   public static SourceApiCatalog prepare(Path workerDirectory) throws IOException {
     Path home = Path.of(System.getProperty("java.home"));
-    return prepareArchive(home.resolve("lib/src.zip"), home.resolve("legal/java.base/LICENSE"), workerDirectory);
+    return prepareArchive(
+        home.resolve("lib/src.zip"), home.resolve("legal/java.base/LICENSE"), workerDirectory);
   }
 
   // Package-local archive boundary for adversarial fixture tests. The public preparation entry
   // always selects the installed JDK above; no CLI or runtime override can select fixture prose.
-  static SourceApiCatalog prepareArchive(Path source, Path license, Path workerDirectory) throws IOException {
+  static SourceApiCatalog prepareArchive(Path source, Path license, Path workerDirectory)
+      throws IOException {
     if (!Files.isRegularFile(source) || Files.size(source) > 134_217_728)
       throw new IOException("installed JDK source ZIP missing/quota");
     String sourceHash = Digests.sha256(source);
@@ -71,7 +73,7 @@ public final class SourceCatalogBuilder {
                 .decode(ByteBuffer.wrap(bytes))
                 .toString();
         var unit = worker.catalog(text);
-        descriptions+=retainedBytes(unit);
+        descriptions += retainedBytes(unit);
         if (descriptions > 134_217_728) throw new IOException("API preparation working-set quota");
         units.add(unit);
       }
@@ -92,13 +94,18 @@ public final class SourceCatalogBuilder {
 
   // Conservative retained signature/prose accounting, not a claim about JVM total RSS.
   static long retainedBytes(SourceCatalogFacts.Unit unit) {
-    long bytes=3L*unit.packageName().length()+128;
-    for(String imported:unit.imports())bytes+=3L*imported.length()+64;
-    for(var type:unit.types()) {
-      bytes+=3L*(type.name().length()+type.description().length())+256;
-      for(var member:type.members()) {
-        bytes+=3L*(member.name().length()+member.returns().length()+member.description().length())+512;
-        for(String parameter:member.parameters())bytes+=3L*parameter.length()+64;
+    long bytes = 3L * unit.packageName().length() + 128;
+    for (String imported : unit.imports()) bytes += 3L * imported.length() + 64;
+    for (var type : unit.types()) {
+      bytes += 3L * (type.name().length() + type.description().length()) + 256;
+      for (var member : type.members()) {
+        bytes +=
+            3L
+                    * (member.name().length()
+                        + member.returns().length()
+                        + member.description().length())
+                + 512;
+        for (String parameter : member.parameters()) bytes += 3L * parameter.length() + 64;
       }
     }
     return bytes;

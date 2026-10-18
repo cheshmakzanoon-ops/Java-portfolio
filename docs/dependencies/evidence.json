@@ -1,10 +1,10 @@
 {
-  "observedAtUtc": "2026-10-18T09:42:25.889727+00:00",
+  "observedAtUtc": "2026-10-18T10:54:31.197931+00:00",
   "command": "source scripts/cloud-env.sh\n./mvnw -Dmaven.repo.local=/workspace/Java-portfolio/.work/coordinator/m2 -B -ntp org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom",
   "exitCode": 0,
-  "rawLog": ".work/coordinator/sbom-aggregate-retry-jitter.log",
-  "rawLogSha256": "ac06be1b5b2bad0fba74293ff9cf34868a29da3cff1393c9c9860814a109ffb0",
-  "completedAtUtc": "2026-10-18T09:41:23Z",
+  "rawLog": ".work/coordinator/sbom-after-wave3-mutation-poms.log",
+  "rawLogSha256": "87c0368b2903411c2a914c47b97ea5710285b49c9ad8559ea227a32dbbebb900",
+  "completedAtUtc": "2026-10-18T10:51:17Z",
   "schema": {
     "format": "CycloneDX",
     "version": "1.6"
@@ -54,11 +54,11 @@
     "projects/06-matchcore/pom.xml": "41e8ea3ea9e2349cee37eff441779ef4d49220ffbefb39cf52d55ecd13d1ea86",
     "projects/06-matchcore/simulator/pom.xml": "8971d61023adb73f8e971ef285ad755c664ea4602f79025b6bb314d04fc19ce3",
     "projects/07-indexforge/cli/pom.xml": "592698c21501f6dc76785890e6d92802cc552a06283de1ba0a4de06a080711d8",
-    "projects/07-indexforge/evaluation/pom.xml": "7d7a535db851a044b1efd7f185f5b9314d68f6629a9c322f350bf5b318af1ae1",
-    "projects/07-indexforge/index/pom.xml": "a8e32783a38906f1ef43e8771b1f411f01aafc1fa8e4eef6a463ca13dceed8eb",
+    "projects/07-indexforge/evaluation/pom.xml": "0b86175938290a540671120f250f1dd29bfa2655e353b3060cca8fb8b96b5556",
+    "projects/07-indexforge/index/pom.xml": "9c60a7bb664869a8c220b68f63e143f9f5dcfb85db0a3792f2faa77ca3a9b740",
     "projects/07-indexforge/ingest/pom.xml": "11d44e5fccb13833995af2e7ce2339440f5ea024694edba87a8437378b5dee36",
     "projects/07-indexforge/pom.xml": "8716c90b0134c746d7cb375266372a06acbaebfb2147103bd6920cf415e8c304",
-    "projects/07-indexforge/query/pom.xml": "6a0e430f35c3a23b4cd55d170c8a6da804b4010fcdd13ff0dbd320c51152e3ed",
+    "projects/07-indexforge/query/pom.xml": "638c53812b2d9769165a356f2fccf0e1888624848990584e0bcf8cad5c6f2508",
     "projects/07-indexforge/service/pom.xml": "ec776429a4e9c9e7515285554fd20bea1ca3bc96b3ea6b1b08dce1fdd21b85e7",
     "projects/08-threadlens/agent/pom.xml": "f7381aa2a8ccacea29bda99108f741cdcf830d518489b8ffcfd142b322be71a6",
     "projects/08-threadlens/analysis/pom.xml": "1b6144f49e2b535ed6d9f8a2422126f059da3fd2077d74fc3894aaabb13f0754",
@@ -86,16 +86,22 @@
     "Final release must regenerate if dependency POM inputs change."
   ],
   "refresh": {
-    "reason": "IndexForge wave2 and ThreadLens repair profile POM changes",
-    "previousEvidenceCommit": "29e0bbd",
-    "externalComponentIdentitiesLicensesAndHashesUnchanged": true,
+    "reason": "Three IndexForge mutation-target POM updates for the new original source extraction/ranking core",
+    "changedPoms": [
+      "projects/07-indexforge/evaluation/pom.xml",
+      "projects/07-indexforge/index/pom.xml",
+      "projects/07-indexforge/query/pom.xml"
+    ],
     "components": 176,
     "dependencyGraphNodes": 177,
-    "limitations": "Executed aggregate is not a vulnerability scan. Test/build-plugin/container scopes remain outside inventory."
+    "externalComponentIdentitiesLicensesAndHashesUnchanged": true,
+    "limitations": "Executed aggregate only. Application build/tests and vulnerability scans are separate gates."
   },
   "notes": [
-    "Actual aggregate CycloneDX goal rerun after the ClearLedger selected retry-policy mutation profile changed its module POM.",
-    "The176components/113external published license records remain unchanged; no new external dependency was added.",
-    "Aggregate dependency metadata does not certify source builds or a vulnerability scan; those are separate gates."
-  ]
+    "Actual CycloneDX aggregate rerun after the three IndexForge wave3 mutation-target POM updates.",
+    "All65currentPOM hashes rebound;176components/113externalpublishedlicense records and canonical BOM bytes unchanged.",
+    "The goal is an aggregate inventory, so reactor module SKIPPED rows do not represent skipped application tests; no application tests ran in this goal.",
+    "No vulnerability conclusion is implied; existing feed-access scan failure remains separately recorded."
+  ],
+  "elapsedSeconds": 17.102
 }

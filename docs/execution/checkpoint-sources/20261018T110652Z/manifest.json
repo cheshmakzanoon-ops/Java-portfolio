@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-10-18T11:06:52.902546+00:00",
+  "baseCommit": "b6ffee09f1ca90ef1e81d8dcbf2ac6a78951e6f3",
+  "scope": "Changed authored helper/handoff byte snapshots. Uncompiled or unfinished work is not certified. Generated runtime data remains local.",
+  "files": [
+    {
+      "originalPath": ".work/A02/FULL_RUN_PROTOCOL_GZIP_V2.md",
+      "snapshotPath": "files/A02/FULL_RUN_PROTOCOL_GZIP_V2.md.txt",
+      "bytes": 3128,
+      "sha256": "8cb5a360d07f48a0913aade87bc20b78f964c667fd9c1e6b5d502b979b9fa9c4",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A02/archive-quiet18.py",
+      "snapshotPath": "files/A02/archive-quiet18.py",
+      "bytes": 12751,
+      "sha256": "6536b72d9da6a5a73290330bea2e78ae0f38dc4abe0fc35eb335a14048a4661d",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A02/certify-gzip-v2.sh",
+      "snapshotPath": "files/A02/certify-gzip-v2.sh",
+      "bytes": 2094,
+      "sha256": "e94d3b5152707f006f1d90ab8d4e2b3947a7f58908b9262249b6dad5ceae4f42",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A02/finalize-quiet18-archive.py",
+      "snapshotPath": "files/A02/finalize-quiet18-archive.py",
+      "bytes": 6337,
+      "sha256": "0a44ba0e4c7bc82a08adf063a93c033f5e75a1738a072f4072b93793705d6dac",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A02/run-full-reference-gzip-v2.py",
+      "snapshotPath": "files/A02/run-full-reference-gzip-v2.py",
+      "bytes": 33719,
+      "sha256": "b302de6d879f421b5aef7fd7d7c1c7ec7e4a7d6ebd3d35ddf7f410a2ab738f5e",
+      "originalMode": "0o700"
+    },
+    {
+      "originalPath": ".work/A02/test-allocation-capture-v2.py",
+      "snapshotPath": "files/A02/test-allocation-capture-v2.py",
+      "bytes": 4298,
+      "sha256": "74348e2dadc5c84bf893f4473342f63fc505c21f7e38b8e25bada214677edbcd",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A02/test-full-runner-gzip-v2.py",
+      "snapshotPath": "files/A02/test-full-runner-gzip-v2.py",
+      "bytes": 16434,
+      "sha256": "f0e7128a0b066b42ea468c7a2aff82b281d5d75578e5d8d150f02282ea23dd71",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/ProfileCounters.java",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/ProfileCounters.java",
+      "bytes": 3922,
+      "sha256": "11e0fa93e49c1b3ae452ffbfc75163e99d143c45c384e8e9aab79a86bf875cc4",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/compare-resources.py",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/compare-resources.py",
+      "bytes": 4209,
+      "sha256": "5187ad274233106c4391911816330b9e26579bf743bd60858b758c1922d64b42",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/extract-reviewed.py",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/extract-reviewed.py",
+      "bytes": 3335,
+      "sha256": "a7772784d8b222fdf8d699c0bc75e550f710f069fd01305c0e54d3184fd48294",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/official-jfr-views.py",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/official-jfr-views.py",
+      "bytes": 3993,
+      "sha256": "bb8bc94781f793dcae08410e57ea882861bdbc5580be48d34e2ed1e1a4d9e8c1",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/stream-profile.py",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/stream-profile.py",
+      "bytes": 1945,
+      "sha256": "8cdedd48b4dcc1b2244fcf6fa076eb379e45ace9349e9d17dfac5350a242c658",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A07/HANDOFF-wave3-development31.md",
+      "snapshotPath": "files/A07/HANDOFF-wave3-development31.md.txt",
+      "bytes": 5098,
+      "sha256": "6c97b9bf3e40aeebacb6b1986dfa6fc56e8fe2a1024d1401de06d089fdb8c1f7",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/coordinator/inter-round-capacity-before-pid-selection-fix.py",
+      "snapshotPath": "files/coordinator/inter-round-capacity-before-pid-selection-fix.py",
+      "bytes": 9407,
+      "sha256": "dbd886a133ac1c02eb3cd86a72c1e8334ba71dde9dab30bd6edfe4fa3fba4260",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/coordinator/inter-round-capacity.py",
+      "snapshotPath": "files/coordinator/inter-round-capacity.py",
+      "bytes": 9408,
+      "sha256": "b65bea5108ead3c90d801f727dfe65d641f62ae2e3c4adc041c849c38d101fcd",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/coordinator/save-authored-checkpoint.py",
+      "snapshotPath": "files/coordinator/save-authored-checkpoint.py",
+      "bytes": 3423,
+      "sha256": "8ea079204aa2851b32bf5ff871496fa720c2473158e656ce1a24cce845270c64",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/coordinator/verify-durableflow-quiet18-archive.py",
+      "snapshotPath": "files/coordinator/verify-durableflow-quiet18-archive.py",
+      "bytes": 4960,
+      "sha256": "5421ac2e18d6e093827bdf086a51661debf5ea05616187f523b63fc6743afa44",
+      "originalMode": "0o600"
+    }
+  ]
+}
