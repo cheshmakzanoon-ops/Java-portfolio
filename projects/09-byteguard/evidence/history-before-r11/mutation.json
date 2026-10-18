@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "project": "byteguard",
+  "sourceRevision": "working-tree-sha256:ab3bcced780387c1bd7407968fa9a0473295b48ffaa075c1df1d28d6a337f10a",
+  "status": "PASS",
+  "thresholdPercent": 70,
+  "targetClasses": [
+    "dataflow.Taint",
+    "dataflow.FrameState",
+    "dataflow.WorklistSolver",
+    "cfg.ControlFlowBuilder"
+  ],
+  "counts": {
+    "KILLED": 157,
+    "SURVIVED": 13
+  },
+  "total": 170,
+  "killedPercent": 92.3529411764706,
+  "rawXml": "projects/09-byteguard/analysis-core/target/pit-reports/mutations.xml",
+  "rawXmlSha256": "744c1c16df714c8bf2c315c5a3d73ffa21e8db16eebc2471610c11a42dfc41af",
+  "rawHtml": "projects/09-byteguard/analysis-core/target/pit-reports/index.html",
+  "survivors": [
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "41",
+      "description": "changed conditional boundary",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "48",
+      "description": "changed conditional boundary",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "48",
+      "description": "changed conditional boundary",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "53",
+      "description": "changed conditional boundary",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "61",
+      "description": "changed conditional boundary",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "41",
+      "description": "Replaced integer addition with subtraction",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "48",
+      "description": "Replaced integer addition with subtraction",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": "72",
+      "description": "negated conditional",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "propagate",
+      "line": "73",
+      "description": "Replaced integer addition with subtraction",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "propagate",
+      "line": "79",
+      "description": "removed call to java/util/BitSet::set",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": "42",
+      "description": "negated conditional",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": "21",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/byteguard/interprocedural/AnalysisBudget::reserveFrame",
+      "status": "SURVIVED"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": "40",
+      "description": "removed call to java/util/BitSet::set",
+      "status": "SURVIVED"
+    }
+  ],
+  "scope": "Targeted original algorithm mutation gate only; not full-project release",
+  "remainingSurvivorDiagnosis": "13 remaining: CFG boundary/leader cases and worklist queue/budget reservation changes. Not proven equivalent; retained as test-strengthening opportunities. No target exclusion/threshold reduction."
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "project": "byteguard",
+  "status": "PASS",
+  "scope": "Measurement helper only; actual Python children, no Java/full benchmark",
+  "command": "python3 -B projects/09-byteguard/scripts/test_measure_process.py -v",
+  "exitCode": 0,
+  "tests": 6,
+  "failures": 0,
+  "cases": [
+    "success and actual CPU/RSS/stdout",
+    "exact nonzero exit",
+    "signal exit distinct from cancellation",
+    "timeout kills owned group and reaps direct child",
+    "high then low RSS distinguishes per-run usage from cumulative maximum",
+    "external SIGTERM cleanup and143 launcher exit"
+  ],
+  "helperSha256": "445c1fc5040ffd7169b57f8504889c3a214e3e3d0325b4b6609dc06ce0a844bd",
+  "rawArtifact": ".work/A09/measurement-tests.log",
+  "sourceRevision": "working-tree-sha256:bbf647bbc4a128e1aea4b25a382cf94642bc6d7ca6cc690e33de3253526caca1"
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "status": "OBSERVED_MODEL_FALSE_POSITIVE",
+  "scope": "Additional unsupported-precision control outside frozen-v2 confusion matrix",
+  "source": "reused-helper.java.txt",
+  "sourceSha256": "c5b85a436eefb88d72c52fe84e8d42bc2c05da098a5e7a7684707efc56a0ebac",
+  "expectedSemantics": {
+    "tainted": "modeled external input reaches SQL text",
+    "clean": "constant-only array has no runtime alias to source-filled array"
+  },
+  "observed": "Both sink methods carry the concrete source label in the weak heap analysis",
+  "explanation": "Mutable parameter/return aliases weakly merge across caller instructions independently of one-callsite taint-summary keys",
+  "command": "javac -J-Xmx128m -proc:none .../ReusedAlias.java; java -Xmx256m -cp <direct-core-classes:ASM9.9.1> Preflight .../ReusedAlias.class 2",
+  "rawArtifact": "reused-helper.actual.txt",
+  "limitations": [
+    "A direct bounded analyzer probe, not the pending Maven regression suite.",
+    "No row or label of the preregistered corpus was changed."
+  ]
+}

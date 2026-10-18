@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "module": "byteguard-analysis-core",
+  "sourceRevision": "working-tree-sha256:a6055cdfb18245240a3341c4a712c256e5502541dcdb85523e662423d7edf09c",
+  "counters": {
+    "INSTRUCTION": [
+      8091,
+      452
+    ],
+    "BRANCH": [
+      893,
+      176
+    ],
+    "LINE": [
+      1475,
+      89
+    ],
+    "COMPLEXITY": [
+      609,
+      186
+    ],
+    "METHOD": [
+      205,
+      23
+    ],
+    "CLASS": [
+      44,
+      0
+    ]
+  },
+  "ratios": {
+    "INSTRUCTION": 0.9470911857661243,
+    "BRANCH": 0.8353601496725912,
+    "LINE": 0.9430946291560103,
+    "COMPLEXITY": 0.7660377358490567,
+    "METHOD": 0.8991228070175439,
+    "CLASS": 1.0
+  },
+  "required": {
+    "LINE": 0.85,
+    "BRANCH": 0.75
+  },
+  "rawXml": "projects/09-byteguard/evaluation/target/site/jacoco-aggregate/jacoco.xml",
+  "rawXmlSha256": "ff10d2a67ae19a5e9fbfd187fc627caa3af39afa47d02ea95d6e6d98fa6ca772",
+  "scope": "Original core group extracted by the actual verification coverage gate from the aggregate unit/evaluation report."
+}

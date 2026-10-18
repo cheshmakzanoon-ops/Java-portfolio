@@ -1,0 +1,9 @@
+public class ReusedAlias {
+ static String[] pass(String[] out){return out;}
+ public static void tainted(java.sql.Statement stmt)throws Exception{
+  stmt.execute(pass(new String[]{System.getenv("X")})[0]);
+ }
+ public static void clean(java.sql.Statement stmt)throws Exception{
+  stmt.execute(pass(new String[]{"constant"})[0]);
+ }
+}

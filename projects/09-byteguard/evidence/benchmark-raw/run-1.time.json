@@ -1,0 +1,17 @@
+{
+  "elapsedSeconds": 4.027482432000397,
+  "maxRssKiB": 787036,
+  "userSeconds": 11.688081,
+  "systemSeconds": 0.5443709999999999,
+  "exitCode": 1,
+  "terminationSignal": null,
+  "timedOut": false,
+  "cancelled": false,
+  "cancellationSignal": null,
+  "pid": 330786,
+  "measurement": "per-child os.wait4 rusage; monotonic wall time",
+  "partial": false,
+  "applicationClasses": 10000,
+  "findings": 10000,
+  "workUnits": 1480002
+}

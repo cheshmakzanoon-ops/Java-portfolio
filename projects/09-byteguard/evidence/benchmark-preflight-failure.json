@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "project": "byteguard",
+  "status": "FAIL_BEFORE_SCANNING",
+  "sourceRevision": "working-tree-sha256:ab3bcced780387c1bd7407968fa9a0473295b48ffaa075c1df1d28d6a337f10a",
+  "command": "projects/09-byteguard/scripts/benchmark.sh",
+  "exitCode": 1,
+  "analyzerScansStarted": 0,
+  "reason": "FileNotFoundError: /usr/bin/time does not exist on reference host",
+  "timestampUtc": "2026-10-18T02:07:45.103952+00:00",
+  "reservation": {
+    "startedAtUtc": "2026-10-18T02:07:43.498185+00:00",
+    "buildLocksHeld": [
+      0,
+      1,
+      2
+    ],
+    "otherJavaProcesses": [],
+    "applicationContainers": [],
+    "cpuQuota": "400000 100000",
+    "protocol": "ByteGuard unchanged three10k-class2GiB scans; then QuorumKV unchanged100-operation driver diagnostic. No simultaneous workload.",
+    "phase": "completed",
+    "byteguardExitCode": 1,
+    "byteguardCompletedAtUtc": "2026-10-18T02:07:45.103952+00:00",
+    "quorumkvSmokeExitCode": 0,
+    "completedAtUtc": "2026-10-18T02:08:39.974998+00:00"
+  },
+  "reservationSha256": "6ab23c07f3b248a8b272e52f7de9a1a8383b09488f3aa1f18e474d2170f7bfe0",
+  "rawArtifact": ".work/coordinator/quiet-reference-1/byteguard.log",
+  "scope": "Launcher prerequisite failure after deterministic input generation; no analyzer performance result or full-scan completion claim."
+}

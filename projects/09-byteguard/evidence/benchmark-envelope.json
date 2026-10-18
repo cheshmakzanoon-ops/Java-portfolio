@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "project": "byteguard",
+  "status": "PASS",
+  "sourceRevision": "working-tree-sha256:a6055cdfb18245240a3341c4a712c256e5502541dcdb85523e662423d7edf09c",
+  "measuredPackagedArtifactSha256": "390a7a39ef6041fdcbc347b5a0be437eead09a9feb0bb2277b11951a6783db93",
+  "reservation": "benchmark-raw/reservation.json",
+  "reservationSha256": "105e404ae2d90a1f358cdfdb89543cf472246ffc94240ee9aa3301d30e38a3bf",
+  "corpusSha256": "89140e8efea3561894773f3ce384f6c91b4e22e6145ef889e0b99e345b44df32",
+  "corpusBytes": 7978912,
+  "forks": [
+    {
+      "index": 0,
+      "measurements": {
+        "elapsedSeconds": 3.9324776909998036,
+        "maxRssKiB": 822580,
+        "userSeconds": 11.226895,
+        "systemSeconds": 0.629195,
+        "exitCode": 1,
+        "terminationSignal": null,
+        "timedOut": false,
+        "cancelled": false,
+        "cancellationSignal": null,
+        "pid": 330762,
+        "measurement": "per-child os.wait4 rusage; monotonic wall time",
+        "partial": false,
+        "applicationClasses": 10000,
+        "findings": 10000,
+        "workUnits": 1480002
+      },
+      "sarifBytes": 26721761,
+      "sarifSha256": "50881887d5b45769d4a574d6196954acdd1038185d8b612723fb82850263e9c0",
+      "terminalSha256": "34853af902328e14d3ad876bf7824235a8a9917574422b20254808ee8d508474",
+      "statsSha256": "594cc7633b0a6f5b3fbfe8327199ef7d6949f93c064904ddd6e0793d8baf5b16",
+      "rawSarif": "projects/09-byteguard/.runtime/benchmark/run-0.sarif"
+    },
+    {
+      "index": 1,
+      "measurements": {
+        "elapsedSeconds": 4.027482432000397,
+        "maxRssKiB": 787036,
+        "userSeconds": 11.688081,
+        "systemSeconds": 0.5443709999999999,
+        "exitCode": 1,
+        "terminationSignal": null,
+        "timedOut": false,
+        "cancelled": false,
+        "cancellationSignal": null,
+        "pid": 330786,
+        "measurement": "per-child os.wait4 rusage; monotonic wall time",
+        "partial": false,
+        "applicationClasses": 10000,
+        "findings": 10000,
+        "workUnits": 1480002
+      },
+      "sarifBytes": 26721761,
+      "sarifSha256": "50881887d5b45769d4a574d6196954acdd1038185d8b612723fb82850263e9c0",
+      "terminalSha256": "34853af902328e14d3ad876bf7824235a8a9917574422b20254808ee8d508474",
+      "statsSha256": "b1875443022d110c4dd515a58db58ec4287807e0af39aaae5d78a8e68a180eb4",
+      "rawSarif": "projects/09-byteguard/.runtime/benchmark/run-1.sarif"
+    },
+    {
+      "index": 2,
+      "measurements": {
+        "elapsedSeconds": 4.393409051001072,
+        "maxRssKiB": 794900,
+        "userSeconds": 11.154924,
+        "systemSeconds": 0.834116,
+        "exitCode": 1,
+        "terminationSignal": null,
+        "timedOut": false,
+        "cancelled": false,
+        "cancellationSignal": null,
+        "pid": 330810,
+        "measurement": "per-child os.wait4 rusage; monotonic wall time",
+        "partial": false,
+        "applicationClasses": 10000,
+        "findings": 10000,
+        "workUnits": 1480002
+      },
+      "sarifBytes": 26721761,
+      "sarifSha256": "50881887d5b45769d4a574d6196954acdd1038185d8b612723fb82850263e9c0",
+      "terminalSha256": "34853af902328e14d3ad876bf7824235a8a9917574422b20254808ee8d508474",
+      "statsSha256": "dde7b84e065fedd6ca79b07cfdc048d146b3de61dd31bdf078c6b3be3f1f4eec",
+      "rawSarif": "projects/09-byteguard/.runtime/benchmark/run-2.sarif"
+    }
+  ],
+  "independentReview": {
+    "reviewer": "A08 ThreadLens owner",
+    "status": "CLOSED_NO_UNRESOLVED_FINDING",
+    "scope": "Current source, descriptor bounds, fresh65-method reports, original fixture rejection, actual three raw full scans, artifact/cache identity and preserved failures. No general soundness claim."
+  },
+  "elapsedSummary": {
+    "medianSeconds": 4.027482432000397,
+    "sampleCvPercent": 5.910310698632111
+  },
+  "limitations": [
+    "Synthetic supported-bytecode corpus; not field accuracy or worst-case complexity guarantee.",
+    "No claims about unsupported Java features or implicit control-flow taint."
+  ]
+}

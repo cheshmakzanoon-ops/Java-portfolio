@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL",
+  "generated": 164,
+  "statuses": {
+    "KILLED": 111,
+    "SURVIVED": 47,
+    "NO_COVERAGE": 6
+  },
+  "threshold": 70,
+  "rawXmlHtml": ".work/A09/mutation-first",
+  "survivors": [
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 41,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 48,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 48,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 53,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 59,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 59,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 61,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 69,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 74,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 41,
+      "description": "Replaced integer addition with subtraction",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 48,
+      "description": "Replaced integer addition with subtraction",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 72,
+      "description": "Replaced integer addition with subtraction",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 74,
+      "description": "Replaced integer addition with subtraction",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 74,
+      "description": "Replaced integer addition with subtraction",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 81,
+      "description": "Replaced integer subtraction with addition",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 69,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 70,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 71,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 72,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 72,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 74,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 80,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 35,
+      "description": "removed call to java/lang/Runnable::run",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "build",
+      "line": 58,
+      "description": "removed call to java/lang/Runnable::run",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder",
+      "method": "mayThrow",
+      "line": 89,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "propagate",
+      "line": 71,
+      "description": "Replaced integer addition with subtraction",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "propagate",
+      "line": 77,
+      "description": "removed call to java/util/BitSet::set",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 25,
+      "description": "Changed increment from 1 to -1",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator"
+    },
+    {
+      "status": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 25,
+      "description": "Changed increment from 1 to -1",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 28,
+      "description": "Changed increment from 1 to -1",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 24,
+      "description": "Replaced bitwise AND with OR",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 40,
+      "description": "negated conditional",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 21,
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/byteguard/interprocedural/AnalysisBudget::reserveFrame",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 25,
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/byteguard/dataflow/FrameState::store",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 38,
+      "description": "removed call to java/util/BitSet::set",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 42,
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/byteguard/interprocedural/AnalysisBudget::spend",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver",
+      "method": "solve",
+      "line": 19,
+      "description": "replaced return value with null for io/github/cheshmakzanoon/portfolio/byteguard/dataflow/WorklistSolver::solve",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.NullReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lambda$hasConcrete$0",
+      "line": 65,
+      "description": "Replaced bitwise AND with OR",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lambda$new$0",
+      "line": 16,
+      "description": "Replaced bitwise AND with OR",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lambda$new$0",
+      "line": 16,
+      "description": "Replaced bitwise AND with OR",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lambda$sanitize$0",
+      "line": 37,
+      "description": "Replaced XOR with AND",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lambda$sanitize$0",
+      "line": 37,
+      "description": "Replaced bitwise AND with OR",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lambda$substitute$0",
+      "line": 51,
+      "description": "Replaced bitwise AND with OR",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "lessOrEqual",
+      "line": 60,
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/byteguard/dataflow/Taint::lessOrEqual",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "sanitize",
+      "line": 37,
+      "description": "removed call to java/util/SortedMap::forEach",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "substitute",
+      "line": 46,
+      "description": "changed conditional boundary",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    {
+      "status": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint",
+      "method": "substitute",
+      "line": 51,
+      "description": "removed call to java/util/SortedMap::forEach",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    }
+  ],
+  "diagnosis": "Missing semantic assertions for sanitization/substitution/context order and basic-block partitioning, plus instance/wide/empty method coverage. Tests strengthened; threshold and target classes unchanged.",
+  "mutatedProductionSourceFingerprint": "sha256:0d4115aa0355714221205a58e3f2f25932d6ed15b2af098d372387a0736a961d",
+  "testedCompiledTestsFingerprint": "sha256:4808bdab155dfb4d50a2582ad52868402ff8c9c5a27d925f032400f39837533d",
+  "sourceScope": "Production fingerprint covers the unchanged four targeted algorithm sources; compiled-test fingerprint identifies the pre-strengthening tests, not the current edited source tree."
+}

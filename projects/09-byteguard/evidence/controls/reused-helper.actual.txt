@@ -1,0 +1,1 @@
+partial=false concreteSQLsinks=[ReusedAlias.clean(Ljava/sql/Statement;)V, ReusedAlias.tainted(Ljava/sql/Statement;)V]

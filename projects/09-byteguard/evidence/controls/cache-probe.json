@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": "Behavioral control of actual scripts/common.sh copied unchanged into an isolated owned harness",
+  "assertions": {
+    "passed": 4,
+    "failed": 0
+  },
+  "cases": [
+    "initial cache miss invokes build",
+    "unchanged source and artifact reuses cache",
+    "actual Java source byte change invokes rebuild",
+    "artifact-byte tampering invokes rebuild"
+  ],
+  "buildBoundary": "A deterministic build stub counts invocations and writes test artifact bytes; this control does not claim Maven compilation or final project verification. Actual CLI demo/cache execution remains pending.",
+  "command": "bash .work/A09/cache-probe.sh",
+  "script": "cache-probe.sh.txt",
+  "rawArtifact": "cache-probe.actual.txt",
+  "testedCommonSha256": "d14ec5e4924024ca9ea91efc48223a59c8ea2aad34644e8cc579583633ee7022"
+}

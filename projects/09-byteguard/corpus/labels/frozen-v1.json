@@ -1,0 +1,1206 @@
+{
+  "schemaVersion": 1,
+  "frozenBeforeEngineEvaluation": true,
+  "labels": [
+    {
+      "id": "SQL01Positive",
+      "file": "src/fixtures/SQL01Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External source reaches exact SQL sink through direct.",
+      "debug": true,
+      "sha256": "85bc104e7bcb42bc1d17c92d7e92df25cd97a42a52dc11c7869f457b25e92ea9"
+    },
+    {
+      "id": "SQL01Negative",
+      "file": "src/fixtures/SQL01Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "direct",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before direct.",
+      "debug": true,
+      "sha256": "5164b1cd4a52bc21ffe54194dbf69f5f4895d9d3d0e5ed6e0c67a66c0ec8a92e"
+    },
+    {
+      "id": "SQL02Positive",
+      "file": "src/fixtures/SQL02Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "branch",
+      "rationale": "External source reaches exact SQL sink through branch.",
+      "debug": true,
+      "sha256": "48b373efe77fc190f6e182f596985eab0bfda9f9b6b7816c2ad0d373fc5d10f6"
+    },
+    {
+      "id": "SQL02Negative",
+      "file": "src/fixtures/SQL02Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "branch",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before branch.",
+      "debug": true,
+      "sha256": "72e695e3332a650ae4c2a705f67230fc8bee8951e25e27f921d7da72c3325a4e"
+    },
+    {
+      "id": "SQL03Positive",
+      "file": "src/fixtures/SQL03Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "loop",
+      "rationale": "External source reaches exact SQL sink through loop.",
+      "debug": true,
+      "sha256": "f3cdbc280a4bb658cbca9309ac7dd071279ba327a10aedff7e26b2920ebf7f55"
+    },
+    {
+      "id": "SQL03Negative",
+      "file": "src/fixtures/SQL03Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "loop",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before loop.",
+      "debug": true,
+      "sha256": "b39c4318ecccc0ceec88157b32563446d700c7b65e20e9ff08178f0e08358bac"
+    },
+    {
+      "id": "SQL04Positive",
+      "file": "src/fixtures/SQL04Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "switch",
+      "rationale": "External source reaches exact SQL sink through switch.",
+      "debug": true,
+      "sha256": "efb1fb5c163503293cedc4d439de28739c82ffb4da8576a459164e1da01512b7"
+    },
+    {
+      "id": "SQL04Negative",
+      "file": "src/fixtures/SQL04Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "switch",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before switch.",
+      "debug": true,
+      "sha256": "7d323f55cae2d29e9d5779753f04c5bd57d4fed0de4ef8faebcebc42ac45bad0"
+    },
+    {
+      "id": "SQL05Positive",
+      "file": "src/fixtures/SQL05Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "overload",
+      "rationale": "External source reaches exact SQL sink through overload.",
+      "debug": true,
+      "sha256": "9598fdd8ba8a0d371c410056f55bd4bb2734a1eff8cc4f447bad7b4f18dc42d0"
+    },
+    {
+      "id": "SQL05Negative",
+      "file": "src/fixtures/SQL05Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "overload",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before overload.",
+      "debug": true,
+      "sha256": "05d61853f83110633359209be063ea7d62a25dc1fb9f56bcccdf674afd77f864"
+    },
+    {
+      "id": "SQL06Positive",
+      "file": "src/fixtures/SQL06Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "inheritance",
+      "rationale": "External source reaches exact SQL sink through inheritance.",
+      "debug": true,
+      "sha256": "9487d279541acd9267b86a30b36f53f17c0fbb366c90913f2911d0ffcad1ca65"
+    },
+    {
+      "id": "SQL06Negative",
+      "file": "src/fixtures/SQL06Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "inheritance",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before inheritance.",
+      "debug": true,
+      "sha256": "4dcd8a8d65aa08e8bd25f712b476856c89ba78a2f0b5755107c8ce632db0b402"
+    },
+    {
+      "id": "SQL07Positive",
+      "file": "src/fixtures/SQL07Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "recursion",
+      "rationale": "External source reaches exact SQL sink through recursion.",
+      "debug": true,
+      "sha256": "4baf214023f355837026cef615723ba918afb430786eaf3b09b57e1c03f71e2c"
+    },
+    {
+      "id": "SQL07Negative",
+      "file": "src/fixtures/SQL07Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "recursion",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before recursion.",
+      "debug": true,
+      "sha256": "ad8959c3327674ea8af215e37c3318007180781f8698c113232e1f4c852655c5"
+    },
+    {
+      "id": "SQL08Positive",
+      "file": "src/fixtures/SQL08Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "exception",
+      "rationale": "External source reaches exact SQL sink through exception.",
+      "debug": true,
+      "sha256": "f6a1a603cb92f1ccc10707326f63f0d19277788172cb93290b46871f6b18bf44"
+    },
+    {
+      "id": "SQL08Negative",
+      "file": "src/fixtures/SQL08Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "exception",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before exception.",
+      "debug": true,
+      "sha256": "5e52a602587a2f6020b3d343de955241799db99531d09969e2ea79cc78db8279"
+    },
+    {
+      "id": "SQL09Positive",
+      "file": "src/fixtures/SQL09Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "wide",
+      "rationale": "External source reaches exact SQL sink through wide.",
+      "debug": true,
+      "sha256": "41a9b3c6f3c14abb101402d64389815de21ac6a2acf4c015dd2ea273aa220f76"
+    },
+    {
+      "id": "SQL09Negative",
+      "file": "src/fixtures/SQL09Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "wide",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before wide.",
+      "debug": true,
+      "sha256": "3a758a029cb7649ca93de17115d5c7b21b956c6d391cfef95b5c57d16282167c"
+    },
+    {
+      "id": "SQL10Positive",
+      "file": "src/fixtures/SQL10Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "concat",
+      "rationale": "External source reaches exact SQL sink through concat.",
+      "debug": true,
+      "sha256": "ef496857d34aa64b82b350d7336ca8b3e9b8bcc11a6d37bc3bf1055f4d80dbff"
+    },
+    {
+      "id": "SQL10Negative",
+      "file": "src/fixtures/SQL10Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "concat",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before concat.",
+      "debug": true,
+      "sha256": "3b0b6ba8e943fbec4014e3438db32c2006c6a56c961aa92c5da2a48af93801b3"
+    },
+    {
+      "id": "SQL11Positive",
+      "file": "src/fixtures/SQL11Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "lambda",
+      "rationale": "External source reaches exact SQL sink through lambda.",
+      "debug": true,
+      "sha256": "5d2bdb2699f1dbe2c7103a4ef98f05637b41e05b904e8c548bd3cddf686bfb98"
+    },
+    {
+      "id": "SQL11Negative",
+      "file": "src/fixtures/SQL11Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "lambda",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before lambda.",
+      "debug": true,
+      "sha256": "9ff46c56311007142204e597ad84fcbaf40228be373f685c7a3ae86474455248"
+    },
+    {
+      "id": "SQL12Positive",
+      "file": "src/fixtures/SQL12Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "collection",
+      "rationale": "External source reaches exact SQL sink through collection.",
+      "debug": true,
+      "sha256": "20bdec452dd384f37cf27c33da5a042ddfb3a98471fa692c244f39976b6013b2"
+    },
+    {
+      "id": "SQL12Negative",
+      "file": "src/fixtures/SQL12Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "collection",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before collection.",
+      "debug": true,
+      "sha256": "8f8029cd8e99dd23e5fdf8461f911da4e627762aeae2b153220edd480160f146"
+    },
+    {
+      "id": "SQL13Positive",
+      "file": "src/fixtures/SQL13Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "field",
+      "rationale": "External source reaches exact SQL sink through field.",
+      "debug": true,
+      "sha256": "ba05c8a65ad996d3dab4ef8e58fc36996278e2498b09b7b019cb71071b9a0940"
+    },
+    {
+      "id": "SQL13Negative",
+      "file": "src/fixtures/SQL13Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "field",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before field.",
+      "debug": true,
+      "sha256": "16ab185fe3c3175c3de6d990bc587da183acb1240d2a284e2711e3bdb15aa95a"
+    },
+    {
+      "id": "SQL14Positive",
+      "file": "src/fixtures/SQL14Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "array",
+      "rationale": "External source reaches exact SQL sink through array.",
+      "debug": true,
+      "sha256": "34a5cfc30ae9de5d5fea64df2e82e6cf025dd8eefa23fef5d2e65e35c2bfe932"
+    },
+    {
+      "id": "SQL14Negative",
+      "file": "src/fixtures/SQL14Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "array",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before array.",
+      "debug": true,
+      "sha256": "929d3c7977422e3fa21777b0eb1614ba98aef364287612cb45a1fb63443f78b7"
+    },
+    {
+      "id": "SQL15Positive",
+      "file": "src/fixtures/SQL15Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "builder",
+      "rationale": "External source reaches exact SQL sink through builder.",
+      "debug": true,
+      "sha256": "7694352fdb0eb5a674fe664ae4b9e5c51c08cb79462e0bac95321f99417b7a83"
+    },
+    {
+      "id": "SQL15Negative",
+      "file": "src/fixtures/SQL15Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "builder",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before builder.",
+      "debug": true,
+      "sha256": "1d0866cf510341f30bf51afdef1f25d9ab3a304b787cb1b24b70a0bcd5221e3a"
+    },
+    {
+      "id": "SQL16Positive",
+      "file": "src/fixtures/SQL16Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "sanitizer-context",
+      "rationale": "External source reaches exact SQL sink through sanitizer-context.",
+      "debug": true,
+      "sha256": "303e08e1c98664f897bcd136329d2672698d509ecb319c8f540411aff4ab1058"
+    },
+    {
+      "id": "SQL16Negative",
+      "file": "src/fixtures/SQL16Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "sanitizer-context",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before sanitizer-context.",
+      "debug": true,
+      "sha256": "2f42bb6d934ba439ceda97c52827feaa7c5696c42fd8761c7180a8a22ec49e60"
+    },
+    {
+      "id": "SQL17Positive",
+      "file": "src/fixtures/SQL17Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "binding-command-normalize",
+      "rationale": "External source reaches exact SQL sink through binding-command-normalize.",
+      "debug": true,
+      "sha256": "5d330f7d04b17f877ad2cf5973281d3b22dcc213240bbd8d688c93a09682d5c7"
+    },
+    {
+      "id": "SQL17Negative",
+      "file": "src/fixtures/SQL17Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "binding-command-normalize",
+      "rationale": "Tainted value is separately bound, not SQL text.",
+      "debug": true,
+      "sha256": "04ac7e08cdf893211cb2a144362aa2a8d530686b3dc263ace4aa8b8d7553bf21"
+    },
+    {
+      "id": "SQL18Positive",
+      "file": "src/fixtures/SQL18Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "missing-dependency",
+      "rationale": "External source reaches exact SQL sink through missing-dependency.",
+      "debug": true,
+      "sha256": "506112baa10ad89beaf1ffb1ba2c70f932af02e237f44efbec09f3987819c882"
+    },
+    {
+      "id": "SQL18Negative",
+      "file": "src/fixtures/SQL18Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "missing-dependency",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before missing-dependency.",
+      "debug": true,
+      "sha256": "91c9cf7aa09c9fbf87843370d46394541cb34962a5f98011789f98271f47231a"
+    },
+    {
+      "id": "SQL19Positive",
+      "file": "src/fixtures/SQL19Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "missing-debug",
+      "rationale": "External source reaches exact SQL sink through missing-debug.",
+      "debug": false,
+      "sha256": "77b341f588ce272a4d1c0c37f122dc1f2e840ace8ed8d68337b1e0526abda784"
+    },
+    {
+      "id": "SQL19Negative",
+      "file": "src/fixtures/SQL19Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "missing-debug",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before missing-debug.",
+      "debug": false,
+      "sha256": "70f248e34b5112a91601a164966f3cd1c28f7730b6b31d34d9bd24bff774c7ac"
+    },
+    {
+      "id": "SQL20Positive",
+      "file": "src/fixtures/SQL20Positive.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": true,
+      "pattern": "cast",
+      "rationale": "External source reaches exact SQL sink through cast.",
+      "debug": true,
+      "sha256": "710ee69d7c8a263c126378154106ccff7ce055af66b853a7d05a7ddc9aadaff2"
+    },
+    {
+      "id": "SQL20Negative",
+      "file": "src/fixtures/SQL20Negative.java",
+      "rule": "BG-SQL-TEXT",
+      "positive": false,
+      "pattern": "cast",
+      "rationale": "Matching sqlIdentifier confines only the SQL context before cast.",
+      "debug": true,
+      "sha256": "36487e153ca827d07842e9827bb6d3280e7611d886e111156f4573a50d84946b"
+    },
+    {
+      "id": "SHELL01Positive",
+      "file": "src/fixtures/SHELL01Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External source reaches exact SHELL sink through direct.",
+      "debug": true,
+      "sha256": "915b7698a95a5f30ca1f4bd88f3a4c193f2bf601cb6f62a7e0451a0b32ea0552"
+    },
+    {
+      "id": "SHELL01Negative",
+      "file": "src/fixtures/SHELL01Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "direct",
+      "rationale": "Matching shellToken confines only the SHELL context before direct.",
+      "debug": true,
+      "sha256": "992258bc3918425511a23b439e989ae758b2c8dbd1955daf0a457b626256332e"
+    },
+    {
+      "id": "SHELL02Positive",
+      "file": "src/fixtures/SHELL02Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "branch",
+      "rationale": "External source reaches exact SHELL sink through branch.",
+      "debug": true,
+      "sha256": "4d724b034bcc611cdfd4f9d1948068dff33617efcaa6563d1ecf6169101c230f"
+    },
+    {
+      "id": "SHELL02Negative",
+      "file": "src/fixtures/SHELL02Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "branch",
+      "rationale": "Matching shellToken confines only the SHELL context before branch.",
+      "debug": true,
+      "sha256": "35686abe56df5cc05686e1ceb37f95df293194cbc46524b470c9c69a12003201"
+    },
+    {
+      "id": "SHELL03Positive",
+      "file": "src/fixtures/SHELL03Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "loop",
+      "rationale": "External source reaches exact SHELL sink through loop.",
+      "debug": true,
+      "sha256": "7bc9120374d0adceb658234e88e83448d0ca89745e6bd45790179bffcc9a9433"
+    },
+    {
+      "id": "SHELL03Negative",
+      "file": "src/fixtures/SHELL03Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "loop",
+      "rationale": "Matching shellToken confines only the SHELL context before loop.",
+      "debug": true,
+      "sha256": "db226c5b5cd0b1a94fbf9c1e8ec419178b82f11011f45301e63937dc1dea0e9b"
+    },
+    {
+      "id": "SHELL04Positive",
+      "file": "src/fixtures/SHELL04Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "switch",
+      "rationale": "External source reaches exact SHELL sink through switch.",
+      "debug": true,
+      "sha256": "b4fc42bb9c712c8cc01035f8cbd4d51bce00b0bd8a18ea7f33a07dfcb76cc430"
+    },
+    {
+      "id": "SHELL04Negative",
+      "file": "src/fixtures/SHELL04Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "switch",
+      "rationale": "Matching shellToken confines only the SHELL context before switch.",
+      "debug": true,
+      "sha256": "e0b1f5ef6bfe129227679b24c38484cc09c6bf5642c1eb45d01aa75cfb2cc611"
+    },
+    {
+      "id": "SHELL05Positive",
+      "file": "src/fixtures/SHELL05Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "overload",
+      "rationale": "External source reaches exact SHELL sink through overload.",
+      "debug": true,
+      "sha256": "2e2d64959a4775e709047220ed044886fd6492e9bba56f90a1e17b0be8a89217"
+    },
+    {
+      "id": "SHELL05Negative",
+      "file": "src/fixtures/SHELL05Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "overload",
+      "rationale": "Matching shellToken confines only the SHELL context before overload.",
+      "debug": true,
+      "sha256": "803dab47a88b248be816cf7ca1775cb70160d5343c66d374d844ff83fff5fd83"
+    },
+    {
+      "id": "SHELL06Positive",
+      "file": "src/fixtures/SHELL06Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "inheritance",
+      "rationale": "External source reaches exact SHELL sink through inheritance.",
+      "debug": true,
+      "sha256": "35ee00b9564372cd7f252b2906d914e87670a6be884025cd6645004063b6c618"
+    },
+    {
+      "id": "SHELL06Negative",
+      "file": "src/fixtures/SHELL06Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "inheritance",
+      "rationale": "Matching shellToken confines only the SHELL context before inheritance.",
+      "debug": true,
+      "sha256": "f6aefeb3c4a99b1103a0d57ef061c25ef7d0bee616250dcc82c3cd6b7a665c80"
+    },
+    {
+      "id": "SHELL07Positive",
+      "file": "src/fixtures/SHELL07Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "recursion",
+      "rationale": "External source reaches exact SHELL sink through recursion.",
+      "debug": true,
+      "sha256": "b1f31edc479bc2a4125e7b7b7ec3ba8d6120d7e62b5c9a6b419fa146071dcf6f"
+    },
+    {
+      "id": "SHELL07Negative",
+      "file": "src/fixtures/SHELL07Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "recursion",
+      "rationale": "Matching shellToken confines only the SHELL context before recursion.",
+      "debug": true,
+      "sha256": "193b396d198fadd16e7dec6f80f009fcc9e49c4a5a0c69cb5822ba042aa2be02"
+    },
+    {
+      "id": "SHELL08Positive",
+      "file": "src/fixtures/SHELL08Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "exception",
+      "rationale": "External source reaches exact SHELL sink through exception.",
+      "debug": true,
+      "sha256": "d2b11bb09fe1a75878a709353c5e62da7708cf9ce545ca48def1c56a5dc0c9d2"
+    },
+    {
+      "id": "SHELL08Negative",
+      "file": "src/fixtures/SHELL08Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "exception",
+      "rationale": "Matching shellToken confines only the SHELL context before exception.",
+      "debug": true,
+      "sha256": "9dba8f787d90a3f3eba62eccbccf92ef72a3869fab852cc9a15d1cc3c4ce1edc"
+    },
+    {
+      "id": "SHELL09Positive",
+      "file": "src/fixtures/SHELL09Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "wide",
+      "rationale": "External source reaches exact SHELL sink through wide.",
+      "debug": true,
+      "sha256": "d326695034d7db55d39b68015ebd3cf61fd9830e2fe96cb77625151e777e53f7"
+    },
+    {
+      "id": "SHELL09Negative",
+      "file": "src/fixtures/SHELL09Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "wide",
+      "rationale": "Matching shellToken confines only the SHELL context before wide.",
+      "debug": true,
+      "sha256": "0debaf5a2c32d9bc30a48e40a3b66151d1819b8eb13db90d9d0453f03f054710"
+    },
+    {
+      "id": "SHELL10Positive",
+      "file": "src/fixtures/SHELL10Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "concat",
+      "rationale": "External source reaches exact SHELL sink through concat.",
+      "debug": true,
+      "sha256": "c1c63461471252b79a9a3e3f9145f62d573506c3b0cc66f20aed94c64a445146"
+    },
+    {
+      "id": "SHELL10Negative",
+      "file": "src/fixtures/SHELL10Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "concat",
+      "rationale": "Matching shellToken confines only the SHELL context before concat.",
+      "debug": true,
+      "sha256": "4e39f0bff55cbca979fc3e0c178c91fc82e28b0d157aea20b27fa2cf9c1bebb6"
+    },
+    {
+      "id": "SHELL11Positive",
+      "file": "src/fixtures/SHELL11Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "lambda",
+      "rationale": "External source reaches exact SHELL sink through lambda.",
+      "debug": true,
+      "sha256": "d550efbebe0c49bce9aecb55ac534a0a1a7058512c9f90759ea7bed84f71ad33"
+    },
+    {
+      "id": "SHELL11Negative",
+      "file": "src/fixtures/SHELL11Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "lambda",
+      "rationale": "Matching shellToken confines only the SHELL context before lambda.",
+      "debug": true,
+      "sha256": "a734a88ba89e6f821021629be827b5246b3ca53c3ad85044d34e4eddee79e6b0"
+    },
+    {
+      "id": "SHELL12Positive",
+      "file": "src/fixtures/SHELL12Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "collection",
+      "rationale": "External source reaches exact SHELL sink through collection.",
+      "debug": true,
+      "sha256": "9084c2a8c429d2e8d2173296c00637877be8f206fb5095bc69cf8f647d48222c"
+    },
+    {
+      "id": "SHELL12Negative",
+      "file": "src/fixtures/SHELL12Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "collection",
+      "rationale": "Matching shellToken confines only the SHELL context before collection.",
+      "debug": true,
+      "sha256": "b690d60df52e5cd1953c1c95cb1de8e03db034038c93a9b94b1127e716fcbef4"
+    },
+    {
+      "id": "SHELL13Positive",
+      "file": "src/fixtures/SHELL13Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "field",
+      "rationale": "External source reaches exact SHELL sink through field.",
+      "debug": true,
+      "sha256": "9bbdc0b016ac5637409b50527bd4cd60b1b6ea9e666a6f684b5079faf5188eec"
+    },
+    {
+      "id": "SHELL13Negative",
+      "file": "src/fixtures/SHELL13Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "field",
+      "rationale": "Matching shellToken confines only the SHELL context before field.",
+      "debug": true,
+      "sha256": "2fe6082e8d1f48dcad410334355de7f1040d625917f9fa26b8c1811d6f5a0051"
+    },
+    {
+      "id": "SHELL14Positive",
+      "file": "src/fixtures/SHELL14Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "array",
+      "rationale": "External source reaches exact SHELL sink through array.",
+      "debug": true,
+      "sha256": "6cc2e2020cfc5d32b8ecbb0953906761dd7f7e086b4f001b2e2c05eaf60cb876"
+    },
+    {
+      "id": "SHELL14Negative",
+      "file": "src/fixtures/SHELL14Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "array",
+      "rationale": "Matching shellToken confines only the SHELL context before array.",
+      "debug": true,
+      "sha256": "d137fe101a279d5210e7770b3ecbd5fc1bfa0cdb40a242ba10cbc8f58a184c32"
+    },
+    {
+      "id": "SHELL15Positive",
+      "file": "src/fixtures/SHELL15Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "builder",
+      "rationale": "External source reaches exact SHELL sink through builder.",
+      "debug": true,
+      "sha256": "a1ef3daff0327a75790ee88e1e49742f2742d255711617d06c44feac3fff4555"
+    },
+    {
+      "id": "SHELL15Negative",
+      "file": "src/fixtures/SHELL15Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "builder",
+      "rationale": "Matching shellToken confines only the SHELL context before builder.",
+      "debug": true,
+      "sha256": "052d890ea7583e0777df1c008d7019e56e115697ab4099f47dca00a8574734ca"
+    },
+    {
+      "id": "SHELL16Positive",
+      "file": "src/fixtures/SHELL16Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "sanitizer-context",
+      "rationale": "External source reaches exact SHELL sink through sanitizer-context.",
+      "debug": true,
+      "sha256": "66aacd8271c1e654c4ae76f611a8ae516ba274dc366b4244300323a855901313"
+    },
+    {
+      "id": "SHELL16Negative",
+      "file": "src/fixtures/SHELL16Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "sanitizer-context",
+      "rationale": "Matching shellToken confines only the SHELL context before sanitizer-context.",
+      "debug": true,
+      "sha256": "3748e06dfd1e9be93e4ece127a117f1576af2e57ba7d0e327d7eb7c3903f989b"
+    },
+    {
+      "id": "SHELL17Positive",
+      "file": "src/fixtures/SHELL17Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "binding-command-normalize",
+      "rationale": "External source reaches exact SHELL sink through binding-command-normalize.",
+      "debug": true,
+      "sha256": "7993c651be1b190ec36e22281f2d82f00da02e9db0212a0e6750a9bc5c3a9476"
+    },
+    {
+      "id": "SHELL17Negative",
+      "file": "src/fixtures/SHELL17Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "binding-command-normalize",
+      "rationale": "Argument-vector execution has no modeled shell -c construction.",
+      "debug": true,
+      "sha256": "53024245d55403660617752bbace5d94c1d2714c1f9feb1a97c5f8559d525433"
+    },
+    {
+      "id": "SHELL18Positive",
+      "file": "src/fixtures/SHELL18Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "missing-dependency",
+      "rationale": "External source reaches exact SHELL sink through missing-dependency.",
+      "debug": true,
+      "sha256": "96a6896aabd49a729e4b23888a9e6b93ba3b20c5134bc02c8e61292d032eaa39"
+    },
+    {
+      "id": "SHELL18Negative",
+      "file": "src/fixtures/SHELL18Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "missing-dependency",
+      "rationale": "Matching shellToken confines only the SHELL context before missing-dependency.",
+      "debug": true,
+      "sha256": "3133ee23f66609fb70d219da1cde8d52f54eaacb1debe2888d499f4970420c09"
+    },
+    {
+      "id": "SHELL19Positive",
+      "file": "src/fixtures/SHELL19Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "missing-debug",
+      "rationale": "External source reaches exact SHELL sink through missing-debug.",
+      "debug": false,
+      "sha256": "8c3e5fe4b64c099293359c64b5b13afe253ce82bdb8e09ba2f219badec97e9cb"
+    },
+    {
+      "id": "SHELL19Negative",
+      "file": "src/fixtures/SHELL19Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "missing-debug",
+      "rationale": "Matching shellToken confines only the SHELL context before missing-debug.",
+      "debug": false,
+      "sha256": "9e213afe3cf217d3d18016e5728084070a19940647c6810047db3a53a1d84b6b"
+    },
+    {
+      "id": "SHELL20Positive",
+      "file": "src/fixtures/SHELL20Positive.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": true,
+      "pattern": "cast",
+      "rationale": "External source reaches exact SHELL sink through cast.",
+      "debug": true,
+      "sha256": "a44e4922500e1962d3f5abe4822130779f8b690de0dcbd0d8a29bba5c5948b7b"
+    },
+    {
+      "id": "SHELL20Negative",
+      "file": "src/fixtures/SHELL20Negative.java",
+      "rule": "BG-SHELL-COMMAND",
+      "positive": false,
+      "pattern": "cast",
+      "rationale": "Matching shellToken confines only the SHELL context before cast.",
+      "debug": true,
+      "sha256": "44ab780eabb1a1f3067e1e124b09411341636ecd8952abfdbe816032f249dfe2"
+    },
+    {
+      "id": "PATH01Positive",
+      "file": "src/fixtures/PATH01Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External source reaches exact PATH sink through direct.",
+      "debug": true,
+      "sha256": "d1008f725ca5b21d9c2610eb96e9f9db04965792a4c3545b5783af05f47ea48f"
+    },
+    {
+      "id": "PATH01Negative",
+      "file": "src/fixtures/PATH01Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "direct",
+      "rationale": "Matching confinedPath confines only the PATH context before direct.",
+      "debug": true,
+      "sha256": "e509650fc3ae368777efd076b0c9595519fea12c1be4dd1e8c20886c727148db"
+    },
+    {
+      "id": "PATH02Positive",
+      "file": "src/fixtures/PATH02Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "branch",
+      "rationale": "External source reaches exact PATH sink through branch.",
+      "debug": true,
+      "sha256": "35c1594bf5db32cbde6822a0c98f9fee6031fbb0dcdf7e0d7d6bc1423fa7f77d"
+    },
+    {
+      "id": "PATH02Negative",
+      "file": "src/fixtures/PATH02Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "branch",
+      "rationale": "Matching confinedPath confines only the PATH context before branch.",
+      "debug": true,
+      "sha256": "f1a13d94668bda145778924f0868da88c66e6137507db31fa33b996638b03ebc"
+    },
+    {
+      "id": "PATH03Positive",
+      "file": "src/fixtures/PATH03Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "loop",
+      "rationale": "External source reaches exact PATH sink through loop.",
+      "debug": true,
+      "sha256": "6ae704274cc6d8b3e92ad8a40d6aa83bdf9495a3ea120bed12a7e5d6f1982ad0"
+    },
+    {
+      "id": "PATH03Negative",
+      "file": "src/fixtures/PATH03Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "loop",
+      "rationale": "Matching confinedPath confines only the PATH context before loop.",
+      "debug": true,
+      "sha256": "63fe16710f28777233c2006efbdd993c69d3113c30cadb52c4563e8f675a5129"
+    },
+    {
+      "id": "PATH04Positive",
+      "file": "src/fixtures/PATH04Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "switch",
+      "rationale": "External source reaches exact PATH sink through switch.",
+      "debug": true,
+      "sha256": "da0e9bcd731153fa32b914118cef50734878aece5c9f4369cbce566f9cb9b3ea"
+    },
+    {
+      "id": "PATH04Negative",
+      "file": "src/fixtures/PATH04Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "switch",
+      "rationale": "Matching confinedPath confines only the PATH context before switch.",
+      "debug": true,
+      "sha256": "9274c11405f8530776816471d7e1013980a2001a874cf534821c2a7f9480f157"
+    },
+    {
+      "id": "PATH05Positive",
+      "file": "src/fixtures/PATH05Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "overload",
+      "rationale": "External source reaches exact PATH sink through overload.",
+      "debug": true,
+      "sha256": "68526f387919df70445db4154d2c1420b8e9876bf68d73a0731d80fb2bef39e7"
+    },
+    {
+      "id": "PATH05Negative",
+      "file": "src/fixtures/PATH05Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "overload",
+      "rationale": "Matching confinedPath confines only the PATH context before overload.",
+      "debug": true,
+      "sha256": "0feb23ad2a943966ec3581b6fac0ee34af6c7b83b201a12a9d8834049926c7dd"
+    },
+    {
+      "id": "PATH06Positive",
+      "file": "src/fixtures/PATH06Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "inheritance",
+      "rationale": "External source reaches exact PATH sink through inheritance.",
+      "debug": true,
+      "sha256": "049f32175b41d32a336e85a97da8c174ad5f56bc1df8f0634582c2761dc48181"
+    },
+    {
+      "id": "PATH06Negative",
+      "file": "src/fixtures/PATH06Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "inheritance",
+      "rationale": "Matching confinedPath confines only the PATH context before inheritance.",
+      "debug": true,
+      "sha256": "ecc48a459851bb7570bf2b7b38c66a759d5258b834cb6dd180c7e9e00c18eaee"
+    },
+    {
+      "id": "PATH07Positive",
+      "file": "src/fixtures/PATH07Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "recursion",
+      "rationale": "External source reaches exact PATH sink through recursion.",
+      "debug": true,
+      "sha256": "81c38646f20178e79782340f62bdf682ac105f7cfe8224a8b5fc043a1e0b2cb7"
+    },
+    {
+      "id": "PATH07Negative",
+      "file": "src/fixtures/PATH07Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "recursion",
+      "rationale": "Matching confinedPath confines only the PATH context before recursion.",
+      "debug": true,
+      "sha256": "36c4dbe7af98fe9fb22ed06ad0a6ba2f8a1cac59c6e2eaa4fd6859045c70ab5a"
+    },
+    {
+      "id": "PATH08Positive",
+      "file": "src/fixtures/PATH08Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "exception",
+      "rationale": "External source reaches exact PATH sink through exception.",
+      "debug": true,
+      "sha256": "386bff6418571a34e28a1b53932c2c11db8c671b7ddf94f4e2cb19344367d5e8"
+    },
+    {
+      "id": "PATH08Negative",
+      "file": "src/fixtures/PATH08Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "exception",
+      "rationale": "Matching confinedPath confines only the PATH context before exception.",
+      "debug": true,
+      "sha256": "54539f8d46066ebc91483d8c5c2e24ad424e612b9be6fe386f177e6df9e88675"
+    },
+    {
+      "id": "PATH09Positive",
+      "file": "src/fixtures/PATH09Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "wide",
+      "rationale": "External source reaches exact PATH sink through wide.",
+      "debug": true,
+      "sha256": "0a876316cfb7941d1b762812bfd5403f1254dbddbaed1e50fb4a9e2e10ea436f"
+    },
+    {
+      "id": "PATH09Negative",
+      "file": "src/fixtures/PATH09Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "wide",
+      "rationale": "Matching confinedPath confines only the PATH context before wide.",
+      "debug": true,
+      "sha256": "f7e0ba64d698c4e69988dc20c2bcae528ba5b41b01e380d6fb46f8aa6377413f"
+    },
+    {
+      "id": "PATH10Positive",
+      "file": "src/fixtures/PATH10Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "concat",
+      "rationale": "External source reaches exact PATH sink through concat.",
+      "debug": true,
+      "sha256": "b8cd9aa8b6fca8625ef41c69d15516ac3e30e75ab5965c6dc6c8b3ebff87693d"
+    },
+    {
+      "id": "PATH10Negative",
+      "file": "src/fixtures/PATH10Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "concat",
+      "rationale": "Matching confinedPath confines only the PATH context before concat.",
+      "debug": true,
+      "sha256": "5da00339a0a6e4de2a5b1d48a93d4e9094d372b80e4da9d60f1a54f25cbf927d"
+    },
+    {
+      "id": "PATH11Positive",
+      "file": "src/fixtures/PATH11Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "lambda",
+      "rationale": "External source reaches exact PATH sink through lambda.",
+      "debug": true,
+      "sha256": "8dc35ac59378795466f6c9022e680152ed876b51b89fdc79b53e473548a3f567"
+    },
+    {
+      "id": "PATH11Negative",
+      "file": "src/fixtures/PATH11Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "lambda",
+      "rationale": "Matching confinedPath confines only the PATH context before lambda.",
+      "debug": true,
+      "sha256": "58016f18e8c8b54ba20229d91d5f2e687d519a7e0d949db8a93c8ea4edd10cc4"
+    },
+    {
+      "id": "PATH12Positive",
+      "file": "src/fixtures/PATH12Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "collection",
+      "rationale": "External source reaches exact PATH sink through collection.",
+      "debug": true,
+      "sha256": "7ed597ff727b9e3b4b8f28dcb46bbcce17b6bb6583c0d6d34b586709460611b1"
+    },
+    {
+      "id": "PATH12Negative",
+      "file": "src/fixtures/PATH12Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "collection",
+      "rationale": "Matching confinedPath confines only the PATH context before collection.",
+      "debug": true,
+      "sha256": "92add7541f9bff5cd9f2697541da4675a5bddbe0eb9cb818b5680ebead9c010a"
+    },
+    {
+      "id": "PATH13Positive",
+      "file": "src/fixtures/PATH13Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "field",
+      "rationale": "External source reaches exact PATH sink through field.",
+      "debug": true,
+      "sha256": "4dde9050f20a926dc662d37be094c651e4cdc6e195b4658ebdc8a256c03b84dc"
+    },
+    {
+      "id": "PATH13Negative",
+      "file": "src/fixtures/PATH13Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "field",
+      "rationale": "Matching confinedPath confines only the PATH context before field.",
+      "debug": true,
+      "sha256": "1179c869615477d53775cbd90f4c5fbf8d3bc1f2871ecc75f6fea21d4ebc8c43"
+    },
+    {
+      "id": "PATH14Positive",
+      "file": "src/fixtures/PATH14Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "array",
+      "rationale": "External source reaches exact PATH sink through array.",
+      "debug": true,
+      "sha256": "4b92d9f032487fd59bdb31759474a6ea436e6655372a3bd65dfaac271b599092"
+    },
+    {
+      "id": "PATH14Negative",
+      "file": "src/fixtures/PATH14Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "array",
+      "rationale": "Matching confinedPath confines only the PATH context before array.",
+      "debug": true,
+      "sha256": "4033a3a124d4f49abcc7fc1213531519d1cffefc05557a83f9108fc23c5b37e9"
+    },
+    {
+      "id": "PATH15Positive",
+      "file": "src/fixtures/PATH15Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "builder",
+      "rationale": "External source reaches exact PATH sink through builder.",
+      "debug": true,
+      "sha256": "9e6c7e2cf926a0761ca32f9b8795fee37e75c7cbadb37c8a3672cc1478e1cc19"
+    },
+    {
+      "id": "PATH15Negative",
+      "file": "src/fixtures/PATH15Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "builder",
+      "rationale": "Matching confinedPath confines only the PATH context before builder.",
+      "debug": true,
+      "sha256": "984b7cb7321425fbc430351f75d71b87eadf6c67b8e80ca5cfac3b608b2b3781"
+    },
+    {
+      "id": "PATH16Positive",
+      "file": "src/fixtures/PATH16Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "sanitizer-context",
+      "rationale": "External source reaches exact PATH sink through sanitizer-context.",
+      "debug": true,
+      "sha256": "5502505321d1befc15787b09b443c18bad1f6ad837d88e5de0f2f379bc7e697b"
+    },
+    {
+      "id": "PATH16Negative",
+      "file": "src/fixtures/PATH16Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "sanitizer-context",
+      "rationale": "Matching confinedPath confines only the PATH context before sanitizer-context.",
+      "debug": true,
+      "sha256": "5701e9d82d78d7eaa1ab385dde6f4d46d2b212d0f02686c75805f4c9d8eaca9d"
+    },
+    {
+      "id": "PATH17Positive",
+      "file": "src/fixtures/PATH17Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "binding-command-normalize",
+      "rationale": "External source reaches exact PATH sink through binding-command-normalize.",
+      "debug": true,
+      "sha256": "3e6f26a1c6d6ebf95b943020ff5662a888617abdbfd9e2f0c58f37a6e7938f90"
+    },
+    {
+      "id": "PATH17Negative",
+      "file": "src/fixtures/PATH17Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "binding-command-normalize",
+      "rationale": "Matching confinedPath confines only the PATH context before binding-command-normalize.",
+      "debug": true,
+      "sha256": "ccdb980d36c035a49286dd08080dc0149378b3fbf283f54771c27f0aefa0c399"
+    },
+    {
+      "id": "PATH18Positive",
+      "file": "src/fixtures/PATH18Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "missing-dependency",
+      "rationale": "External source reaches exact PATH sink through missing-dependency.",
+      "debug": true,
+      "sha256": "cd2976421ec827fa6ee105e6202ad6ab74511af0b69f4fd0781d74b839b45c6a"
+    },
+    {
+      "id": "PATH18Negative",
+      "file": "src/fixtures/PATH18Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "missing-dependency",
+      "rationale": "Matching confinedPath confines only the PATH context before missing-dependency.",
+      "debug": true,
+      "sha256": "db23bc3dac71929bf386560c11b92ead63c39a410fef477624f0221feb298363"
+    },
+    {
+      "id": "PATH19Positive",
+      "file": "src/fixtures/PATH19Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "missing-debug",
+      "rationale": "External source reaches exact PATH sink through missing-debug.",
+      "debug": false,
+      "sha256": "245b34d76cffa30c2e1c727a0355900b5f7600c1cda088f78bc6fd9c4896112d"
+    },
+    {
+      "id": "PATH19Negative",
+      "file": "src/fixtures/PATH19Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "missing-debug",
+      "rationale": "Matching confinedPath confines only the PATH context before missing-debug.",
+      "debug": false,
+      "sha256": "d02380854fd16188d061e078c5b16ac11ccb19273951481d4693123d5dff4848"
+    },
+    {
+      "id": "PATH20Positive",
+      "file": "src/fixtures/PATH20Positive.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": true,
+      "pattern": "cast",
+      "rationale": "External source reaches exact PATH sink through cast.",
+      "debug": true,
+      "sha256": "dcded69c1e7af53cd0315875be42936c727b6502e672d9c49edc7b41b7d3fdc3"
+    },
+    {
+      "id": "PATH20Negative",
+      "file": "src/fixtures/PATH20Negative.java",
+      "rule": "BG-PATH-ACCESS",
+      "positive": false,
+      "pattern": "cast",
+      "rationale": "Matching confinedPath confines only the PATH context before cast.",
+      "debug": true,
+      "sha256": "4dd32fc8b432612d0df1fd5b48c9686a6c9a294d81553f40e130d2904696f849"
+    }
+  ]
+}

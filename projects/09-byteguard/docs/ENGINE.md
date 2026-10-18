@@ -1,0 +1,13 @@
+# Engine walkthrough
+
+`ClassFactsReader` reads bytes into structural ASM nodes with classfile StackMapTable frames skipped. `MethodIr` assigns stable ordinals only to real opcodes, maps labels to their next real instruction, and attaches a source line only if a line table exists. A method identity is owner + name + descriptor; unrelated methods do not change an existing instruction identity.
+
+`ControlFlowBuilder` creates branch/switch/fallthrough/return successors and typed exceptional edges for instructions in protected ranges that can throw. Handler transfer retains pre-instruction locals and replaces the operand stack with one exception reference. Basic blocks group instruction intervals; `Graph.dot()` emits inspectable diagrams. Unreachable instructions have no inferred frame.
+
+`FrameState` stores two-slot long/double locals with an explicit TOP continuation and one computational stack value per JVM value. Overlapping local writes invalidate category-two predecessors. Stack permutations implement the JVM's category-dependent DUP/POP forms. The join rejects incompatible stack shapes and primitive kinds; locals may become TOP at merges. Collection and array contents live in `HeapSummary`, apart from stack/local values.
+
+`WorklistSolver` queues a successor only when its input frame grows. Tests compare FIFO/LIFO schedules and verify semilattice and transfer monotonicity. `SummaryWorklist` orders call SCCs, requeues callers after summary growth, and conservatively requeues the graph after shared-heap growth. Constructor/native/abstract states and unresolved APIs are not executed. The reader never uses `Class.forName`, reflection, target method handles or target deserialization.
+
+For a source-returning helper passed into another helper's SQL sink, parameter labels initially describe the sink's symbolic argument. At the caller, the returned source identity replaces that parameter label. The finding keeps the exact source/sink descriptors and instruction ordinals; SARIF includes source and sink physical locations, logical methods, witness call steps, model version, confidence, limitations and a SHA-256 identity. Missing debug tables yield no invented source line.
+
+Budget exhaustion returns unfinished coverage and exit `3`. Raising the provenance limit may improve explanation but cannot manufacture a clean result. Raising dispatch/work bounds can change coverage; each is recorded separately. Exact baselines retain the finding with `baselineState=unchanged` and omit it only from the new-finding exit count.
