@@ -1,0 +1,56 @@
+# Frozen offline slice after6006656 — awaiting post-quiet18 compiler
+
+Root froze the current coherent Java/POM/tests/CLI/product slice before any further source changes. No new execution is authorized during18: no Java/Maven/Docker/JFR/export/fit/VAL/heldout/new metrics or build queue. Only this final docs/handoff update is permitted; after it all writes pause. The earlier29 history below remains exact. All subsequent files are UNCOMPILED/UNRUN; this readiness checkpoint is not a certification or feature/metric pass.
+
+Additional source since6006656:
+
+- `evaluation/src/main/java/.../SourceWave3Study.java`: complete evaluation-origin bytes join full inference identity, including exploded original phase/packet/fitter/nested classes; fixed legacy replay mode collection; all13-mode finite families and strict phase/provenance boundaries remain.
+- NEW `evaluation/src/test/java/.../SourceWave3StudyTest.java`: actual synthetic audit→fit→validate chain,40DEV/20VAL and malformed heldout sentinel, label-blind no-evidence packet, explicit ineligibility/no fit rescue, all1560 comparator rows, BASELINE tie retention, immutable rerun refusal and changed protocol/packet/fit-artifact guards. Never loads authored corpus/labels/results. Component SourcePairwiseSelectionTest separately covers finite actual synthetic grouped fits.
+- NEW `cli/src/test/java/.../SourcePackagedIT.java`: actual freshly packaged shaded CLI/Boot processes, legacy index refusal, authenticated HTTP reindex spawning actual parser worker from Boot origin, R3 ordering/explanation/model/catalog/schema identity, child reaping, CLI reopen/reindex/verify-generation parity. Integration only, not yet executed.
+- NEW `index/src/test/java/.../SourceGenerationTest.java`: canonical leased old graph versus atomic updated graph, worker/schema metadata, cancellation and injected post-graph/pre-commit storage failure preserving old pointer, staged quarantine and corruption rejection. Tests assert injected boundaries, not a claimed real full-disk measurement.
+- `query/src/test/java/.../SourceServingTest.java`: eight-view admission/exhaustion/close/recovery; malformed/duplicate/range candidates; denied graph physically absent before an authorization-first refusal; stale/revoked access; hidden same-owner/caller/unsupported source partition does not change allowed graph evidence, including cache result reuse.
+- `index/src/test/java/.../SourceSymbolGraphTest.java`: exact cap32 observed callers/dedup/unknown inventory, work quota, record accessor/primitive overload and rename controls, ambiguous imports/duplicate owners/wildcards/method references, nonfinal virtual/widening ambiguity and unrelated JDK receiver abstention. SourceSymbolGraph charges each overload-candidate iteration against the existing65k work budget, closing an uncharged duplicate-owner multiplicative scan.
+- `index/src/main/java/.../SourceApiCatalog.java` and `SourceCatalogBuilder.java`: exact32MiB modified-UTF8 serialized size charged before retaining normalized entries; same128MiB retained signature/prose accounting now includes all names/imports/return/parameter text instead of prose plus a fixed member allowance alone. No cap relaxation or representation family change. Catalog tests cover metadata/signature ambiguity, CRC, byte quota and Unicode canonical accounting; kernel tests cover file-manager denial/no source execution and lexical/derived/wire/query-budget boundaries.
+- `fixtures/ranking-wave3/PREREGISTRATION.md`: complete consolidated final-protocol DRAFT, explicitly PENDING FREEZE; `contracts/cli.md`: truthful preparation/migration/phase command documentation, no claim current commands are verified.
+
+Protocol references PENDING ROOT-REVIEWED OPAQUE COPY AT FINAL FREEZE, never inspect rows:
+
+- Root directory `.work/coordinator/indexforge-wave3-reference-20261018T1001Z/`.
+- comparator-reference.tsv C0 SHA `fd1dae1b159d8f5634bd39bc3d4fdff95ec2c748ea33d929c7f35e1b8520997a`,964086bytes.
+- r0-reference.tsv C1 SHA `eceeaa0f3c6953885f4b79b5e23bfe0583e457c5d455d74555bc3e86df0bdd87`,958001bytes.
+- Each540rows/60DEVVALqueries/nine legacy modes, family column removed only; source frozen25 perquery SHA `d138ae08e046c5a0e001ef49f2e87e4d19d3e04585d4d445ba85f4c69f629954`. Root retains exact provenance.json; worker has not read copied metrics/paths or VAL/heldout contents.
+
+Next finite command after EXPLICIT root release: source cloud-env and ordinary project-local `spotless:apply test`, positive PORTFOLIO_TEST_RUN_STARTED, preserve fresh all-module reports/log/source identity. If tests pass, same-source `verify` diagnostic as granted; current source is not presumed to satisfy coverage. Actual compiler/assertion/coverage feedback decides corrections. Full current `-Pintegration,mutation verify`, strict85/75/70 and actual packaged worker/catalog/phase identity tests must pass before protocol/artifact freeze and any study export. No extra family/grid/optimizer rescue and no authored benchmark run before separate explicit authorization. Root owns all Git.
+
+---
+
+# CURRENT wave3 checkpoint after development29
+
+All owned project/scratch writes paused for root checkpoint; this doc/status correction is the only narrow release. Quiet18 active: NO Java/Maven/Docker/export/training/VAL/heldout/new metrics, and no queued build. Frozen25/finals/labels/seals and earlier draft/checkpoint archives remain immutable. Root owns all Git writes.
+
+## Actual evidence
+
+- `.work/A07/development-build29.log`: `source scripts/cloud-env.sh`; positive `PORTFOLIO_TEST_RUN_STARTED`; ordinary `./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp spotless:apply test`; PASS125/0/0/0,45.433s,09:40:27UTC. Modules16+42+45+2+20; CLI compiles without its own unit test source. Fresh reports/logs preserved `.work/A07/artifacts/development-build29-reports/`.
+- Same-source ordinary `verify`: FAIL09:41:08UTC,16.362s;58 ingest/index methods pass; strict index coverage2389/2825lines84.566%,1483/2275branches65.187% versus85/75. Source manifest53e54dd21bc538b66a67f299261e937f2f3128a89d037f458986c6d3626088f0; raw XML/HTML/logs `.work/A07/artifacts/development-build29-verify-reports/`.
+- All three A06 shadow/dominance/implicit-call regression methods pass29. Earlier28 had2 method failures/errors while four nested-control negative assertions passed inside the positive-failing method; preserve that distinction and all28 evidence.
+- No new integration/PIT/full certification or wave3 ranking study has run.
+
+## Post29 source WIP — uncompiled/unrun
+
+Within `projects/07-indexforge/`:
+
+- `index/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceApiCatalog.java`: retains exact field Entry/prose in addition to type; `SourceSymbolGraph.java`: conservative catalog-owner/field binding; `SourceRelations.java`: uniform actual field lexeme/prose and only expression-connected endpoint anchors, interaction schema v2.
+- `fixtures/ranking-wave3/IMPLEMENTATION-ADDENDUM-5.md`: root-approved pre-score catalog-field clarification. No whitelist/newdimension/family/grid. Prior addenda/drafts preserved.
+- `index/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceCatalogBuilder.java`: package-local adversarial archive test boundary; public production preparation remains exact installed JDK archive/license.
+- `index/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceRelationsTest.java`: REPORT/REPLACE, unrelated constant/receiver, independent masks, unused/type/local/string-decoy controls; `SourceCatalogTest.java`: ZIP selection/provenance/UTF8/source/license boundaries.
+- NEW `index/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceKernelBoundaryTest.java`: lexer/token/delimiter/literal boundaries, declaration/local/operation quotas, mutation/unsupported control metadata, signed wire/compression/schema corruption and repository decoded/row/symlink limits.
+- NEW `evaluation/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceStudyFiles.java` and `SourceWave3Study.java`: bounded immutable phase records; label-blind40DEV vectors/usage before grades; shared900s finiteR1/R2 selector; R3 reuses exactR2 model/OOF rule with no fit; artifact/model boundary before60DEV+VAL×13modes; full540C0/R0 replay, exactBASELINE invariance, frozen two-metric/tie selection. No held-out command exists.
+- NEW `evaluation/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceStudyBoundaryTest.java` and `SourcePairwiseSelectionTest.java`: identity/duplicate/overwrite/path/manifest/protocol/refusal boundaries; synthetic grouped fitting/OOF/guard/budget tests.
+- `cli/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/IndexForgeCli.java`: explicit `wave3-{audit,fit,validate} data fixtures output catalogFile` routing.
+- `index/pom.xml`, `query/pom.xml`, `evaluation/pom.xml`: original new extractor/binder/wire/facts/API/unknown/mask/usage/packet/selector mutation targets added;85/75/70 thresholds unchanged. No claim those new targets pass.
+
+## Remaining work / next authorized execution boundary
+
+Root must prepare/review `r0-reference.tsv` mechanically from immutable25 DEV/VAL C1 rows; worker has not read/copied VAL/heldout rows. Final complete `fixtures/ranking-wave3/PREREGISTRATION.md` and9-file `FREEZE.sha256` are still pending, so the new operator intentionally refuses study execution. Complete source/test review, packaged Boot/CLI/catalog/worker and migration/recovery proofs, real boundary coverage and strict full integration/PIT certification before any export. Preserve all actual failures, never exclude difficult branches to pass. Catalog provenance preparation/fullphase identity-refusal/replay proof and any eventual DEVfit/VAL run need a separate explicit execution grant after final source/protocol freeze. No heldout authorization follows from this WIP.
+
+No known static compile error is asserted; all post29 source still requires actual compiler/tests. OriginalBASELINE remains recommended, .75heldoutnDCG/.90identifierMRR remain unmet. The previous25/24 final and latency evidence do not certify wave3.

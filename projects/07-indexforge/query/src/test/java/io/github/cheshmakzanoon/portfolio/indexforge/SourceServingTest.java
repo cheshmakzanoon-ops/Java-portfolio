@@ -276,4 +276,69 @@ class SourceServingTest {
       assertThrows(IllegalArgumentException.class, () -> read.score(new double[10]));
     }
   }
+  @Test
+  void sourceViewAdmissionAndEveryFailureReleaseOwnedPermitWhileDeniedGraphRemainsUnread() throws Exception {
+    var auth=new AuthorizationFilter();var admin=auth.update("admin","tenant",Set.of("repo","denied"),true);auth.update("reader","tenant",Set.of("repo"),false);
+    var catalog=catalog("comput");
+    try(var source=engine(auth,RankingStrategy.SOURCE_USAGE,model(16,12),catalog)) {
+      source.ingest(admin,"allowed",manifest(source,"repo",Map.of("Visible.java","final class Visible {private static int pulse(int n){return n;}int run(int n){return pulse(n);}}")),GenerationBuilder.Fault.none(),()->false);
+      source.ingest(admin,"hidden",manifest(source,"denied",Map.of("Hidden.java","final class Hidden {private static int pulse(int n){return n;}int run(int n){return pulse(n);}}")),GenerationBuilder.Fault.none(),()->false);
+      try(var lease=source.generations("tenant").acquire()) {
+        var candidates=new CandidateRetriever().retrieve(lease,auth.apply(new org.apache.lucene.search.MatchAllDocsQuery(),auth.current("reader")));
+        assertEquals(1,candidates.size());
+        var views=new ArrayList<SourceFeatureView>();
+        try {
+          for(int i=0;i<8;i++)views.add(new SourceFeatureView(candidates,lease,catalog,auth,auth.current("reader")));
+          assertTrue(assertThrows(IOException.class,()->new SourceFeatureView(candidates,lease,catalog,auth,auth.current("reader"))).getMessage().contains("admission"));
+        } finally {for(var view:views)view.close();}
+        for(var view:views){view.close();assertThrows(IllegalStateException.class,()->view.usage("pulse"));}
+        var duplicate=List.of(candidates.getFirst(),candidates.getFirst());
+        assertThrows(IllegalArgumentException.class,()->new SourceFeatureView(duplicate,lease,catalog,auth,auth.current("reader")));
+        var original=candidates.getFirst();
+        var wrongKey=new CandidateRetriever.Candidate(original.document(),"tenant/repo/forged.java",original.score(),original.features());
+        assertThrows(IOException.class,()->new SourceFeatureView(List.of(wrongKey),lease,catalog,auth,auth.current("reader")));
+        var outOfRange=new CandidateRetriever.Candidate(lease.reader().maxDoc(),"tenant/repo/absent.java",0,"");
+        assertThrows(IllegalArgumentException.class,()->new SourceFeatureView(List.of(outOfRange),lease,catalog,auth,auth.current("reader")));
+        assertThrows(IllegalArgumentException.class,()->new SourceFeatureView(Collections.nCopies(501,original),lease,catalog,auth,auth.current("reader")));
+        var all=new CandidateRetriever().retrieve(lease,new org.apache.lucene.search.MatchAllDocsQuery());
+        var denied=all.stream().filter(c->c.key().startsWith("tenant/denied/")).toList();assertEquals(1,denied.size());
+        // Use the leased directory itself rather than assuming a product path layout.
+        Path partition=((org.apache.lucene.store.FSDirectory)lease.reader().directory()).getDirectory().resolve(SourceRepositoryFacts.fileName("tenant","denied"));
+        byte[] hiddenBytes=Files.readAllBytes(partition);Files.delete(partition);
+        try {assertThrows(SecurityException.class,()->new SourceFeatureView(denied,lease,catalog,auth,auth.current("reader")));}
+        finally {Files.write(partition,hiddenBytes);}
+        var stale=auth.current("reader");auth.update("reader","tenant",Set.of(),false);
+        assertThrows(SecurityException.class,()->new SourceFeatureView(candidates,lease,catalog,auth,stale));
+        auth.update("reader","tenant",Set.of("repo"),false);
+        try(var recovered=new SourceFeatureView(candidates,lease,catalog,auth,auth.current("reader"))) {
+          assertTrue(recovered.usage("pulse").values().stream().allMatch(SourceUsageRanker.Inventory::declarationMembershipKnown));
+        }
+      }
+    }
+  }
+
+  @Test
+  void deniedSameOwnerCollisionAndCallerAdditionsNeverChangeAuthorizedGraphEvidence() throws Exception {
+    var auth=new AuthorizationFilter();var admin=auth.update("admin","tenant",Set.of("repo","denied"),true);auth.update("reader","tenant",Set.of("repo"),false);var catalog=catalog("comput");
+    try(var source=engine(auth,RankingStrategy.SOURCE_USAGE,model(16,12),catalog)) {
+      source.ingest(admin,"allowed",manifest(source,"repo",Map.of("Same.java","final class Same {static int pulse(int n){return n;}int first(int n){return pulse(n);}}")),GenerationBuilder.Fault.none(),()->false);
+      Map<Integer,SourceUsageRanker.Inventory> before;
+      try(var lease=source.generations("tenant").acquire()) {
+        var candidates=new CandidateRetriever().retrieve(lease,auth.apply(new org.apache.lucene.search.MatchAllDocsQuery(),auth.current("reader")));
+        try(var view=new SourceFeatureView(candidates,lease,catalog,auth,auth.current("reader"))){before=view.usage("pulse");}
+      }
+      source.ingest(admin,"hidden-collision",manifest(source,"denied",Map.of("Same.java","final class Same {static int pulse(int n){return n;}int hiddenA(int n){return pulse(n);}int hiddenB(int n){return pulse(n);}}","Unparsed.java","x".repeat(65537))),GenerationBuilder.Fault.none(),()->false);
+      try(var lease=source.generations("tenant").acquire()) {
+        var candidates=new CandidateRetriever().retrieve(lease,auth.apply(new org.apache.lucene.search.MatchAllDocsQuery(),auth.current("reader")));
+        try(var view=new SourceFeatureView(candidates,lease,catalog,auth,auth.current("reader"))) {
+          var after=view.usage("pulse");
+          assertEquals(before.values().stream().toList(),after.values().stream().toList());
+          assertTrue(after.values().stream().flatMap(i->i.members().stream()).allMatch(m->m.observedCallers()==1&&m.status()==SourceUsageRanker.Status.USABLE_OBSERVED));
+        }
+      }
+      var visible=source.search("reader",new SearchEngine.Request("pulse",20,null,Map.of()));assertEquals(1,visible.totalHits());assertFalse(visible.toString().contains("hiddenA"));
+      assertEquals(visible,source.search("reader",new SearchEngine.Request("pulse",20,null,Map.of())));
+    }
+  }
+
 }

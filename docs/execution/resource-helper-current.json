@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-18T10:23:40.182962+00:00",
+  "status": "PURE_AND_SCOPED_STATIC_REVIEW_PASS_ACTUAL_PROCESS_CONTROLS_PENDING",
+  "runner": {
+    "path": ".work/A01/run-full-reference.py",
+    "sha256": "cba178dd10490acebea80a48f86a69d99b5d1db7274b8df3d17c59ef8f85d3b3"
+  },
+  "newResourceTestsSha256": "a484ce3b3f6f57b1df575770f99303f22f2c7ffc519c7559cba0be6fed9400f9",
+  "ownerControls": [
+    {
+      "path": ".work/A01/resource-helper-opt-in-controls.log",
+      "tests": 27,
+      "elapsedSeconds": 0.457,
+      "failures": 0,
+      "errors": 0,
+      "sha256": "c2d60e5b0ed08562a0e872ceba4cf7426a6dfc4b5af80c825c93ecc68d8c1d2e"
+    },
+    {
+      "path": ".work/A01/resource-helper-current-legacy-mocked.log",
+      "tests": 10,
+      "elapsedSeconds": 0.192,
+      "failures": 0,
+      "errors": 0,
+      "sha256": "c83dab7a5a910a1e381f7cbefdff7385b76512452887bff94bae24821c85ab9f"
+    },
+    {
+      "path": ".work/A01/resource-helper-current-legacy-pure.log",
+      "tests": 10,
+      "elapsedSeconds": 0.179,
+      "failures": 0,
+      "errors": 0,
+      "sha256": "60f93ee31425e091c3e9bdf2881f72a52e268545e51597ae6c84f06aa96b1dba"
+    },
+    {
+      "path": ".work/A01/resource-helper-current-proc-fixtures.log",
+      "tests": 4,
+      "elapsedSeconds": 0.024,
+      "failures": 0,
+      "errors": 0,
+      "sha256": "b2300d1aafe0595c9c54a615ef485e8d42fbb732d33a076b213da446a6aafe8f"
+    }
+  ],
+  "ownerPureMethods": 51,
+  "independentReview": {
+    "reviewer": "A03",
+    "runnerSha256": "cba178dd10490acebea80a48f86a69d99b5d1db7274b8df3d17c59ef8f85d3b3",
+    "testSha256": "a484ce3b3f6f57b1df575770f99303f22f2c7ffc519c7559cba0be6fed9400f9",
+    "newPureMethods": 27,
+    "elapsedSeconds": 0.335,
+    "failures": 0,
+    "errors": 0,
+    "findingsClosed": [
+      "Streaming bounded directory census",
+      "Nofollow dirfd-anchored source/destination copy and final namespace/hash audits",
+      "Completed observation timestamp including terminal disk-stat delay"
+    ],
+    "scope": "Resource-only new opt-in helper. Default workload/dimensions/assertions unchanged. No actual child/Java/Docker execution in this review."
+  },
+  "actualDescendantControls": "NOT_RUN on new helper; root must run after reservation18",
+  "fullReference": "NOT_RUN on repaired application/resource helper; all nine100000 input-group trials remain required. Earlier quiet16 failure remains immutable.",
+  "limitations": [
+    "Pure mocks and scoped static review do not prove all filesystem/process races.",
+    "No full measurement, release or performance improvement pass is inferred.",
+    "Secondary /tmp backups are ephemeral tmpfs, not external durable storage."
+  ]
+}

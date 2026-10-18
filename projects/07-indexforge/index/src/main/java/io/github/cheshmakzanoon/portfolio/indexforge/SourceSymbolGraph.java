@@ -289,6 +289,7 @@ public final class SourceSymbolGraph {
     List<MemberRef> compatible = new ArrayList<>();
     boolean uncertain = false;
     for (var candidate : candidates) {
+      work.step(); // Duplicate owners/overload groups cannot multiply uncharged inference work.
       var member = candidate.member();
       if (member.parameters().size() != expression.children().size() - 1) continue;
       if (member.privateMember()

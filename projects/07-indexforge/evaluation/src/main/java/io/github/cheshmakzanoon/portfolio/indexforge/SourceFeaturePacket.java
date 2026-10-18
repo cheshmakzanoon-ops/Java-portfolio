@@ -8,7 +8,7 @@ import java.util.*;
 
 /** Versioned label-blind wave3 export; caller metadata is never a learned numeric coordinate. */
 public record SourceFeaturePacket(List<SourceFeaturePacket.Query> queries) {
-  private static final String HEADER = "indexforge-source-export-v1\tsource-relations-v1";
+  private static final String HEADER = "indexforge-source-export-v1\t" + SourceRelations.SCHEMA;
   private static final int BYTE_LIMIT = 134_217_728;
   private static final Set<String> REASONS =
       Set.of(

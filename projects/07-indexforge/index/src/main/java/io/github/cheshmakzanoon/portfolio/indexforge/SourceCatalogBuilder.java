@@ -71,11 +71,7 @@ public final class SourceCatalogBuilder {
                 .decode(ByteBuffer.wrap(bytes))
                 .toString();
         var unit = worker.catalog(text);
-        for (var type : unit.types()) {
-          descriptions += 3L * type.description().length();
-          for (var member : type.members())
-            descriptions += 3L * member.description().length() + 512;
-        }
+        descriptions+=retainedBytes(unit);
         if (descriptions > 134_217_728) throw new IOException("API preparation working-set quota");
         units.add(unit);
       }
@@ -92,6 +88,20 @@ public final class SourceCatalogBuilder {
         workerHash,
         System.getProperty("java.runtime.version"),
         new String(legal, StandardCharsets.UTF_8));
+  }
+
+  // Conservative retained signature/prose accounting, not a claim about JVM total RSS.
+  static long retainedBytes(SourceCatalogFacts.Unit unit) {
+    long bytes=3L*unit.packageName().length()+128;
+    for(String imported:unit.imports())bytes+=3L*imported.length()+64;
+    for(var type:unit.types()) {
+      bytes+=3L*(type.name().length()+type.description().length())+256;
+      for(var member:type.members()) {
+        bytes+=3L*(member.name().length()+member.returns().length()+member.description().length())+512;
+        for(String parameter:member.parameters())bytes+=3L*parameter.length()+64;
+      }
+    }
+    return bytes;
   }
 
   private static boolean roots(String pkg) {

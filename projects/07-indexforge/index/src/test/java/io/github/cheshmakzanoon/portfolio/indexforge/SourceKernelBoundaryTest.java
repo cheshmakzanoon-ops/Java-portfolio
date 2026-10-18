@@ -32,7 +32,6 @@ class SourceKernelBoundaryTest {
 
   @Test
   void declarationAndLocalOperationQuotasEraseTheWholeInventoryInsteadOfKeepingAPrefix() throws Exception {
-    String members="class Many {"+"int f%d(){return 0;}".repeat(129)+"}";
     var formatted=new StringBuilder("class Many {");for(int i=0;i<129;i++)formatted.append("int f").append(i).append("(){return 0;}");formatted.append('}');
     var many=SourceJavaParser.parse(formatted.toString());assertEquals(SourceFacts.Status.TREE_QUOTA,many.status());assertTrue(many.members().isEmpty());assertTrue(many.types().isEmpty());
     var locals=new StringBuilder("class Many {void run(){");for(int i=0;i<65;i++)locals.append("int v").append(i).append("=0;");locals.append("}}");
@@ -133,4 +132,30 @@ class SourceKernelBoundaryTest {
     assertThrows(IllegalArgumentException.class,()->new SourceFacts.Guard(name,0,0,"continue"));
     assertThrows(IllegalArgumentException.class,()->new SourceFacts.Unit(SourceFacts.Status.SYNTAX,"",List.of(),List.of(),List.of(new SourceFacts.Member("A","f","void",List.of(),List.of(),Set.of(),List.of(),List.of(),List.of(),0,false,false,false,false,true))));
   }
+  @Test
+  void fileManagerDeniesEveryExternalReadWriteLoaderAndModuleLookupAndSourceNeverExecutes() throws Exception {
+    var compiler=javax.tools.ToolProvider.getSystemJavaCompiler();assertNotNull(compiler);
+    try(var standard=compiler.getStandardFileManager(null,Locale.ROOT,StandardCharsets.UTF_8);var denied=new SourceJavaParser.DeniedFiles(standard)) {
+      var location=javax.tools.StandardLocation.CLASS_PATH;
+      assertFalse(denied.hasLocation(location));assertNull(denied.getClassLoader(location));
+      assertFalse(denied.list(location,"any",Set.of(javax.tools.JavaFileObject.Kind.CLASS),true).iterator().hasNext());
+      assertThrows(IOException.class,()->denied.getJavaFileForInput(location,"Forbidden",javax.tools.JavaFileObject.Kind.CLASS));
+      assertThrows(IOException.class,()->denied.getJavaFileForOutput(location,"Forbidden",javax.tools.JavaFileObject.Kind.CLASS,null));
+      assertThrows(IOException.class,()->denied.getFileForInput(location,"any","Forbidden"));
+      assertThrows(IOException.class,()->denied.getFileForOutput(location,"any","Forbidden",null));
+      assertNull(denied.getLocationForModule(location,"any.module"));
+      assertNull(denied.getLocationForModule(location,new SourceJavaParser.MemorySource("class NotExecuted{}")));
+      assertFalse(denied.listLocationsForModules(location).iterator().hasNext());
+    }
+    String property="indexforge.parse.decoy."+UUID.randomUUID();assertNull(System.getProperty(property));
+    var source=SourceJavaParser.parse("@UnknownProcessor final class NotExecuted {static {System.setProperty(\""+property+"\",\"executed\");}}");
+    assertTrue(source.declarationInventoryKnown());assertNull(System.getProperty(property));
+    Set<String> identifiers=new HashSet<>();for(int i=0;i<128;i++)identifiers.add("distinctCamelComponent"+i);
+    assertThrows(SourceAnchors.Quota.class,()->SourceAnchors.terms(identifiers));
+    var member=new SourceFacts.Member("Owner","method","void",List.of(),List.of(),identifiers,List.of(),List.of(),List.of(),0,false,false,false,false,true);
+    var unit=new SourceFacts.Unit(SourceFacts.Status.OBSERVED,"",List.of(),List.of(),List.of(member));
+    assertEquals(SourceFacts.Status.TREE_QUOTA,SourceAnchors.checked(unit).status());
+    assertEquals(SourceFacts.Status.SYNTAX,SourceAnchors.checked(SourceFacts.Unit.unknown(SourceFacts.Status.SYNTAX)).status());
+  }
+
 }

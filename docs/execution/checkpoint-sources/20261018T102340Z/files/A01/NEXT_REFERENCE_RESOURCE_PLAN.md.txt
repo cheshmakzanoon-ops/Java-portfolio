@@ -1,0 +1,44 @@
+# Proposed resources for a NEW full attempt
+
+The scratch implementation now passes27 new pure resource/adversarial controls plus24 existing pure compatibility controls. Independent review and root's actual two descendant rechecks after quiet18 are still pending; do not launch a study yet. Quiet16's original runner, reserve, source, arguments, failure/exit and all raw outputs stay immutable. The corrected source requires all nine fresh trials; do not combine its future results with quiet16's two prior-source passes. Workload, writer counts, repetitions, transaction/client budgets, SERIALIZABLE, assertions and performance gates do not change.
+
+Observed closed quiet16 data (metadata only):
+
+| Item | Bytes |
+|---|---:|
+| r1-w1 complete raw,12 files |32913228|
+| r1-w8 complete raw,12 files |44729384|
+| failed r1-w32 raw,8 files |114573574|
+| full JMH,3 files |77399|
+| three retained databases, observed pg_database_size sum |415262253|
+| largest retained database |142172687|
+| three actual custom dumps total |71488906|
+
+The failed32-writer raw set is larger than both complete trials and lacks final latency/results output. Use its114573574 bytes plus2MiB per-trial final-file allowance, rather than extrapolating only the smallest passed trial. Nine such sets total1050036534 bytes (0.978GiB). Nine databases at the observed largest size total1279554183 bytes (1.192GiB), conservatively taking no credit for replacing the three old named databases.
+
+Suggested NEW-attempt workspace plan:
+
+| Allocation/retained floor | GiB |
+|---|---:|
+| positive free-space reserve throughout |1.000|
+| all nine database allocation allowance |1.192|
+| additional WAL-growth allowance |1.000|
+| nine raw datasets including final-file allowance |0.978|
+| additional raw-growth contingency |0.500|
+| prior database dumps, actual observed total |0.067|
+| JMH, logs, metadata, temporary/provenance allowance |0.250|
+| total |4.986|
+
+These are planning allowances, not proven physical upper bounds. In particular WAL can exceed a configured checkpoint target, and JFR JSON expansion varies. Require at least5.25GiB workspace free at the new launch, leaving an extra0.264GiB beyond the4.986GiB plan. Final no-application metadata after certification/preparation observed5.8126GiB workspace free (about0.8264GiB above plan), and16.2901GiB free on `/tmp`; an active test container temporarily reduced workspace availability. Resample only after all unrelated containers/builds stop. If fresh availability fails the plan, refuse before measurements; do not delete old evidence or silently lower the reserve.
+
+Phase policy to implement/review in the future helper, before granting a new full attempt:
+
+1. Initial admission: the5.25GiB threshold above and independent destination capacity. Preserve the coordinator's all-three-lock/no-foreign-runtime checks.
+2. JMH/prior preservation: retain1GiB floor, allowing the declared logs/metadata budget. Existing prior files move within the workspace; no deletion or double-copy assumption.
+3. Each prior database dump: retain the existing observed-database-size-plus16MiB check, with the explicitly new1GiB resource reserve. The copies are expected to total71.5MB, but actual space/file checks remain authoritative.
+4. Before the nine-run workload phase: require the1GiB reserve plus remaining database/WAL/raw allowances. Monitor storage with read-only metadata; actual growth can still require a truthful failure. Do not reduce data/work to fit.
+5. Final preservation: measured-command checks enforce the1GiB workspace floor; cleanup/copy still proceeds if a failure has already crossed that floor, because secondary copying consumes `/tmp` capacity and preserves diagnostic evidence. Copy managed raw outputs into a NEW explicit `/tmp/clearledger-reference-<new-attempt-id>/` destination. Require destination free space at least actual enumerated payload bytes plus2GiB retained floor and128MiB bounded metadata/JSON allocation allowance, checking throughout and at completion. Reject symlinks/special files/hardlinks. Use pinned nofollow directory descriptors for source/destination descent, exclusive file creation, stable SHA verification, final full destination audit and exclusive copy-manifest creation. Record destination/stat/hash inventory in the new attempt's manifest. Do not fall back silently or alter original source outputs. Even a conservative2GiB payload plus its128MiB allowance fits the observed16.29GiB `/tmp` free with over12GiB margin after its2GiB reserve.
+
+`/tmp` is tmpfs, a separate capacity pool charged to host memory and ephemeral across environment loss. Use it for secondary artifact preservation only, never PostgreSQL benchmark storage; workspace raw originals and durable database settings remain unchanged. The new helper should explicitly record both filesystems and its copy location. This is not a durable external backup claim.
+
+Current `run-full-reference.py` SHA `cba178dd10490acebea80a48f86a69d99b5d1db7274b8df3d17c59ef8f85d3b3` implements explicit `--artifact-copy-root`, paired with explicit `--min-free-gib 1`, recorded initial/growth admission and bounded verified secondary copying. Scheduled four-second waits leave margin for the five-second actual observation limit; timestamps are captured after disk metadata finishes, and a slow initial/final observation also fails. The legacy default path remains unchanged. The old04539 runner and first f010 draft are preserved separately. Current27 new pure controls and24 legacy pure controls passed; actual descendant controls and independent source closure remain required. See `.work/A01/RESOURCE_HELPER_RESUME.md` and `resource-helper-pure-controls.json`. No active/historical attempt is restamped, no measurement threshold is weakened, and a copy error remains an orchestration failure separate from actual measurement results.

@@ -49,7 +49,12 @@ public final class SourceWave3Study {
     return new LinearRankingModel(new double[16],scales,new double[16],"0".repeat(64),"0".repeat(64),1);
   }
 
-  private static String code() throws IOException {return RelevanceEvaluator.modelFingerprint("source-wave3/phases-v1");}
+  private static String code() throws IOException {
+    var origin=SourceWave3Study.class.getProtectionDomain().getCodeSource().getLocation();
+    // Also cover every new phase/fitter/packet/nested class in exploded Maven development runs.
+    return RelevanceEvaluator.modelFingerprint("source-wave3/phases-v1/"+
+        RankingCodeIdentity.fingerprint(RankingCodeIdentity.artifactPath(origin)));
+  }
   private static Map<String,String> baseIdentity(Path fixtures,Path catalogFile,SourceApiCatalog catalog) throws IOException {
     return Map.of("code",code(),"fixture",SourceStudyFiles.hash(fixtures.resolve("FREEZE.sha256")),
         "protocol",SourceStudyFiles.hash(fixtures.resolve("ranking-wave3/FREEZE.sha256")),
@@ -263,7 +268,7 @@ public final class SourceWave3Study {
 
   private static void replay(Path file,List<Row> rows,String family) throws IOException {
     Map<String,Row> actual=new HashMap<>();
-    var legacy=Set.of(QueryPlanner.Mode.legacyValues());
+    var legacy=Set.copyOf(QueryPlanner.Mode.legacyValues());
     for(var row:rows)if(row.family().equals(family)&&legacy.contains(row.mode()))actual.put(row.mode()+"/"+row.header().id(),row);
     if(Files.size(file)>2_097_152)throw new IOException("source comparator quota");
     var lines=Files.readAllLines(file);
