@@ -24,16 +24,16 @@ No acceptance passes are implied by a foundation checkpoint.
 | P04-A3 | A04 | PASS | projects/04-pulsestream/evidence/integration-current-eight.json, container-recreation.json and mutation-current.json:23 methods,8 real PG/Kafka tests,131/133 strict kills, persisted recreation digest; A03 review closed |
 | P04-A4 | A04 | PASS | projects/04-pulsestream/evidence/integration-current-eight.json, container-recreation.json and mutation-current.json:23 methods,8 real PG/Kafka tests,131/133 strict kills, persisted recreation digest; A03 review closed |
 | P04-A5 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
-| P05-A1 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
-| P05-A2 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
-| P05-A3 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
-| P05-A4 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A1 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A2 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A3 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
+| P05-A4 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and projects/05-tenantshield/docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
 | P05-A5 | A05 | IN_PROGRESS | projects/05-tenantshield/docs/STATUS.md; full gate evidence pending |
-| P06-A1 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
-| P06-A2 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
-| P06-A3 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
-| P06-A4 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
-| P06-A5 | A06 | PASS | projects/06-matchcore/evidence/reference-20261018/measurement-envelope.json and docs/REVIEW.md: six genuine million-command core/durable runs, matching replay digest,3-fork JMH; A05 actual-artifact review closed |
+| P06-A1 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |
+| P06-A2 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |
+| P06-A3 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |
+| P06-A4 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in projects/06-matchcore/docs/REVIEW.md |
+| P06-A5 | A06 | PASS | projects/06-matchcore/evidence/reference-20261018/measurement-envelope.json and projects/06-matchcore/docs/REVIEW.md: six genuine million-command core/durable runs, matching replay digest,3-fork JMH; A05 actual-artifact review closed |
 | P07-A1 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
 | P07-A2 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
 | P07-A3 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
@@ -52,10 +52,10 @@ No acceptance passes are implied by a foundation checkpoint.
 | P09-A4 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
 | P09-A5 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
 | P09-A6 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
-| P10-A1 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
-| P10-A2 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
-| P10-A3 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
-| P10-A4 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P10-A1 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and projects/10-routeweaver/docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
+| P10-A2 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and projects/10-routeweaver/docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
+| P10-A3 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and projects/10-routeweaver/docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
+| P10-A4 | A10 | PASS | projects/10-routeweaver/evidence/lifecycle-current/operations.json, demo-result.json and browser-result.json: actual final-source101-assertion breakdown/urgent demo,10 live Chromium checks, compact publication CAS/status; A08 source review closed |
 | P10-A5 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
 | R-A01 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
 | R-A02 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |

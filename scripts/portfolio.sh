@@ -13,6 +13,21 @@ resolve() {
   done
   echo "Unknown project: $1" >&2; return 2
 }
+verify_prepared_project() {
+  case "$1" in
+    indexforge) bash "$(resolve "$1")/scripts/verify.sh" ;;
+    routeweaver)
+      (
+        source "$(resolve "$1")/scripts/common.sh"
+        before=$(fingerprint)
+        "$root/mvnw" -f "$project/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp verify
+        [[ "$before" == "$(fingerprint)" ]] || { echo 'RouteWeaver inputs changed during verification' >&2; exit 1; }
+        printf '%s\n' "$before" > "$runtime/build-stamp"
+      )
+      ;;
+    *) return 2 ;;
+  esac
+}
 case "$command" in
   doctor)
     java -version; javac -version; "$root/mvnw" -version
@@ -29,10 +44,20 @@ case "$command" in
     mkdir -p "$root/.work/coordinator"
     if [[ $slug == all ]]; then
       "$root/mvnw" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+      if [[ $command == verify ]]; then
+        # These owners create source-bound runtime receipts only after their
+        # supported verification entrypoints complete successfully.
+        verify_prepared_project indexforge
+        verify_prepared_project routeweaver
+      fi
       for selected in "${slugs[@]}"; do python3 "$root/scripts/check-tests.py" "$(resolve "$selected")" "$command"; if [[ $command == mutation ]]; then python3 "$root/scripts/check-mutations.py" "$(resolve "$selected")"; fi; done
     else
       path=$(resolve "$slug")
-      "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+      if [[ $command == verify && ( $slug == indexforge || $slug == routeweaver ) ]]; then
+        verify_prepared_project "$slug"
+      else
+        "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+      fi
       python3 "$root/scripts/check-tests.py" "$path" "$command"
       if [[ $command == mutation ]]; then python3 "$root/scripts/check-mutations.py" "$path"; fi
     fi

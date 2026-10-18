@@ -28,8 +28,12 @@ jobs:
           ./scripts/portfolio.sh verify "$PROJECT"
           test -f "$path/scripts/benchmark.sh"
           trap './scripts/portfolio.sh down "$PROJECT"' EXIT
+          if [[ "$PROJECT" == pulsestream ]]; then
+            bash "$path/scripts/prepare-benchmark.sh"
+            docker compose -f "$path/infra/compose.yaml" up -d --wait --wait-timeout 180
+          fi
           case "$PROJECT" in
-            durableflow|tenantshield|routeweaver)
+            tenantshield|routeweaver)
               ./scripts/portfolio.sh up "$PROJECT"
               ;;
           esac
@@ -38,7 +42,18 @@ jobs:
               bash "$path/scripts/microbenchmark.sh"
               bash "$path/scripts/benchmark.sh"
               ;;
-            durableflow|pulsestream|indexforge)
+            durableflow)
+              for round in 1 2 3; do
+                ./scripts/portfolio.sh reset-demo "$PROJECT"
+                ./scripts/portfolio.sh up "$PROJECT"
+                bash "$path/scripts/benchmark.sh"
+                mkdir -p ".work/benchmark-raw/$PROJECT/run-$round"
+                cp -a "$path/evidence" "$path/target/workload-10000.json" ".work/benchmark-raw/$PROJECT/run-$round/"
+                gzip -c "$path/target/runtime/provider-effects.log" > ".work/benchmark-raw/$PROJECT/run-$round/provider-effects.log.gz"
+                ./scripts/portfolio.sh down "$PROJECT"
+              done
+              ;;
+            pulsestream)
               if [[ "$PROJECT" == pulsestream ]]; then bash "$path/scripts/benchmark-engine.sh"; fi
               for round in 1 2 3; do
                 bash "$path/scripts/benchmark.sh"
@@ -59,6 +74,7 @@ jobs:
         if: always()
         with:
           name: benchmark-raw
+          include-hidden-files: true
           path: |
             projects/**/evidence/
             projects/**/target/benchmark*/
@@ -66,5 +82,10 @@ jobs:
             .work/A*/benchmark*/
             .work/A*/runtime/durable-*.json
             projects/**/target/performance/
+            projects/**/target/microbenchmark/full/
+            .work/A04/runtime/durable-full-*/
+            .work/A04/runtime/engine-*/
+            .work/A05/runtime/http-*.jfr
+            .work/A05/runtime/http-server-*.jfr
             projects/**/.runtime/benchmark*/
             projects/**/.runtime/jmh.*/

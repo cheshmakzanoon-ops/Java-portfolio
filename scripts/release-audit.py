@@ -22,9 +22,14 @@ for project in projects:
         ports.add(port)
     for relative in ['README.md', 'docs/STATUS.md', 'docs/ARCHITECTURE.md', 'docs/INVARIANTS.md',
                      'docs/OPERATIONS.md', 'docs/SECURITY.md', 'docs/PERFORMANCE.md',
-                     'docs/CASE_STUDY.md', 'docs/REVIEW.md', 'docs/INTERVIEW.md', 'scripts/demo.sh']:
+                     'docs/CASE_STUDY.md', 'docs/REVIEW.md', 'docs/INTERVIEW.md',
+                     'scripts/up.sh', 'scripts/down.sh', 'scripts/reset-demo.sh', 'scripts/demo.sh']:
         if not (path / relative).is_file():
             errors.append(f'Missing {project["slug"]}/{relative}')
+    for relative in ['contracts', 'demo', 'docs/DECISIONS']:
+        directory = path / relative
+        if not directory.is_dir() or not any(p.is_file() and p.name != '.gitkeep' for p in directory.rglob('*')):
+            errors.append(f'Missing substantive {project["slug"]}/{relative}')
     if not list(path.glob('**/src/main/java/**/*.java')):
         errors.append(f'{project["slug"]}: no Java implementation')
 brief = (root / 'docs/JAVA_PORTFOLIO_MASTER_EXECUTION_BRIEF.md').read_text()
@@ -34,6 +39,13 @@ for line in (root / 'docs/acceptance-matrix.md').read_text().splitlines():
     parts = [p.strip() for p in line.split('|')]
     if len(parts) >= 5 and parts[1] in required:
         rows[parts[1]] = parts[3]
+        if parts[3] == 'PASS':
+            references = re.findall(r'(?:projects|docs|scripts|integration)/[A-Za-z0-9_./-]+', parts[4])
+            if not references:
+                errors.append(f'{parts[1]}: PASS has no repository evidence reference')
+            for reference in references:
+                if not (root / reference.rstrip('.')).exists():
+                    errors.append(f'{parts[1]}: missing evidence reference {reference}')
 for key in sorted(required):
     if rows.get(key) != 'PASS':
         errors.append(f'{key}: {rows.get(key, "MISSING")}')
