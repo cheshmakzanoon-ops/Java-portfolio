@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "sourceFileSha256": "858ba129cff4ccf37265584c5f6c36bc76b3dbdf3162103966161fedb0945138",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "outcomes": {
+    "KILLED": 115,
+    "SURVIVED": 13,
+    "TIMED_OUT": 1
+  },
+  "strictKilledPercent": 89.14728682170542,
+  "effectiveJUnit": "6.1.3",
+  "preservedReports": ".work/A04/pit-baseline-115",
+  "rawArtifact": ".work/coordinator/pulsestream-bounded-window-mutation.log",
+  "limitations": [
+    "One timeout penalized as not killed;13 survivors require explanation/targeted regressions.",
+    "Supporting adapters are outside selected Engine* mutation scope."
+  ]
+}

@@ -50,7 +50,7 @@ public class ApiSecurity {
                       .permitAll()
                       .anyRequest()
                       .hasAuthority("SCOPE_telemetry:read"))
-          .oauth2ResourceServer(o -> o.jwt(j -> j.decoder(decoder)));
+          .oauth2ResourceServer(o -> o.jwt(j -> j.decoder(StrictIdentityDecoder.wrap(decoder))));
     } else throw new IllegalStateException("UNKNOWN_SECURITY_MODE");
     return http.build();
   }

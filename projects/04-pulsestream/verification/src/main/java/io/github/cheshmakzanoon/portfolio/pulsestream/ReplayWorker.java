@@ -13,6 +13,8 @@ public final class ReplayWorker {
   public static final Engine.Limits LIMITS =
       new Engine.Limits(2, 50_000, 100_000, 1_000_000, 1_000_000);
 
+  public static final Duration SOURCE_LEASE = Duration.ofSeconds(30);
+
   private ReplayWorker() {}
 
   public static void main(String[] args) throws Exception {
@@ -43,20 +45,42 @@ public final class ReplayWorker {
                 if (b == PostgresStore.Barrier.DURING_OUTBOX) Runtime.getRuntime().halt(74);
               });
     store.migrate();
+    // Outbox delivery has no source-consumer work. Establish the producer before
+    // acquiring the short lease, so Kafka startup cannot consume the ownership budget.
+    if (phase.equals("outbox-crash") || phase.equals("outbox-retry")) {
+      try (KafkaResultPublisher publisher =
+          new KafkaResultPublisher(bootstrap, topic + "-results", run)) {
+        var owner = store.acquire(run, Duration.ofSeconds(5));
+        try {
+          int count = store.deliverOutbox(owner, publisher, 100);
+          if (phase.equals("outbox-crash")) throw new AssertionError("outbox hook not reached");
+          require(count > 0, "outbox retry publishes");
+          System.out.println("OUTBOX_RETRIED=" + count);
+        } finally {
+          store.release(owner);
+        }
+      }
+      System.out.println("PHASE_PASS=" + phase);
+      return;
+    }
     String topicId = KafkaPump.topicIdentity(bootstrap, topic, 2);
     AtomicLong clock = new AtomicLong(phase.equals("seed") ? 0 : 65_000);
     AtomicReference<Throwable> failure = new AtomicReference<>();
     int sensorPartition = EventCodec.partition("t:a", 2);
     String other = controlSensor(1 - sensorPartition);
-    try (DurableSession session =
-            new DurableSession(store, run, topicId, LIMITS, clock.get(), Duration.ofSeconds(5));
-        KafkaPump pump =
+    // Client construction is not owned processing. Complete it before taking the
+    // source lease, whose budget matches production and exceeds readiness's 20s bound.
+    try (KafkaPump pump =
             new KafkaPump(bootstrap, topic, "replay-" + run, 2, 8, 100, failure::set)
                 .clock(clock::get);
-        KafkaProducer<String, byte[]> producer = producer(bootstrap)) {
+        KafkaProducer<String, byte[]> producer = producer(bootstrap);
+        DurableSession session =
+            new DurableSession(store, run, topicId, LIMITS, clock.get(), SOURCE_LEASE)) {
       pump.start(session.checkpoint());
       pump.awaitReady(Duration.ofSeconds(20));
-      if (phase.equals("seed")) {
+      if (phase.equals("verify")) {
+        verify(store, run, session.state().duplicates);
+      } else if (phase.equals("seed")) {
         send(producer, topic, event(run, "ten", "a", 0, 10, false));
         send(producer, topic, event(run, "twenty", "a", 20_000, 20, false));
         clock.set(65_000);
@@ -94,19 +118,6 @@ public final class ReplayWorker {
         send(producer, topic, event(run, "end-other", other, 400_000, 0, true));
         drain(session, pump, failure, () -> session.state().watermark >= 395_000, 20);
         verify(store, run, session.state().duplicates);
-      } else if (phase.equals("outbox-crash")) {
-        try (KafkaResultPublisher publisher =
-            new KafkaResultPublisher(bootstrap, topic + "-results", run)) {
-          store.deliverOutbox(session.owner(), publisher, 100);
-        }
-        throw new AssertionError("outbox hook not reached");
-      } else if (phase.equals("outbox-retry")) {
-        try (KafkaResultPublisher publisher =
-            new KafkaResultPublisher(bootstrap, topic + "-results", run)) {
-          int count = store.deliverOutbox(session.owner(), publisher, 100);
-          require(count > 0, "outbox retry publishes");
-          System.out.println("OUTBOX_RETRIED=" + count);
-        }
       } else throw new IllegalArgumentException("phase");
       pump.committed(session.checkpoint());
       System.out.println("PHASE_PASS=" + phase);

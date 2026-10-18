@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "images": {
+    "postgres:18.3-alpine": "sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+    "apache/kafka:4.2.1": "sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0"
+  },
+  "evidenceCommand": "docker image inspect postgres:18.3-alpine apache/kafka:4.2.1 --format {{json .RepoDigests}}",
+  "note": "Actual already-tested local RepoDigests; Compose and Testcontainers use tag+immutable digest, no version upgrade."
+}

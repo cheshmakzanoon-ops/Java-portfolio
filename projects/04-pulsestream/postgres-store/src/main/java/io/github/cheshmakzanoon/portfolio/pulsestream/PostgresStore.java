@@ -108,6 +108,13 @@ public final class PostgresStore {
           throw new SQLException("FENCED_OWNER");
       }
     }
+    renewLocked(c, owner);
+  }
+
+  // fence() retains the run_owner row lock until transaction completion. Even if
+  // bounded SQL/output work outlasts the lease, no successor can acquire that row
+  // while this transaction owns it. Renew again immediately before commit.
+  private void renewLocked(Connection c, Owner owner) throws SQLException {
     execute(
         c,
         "UPDATE run_owner SET lease_until=clock_timestamp()+(? * interval '1 millisecond') WHERE run_id=?",
@@ -272,6 +279,7 @@ public final class PostgresStore {
         insertRejections(c, "late_record", owner.run, next.late);
         stateBarrier.accept(Barrier.BEFORE_COMMIT, next);
         barrier.accept(Barrier.BEFORE_COMMIT);
+        renewLocked(c, owner);
         c.commit();
         stateBarrier.accept(Barrier.AFTER_COMMIT, next);
         barrier.accept(Barrier.AFTER_COMMIT);
@@ -323,6 +331,7 @@ public final class PostgresStore {
           }
         }
       }
+      renewLocked(c, owner);
       c.commit();
       return delivered;
     }

@@ -5,11 +5,11 @@ Prerequisites: repository Java 25/Maven wrapper, Docker Compose, bash and curl. 
 ```bash
 projects/04-pulsestream/scripts/up.sh
 projects/04-pulsestream/scripts/demo.sh
-projects/04-pulsestream/scripts/down.sh
 projects/04-pulsestream/scripts/reset-demo.sh
+projects/04-pulsestream/scripts/down.sh
 ```
 
-`up` verifies the full project before starting dependency health checks and the HTTP service on 18400. PostgreSQL is 18401 and Kafka 18402, all loopback. `PULSE_HTTP_PORT`, `PULSE_SQL_PORT` and `PULSE_KAFKA_PORT` override reservations. `down` stops only this project's PID (after checking command identity) and Compose services; volumes survive. `reset-demo` deletes only the last explicitly recorded `demo_<timestamp>` run and its two topics, using parameterized psql variables. It does not touch live runs or global Docker resources. Do not reset while its replay is running.
+`up` verifies the full project when executable inputs or artifact hashes changed, then starts dependency health checks and the HTTP service on 18400. PostgreSQL is 18401 and Kafka 18402, all loopback. `PULSE_HTTP_PORT`, `PULSE_SQL_PORT` and `PULSE_KAFKA_PORT` override reservations. `down` stops only this project's PID (after checking command identity) and Compose services; volumes survive. Kafka explicitly writes to the named volume mounted at `/var/lib/kafka/data`; PostgreSQL has its own named volume. Both images are pinned to the tested immutable digests. `evidence/container-recreation.json` records retained topic UUID, nonzero SQL offsets and independently verified results after both containers were recreated. `reset-demo` deletes only the last explicitly recorded `demo_<timestamp>` run and its two topics, using parameterized psql variables. It does not touch live runs or global Docker resources. Run reset while dependencies are still healthy, before down, and never while its replay is running.
 
 `/health` exposes processor failure, source lag, bounded queue depth/high-water mark, watermark lag, last checkpoint latency and outbox delivery failures. `/status` reads committed SQL state, checkpoint age, active/idle counts and tenant-filtered late counts. SQL failure stops processing and queue admission eventually pauses; after restoring SQL, restart the process. The durable session deliberately refuses reuse after a failed/ambiguous commit. Restart restores snapshot/dedup before seeking every Kafka partition from SQL's next offset.
 

@@ -274,9 +274,14 @@ public final class Engine {
         else {
           s.pending.add(w);
           Result previousResult = s.results.get(w);
-          if (previousResult != null)
+          if (previousResult != null || s.watermark >= w.end())
             publish(
-                s, new Result(w, aggregate(s, w, null, null), previousResult.revision + 1, false));
+                s,
+                new Result(
+                    w,
+                    aggregate(s, w, null, null),
+                    previousResult == null ? 1 : previousResult.revision + 1,
+                    false));
         }
       }
     }
@@ -287,10 +292,12 @@ public final class Engine {
   }
 
   public static List<Window> assigned(Key key, long paneStart) {
-    List<Window> result = new ArrayList<>();
-    result.add(new Window(key, "TUMBLING", paneStart));
-    for (int i = 0; i < 5; i++) result.add(new Window(key, "SLIDING", paneStart - i * MINUTE));
-    return result;
+    // Membership is exactly one tumbling window and five overlapping sliding windows.
+    // Allocate that fixed bound; an invalid cursor cannot grow retained memory.
+    Window[] result = new Window[6];
+    result[0] = new Window(key, "TUMBLING", paneStart);
+    for (int i = 0; i < 5; i++) result[i + 1] = new Window(key, "SLIDING", paneStart - i * MINUTE);
+    return List.of(result);
   }
 
   private static boolean closed(State s, Window w) {
@@ -318,7 +325,11 @@ public final class Engine {
                 candidate,
                 p.maxTimestamp == Long.MIN_VALUE ? Long.MIN_VALUE : p.maxTimestamp - DISORDER);
       }
+    long previousWatermark = s.watermark;
     if (active) s.watermark = Math.max(s.watermark, candidate);
+    // Only newly due windows or panes can change on a watermark step. A new late
+    // window under an unchanged watermark is published directly by accept().
+    if (s.watermark == previousWatermark) return;
     for (Window w : List.copyOf(s.pending)) {
       if (s.watermark < w.end()) continue;
       boolean done = closed(s, w);

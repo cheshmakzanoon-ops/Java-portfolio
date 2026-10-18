@@ -88,9 +88,6 @@ public class PulseApplication {
         throws Exception {
       this.store = store;
       String topicId = KafkaPump.topicIdentity(bootstrap, topic, limits.partitions());
-      session =
-          new DurableSession(
-              store, run, topicId, limits, System.currentTimeMillis(), Duration.ofSeconds(30));
       try {
         pump =
             new KafkaPump(
@@ -102,13 +99,16 @@ public class PulseApplication {
                 batch,
                 failure::set);
         publisher = new KafkaResultPublisher(bootstrap, topic + "-results", run);
+        session =
+            new DurableSession(
+                store, run, topicId, limits, System.currentTimeMillis(), Duration.ofSeconds(30));
         pump.start(session.checkpoint());
         pump.awaitReady(Duration.ofSeconds(20));
         thread = Thread.ofPlatform().name("pulsestream-engine").start(this::process);
       } catch (Exception e) {
         if (pump != null) pump.close();
         if (publisher != null) publisher.close();
-        session.close();
+        if (session != null) session.close();
         throw e;
       }
     }

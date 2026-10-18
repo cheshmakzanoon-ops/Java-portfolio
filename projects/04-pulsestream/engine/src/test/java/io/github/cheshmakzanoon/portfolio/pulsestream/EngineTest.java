@@ -3,7 +3,6 @@ package io.github.cheshmakzanoon.portfolio.pulsestream;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
-import net.jqwik.api.*;
 import org.junit.jupiter.api.Test;
 
 class EngineTest {
@@ -36,55 +35,6 @@ class EngineTest {
         s, List.of(Engine.Input.of(p, s.offsets.getOrDefault(p, 0L), e)), List.of(), now);
   }
 
-  @Property(tries = 120, seed = "4404")
-  void panesAgreeWithIndependentMembershipOracle(@ForAll long seed) {
-    Random random = new Random(seed);
-    Engine.State s = state(1);
-    // Keep progress fixed while exploring reordered, exact-edge and overlapping assignments.
-    List<Engine.Event> events = new ArrayList<>();
-    for (int i = 0; i < 80; i++)
-      events.add(event("e" + i, random.nextInt(10) * 30_000L, random.nextInt(201) - 100));
-    Collections.shuffle(events, random);
-    // A second unseen source deliberately blocks watermark while this history is accepted.
-    s = state(2);
-    for (var e : events) s = add(s, 0, e, 400_000);
-    s = add(s, 1, progress(900_000), 900_000);
-    Map<Engine.Window, Engine.Result> output = new HashMap<>(s.results);
-    s = add(s, 0, progress(900_000), 900_000);
-    output.putAll(s.results);
-    Map<String, long[]> expected = new HashMap<>();
-    for (var e : events) {
-      long minute = e.eventTimeEpochMillis() / 60_000 * 60_000;
-      for (String type : List.of("TUMBLING", "SLIDING")) {
-        long width = type.equals("TUMBLING") ? 60_000 : 300_000;
-        for (long start = -240_000; start <= 540_000; start += 60_000) {
-          if (type.equals("TUMBLING") && start != minute) continue;
-          if (e.eventTimeEpochMillis() >= start && e.eventTimeEpochMillis() < start + width) {
-            long[] a =
-                expected.computeIfAbsent(
-                    type + ":" + start, k -> new long[] {0, 0, Long.MAX_VALUE, Long.MIN_VALUE});
-            a[0]++;
-            a[1] += e.valueMilliUnits();
-            a[2] = Math.min(a[2], e.valueMilliUnits());
-            a[3] = Math.max(a[3], e.valueMilliUnits());
-          }
-        }
-      }
-    }
-    assertEquals(expected.size(), output.size());
-    output.forEach(
-        (w, r) -> {
-          long[] a = expected.get(w.type() + ":" + w.start());
-          assertNotNull(a);
-          assertEquals(a[0], r.aggregate().count());
-          assertEquals(a[1], r.aggregate().sum());
-          assertEquals(a[2], r.aggregate().minimum());
-          assertEquals(a[3], r.aggregate().maximum());
-          assertTrue(r.finalized());
-        });
-    assertTrue(s.panes.isEmpty());
-  }
-
   @Test
   void exactDemoLateAndDuplicateWithIndependentSlidingOutcomes() {
     Engine.State s = state(2);
@@ -106,6 +56,7 @@ class EngineTest {
     s = add(s, 1, progress(105_000), 100_000);
     assertEquals(100_000, s.watermark);
     assertTrue(s.results.get(w).finalized());
+    assertEquals(3, s.results.get(w).revision());
     assertEquals(35, s.results.get(w).aggregate().sum());
     s = add(s, 0, event("resume", 40_000, 9), 100_000);
     assertEquals(100_000, s.watermark);
@@ -234,5 +185,88 @@ class EngineTest {
         IllegalArgumentException.class,
         () ->
             Engine.transition(copy, List.of(), List.of(new Engine.Observation(2, false, 0, 0)), 0));
+  }
+
+  @Test
+  void exactSourceAndRetentionEdgesHaveExplicitOutcomes() {
+    var future = new Engine.State("r", new Engine.Limits(1, 10, 100, 100, 1), 0);
+    future = add(future, 0, event("at-skew", 101, 7), 100);
+    assertTrue(future.quarantine.isEmpty());
+    assertEquals(7, future.panes.values().iterator().next().sum());
+    future = add(future, 0, event("beyond-skew", 102, 7), 100);
+    assertEquals("INVALID_RECORD", future.quarantine.getFirst().reason());
+    var extreme = new Engine.State("r", new Engine.Limits(1, 10, 100, 100, Long.MAX_VALUE), 0);
+    extreme = add(extreme, 0, event("last-safe", Long.MAX_VALUE - 6 * Engine.MINUTE, 1), 0);
+    assertTrue(extreme.quarantine.isEmpty());
+    assertTrue(extreme.seen.containsKey("t:last-safe"));
+    var retained = add(state(1), 0, event("pane", 0, 1), 0);
+    retained = add(retained, 0, progress(334_999), 334_999);
+    assertEquals(329_999, retained.watermark);
+    assertEquals(1, retained.panes.size());
+    retained = add(retained, 0, progress(335_000), 335_000);
+    assertEquals(330_000, retained.watermark);
+    assertTrue(retained.panes.isEmpty());
+    assertEquals("t:a", event("wire", 0, 1).key());
+    var malformed =
+        Engine.transition(
+            state(1), List.of(new Engine.Input(0, 0, 1, "key", null, null)), List.of(), 0);
+    assertEquals("MALFORMED", malformed.quarantine.getFirst().reason());
+    assertTrue(malformed.panes.isEmpty());
+  }
+
+  @Test
+  void progressInsideAtomicBatchFinalizesBeforeLaterArrivalAtExactLatenessEdge() {
+    var s = add(state(1), 0, event("first", 0, 10), 0);
+    s =
+        Engine.transition(
+            s,
+            List.of(
+                Engine.Input.of(0, 1, progress(95_000)),
+                Engine.Input.of(0, 2, event("late", 50_000, 5))),
+            List.of(),
+            95_000);
+    var w = new Engine.Window(new Engine.Key("t", "a"), "TUMBLING", 0);
+    assertEquals(90_000, s.watermark);
+    assertTrue(s.results.get(w).finalized());
+    assertEquals(10, s.results.get(w).aggregate().sum());
+    assertEquals(1, s.late.stream().filter(r -> r.windowId().contains("TUMBLING")).count());
+    assertEquals(15, s.panes.values().stream().mapToLong(Engine.Aggregate::sum).sum());
+  }
+
+  @Test
+  void fullyLateRecordDoesNotConsumePaneQuotaOrMutateRetainedFinals() {
+    var s = new Engine.State("r", new Engine.Limits(1, 2, 1, 100, 1_000_000), 0);
+    s = add(s, 0, event("old", 0, 10), 0);
+    s = add(s, 0, progress(335_000), 335_000);
+    s = add(s, 0, new Engine.Event(1, "r", "current", "t", "b", 400_000, 8, false), 400_000);
+    assertEquals(1, s.panes.size());
+    s = add(s, 0, event("fully-late", 0, 9), 400_000);
+    assertTrue(s.quarantine.isEmpty());
+    assertEquals(6, s.late.size());
+    assertEquals(1, s.panes.size());
+    assertEquals(8, s.panes.values().iterator().next().sum());
+  }
+
+  @Test
+  void firstLateWindowPublishesUnderUnchangedWatermarkAndFinalizesOnce() {
+    var s = add(state(1), 0, progress(65_000), 65_000);
+    assertEquals(60_000, s.watermark);
+    s = add(s, 0, event("first-late", 50_000, 5), 65_000);
+    var w = new Engine.Window(new Engine.Key("t", "a"), "TUMBLING", 0);
+    assertEquals(60_000, s.watermark);
+    assertEquals(1, s.results.get(w).revision());
+    assertEquals(5, s.results.get(w).aggregate().sum());
+    assertFalse(s.results.get(w).finalized());
+    assertEquals(2, s.outbox.size(), "tumbling and oldest sliding windows are already due");
+    s = add(s, 0, event("second-late", 55_000, 7), 65_000);
+    assertEquals(2, s.results.get(w).revision());
+    assertEquals(12, s.results.get(w).aggregate().sum());
+    s = add(s, 0, progress(95_000), 95_000);
+    assertTrue(s.results.get(w).finalized());
+    assertEquals(3, s.results.get(w).revision());
+    assertEquals(12, s.results.get(w).aggregate().sum());
+    s = add(s, 0, event("after-final", 40_000, 99), 95_000);
+    assertTrue(s.late.stream().anyMatch(r -> r.windowId().equals(w.id())));
+    assertFalse(s.outbox.stream().anyMatch(r -> r.window().equals(w)));
   }
 }

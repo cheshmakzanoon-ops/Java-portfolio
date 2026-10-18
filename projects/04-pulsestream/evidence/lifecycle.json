@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "sourceRevision": "working-tree-sha256:2f3eb8b945c5e2ecbbacb19987d661e438aad50b656f6fd5af8df14c38651d30",
+  "timestamp": "2026-10-18T02:32:42.838223+00:00",
+  "commands": [
+    {
+      "command": "scripts/up.sh",
+      "exitCode": 0,
+      "log": ".work/A04/up-persisted-volume.log"
+    },
+    {
+      "command": "scripts/demo.sh",
+      "exitCode": 0,
+      "log": ".work/A04/demo-after-storage-fix.log"
+    },
+    {
+      "command": "scripts/benchmark.sh smoke",
+      "exitCode": 0,
+      "log": ".work/A04/smoke-before-optimization.log"
+    },
+    {
+      "command": "scripts/reset-demo.sh",
+      "exitCode": 0,
+      "log": ".work/A04/reset-after-storage-fix.log"
+    },
+    {
+      "command": "scripts/down.sh",
+      "exitCode": 0,
+      "log": ".work/A04/down-after-storage-fix.log"
+    }
+  ],
+  "reset": {
+    "onlyRemovedRun": "demo_1792290419265569",
+    "retainedRuns": [
+      "demo_1792289780231021",
+      "live"
+    ]
+  },
+  "recreationProof": "evidence/container-recreation.json",
+  "dockerAfterDownArtifact": ".work/A04/runtime/containers-after-down.json",
+  "limitations": [
+    "Containers stopped; named volumes and independent workload database retained intentionally.",
+    "Smoke is diagnostic only; prescribed million-event and isolated JMH remain pending."
+  ]
+}

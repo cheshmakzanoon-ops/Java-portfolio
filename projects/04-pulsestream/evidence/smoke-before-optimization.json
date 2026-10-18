@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "workload": "durable-v1-smoke",
+  "seed": 4404,
+  "run": "workload_1792290682920",
+  "database": "pulse_workload_1792290682920",
+  "sourceRevision": "working-tree-sha256:2f3eb8b945c5e2ecbbacb19987d661e438aad50b656f6fd5af8df14c38651d30",
+  "recoveryDigest": "726d0ee6836066eb630d9266afafb6d015eb6bba0dc7a5ae018e42b2ff4a953b",
+  "committedDigest": "726d0ee6836066eb630d9266afafb6d015eb6bba0dc7a5ae018e42b2ff4a953b",
+  "resultDigest": "501ee1507705428622117525c65c5b5bcee74ecbbce5a647a918cb923616b138",
+  "oracleDigest": "501ee1507705428622117525c65c5b5bcee74ecbbce5a647a918cb923616b138",
+  "assertions": {
+    "failed": 0,
+    "passed": 6
+  },
+  "assertionBoundary": "exact admitted count, exact duplicates, independent source watermark, full recovered state digest, all published window fields/row count, independent result digest",
+  "measurements": {
+    "acceptedMeasurements": 10000,
+    "duplicateCount": 10,
+    "acceptedEventsPerSecond": 861.0581237348626,
+    "elapsedSeconds": 11.613617855,
+    "producerPreparationSeconds": 3.362442948,
+    "databasePreparationSeconds": 6.98998237,
+    "checkpointSamples": 12,
+    "checkpointP50Millis": 427.571538,
+    "checkpointP95Millis": 3223.880883,
+    "checkpointP99Millis": 3223.880883,
+    "maximumQueueBatches": 7,
+    "peakObservedHeapBytes": 51896368,
+    "databaseBytes": 10991295,
+    "databaseGrowthBytes": 2744320,
+    "recoveryMillis": 1315.159659,
+    "processCpuSeconds": 6.59,
+    "averageProcessCpuCores": 0.5674373035412745,
+    "allocatedBytes": 181603968,
+    "gcCollections": 9,
+    "gcMillis": 394,
+    "oracleValidationSeconds": 0.211010742,
+    "publishedWindows": 200,
+    "watermark": 94000
+  },
+  "jdk": "25.0.4.1+1-LTS",
+  "jvmFlags": [
+    "-Xmx512m",
+    "-XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A04/runtime/durable-smoke-1792290676285088/workload.jfr,settings=profile,dumponexit=true",
+    "-Xlog:gc*,safepoint:file=/workspace/Java-portfolio/.work/A04/runtime/durable-smoke-1792290676285088/gc.log:time,uptime,level,tags",
+    "-Dpulse.sourceFingerprint=working-tree-sha256:2f3eb8b945c5e2ecbbacb19987d661e438aad50b656f6fd5af8df14c38651d30",
+    "-Dloader.main=io.github.cheshmakzanoon.portfolio.pulsestream.Workload",
+    "-Dloader.path=/workspace/Java-portfolio/projects/04-pulsestream/verification/target/pulsestream-verification-1.0.0-SNAPSHOT.jar"
+  ],
+  "timestamp": "2026-10-18T02:31:52.161689865Z",
+  "limitations": [
+    "Closed-loop drain after durable Kafka preparation; checkpoint latency excludes offered-load queueing and has coordinated-omission limits.",
+    "Each run starts a fresh isolated PostgreSQL database; setup/schema and source preparation are excluded from drain and reported separately.",
+    "Result outbox delivery excluded; SQL result/outbox writes included.",
+    "Shared host with concurrent work; not a prescribed million-event measurement or isolated performance baseline."
+  ],
+  "command": "projects/04-pulsestream/scripts/benchmark.sh smoke",
+  "exitCode": 0,
+  "diagnosticOnly": true,
+  "artifacts": {
+    ".work/A04/runtime/durable-smoke-1792290676285088/gc.log": {
+      "bytes": 34828,
+      "sha256": "dd2213a0939cb82572ee19c3fe5cd4282ddb248fce8d1632846e37b381c42500"
+    },
+    ".work/A04/runtime/durable-smoke-1792290676285088/workload.jfr": {
+      "bytes": 2228240,
+      "sha256": "f379ceef518a72021d5d123652d2a3a43768d45fa4c0e867983bcf595f762ad9"
+    },
+    ".work/A04/runtime/durable-smoke-1792290676285088/result.json": {
+      "bytes": 2859,
+      "sha256": "7e76d2768b99274db8440dc3e3796c79715dc3bc687586747e58e4bf7e594d60"
+    },
+    ".work/A04/runtime/durable-smoke-1792290676285088/environment.json": {
+      "bytes": 1217,
+      "sha256": "9053c8c8708b6fe001f96d2a67b31137329e429f5adfb1ac5171eec215e65a64"
+    },
+    ".work/A04/runtime/durable-smoke-1792290676285088/console.log": {
+      "bytes": 39580,
+      "sha256": "5d532c9a82c7066137abeba6c4333209ecace07893d6ce310dc3d0955a2830f8"
+    }
+  }
+}

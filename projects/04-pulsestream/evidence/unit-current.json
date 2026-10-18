@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "sourceRevision": "working-tree-sha256:08c1eab6bc4ff1a37d4ccfef6916393b9782622ebd2e93ee57e9b5b312ec1401",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "timestamp": "2026-10-18T02:45:47Z",
+  "command": "./mvnw -f projects/04-pulsestream/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp -Pintegration verify",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0
+  },
+  "reports": [
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EnginePropertyTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "41d3e47a74e7d5c6e40129ae908701f16bd17d5d3d88371e7f58f634af664c75",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EnginePropertyTest.xml"
+    },
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EngineTest.xml",
+      "methods": 9,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "32d254396875b6b9f747db772674057ad3e5cf8acdba232821ad788b5c32d050",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EngineTest.xml"
+    },
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EventCodecTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "b0aaa856c8ea9d8372fa3ee824e17b9159f80780b1be8546701fa74e4ea87db0",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EventCodecTest.xml"
+    },
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.KafkaPumpLifecycleTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "628bb8b3de53cf5926f07d8d471b81ba8a6d559c206cc917f4cea05003eb047b",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.KafkaPumpLifecycleTest.xml"
+    },
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.RetentionTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "2f6d3f09227a017eaf17ee81b3d240982660aa78290caea82af081fdc7603d54",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/postgres-store/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.RetentionTest.xml"
+    },
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.SchedulePropertyTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "4c46c8e5ded233bee88c86ea0ff623bb5d28973bb3afd23cbd37125f67c1f3c4",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.SchedulePropertyTest.xml"
+    },
+    {
+      "path": ".work/A04/current-eight-unit-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.WorkloadOracleTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sha256": "9b983a76864d08c5a011570f4a94bd39f1b10c96bac751ee8ed3099651038446",
+      "junit613": true,
+      "originalReport": "projects/04-pulsestream/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.WorkloadOracleTest.xml"
+    }
+  ],
+  "coreCoverage": {
+    "BRANCH": {
+      "covered": 155,
+      "missed": 13
+    },
+    "LINE": {
+      "covered": 193,
+      "missed": 2
+    }
+  },
+  "rawArtifact": ".work/A04/current-eight-integration-digest-compatible.log",
+  "limitations": [
+    "15unit/property methods; integration8 methods recorded separately.120+80 generated histories are not counted as separate methods."
+  ]
+}

@@ -24,6 +24,7 @@ public final class KafkaPump implements AutoCloseable {
   private final Consumer<Throwable> failures;
   private final AtomicReference<Map<Integer, Long>> mirror = new AtomicReference<>();
   private volatile boolean running = true;
+  private final AtomicBoolean closed = new AtomicBoolean();
   private volatile long sourceLag;
   private volatile int maxQueue;
   private final CompletableFuture<Void> ready = new CompletableFuture<>();
@@ -198,7 +199,12 @@ public final class KafkaPump implements AutoCloseable {
 
   @Override
   public void close() {
+    if (!closed.compareAndSet(false, true)) return;
     running = false;
+    if (poller == null) {
+      consumer.close(Duration.ofSeconds(5));
+      return;
+    }
     consumer.wakeup();
     if (poller != null)
       try {

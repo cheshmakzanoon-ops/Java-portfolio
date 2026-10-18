@@ -1,0 +1,13 @@
+{
+  "observedAtUtc": "2026-10-18T01:54:39Z",
+  "exitCode": 1,
+  "actualIntegrationMethods": 7,
+  "passed": 6,
+  "failed": 1,
+  "effectiveJUnit": "6.1.3",
+  "rawArtifact": ".work/coordinator/pulsestream-junit613-integration.log",
+  "childLogs": ".work/coordinator/pulsestream-junit613-failed-logs",
+  "failure": "late_before recovery child returned1 with SQL FENCED_OWNER on its first apply; its five-second source lease was consumed during Kafka consumer/producer initialization.",
+  "repairPlan": "Initialize Kafka clients before acquiring the source lease, use the same30-second source lease as production against20-second readiness, and wait for genuine expiry in recovery tests/demo. Keep independent two-second stale-owner and slow-delivery tests unchanged.",
+  "status": "FAILED; fresh affected integration required."
+}

@@ -92,6 +92,22 @@ final class LocalIssuer implements AutoCloseable {
               : variant.equals("tenant") ? "other" : "t");
     if (variant.equals("nbf")) builder.notBeforeTime(Date.from(now.plusSeconds(300)));
     if (variant.equals("nbf-type")) builder.claim("nbf", "not-an-instant");
+    if (variant.equals("numeric-sub")
+        || variant.equals("array-sub")
+        || variant.equals("blank-sub")) {
+      var raw = new java.util.HashMap<String, Object>(builder.build().toJSONObject());
+      raw.put(
+          "sub",
+          variant.equals("numeric-sub")
+              ? 42
+              : variant.equals("array-sub") ? java.util.List.of("fixture-reader") : "   ");
+      var rawJws =
+          new com.nimbusds.jose.JWSObject(
+              new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(key.getKeyID()).build(),
+              new com.nimbusds.jose.Payload(raw));
+      rawJws.sign(new RSASSASigner(key));
+      return rawJws.serialize();
+    }
     var claims = builder.build();
     SignedJWT jwt =
         new SignedJWT(

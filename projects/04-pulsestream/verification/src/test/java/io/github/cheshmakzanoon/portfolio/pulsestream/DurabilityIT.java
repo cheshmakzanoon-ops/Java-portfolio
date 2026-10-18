@@ -15,6 +15,7 @@ import org.apache.kafka.common.serialization.*;
 import org.junit.jupiter.api.*;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 class DurabilityIT {
   static PostgreSQLContainer postgres;
@@ -24,12 +25,19 @@ class DurabilityIT {
   @BeforeAll
   static void start() {
     postgres =
-        new PostgreSQLContainer("postgres:18.3-alpine")
+        new PostgreSQLContainer(
+                DockerImageName.parse(
+                        "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7")
+                    .asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("pulse")
             .withUsername("pulse")
             .withPassword("pulse-local");
     kafka =
-        new KafkaContainer("apache/kafka:4.2.1").withEnv("KAFKA_HEAP_OPTS", "-Xms256m -Xmx512m");
+        new KafkaContainer(
+                DockerImageName.parse(
+                        "apache/kafka:4.2.1@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0")
+                    .asCompatibleSubstituteFor("apache/kafka"))
+            .withEnv("KAFKA_HEAP_OPTS", "-Xms256m -Xmx512m");
     postgres.start();
     kafka.start();
     store =
@@ -82,6 +90,42 @@ class DurabilityIT {
         }
       }
     }
+  }
+
+  @Test
+  void outboxTransactionRenewsLeaseAfterSlowDeliveryWhileRetainingOwnershipLock() throws Exception {
+    String run = "slow-outbox";
+    var limits = new Engine.Limits(1, 10, 100, 100, 100);
+    var owner = store.acquire(run, Duration.ofSeconds(2));
+    var initial = store.restore(run, "slow-topic", limits, 0);
+    var next =
+        Engine.transition(
+            initial,
+            List.of(
+                Engine.Input.of(0, 0, ReplayWorker.event(run, "one", "a", 0, 7, false)),
+                Engine.Input.of(0, 1, ReplayWorker.event(run, "progress", "a", 65_000, 0, true))),
+            List.of(),
+            65_000);
+    store.commit(owner, "slow-topic", initial, next);
+    var deliveries = new java.util.concurrent.atomic.AtomicInteger();
+    int delivered =
+        store.deliverOutbox(
+            owner,
+            ignored -> {
+              if (deliveries.getAndIncrement() == 0) {
+                try {
+                  Thread.sleep(2500);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                  throw new IllegalStateException(e);
+                }
+              }
+            },
+            100);
+    assertTrue(delivered > 0, "exercise an actual outbox callback beyond the two-second lease");
+    assertThrows(SQLException.class, () -> store.acquire(run, Duration.ofSeconds(2)));
+    assertDoesNotThrow(() -> store.commit(owner, "slow-topic", next, next));
+    store.release(owner);
   }
 
   @Test
@@ -151,6 +195,40 @@ class DurabilityIT {
         new PostgresStore("jdbc:postgresql://127.0.0.1:1/unavailable", "pulse", "unused");
     assertThrows(SQLException.class, () -> failedStore.commit(newer, "topic-uuid", quota, quota));
     assertEquals(12, store.restore(run, "topic-uuid", limits, 60_000).offsets.get(0));
+  }
+
+  @Test
+  void actualTopicRecreationAndPartitionGrowthFailStartup() throws Exception {
+    String topic = "pulse-identity";
+    createTopic(topic, 1);
+    String original = KafkaPump.topicIdentity(kafka.getBootstrapServers(), topic, 1);
+    var limits = new Engine.Limits(1, 10, 100, 100, 0);
+    try (DurableSession session =
+        new DurableSession(store, "topic_identity", original, limits, 0, Duration.ofSeconds(30))) {
+      session.apply(new KafkaPump.Batch(List.of(), List.of(), 0));
+    }
+    try (var admin = AdminClient.create(Map.of("bootstrap.servers", kafka.getBootstrapServers()))) {
+      admin.deleteTopics(List.of(topic)).all().get(20, TimeUnit.SECONDS);
+    }
+    createTopic(topic, 1);
+    String recreated = KafkaPump.topicIdentity(kafka.getBootstrapServers(), topic, 1);
+    assertNotEquals(original, recreated);
+    SQLException changed =
+        assertThrows(
+            SQLException.class,
+            () ->
+                new DurableSession(
+                    store, "topic_identity", recreated, limits, 0, Duration.ofSeconds(30)));
+    assertTrue(changed.getMessage().contains("TOPIC_ID_CHANGED"));
+    try (var admin = AdminClient.create(Map.of("bootstrap.servers", kafka.getBootstrapServers()))) {
+      admin
+          .createPartitions(Map.of(topic, NewPartitions.increaseTo(2)))
+          .all()
+          .get(20, TimeUnit.SECONDS);
+    }
+    assertThrows(
+        IllegalStateException.class,
+        () -> KafkaPump.topicIdentity(kafka.getBootstrapServers(), topic, 1));
   }
 
   @Test
@@ -307,6 +385,9 @@ class DurabilityIT {
               "expired",
               "no-exp",
               "no-sub",
+              "numeric-sub",
+              "array-sub",
+              "blank-sub",
               "no-audience",
               "no-tenant",
               "tenant-type",
@@ -402,7 +483,7 @@ class DurabilityIT {
   }
 
   static void awaitLease(String run) throws Exception {
-    long deadline = System.nanoTime() + Duration.ofSeconds(8).toNanos();
+    long deadline = System.nanoTime() + ReplayWorker.SOURCE_LEASE.plusSeconds(5).toNanos();
     while (System.nanoTime() < deadline)
       try (var c = store.connection();
           var p =

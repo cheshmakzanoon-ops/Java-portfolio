@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "sourceRevision": "working-tree-sha256:ad1d77d70d04c09b99cb3776cf91e2c1fb5a72f83d984f8a9a1e3ef40b8d639d",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "timestamp": "2026-10-18T02:13:12Z",
+  "command": "./mvnw -f projects/04-pulsestream/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply verify",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0
+  },
+  "reports": [
+    {
+      "path": "projects/04-pulsestream/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EnginePropertyTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit613": true
+    },
+    {
+      "path": "projects/04-pulsestream/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EngineTest.xml",
+      "methods": 8,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit613": true
+    },
+    {
+      "path": "projects/04-pulsestream/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EventCodecTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit613": true
+    },
+    {
+      "path": "projects/04-pulsestream/postgres-store/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.RetentionTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit613": true
+    },
+    {
+      "path": "projects/04-pulsestream/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.SchedulePropertyTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit613": true
+    },
+    {
+      "path": "projects/04-pulsestream/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.WorkloadOracleTest.xml",
+      "methods": 1,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit613": true
+    }
+  ],
+  "coreCoverage": {
+    "BRANCH": {
+      "covered": 150,
+      "missed": 12
+    },
+    "LINE": {
+      "covered": 190,
+      "missed": 2
+    }
+  },
+  "rawArtifact": ".work/A04/resumed-verify.log",
+  "limitations": [
+    "Unit/property/format/coverage only. Root latest7IT passed separately on unchanged production kernel; expanded workload driver is later input.",
+    "120+80 generated histories are distinct from13 test methods."
+  ]
+}
