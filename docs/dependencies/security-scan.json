@@ -1,0 +1,15 @@
+{
+  "observedAtUtc": "2026-10-18T02:48:41.230024+00:00",
+  "status": "BLOCKED_EXTERNAL_DATA_ACCESS",
+  "command": "source scripts/cloud-env.sh\ntimeout 300 ./mvnw -Dmaven.repo.local=/workspace/Java-portfolio/.work/coordinator/m2 -B -ntp org.owasp:dependency-check-maven:13.0.0:aggregate -DfailBuildOnCVSS=7 -DnvdApiMaxRetryCount=1 -DconnectionTimeout=15000 -DreadTimeout=15000",
+  "exitCode": 1,
+  "rawLog": ".work/coordinator/dependency-check.log",
+  "rawLogSha256": "6573188a7f09d39d2d112c2d058a7d2863fb73eec1ea3aa0a059a6a649a1f76b",
+  "observedFailures": [
+    "UpdateException / ForbiddenException: CISA known-exploited-vulnerability JSON feed HTTP403",
+    "NoDataException: No documents exist",
+    "Separate NVD API preflight failed with proxy CONNECT403; direct GitHubAPI preflight had DNS failure"
+  ],
+  "vulnerabilityConclusion": null,
+  "nextAction": "Run the unchanged OWASP aggregate command where CISA and NVD feeds are reachable, retain reports and address any actual findings. Do not disable data feeds or suppress missing data to claim a pass."
+}

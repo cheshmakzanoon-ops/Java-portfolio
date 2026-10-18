@@ -1,0 +1,46 @@
+{
+  "observedAtUtc": "2026-10-18T02:29:10.793988+00:00",
+  "source": "docker image inspect of locally pulled and actually tested images",
+  "images": [
+    {
+      "tag": "postgres:18.3",
+      "repoDigests": [
+        "postgres@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db"
+      ],
+      "imageId": "sha256:fbaa243599038521bbda8f6fa286d2a8fc1236509606f22de81d0739b0610ba7",
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    {
+      "tag": "postgres:18.3-alpine",
+      "repoDigests": [
+        "postgres@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7"
+      ],
+      "imageId": "sha256:f6d4985d97e69bb9de4d5e24f9f24cbfaa90d30877ce935a8ee872f62efbb621",
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    {
+      "tag": "quay.io/keycloak/keycloak:26.8.1",
+      "repoDigests": [
+        "quay.io/keycloak/keycloak@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"
+      ],
+      "imageId": "sha256:817e41712252d6d3a2a61ac5d2a011be561d7942cee8227ee418ababa5f52b9a",
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    {
+      "tag": "apache/kafka:4.2.1",
+      "repoDigests": [
+        "apache/kafka@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0"
+      ],
+      "imageId": "sha256:55c1b9c10383fbe90c4cf5f68cf02e6813f645fddd553483dcc66e8c3d3c6f24",
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  ],
+  "limitations": [
+    "This records observed content identities; it is not a signed image provenance or vulnerability attestation.",
+    "Project Compose/Testcontainers definitions must pin the listed tested identities before release."
+  ]
+}

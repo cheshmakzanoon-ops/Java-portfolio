@@ -1,0 +1,121 @@
+# Dependency license inventory
+
+This inventory comes from the executed CycloneDX 2.9.3 aggregate goal. The [machine-readable CycloneDX 1.6 SBOM](portfolio.cdx.json) retains exact versions, dependency edges, published license metadata and artifact hashes. Compile, runtime, provided and system scopes are included; test scope, build-plugin dependencies and container contents are excluded. Dependency/license metadata is distinct from a vulnerability scan.
+
+The aggregate contains 63 original reactor components and 113 external components. All 113 external components have published license metadata. Original repository code uses the root Apache-2.0 [license](../../LICENSE); generated build outputs and downloaded dependency binaries are outside Git. Multiple listed license entries preserve upstream metadata without choosing an interpretation.
+
+| Component | Version | Published license identifiers or names |
+| --- | --- | --- |
+| ai.timefold.solver:timefold-solver-core | 2.7.1 | Apache-2.0 |
+| at.yawk.lz4:lz4-java | 1.10.1 | Apache-2.0 |
+| ch.qos.logback:logback-classic | 1.5.38 | EPL-2.0; LGPL-2.1-only |
+| ch.qos.logback:logback-core | 1.5.38 | EPL-2.0; LGPL-2.1-only |
+| com.fasterxml.jackson.core:jackson-annotations | 2.21 | Apache-2.0 |
+| com.fasterxml.jackson.core:jackson-core | 2.21.5 | Apache-2.0 |
+| com.fasterxml.jackson.core:jackson-databind | 2.21.5 | Apache-2.0 |
+| com.fasterxml.jackson.datatype:jackson-datatype-jsr310 | 2.21.5 | Apache-2.0 |
+| com.github.ben-manes.caffeine:caffeine | 3.2.4 | Apache-2.0 |
+| com.github.luben:zstd-jni | 1.5.6-10 | BSD-2-Clause |
+| com.google.errorprone:error_prone_annotations | 2.49.0 | Apache-2.0 |
+| com.nimbusds:nimbus-jose-jwt | 10.9.1 | Apache-2.0 |
+| com.sun.istack:istack-commons-runtime | 4.1.2 | BSD-3-Clause |
+| com.zaxxer:HikariCP | 7.0.2 | Apache-2.0 |
+| commons-logging:commons-logging | 1.3.6 | Apache-2.0 |
+| info.picocli:picocli | 4.7.7 | Apache-2.0 |
+| io.micrometer:micrometer-commons | 1.17.1 | Apache-2.0 |
+| io.micrometer:micrometer-core | 1.17.1 | Apache-2.0 |
+| io.micrometer:micrometer-jakarta9 | 1.17.1 | Apache-2.0 |
+| io.micrometer:micrometer-observation | 1.17.1 | Apache-2.0 |
+| io.netty:netty-buffer | 4.2.17.Final | Apache-2.0 |
+| io.netty:netty-codec-base | 4.2.17.Final | Apache-2.0 |
+| io.netty:netty-common | 4.2.17.Final | Apache-2.0 |
+| io.netty:netty-handler | 4.2.17.Final | Apache-2.0 |
+| io.netty:netty-resolver | 4.2.17.Final | Apache-2.0 |
+| io.netty:netty-transport | 4.2.17.Final | Apache-2.0 |
+| io.netty:netty-transport-native-unix-common | 4.2.17.Final | Apache-2.0 |
+| io.quarkus.gizmo:gizmo2 | 2.1.1 | Apache-2.0 |
+| io.smallrye.classfile:jdk-classfile-backport | 26 | GPL-2.0-with-classpath-exception |
+| io.smallrye.common:smallrye-common-constraint | 2.16.0 | Apache-2.0 |
+| io.smallrye.common:smallrye-common-resource | 2.16.0 | Apache-2.0 |
+| jakarta.activation:jakarta.activation-api | 2.1.4 | BSD-3-Clause |
+| jakarta.annotation:jakarta.annotation-api | 3.0.0 | EPL-2.0; GPL-2.0-with-classpath-exception |
+| jakarta.xml.bind:jakarta.xml.bind-api | 4.0.5 | BSD-3-Clause |
+| net.sf.jopt-simple:jopt-simple | 5.0.4 | MIT |
+| org.apache.commons:commons-math3 | 3.6.1 | Apache-2.0 |
+| org.apache.kafka:kafka-clients | 4.2.1 | Apache-2.0 |
+| org.apache.logging.log4j:log4j-api | 2.25.5 | Apache-2.0 |
+| org.apache.logging.log4j:log4j-to-slf4j | 2.25.5 | Apache-2.0 |
+| org.apache.lucene:lucene-analysis-common | 10.3.2 | Apache-2.0 |
+| org.apache.lucene:lucene-core | 10.3.2 | Apache-2.0 |
+| org.apache.tomcat.embed:tomcat-embed-core | 11.0.24 | Apache-2.0 |
+| org.apache.tomcat.embed:tomcat-embed-el | 11.0.24 | Apache-2.0 |
+| org.apache.tomcat.embed:tomcat-embed-websocket | 11.0.24 | Apache-2.0 |
+| org.checkerframework:checker-qual | 3.55.1 | MIT |
+| org.eclipse.angus:angus-activation | 2.0.3 | BSD-3-Clause |
+| org.flywaydb:flyway-core | 12.4.0 | Apache-2.0 |
+| org.flywaydb:flyway-database-postgresql | 12.4.0 | Apache-2.0 |
+| org.glassfish.jaxb:jaxb-core | 4.0.9 | BSD-3-Clause |
+| org.glassfish.jaxb:jaxb-runtime | 4.0.9 | BSD-3-Clause |
+| org.glassfish.jaxb:txw2 | 4.0.9 | BSD-3-Clause |
+| org.hdrhistogram:HdrHistogram | 2.2.2 | CC0-1.0; BSD-2-Clause |
+| org.jboss.logging:jboss-logging | 3.6.3.Final | Apache-2.0 |
+| org.jspecify:jspecify | 1.0.1 | Apache-2.0 |
+| org.openjdk.jmh:jmh-core | 1.37 | GNU General Public License (GPL), version 2, with the Classpath exception |
+| org.openjdk.jmh:jmh-generator-annprocess | 1.37 | GNU General Public License (GPL), version 2, with the Classpath exception |
+| org.ow2.asm:asm | 9.9.1 | BSD-3-Clause |
+| org.ow2.asm:asm-commons | 9.9.1 | BSD-3-Clause |
+| org.ow2.asm:asm-tree | 9.9.1 | BSD-3-Clause |
+| org.postgresql:postgresql | 42.7.13 | BSD-2-Clause |
+| org.slf4j:jul-to-slf4j | 2.0.18 | MIT |
+| org.slf4j:slf4j-api | 2.0.18 | MIT |
+| org.springframework:spring-aop | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-beans | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-context | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-core | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-expression | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-jdbc | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-tx | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-web | 7.0.9 | Apache-2.0 |
+| org.springframework:spring-webmvc | 7.0.9 | Apache-2.0 |
+| org.springframework.boot:spring-boot | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-actuator | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-actuator-autoconfigure | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-autoconfigure | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-health | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-http-converter | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-jackson | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-jdbc | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-micrometer-metrics | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-micrometer-observation | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-persistence | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-security | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-security-oauth2-resource-server | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-servlet | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-sql | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-actuator | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-jackson | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-jdbc | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-logging | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-micrometer-metrics | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-oauth2-resource-server | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-security | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-tomcat | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-tomcat-runtime | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-web | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-starter-webmvc | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-tomcat | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-transaction | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-web-server | 4.1.1 | Apache-2.0 |
+| org.springframework.boot:spring-boot-webmvc | 4.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-config | 7.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-core | 7.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-crypto | 7.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-oauth2-core | 7.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-oauth2-jose | 7.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-oauth2-resource-server | 7.1.1 | Apache-2.0 |
+| org.springframework.security:spring-security-web | 7.1.1 | Apache-2.0 |
+| org.xerial.snappy:snappy-java | 1.1.10.7 | Apache-2.0 |
+| org.yaml:snakeyaml | 2.6 | Apache-2.0 |
+| tools.jackson.core:jackson-core | 3.1.5 | Apache-2.0 |
+| tools.jackson.core:jackson-databind | 3.1.5 | Apache-2.0 |
