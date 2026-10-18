@@ -1,0 +1,89 @@
+{
+  "samplingIntervalMillis": 100,
+  "timestamp": "2026-10-18T02:26:41.644040554Z",
+  "schemaVersion": 1,
+  "runs": [
+    {
+      "run": 0,
+      "jdbcCancellationReads": 2743,
+      "elapsedNanos": 2870094899,
+      "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "sampled": false
+    },
+    {
+      "run": 0,
+      "jdbcCancellationReads": 4,
+      "elapsedNanos": 327237926,
+      "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "sampled": true
+    },
+    {
+      "run": 1,
+      "jdbcCancellationReads": 2743,
+      "elapsedNanos": 8661071568,
+      "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "sampled": false
+    },
+    {
+      "run": 1,
+      "jdbcCancellationReads": 11,
+      "elapsedNanos": 1243082367,
+      "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "sampled": true
+    },
+    {
+      "run": 2,
+      "jdbcCancellationReads": 2743,
+      "elapsedNanos": 5417731837,
+      "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "sampled": false
+    },
+    {
+      "run": 2,
+      "jdbcCancellationReads": 2,
+      "elapsedNanos": 197319947,
+      "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "sampled": true
+    }
+  ],
+  "project": "routeweaver",
+  "boundary": "pooled JDBC cancellation and deterministic 100-job baseline; shared host; diagnosis only",
+  "source": "2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e",
+  "maximumPoolSize": 8
+}

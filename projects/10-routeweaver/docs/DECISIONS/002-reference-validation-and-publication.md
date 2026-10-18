@@ -1,0 +1,5 @@
+# Decision 002: independent validation and separate publication authority
+
+Immutable domain snapshots cross module and thread boundaries. Timefold working objects remain confined to the planning adapter. A separate reference validator recomputes physical constraints and objective before a candidate is retained; a complete bounded tiny oracle and analytical fixtures check small cases. PostgreSQL stores immutable candidate snapshots. Publication is an explicit current-input/revision CAS rather than an automatic solver callback.
+
+This repeats some scoring logic and costs CPU, but makes a modeling error or stale worker unable to authorize dispatch merely through a solver score. Rejected alternatives were trusting shadow scores, sharing mutable solver lists with the UI, and auto-publishing the last finishing solver. Each weakens an inspectable integrity boundary. Performance changes may reduce cancellation polling or allocation but must preserve the reference check and row-locked write authority.

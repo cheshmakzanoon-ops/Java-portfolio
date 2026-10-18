@@ -1,0 +1,11 @@
+# Decision 003: recover jobs only with the submitted execution source
+
+Every job records the source identity supplied by the verified launcher. Previously a newer binary could claim an old queued/expired job and emit candidates under the old submitting source label. That would make result provenance misleading even if the physical candidate happened to validate.
+
+The Dispatcher now receives the executing service's configured source identity and compares it before loading the problem or invoking a planner. On a mismatch it calls the ordinary fenced terminal transaction with SOURCE_REVISION_MISMATCH and both submitted/current identities. A live RUNNING claim becomes FAILED; an already serialized cancellation retains the ordinary CANCELLED acknowledgement precedence. No new candidate is emitted. An existing incumbent remains immutable historical evidence; a FAILED job cannot publish. Same-source recovery continues normally and retains its valid incumbent.
+
+This is deliberately conservative. A source fingerprint includes UI/scripts/root POM as well as planning code, so even a UI-only change or test-pin update rejects outstanding jobs from the old fingerprint. Mixed-source rolling replicas may fail old queued work; drain/cancel those jobs before replacing binaries, retain the exact old artifact when it must resume them, or submit a new request under the current source after upgrade. Do not label a changed binary with an old hash to force compatibility. The trusted launcher checks the current source/build stamp and supplies its fingerprint; unverified manual source labels cannot support release evidence.
+
+Rejected alternative: silently reuse the job's submitted source as the new worker's source. Another valid future design would record and expose actual execution source for every candidate/attempt with explicit algorithm/model compatibility rules, but adding that model was unnecessary for this bounded release. The selected refusal policy keeps provenance honest without rewriting immutable historical candidates.
+
+A real PostgreSQL regression covers an old queued job with no candidate, an expired old-source job retaining its incumbent without new candidates, stale-fence refusal, same-source resumed execution, and a fresh current-source submission. Its executed status is recorded separately; implementation alone does not close the gate.

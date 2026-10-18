@@ -1,0 +1,27 @@
+# RouteWeaver engineering discussion
+
+This is an original portfolio implementation using synthetic data, not a claim of customer deployment or years of professional employment. Exact executed evidence and limitations are in STATUS and evidence.
+
+**Why separate the validator from Timefold?** A solver can optimize a mistaken model very successfully. The reference validator reconstructs directed routes, physical cargo, time windows, return, partition and objective from immutable raw orders without calling the solver calculator. Every candidate crosses this boundary before retention/publication. Analytic fixtures and the complete tiny oracle reduce the risk of two copies sharing the same error.
+
+**What makes asymmetric 2-opt difficult?** Reversing a segment changes every internal directed arc. The symmetric four-edge shortcut can report a fictitious gain. Original relocate/swap/reversal moves evaluate the complete candidate. The analytic asymmetric example costs 330 in one direction and 2310 in reverse.
+
+**Why keep explicit unassigned jobs?** Capacity, time, skills or a breakdown can make full assignment impossible. Assigned and unassigned demand must form an exact disjoint partition. PARTIAL_FEASIBLE is dispatchable remaining work with visible unmet demand; an invalid route is not. SEARCH_UNASSIGNED states uncertainty rather than pretending a failed heuristic proved global infeasibility.
+
+**What does the exact oracle prove?** For at most seven jobs/two vehicles it enumerates unassigned/vehicle choices and every route ordering including empty routes. It returns an optimum only when enumeration exhausts. The maximum fixture explores 95,901 leaves. An interrupted bounded run is INCONCLUSIVE, not a smaller certified optimum. No large-instance optimality is claimed.
+
+**Why is the objective lexicographic?** Hard constraints must never be purchased by soft savings. First minimize hard violations, then weighted unassigned priority, then travel meters/seconds plus disruption penalties under explicit weights. Compare scores only within the same canonical workload; a breakdown or urgent delivery changes the feasible set.
+
+**Why is a vehicle breakdown a state-model problem?** Its remaining cargo is physically onboard. Replanning does not teleport it to another route. Completed jobs remain immutable history; observed location/availability/onboard load and frozen prefix determine the residual problem. Failed commitments can be released only by an audited revision; cargo remains visibly stranded. Urgent depot demand can use a compatible standby vehicle.
+
+**What is the concurrency linearization point?** Candidate and terminal writes lock the durable job and test state, generation and database-clock lease in that transaction. Cancellation/completion serialize there. Publication has a separate active-version and plan-revision CAS; it never trusts that a worker once held a lease. An expired worker can contribute historical evidence but cannot install a plan.
+
+**Why retain a cancelled incumbent?** Cancellation is cooperative and may arrive after useful valid work. Preserve that immutable independently checked result. Manual publication still requires the ordinary current-input/revision checks and cancellation never auto-publishes. A startup race in Timefold early termination was found in review and fixed with a watcher that continues until solve exit and a barrier regression.
+
+**What was a security defect worth investigating?** Nimbus can normalize a numeric registered subject before a claim converter sees it. Cryptography alone does not preserve the intended JSON type contract. The decoder verifies signature/default claims first, then checks bounded original signed JSON claim types. Separately, Jackson fractional-to-integer/scalar coercion silently accepted invalid units; real protected HTTP regressions now reject them before persistence.
+
+**Where did performance work begin?** A count diagnostic showed thousands of stop checks per baseline, each originally doing JDBC work. A 100 ms cancellation sampler separates control-plane polling from the CPU loop while retaining uncached write authority. Its deterministic tests prove the polling bound. Three actual pooled-JDBC pairs retained identical independently valid scores and reduced database reads from 2,743 each to 4/11/2; shared-host timings are diagnostic only. Accepted throughput and system performance claims still await the complete quiet corpus/JMH evidence. Full reference evaluation and constraints were preserved.
+
+**What would change for production?** Introduce a vehicle/job depot-origin model before claiming multiple depots; explicitly model cargo transfers before supporting them. Add least-privilege runtime/migration roles, TLS, secret management, retention and backup/PITR policies, operational admission/replica budgets and real travel data validation. These are deliberate scope boundaries, not completed production controls.
+
+**What evidence should a reviewer inspect first?** The independent validator/oracle and analytical tests; the cancellation/lease/publication PostgreSQL races; the real 60-job breakdown and SIGKILL results; then raw three-run workload/JMH results with exact source/environment. Historical passes must not be presented as certification of later source. REVIEW records findings and the tested fixes; unclosed gates remain explicit.

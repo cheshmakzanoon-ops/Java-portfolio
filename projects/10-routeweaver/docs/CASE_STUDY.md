@@ -1,0 +1,11 @@
+# Safe planning across a vehicle breakdown
+
+The implementation couples physical delivery constraints with versioned operational state. A low route-cost score alone cannot establish dispatchability: the reference validator independently reconstructs each directed arc, load, start window, shift and return, then checks complete job partition and frozen commitments. Tiny exhaustive instances include unassigned jobs rather than assuming every delivery must be possible. Their analytic tests are an independent check of both enumeration and evaluation.
+
+The design deliberately keeps optimization and publication separate. Mutable Timefold objects never leave the adapter. Candidate snapshots are validated, immutable and compared lexicographically against the same input identity. A failed vehicle's cargo cannot migrate because its assignment became convenient; a new problem retains the onboard set and marks unserved cargo STRANDED_CARGO. Releasing frozen work is an explicit audited revision, while completed work remains history.
+
+Database leases create the difficult concurrency boundary: a cooperative cancellation and a finishing worker can race, as can a superseding problem revision and an old solve result. PostgreSQL row locks serialize state/fence/lease checks; publication separately compares active input and current plan revision. An expired worker can leave historical evidence but cannot install it. This is exercised with real PostgreSQL tests rather than H2 assumptions.
+
+The intentionally asymmetric matrix invalidates a common symmetric2-opt shortcut. The original move evaluator recomputes complete affected route semantics, including every reversed internal directed arc and the return. The bounded Timefold search provides an independent search mechanism but is held to the same reference validator and same-version nondegradation rule.
+
+Evidence and limitations remain in STATUS until actually executed. Synthetic fixtures are not real travel data, wall-clock optimization does not promise identical routes, and release 1 supports stop-boundary replanning without cargo transfer or road interpolation. No customer deployment, optimal large-instance result, or measured10%improvement is claimed without recorded evidence.
