@@ -2,6 +2,7 @@
 set -euo pipefail
 source "$(dirname -- "$0")/common.sh"
 for command in java docker curl; do command -v "$command" >/dev/null || { echo "Required: $command" >&2; exit 1; }; done
+if [[ ${DURABLEFLOW_PREPARED:-0} == 1 ]]; then python3 "$PROJECT/scripts/prepared-build.py" verify; fi
 docker compose -f "$PROJECT/infra/compose.yaml" up -d --wait --wait-timeout 90
 api_running=false
 if [[ -f "$PROJECT/target/runtime/api.pid" ]]; then

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "project": "durableflow",
+  "sourceRevision": "sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "workload": "smoke100-only-not-full-baseline",
+  "timestamp": "2026-10-18T02:47:06.367854+00:00",
+  "command": "DURABLEFLOW_PREPARED=1 projects/02-durableflow/scripts/benchmark.sh --smoke",
+  "exitCode": 0,
+  "measurements": "workload-100.json",
+  "environment": "environment.json",
+  "rawArtifacts": [
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/allocation-samples.json",
+      "bytes": 15157410,
+      "sha256": "cae319f228c6fbc5bc01886e37d9e6b9c027c2c779169a66cf4cc65c3566d583"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/environment.json",
+      "bytes": 1752,
+      "sha256": "598faa3d3a28770bd6c315d5b59fdd713d56af41e1b50c4afd468cf1afab2d8b"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/exit-code.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/ScenarioMain-gc.log",
+      "bytes": 6078,
+      "sha256": "81dcbf7d72554be36913f8e7c0f9187e67388931400bd566803a08b607cc039b"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/WorkloadMain-gc.log",
+      "bytes": 6065,
+      "sha256": "9271e30e8403b2c2c9d497e6197a7a4f353dfc416314bb12ddb15ae61db51a1a"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/api-gc.log",
+      "bytes": 26217,
+      "sha256": "5b3e5b767a8ca2c37e1e01c130b29e897b7ab6615c456f0a90075131a6fe012c"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/provider-gc.log",
+      "bytes": 5496,
+      "sha256": "fbc3c40e903fc83278d1086d693d05a928372dd5d930c78d3cb5f90f66b2ad8d"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/scheduler-1-gc.log",
+      "bytes": 5451,
+      "sha256": "61c40edd68d57b66b87e91b6e6e22685a5eac3457ba232f2bde90b66e5ab435e"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/scheduler-2-gc.log",
+      "bytes": 5452,
+      "sha256": "b83823b1b6e74fac2e1e0ebc8c743d2f95b0e89533cd7dcc931d75653206f6b4"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-1-gc.log",
+      "bytes": 19640,
+      "sha256": "bd735e5ac74107c68ab76f697617e3585473afa44ca0a47e1ac448430295c1ff"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-2-gc.log",
+      "bytes": 16548,
+      "sha256": "f5e0d1612d50b5ab49f289b4ac0f4067794562acd49a2c411f5dcaea943f9af2"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-3-gc.log",
+      "bytes": 18023,
+      "sha256": "63c7165684ae43235518df72ec9d63a0b0b5be600b40aa6ef8261e1cab2f8884"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-4-gc.log",
+      "bytes": 19435,
+      "sha256": "8ad75276e336b379664f84d8eeb4b198851a49aa5110d4c9bf6c0db0f2113f77"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-5-gc.log",
+      "bytes": 16521,
+      "sha256": "4b8eb398a5ce0477921b2987150f4644d7fb0e71b514082ebf7d959b95b1826a"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-6-gc.log",
+      "bytes": 17969,
+      "sha256": "2392cac97eb0886d783b35765dfe1252a0bbd56a45ad223af28540299400a0c7"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-7-gc.log",
+      "bytes": 18067,
+      "sha256": "0d2edfc793b9705028ac1518893a730fbb2a8a440fb87e1eb767e19daa5a7571"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/gc/worker-8-gc.log",
+      "bytes": 16521,
+      "sha256": "ef03de5a597ce6d0d61ac808105137e45ab5cf763b855d562257d898d068ffe6"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/jfr-start.txt",
+      "bytes": 156,
+      "sha256": "2c04ce55decfebff318e4010274249ac63bc0713d92f1746b94af10069209aaf"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/jfr-stop.txt",
+      "bytes": 170,
+      "sha256": "43205741c9f0161429c5166d3e9ecc2dfd5a9f60a3688dafd87bee2ec9e64601"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/jfr-summary.txt",
+      "bytes": 12157,
+      "sha256": "227c664319071bc5090bfa284af7a26ce219497942186465c403e8341b0e2cef"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/resource-samples.jsonl",
+      "bytes": 49981,
+      "sha256": "d84a70076411b019b23b2883f5ac194df63d677dd925fbea74a83acd848d4729"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/worker-1.jfr",
+      "bytes": 1457788,
+      "sha256": "f316717362609c85ad780318018220acc379ad8a46cb400aae8eb6ef6a92ddb9"
+    },
+    {
+      "path": "projects/02-durableflow/target/performance/20261018T024329-100-309440/workload-100.json",
+      "bytes": 2320,
+      "sha256": "23b69a40df8f6c6e2571474ec9163cad11c9791c38e79f7ed11d872a4b3bdc80"
+    },
+    {
+      "path": ".work/A02/smoke-100-profile-artifacts.tar.gz",
+      "bytes": 905786,
+      "sha256": "b7760d915fbe4f8f7c9549662bf0f2952316664624877482ca91e7c1bd7914ca"
+    },
+    {
+      "path": ".work/A02/smoke-100-provider-effects.log.gz",
+      "bytes": 76055,
+      "sha256": "4b89dacd76de6b6e7dc736cd6dd4ced224941f78586453c2e2dc31b4ff1c60bb"
+    }
+  ],
+  "providerEvidence": "provider-effects.log",
+  "limitations": [
+    "100 executions does not satisfy the prescribed10000 full workload.",
+    "Shared finite integration window; no quiet-host regression budget.",
+    "JFR allocation samples cover worker1 statistically, not exact cluster allocation."
+  ],
+  "independentProviderRunSummary": {
+    "w-3ed9d9c6-887b-421b-adda-7725d4934286": {
+      "calls": 960,
+      "independentUniqueEffects": 800,
+      "transientFirstCalls": 160,
+      "instances": 100
+    }
+  }
+}

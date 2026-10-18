@@ -13,7 +13,9 @@ projects/02-durableflow/scripts/benchmark.sh --smoke
 ./scripts/portfolio.sh down durableflow
 ```
 
-Requirements: JDK 25, Maven wrapper network access, Docker Compose, curl, and Bash. The local disposable profile binds to loopback on 18200 (API), 18201 (provider), and 18202 (PostgreSQL). `up` builds and starts an API, two scheduler processes, three workers, a durable fake HTTP provider, and PostgreSQL. The full benchmark expands to eight worker processes and submits 10,000 executions with eight activities each, duplicate signals, 20% first-attempt rejection, and 5,000 timers. `reset-demo` deletes only this project's disposable database volume and provider log.
+Requirements: JDK 25, Maven wrapper network access, Docker Compose, curl, Bash, and Python 3. The local disposable profile binds to loopback on 18200 (API), 18201 (provider), and 18202 (PostgreSQL). `up` builds and starts an API, two scheduler processes, three workers, a durable fake HTTP provider, and PostgreSQL. The full benchmark expands to eight worker processes and submits 10,000 executions with eight activities each, duplicate signals, 20% first-attempt rejection, and 5,000 timers. `reset-demo` deletes only this project's disposable database volume and provider log.
+
+For reserved quiet measurements, stop owned runtime and run `projects/02-durableflow/scripts/prepare.sh` first, then export `DURABLEFLOW_PREPARED=1`. Startup validates unchanged source/dependencies, successful verification and all runtime JAR hashes without running Maven. Missing or stale preparation refuses startup. See [operations](docs/OPERATIONS.md). Ordinary and integration commands always execute their tests.
 
 The asserted demo kills actual worker processes after an independent provider effect is logged, rejects their stale acknowledgements, recovers an idempotent receipt, pauses a non-idempotent unknown outcome, appends an operator resolution, restarts a scheduler during a wait, preserves a pinned definition across upgrade, demonstrates visible compensation failure, and joins parallel media activities. It writes `target/demo-result.json`; failures produce a nonzero exit.
 

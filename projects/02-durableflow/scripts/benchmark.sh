@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 source "$(dirname -- "$0")/common.sh"
+if [[ ${DURABLEFLOW_PREPARED:-0} == 1 ]]; then python3 "$PROJECT/scripts/prepared-build.py" verify; fi
 count=10000
 if [[ ${1:-} == --smoke ]]; then count=100; elif [[ ${1:-} != '' ]]; then echo 'Usage: benchmark.sh [--smoke]' >&2; exit 2; fi
 curl --max-time 5 -fsS "http://127.0.0.1:${PROVIDER_PORT:-18201}/health" >/dev/null

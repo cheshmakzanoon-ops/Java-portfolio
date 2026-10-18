@@ -1,0 +1,21 @@
+{
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "gitRevision": "fbe96301995df3a94fd0c9a4e2960dc7bf9d99b0",
+  "timestamp": "2026-10-18T02:43:27.197425+00:00",
+  "os": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "hostVisibleProcessors": 5,
+  "jvmSystemSettings": "Operating System Metrics:\n    Provider: cgroupv2\n    Effective CPU Count: 4\n    CPU Period: 100000us\n    CPU Quota: 400000us\n    CPU Shares: -1\n    List of Processors: N/A\n    List of Effective Processors, 5 total: \n    0 1 2 3 4 \n    List of Memory Nodes: N/A\n    List of Available Memory Nodes, 1 total: \n    0 \n    Memory Limit: 32.00G\n    Memory Soft Limit: 0.00K\n    Memory & Swap Limit: Unlimited\n    Maximum Processes Limit: Unlimited\n\nopenjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+  "cgroupLimits": {
+    "memory.max": "34359738368",
+    "cpu.max": "400000 100000"
+  },
+  "jdk": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+  "jvmFlags": "workers/provider/schedulers -Xmx128m; API -Xmx256m; driver -Xmx512m",
+  "sourceFingerprint": "sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187",
+  "seed": 42,
+  "containerImage": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
+  "boundary": "JDBC application commands plus independent HTTP provider",
+  "sharedHost": true,
+  "warmupExecutions": 0
+}

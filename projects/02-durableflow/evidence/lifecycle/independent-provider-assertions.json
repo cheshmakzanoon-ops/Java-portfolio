@@ -1,0 +1,24 @@
+[
+  {
+    "demo": 1,
+    "idempotentDispatches": 2,
+    "idempotentEffects": 1,
+    "nonIdempotentDispatches": 1,
+    "nonIdempotentEffects": 1,
+    "rejectedCompensationCalls": 4,
+    "compensationEffects": 0,
+    "totalDemoEffects": 7,
+    "providerLog": "smoke-100/provider-effects.log"
+  },
+  {
+    "demo": 2,
+    "idempotentDispatches": 2,
+    "idempotentEffects": 1,
+    "nonIdempotentDispatches": 1,
+    "nonIdempotentEffects": 1,
+    "rejectedCompensationCalls": 4,
+    "compensationEffects": 0,
+    "totalDemoEffects": 7,
+    "providerLog": "lifecycle/provider-demo-2.log"
+  }
+]

@@ -1,0 +1,14 @@
+{"step": "prepared-cache", "started": "2026-10-18T02:41:04Z", "finished": "2026-10-18T02:41:04Z", "exitCode": 0, "command": ["python3", "/workspace/Java-portfolio/projects/02-durableflow/scripts/prepared-build.py", "verify"]}
+{"step": "initial-reset", "started": "2026-10-18T02:41:04Z", "finished": "2026-10-18T02:41:06Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "reset-demo", "durableflow"]}
+{"step": "first-up", "started": "2026-10-18T02:41:06Z", "finished": "2026-10-18T02:41:50Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "up", "durableflow"]}
+{"step": "repeated-up", "started": "2026-10-18T02:41:50Z", "finished": "2026-10-18T02:41:54Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "up", "durableflow"]}
+{"step": "fault-demo-1", "started": "2026-10-18T02:41:54Z", "finished": "2026-10-18T02:43:25Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "demo", "durableflow"]}
+{"step": "smoke-100", "started": "2026-10-18T02:43:25Z", "finished": "2026-10-18T02:44:24Z", "exitCode": 0, "command": ["/workspace/Java-portfolio/projects/02-durableflow/scripts/benchmark.sh", "--smoke"]}
+{"step": "first-down", "started": "2026-10-18T02:44:25Z", "finished": "2026-10-18T02:45:31Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "down", "durableflow"]}
+{"step": "idle-after-down", "started": "2026-10-18T02:45:31Z", "finished": "2026-10-18T02:45:31Z", "exitCode": 0, "command": ["python3", "/workspace/Java-portfolio/projects/02-durableflow/scripts/prepared-build.py", "idle"]}
+{"step": "persisted-up", "started": "2026-10-18T02:45:32Z", "finished": "2026-10-18T02:46:06Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "up", "durableflow"]}
+{"step": "reset-demo", "started": "2026-10-18T02:46:07Z", "finished": "2026-10-18T02:46:53Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "reset-demo", "durableflow"]}
+{"step": "reset-up", "started": "2026-10-18T02:46:53Z", "finished": "2026-10-18T02:47:45Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "up", "durableflow"]}
+{"step": "fault-demo-2", "started": "2026-10-18T02:47:46Z", "finished": "2026-10-18T02:49:24Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "demo", "durableflow"]}
+{"step": "final-down", "started": "2026-10-18T02:49:24Z", "finished": "2026-10-18T02:50:06Z", "exitCode": 0, "command": ["./scripts/portfolio.sh", "down", "durableflow"]}
+{"step": "final-idle", "started": "2026-10-18T02:50:06Z", "finished": "2026-10-18T02:50:06Z", "exitCode": 0, "command": ["python3", "/workspace/Java-portfolio/projects/02-durableflow/scripts/prepared-build.py", "idle"]}

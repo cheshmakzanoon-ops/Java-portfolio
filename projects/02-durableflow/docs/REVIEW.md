@@ -1,3 +1,7 @@
+# Prepared-cache scoped closure
+
+A01 CLOSED the additional startup-cache finding for `sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187`, root `3743d1ba...`, supported by 68 passing ordinary methods and nine internal CLI cases at 2026-10-18T02:31:28Z. The reviewer independently recomputed the snapshot and compared all 19 implementation main-source/resource entries with the prior milestone: unchanged. Inspection covered owned live-process refusal before Maven and stamp, lost-PID child regression, normal prepared verification while healthy runtimes run, unchanged source/root across build, and eight artifacts plus verification-log binding before Docker. The concrete rebuilt-disk/old-live-JVM finding is closed in this scope. No reviewer A02 writes occurred. Standalone lifecycle/demo/smoke, full quiet workloads and clean release remain separate open gates.
+
 # Expanded final scoped review
 
 A01 independently closed the expanded source/correctness review for `sha256:a8a4692a96226a6d45f3f42f1a8780b28e6d5ade834389d8c83ea8a2b0ec48f5`, root POM `3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d`, after actual 6.1.3 full verification passed 67 ordinary and 13 PostgreSQL methods at 2026-10-18T02:06:19Z, and selected Data* PIT killed 41/41 mutants with no other status.

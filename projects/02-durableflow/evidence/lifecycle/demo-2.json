@@ -1,0 +1,27 @@
+{
+  "mediaId" : "7e34d92f-83cd-4065-aeab-9ae7955f38af",
+  "timeline" : [ {
+    "elapsedSeconds" : 51.940175372,
+    "effectCount" : 1,
+    "recoveryDelaySeconds" : 45.136908676,
+    "event" : "killed-worker-and-restarted-scheduler-idempotent-recovery"
+  }, {
+    "effectCount" : 1,
+    "event" : "unknown-outcome-paused-and-audited-resolution",
+    "elapsedSeconds" : 86.985666268
+  }, {
+    "event" : "compensation-failed-visibly",
+    "elapsedSeconds" : 90.706946918
+  } ],
+  "orderId" : "40b7fed3-58ff-4f95-a337-6bbadfd5bf91",
+  "schemaVersion" : 1,
+  "workload" : "asserted-fault-demo-v1",
+  "compensationId" : "b782c488-f748-4105-a2e3-0d3c237f2f23",
+  "timestamp" : "2026-10-18T02:49:24.208957684Z",
+  "assertions" : {
+    "scenarios" : 5,
+    "failed" : 0
+  },
+  "unsafeId" : "fc1212e4-fc63-4b21-85bc-696ef90ea161",
+  "project" : "durableflow"
+}

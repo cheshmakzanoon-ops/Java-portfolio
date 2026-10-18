@@ -11,7 +11,13 @@ export EFFECT_LOG=${EFFECT_LOG:-$PROJECT/target/runtime/provider-effects.log}
 export TENANT=${TENANT:-demo}
 mkdir -p "$PROJECT/target/runtime"
 JAR="$PROJECT/workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT-exec.jar"
-build() { (cd "$ROOT" && ./mvnw -f "$PROJECT/pom.xml" -Dmaven.repo.local="$ROOT/.work/A02/m2" -B -ntp verify); }
+build() {
+  if [[ ${DURABLEFLOW_PREPARED:-0} == 1 ]]; then
+    python3 "$PROJECT/scripts/prepared-build.py" verify
+    return
+  fi
+  (cd "$ROOT" && ./mvnw -f "$PROJECT/pom.xml" -Dmaven.repo.local="$ROOT/.work/A02/m2" -B -ntp verify)
+}
 launch() {
   local name=$1 main=$2; shift 2
   local pid_file="$PROJECT/target/runtime/$name.pid"
