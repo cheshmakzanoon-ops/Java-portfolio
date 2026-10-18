@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checkedAtUtc": "2026-10-18T06:38:07.514022+00:00",
+  "archiveSha256": "4a12347b29bad6e7ffe4ec149ab1c783bc9dbebde23a70fca0025bceded4f361",
+  "manifestSha256": "618917cde75957e9575246ba9b18492f453dc4e75b409c801f4bfcd3b73ee9c0",
+  "files": 98,
+  "bytesRestoredAndCompared": 1588052903,
+  "directories": 15,
+  "validation": "Independent physical extraction into a fresh directory; complete restored and original sets, regular-file bytes, SHA256 and permission modes match the manifest. Original files retained.",
+  "temporaryRestore": "/workspace/Java-portfolio/.work/coordinator/archive-recovery-jy8f1xzf"
+}
