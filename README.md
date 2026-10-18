@@ -8,6 +8,8 @@ Ten independent Java 25 projects explore transaction correctness, durable workfl
 
 The tested Linux toolchain is Eclipse Temurin **25.0.4.1+1**, Maven **3.10.0** through the checksum-pinned wrapper, Docker with Compose, Bash and Python 3. Preview features are disabled. Docker is needed for database/broker/issuer integration tests and relevant service demos. Native Windows and macOS checks remain unverified.
 
+The PowerShell entrypoint uses Git Bash for project lifecycle commands and for the verified runtime preparation of IndexForge and RouteWeaver. Install Git Bash alongside the pinned JDK and Python when trying that unverified Windows workflow.
+
 ```bash
 git clone https://github.com/cheshmakzanoon-ops/Java-portfolio.git
 cd Java-portfolio

@@ -8,6 +8,12 @@ switch ($Action) {
   'list' { $slugs | ForEach-Object { Write-Output $_ }; exit 0 }
   { $_ -in 'verify','integration','mutation' } {
     $env:PORTFOLIO_TEST_RUN_STARTED = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
+    if ($Action -eq 'verify' -and $Project -in @('indexforge','routeweaver')) {
+      # Reuse the supported, nonmutating receipt preparation and report gates.
+      if (!(Get-Command bash -ErrorAction SilentlyContinue)) { throw 'Git Bash is required to prepare this project for its lifecycle commands' }
+      & bash (Join-Path $PSScriptRoot 'portfolio.sh') verify $Project
+      exit $LASTEXITCODE
+    }
     $mavenArgs = @('-B','-ntp')
     if ($Project -ne 'all') {
       $index = [Array]::IndexOf($slugs,$Project)
@@ -19,6 +25,13 @@ switch ($Action) {
     & .\mvnw.cmd @mavenArgs verify
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
     $selectedProjects = if ($Project -eq 'all') { $slugs } else { @($Project) }
+    if ($Action -eq 'verify' -and $Project -eq 'all') {
+      if (!(Get-Command bash -ErrorAction SilentlyContinue)) { throw 'Git Bash is required to prepare IndexForge and RouteWeaver for their lifecycle commands' }
+      foreach ($prepared in @('indexforge','routeweaver')) {
+        & bash (Join-Path $PSScriptRoot 'portfolio.sh') verify $prepared
+        if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      }
+    }
     foreach ($selected in $selectedProjects) {
       $selectedIndex = [Array]::IndexOf($slugs,$selected)
       $selectedPath = 'projects/{0:D2}-{1}' -f ($selectedIndex+1),$selected

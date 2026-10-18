@@ -11,5 +11,19 @@
     "Separate NVD API preflight failed with proxy CONNECT403."
   ],
   "vulnerabilityConclusion": null,
-  "nextAction": "Run the unchanged OWASP aggregate command where CISA and NVD feeds are reachable, retain reports and address any actual findings. Do not disable data feeds or suppress missing data to claim a pass."
+  "nextAction": "Run the unchanged OWASP aggregate command where CISA and NVD feeds are reachable, retain reports and address any actual findings. Do not disable data feeds or suppress missing data to claim a pass.",
+  "setupRemediation": {
+    "observedAtUtc": "2026-10-18T04:00:13.324855+00:00",
+    "cause": "Saved environment configuration is restricted to package-manager presets; public NVD/CISA feed domains were absent.",
+    "draftStatus": "saved",
+    "addedCustomDomains": [
+      "api.github.com",
+      "services.nvd.nist.gov",
+      "www.cisa.gov"
+    ],
+    "existingPackageManagerPresets": "preserved",
+    "requiresPublish": true,
+    "runtimeAccessAfterDraftSave": "not established; draft persistence is not runtime activation",
+    "nextAction": "After independent local work, review/save these concrete network changes in environment settings and publish, then retry the unchanged scan and GitHub API checks."
+  }
 }
