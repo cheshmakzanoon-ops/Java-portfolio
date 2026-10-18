@@ -15,11 +15,13 @@ public final class SourceParserWorker {
       for(int request=0;request<64;request++) {
         int length;
         try{length=input.readInt();}catch(EOFException ended){return;}
-        if(length<0||length>SourceFacts.SOURCE_BYTES)throw new IOException("parser input quota");
+        boolean catalog=length==-2;if(catalog)length=input.readInt();
+        if(length<0||length>(catalog?2_097_152:SourceFacts.SOURCE_BYTES))throw new IOException("parser input quota");
         byte[] source=input.readNBytes(length);if(source.length!=length)throw new EOFException("parser frame truncated");
         String text=StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
             .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(source)).toString();
-        byte[] result=SourceWire.encode(SourceJavaParser.parse(text));
+        byte[] result=catalog?SourceCatalogWire.encode(SourceCatalogParser.parse(text)):
+            SourceWire.encode(SourceJavaParser.parse(text));
         output.writeInt(result.length);output.write(result);output.flush();
       }
     }

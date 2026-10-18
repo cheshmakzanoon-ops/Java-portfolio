@@ -1,0 +1,407 @@
+[
+  {
+    "phase": "engine-original",
+    "recordingStartUTC": "2026-10-18 07:08:59 (UTC)",
+    "recordingDurationSecondsRounded": 3,
+    "chunks": 1,
+    "selectedEvents": {
+      "jdk.ExecutionSample": {
+        "count": 276,
+        "bytes": 3014
+      },
+      "jdk.ObjectAllocationSample": {
+        "count": 960,
+        "bytes": 14241
+      },
+      "jdk.ThreadAllocationStatistics": {
+        "count": 35,
+        "bytes": 349
+      },
+      "jdk.GarbageCollection": {
+        "count": 7,
+        "bytes": 161
+      },
+      "jdk.CPULoad": {
+        "count": 3,
+        "bytes": 57
+      },
+      "jdk.DataLoss": {
+        "count": 0,
+        "bytes": 0
+      }
+    },
+    "topSampledLeafMethods": [
+      {
+        "method": "java.util.HashMap.keysToArray(Object[])",
+        "samples": 99,
+        "samplePercent": 35.87
+      },
+      {
+        "method": "java.util.ImmutableCollections.listFromArray(Object[])",
+        "samples": 37,
+        "samplePercent": 13.41
+      },
+      {
+        "method": "io.github.cheshmakzanoon.portfolio.pulsestream.Engine.advance(Engine$State)",
+        "samples": 23,
+        "samplePercent": 8.33
+      },
+      {
+        "method": "java.lang.String.equals(Object)",
+        "samples": 15,
+        "samplePercent": 5.43
+      },
+      {
+        "method": "java.util.HashSet.toArray()",
+        "samples": 13,
+        "samplePercent": 4.71
+      }
+    ],
+    "topSampledAllocationSites": [
+      {
+        "method": "java.util.ImmutableCollections.listFromArray(Object[])",
+        "allocationPressurePercent": 27.87
+      },
+      {
+        "method": "java.util.ArrayList.<init>(int)",
+        "allocationPressurePercent": 26.63
+      },
+      {
+        "method": "java.util.HashSet.toArray()",
+        "allocationPressurePercent": 19.06
+      },
+      {
+        "method": "java.util.regex.Pattern.compile()",
+        "allocationPressurePercent": 8.88
+      },
+      {
+        "method": "io.github.cheshmakzanoon.portfolio.pulsestream.Engine.aggregate(Engine$State, Engine$Window, Engine$Pane, Engine$Aggregate)",
+        "allocationPressurePercent": 7.69
+      }
+    ]
+  },
+  {
+    "phase": "engine-current",
+    "recordingStartUTC": "2026-10-18 07:09:22 (UTC)",
+    "recordingDurationSecondsRounded": 4,
+    "chunks": 1,
+    "selectedEvents": {
+      "jdk.ExecutionSample": {
+        "count": 165,
+        "bytes": 1784
+      },
+      "jdk.ObjectAllocationSample": {
+        "count": 960,
+        "bytes": 13698
+      },
+      "jdk.ThreadAllocationStatistics": {
+        "count": 35,
+        "bytes": 347
+      },
+      "jdk.GarbageCollection": {
+        "count": 8,
+        "bytes": 184
+      },
+      "jdk.CPULoad": {
+        "count": 3,
+        "bytes": 57
+      },
+      "jdk.DataLoss": {
+        "count": 0,
+        "bytes": 0
+      }
+    },
+    "topSampledLeafMethods": [
+      {
+        "method": "java.util.regex.Pattern.compile()",
+        "samples": 26,
+        "samplePercent": 15.76
+      },
+      {
+        "method": "java.util.HashMap.putVal(int, Object, Object, boolean, boolean)",
+        "samples": 17,
+        "samplePercent": 10.3
+      },
+      {
+        "method": "java.util.HashMap.getNode(Object)",
+        "samples": 16,
+        "samplePercent": 9.7
+      },
+      {
+        "method": "java.util.HashMap.resize()",
+        "samples": 15,
+        "samplePercent": 9.09
+      },
+      {
+        "method": "io.github.cheshmakzanoon.portfolio.pulsestream.Engine.accept(Engine$State, Engine$Input, long)",
+        "samples": 7,
+        "samplePercent": 4.24
+      }
+    ],
+    "topSampledAllocationSites": [
+      {
+        "method": "java.util.regex.Pattern.compile()",
+        "allocationPressurePercent": 59.32
+      },
+      {
+        "method": "java.util.regex.Pattern$BitClass.<init>()",
+        "allocationPressurePercent": 8.67
+      },
+      {
+        "method": "io.github.cheshmakzanoon.portfolio.pulsestream.Engine$Aggregate.empty()",
+        "allocationPressurePercent": 6.9
+      },
+      {
+        "method": "java.lang.invoke.DirectMethodHandle.allocateInstance(Object)",
+        "allocationPressurePercent": 6.88
+      },
+      {
+        "method": "java.util.regex.Pattern.newCharProperty(Pattern$CharPredicate)",
+        "allocationPressurePercent": 5.27
+      }
+    ]
+  },
+  {
+    "phase": "durable-full-1",
+    "recordingStartUTC": "2026-10-18 07:09:44 (UTC)",
+    "recordingDurationSecondsRounded": 1306,
+    "chunks": 2,
+    "selectedEvents": {
+      "jdk.ExecutionSample": {
+        "count": 31487,
+        "bytes": 376719
+      },
+      "jdk.ObjectAllocationSample": {
+        "count": 144465,
+        "bytes": 2302500
+      },
+      "jdk.ThreadAllocationStatistics": {
+        "count": 60,
+        "bytes": 635
+      },
+      "jdk.GarbageCollection": {
+        "count": 1544,
+        "bytes": 38681
+      },
+      "jdk.CPULoad": {
+        "count": 1290,
+        "bytes": 25767
+      },
+      "jdk.DataLoss": {
+        "count": 0,
+        "bytes": 0
+      }
+    },
+    "topSampledLeafMethods": [
+      {
+        "method": "java.util.HashMap.putVal(int, Object, Object, boolean, boolean)",
+        "samples": 6132,
+        "samplePercent": 19.47
+      },
+      {
+        "method": "java.util.HashMap.getNode(Object)",
+        "samples": 4590,
+        "samplePercent": 14.58
+      },
+      {
+        "method": "java.util.zip.GZIPOutputStream.write(byte[], int, int)",
+        "samples": 2898,
+        "samplePercent": 9.2
+      },
+      {
+        "method": "java.util.zip.Deflater.deflate(byte[], int, int)",
+        "samples": 2350,
+        "samplePercent": 7.46
+      },
+      {
+        "method": "java.util.HashMap$HashIterator.nextNode()",
+        "samples": 1994,
+        "samplePercent": 6.33
+      }
+    ],
+    "topSampledAllocationSites": [
+      {
+        "method": "java.util.HashMap.newNode(int, Object, Object, HashMap$Node)",
+        "allocationPressurePercent": 36.02
+      },
+      {
+        "method": "java.util.HashMap.resize()",
+        "allocationPressurePercent": 8.82
+      },
+      {
+        "method": "java.io.ObjectOutputStream$HandleTable.growEntries()",
+        "allocationPressurePercent": 6.17
+      },
+      {
+        "method": "java.io.ObjectOutputStream.defaultWriteFields(Object, ObjectStreamClass)",
+        "allocationPressurePercent": 5.87
+      },
+      {
+        "method": "org.postgresql.core.v3.SimpleParameterList.<init>(int, TypeTransferModeRegistry)",
+        "allocationPressurePercent": 4.06
+      }
+    ]
+  },
+  {
+    "phase": "durable-full-2",
+    "recordingStartUTC": "2026-10-18 07:31:37 (UTC)",
+    "recordingDurationSecondsRounded": 1271,
+    "chunks": 2,
+    "selectedEvents": {
+      "jdk.ExecutionSample": {
+        "count": 30577,
+        "bytes": 365839
+      },
+      "jdk.ObjectAllocationSample": {
+        "count": 140285,
+        "bytes": 2235540
+      },
+      "jdk.ThreadAllocationStatistics": {
+        "count": 60,
+        "bytes": 632
+      },
+      "jdk.GarbageCollection": {
+        "count": 1441,
+        "bytes": 36079
+      },
+      "jdk.CPULoad": {
+        "count": 1257,
+        "bytes": 25107
+      },
+      "jdk.DataLoss": {
+        "count": 0,
+        "bytes": 0
+      }
+    },
+    "topSampledLeafMethods": [
+      {
+        "method": "java.util.HashMap.putVal(int, Object, Object, boolean, boolean)",
+        "samples": 5903,
+        "samplePercent": 19.31
+      },
+      {
+        "method": "java.util.HashMap.getNode(Object)",
+        "samples": 4509,
+        "samplePercent": 14.75
+      },
+      {
+        "method": "java.io.ObjectOutputStream$HandleTable.lookup(Object)",
+        "samples": 2898,
+        "samplePercent": 9.48
+      },
+      {
+        "method": "java.util.zip.Deflater.deflate(byte[], int, int)",
+        "samples": 2575,
+        "samplePercent": 8.42
+      },
+      {
+        "method": "java.lang.String.hashCode()",
+        "samples": 1969,
+        "samplePercent": 6.44
+      }
+    ],
+    "topSampledAllocationSites": [
+      {
+        "method": "java.util.HashMap.newNode(int, Object, Object, HashMap$Node)",
+        "allocationPressurePercent": 36.17
+      },
+      {
+        "method": "java.util.HashMap.resize()",
+        "allocationPressurePercent": 8.8
+      },
+      {
+        "method": "java.io.ObjectOutputStream$HandleTable.growEntries()",
+        "allocationPressurePercent": 6.24
+      },
+      {
+        "method": "java.io.ObjectOutputStream.defaultWriteFields(Object, ObjectStreamClass)",
+        "allocationPressurePercent": 6.1
+      },
+      {
+        "method": "org.postgresql.core.v3.SimpleParameterList.<init>(int, TypeTransferModeRegistry)",
+        "allocationPressurePercent": 4.15
+      }
+    ]
+  },
+  {
+    "phase": "durable-full-3",
+    "recordingStartUTC": "2026-10-18 07:52:58 (UTC)",
+    "recordingDurationSecondsRounded": 969,
+    "chunks": 2,
+    "selectedEvents": {
+      "jdk.ExecutionSample": {
+        "count": 24889,
+        "bytes": 297594
+      },
+      "jdk.ObjectAllocationSample": {
+        "count": 143380,
+        "bytes": 2286963
+      },
+      "jdk.ThreadAllocationStatistics": {
+        "count": 58,
+        "bytes": 610
+      },
+      "jdk.GarbageCollection": {
+        "count": 1581,
+        "bytes": 39584
+      },
+      "jdk.CPULoad": {
+        "count": 961,
+        "bytes": 19188
+      },
+      "jdk.DataLoss": {
+        "count": 0,
+        "bytes": 0
+      }
+    },
+    "topSampledLeafMethods": [
+      {
+        "method": "java.util.HashMap.putVal(int, Object, Object, boolean, boolean)",
+        "samples": 4808,
+        "samplePercent": 19.32
+      },
+      {
+        "method": "java.util.HashMap.getNode(Object)",
+        "samples": 3600,
+        "samplePercent": 14.46
+      },
+      {
+        "method": "java.util.zip.Deflater.deflate(byte[], int, int)",
+        "samples": 2449,
+        "samplePercent": 9.84
+      },
+      {
+        "method": "java.io.ObjectOutputStream$HandleTable.lookup(Object)",
+        "samples": 2069,
+        "samplePercent": 8.31
+      },
+      {
+        "method": "java.util.HashMap$HashIterator.nextNode()",
+        "samples": 1686,
+        "samplePercent": 6.77
+      }
+    ],
+    "topSampledAllocationSites": [
+      {
+        "method": "java.util.HashMap.newNode(int, Object, Object, HashMap$Node)",
+        "allocationPressurePercent": 35.3
+      },
+      {
+        "method": "java.util.HashMap.resize()",
+        "allocationPressurePercent": 9.09
+      },
+      {
+        "method": "java.io.ObjectOutputStream.defaultWriteFields(Object, ObjectStreamClass)",
+        "allocationPressurePercent": 6.59
+      },
+      {
+        "method": "java.io.ObjectOutputStream$HandleTable.growEntries()",
+        "allocationPressurePercent": 6.59
+      },
+      {
+        "method": "org.postgresql.core.v3.SimpleParameterList.<init>(int, TypeTransferModeRegistry)",
+        "allocationPressurePercent": 4.09
+      }
+    ]
+  }
+]

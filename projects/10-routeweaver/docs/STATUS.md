@@ -32,7 +32,7 @@ Original same-input operating cost was 227,742 baseline versus 213,881 and 213,4
 
 The actual pooled diagnostic retained identical independently valid scores and reduced JDBC reads from 2,743 each to 4/11/2 with sampling. Shared-host timing is diagnostic only. Cancellation reads are bounded to 100 ms sampling; local stop checks remain per trial and authoritative writes still check fence/lease/state transactionally.
 
-The compact publication-status UI repair and source compatibility guard are included in the current 54-method pass. The reusable actual browser helper has syntax checks, but its compact-status assertion still requires execution against the final binary. No new persistent stack was started during this gate.
+The compact publication-status UI repair and source compatibility guard are included in the current 54-method pass. The coordinator subsequently executed the exact prepared source d5964723 at 2026-10-18T03:51Z: no-Maven artifact preflight, up, scoped reset, live demo, real Chromium compact-status check and down all returned 0. The demo made 101 actual assertions; the browser checked ten behaviors including six route polylines/timelines, stranded cargo, urgent work, same-input baseline, live solve, CAS publication, compact 107-character status and zero page errors. [Current lifecycle operations](../evidence/lifecycle-current/operations.json) record the observed command exits; browser results and screenshot/DOM metadata are preserved alongside them. The final-source UI runtime gate is closed; this shared-host functional pass makes no performance claim.
 
 ## Prepared artifacts and review
 
@@ -44,14 +44,9 @@ Historical passes remain preserved: 45 methods/12 PostgreSQL at 737a05c and stri
 
 ## Mandatory remaining work
 
-1. Execute the prepared compact-status browser helper against a granted final-source service, preserving screenshots/DOM/results. Existing actual demo/SIGKILL results remain genuine historical evidence.
-2. Obtain an explicitly quiet host window and execute all ten 100/250/500-job instances three times at the actual 30-second budget, both full JMH boundaries, queue/score/time/resource/GC records and same-job baseline comparison. Preserve every result and report the preregistered improvement outcome, including a missed goal.
-3. Complete final A09 release review and update measured PERFORMANCE/CASE_STUDY/INTERVIEW evidence. Coordinate root-owned clean-checkout certification and Git.
+1. Obtain an explicitly quiet host window and execute all ten 100/250/500-job instances three times at the actual 30-second budget, both full JMH boundaries, queue/score/time/resource/GC records and same-job baseline comparison. Preserve every result and report the preregistered improvement outcome, including a missed goal.
+2. Complete final A09 release review and update measured PERFORMANCE/CASE_STUDY/INTERVIEW evidence. Coordinate root-owned clean-checkout certification and Git.
 
-P10-A1/A2 have current scoped correctness passes. P10-A3 has current PostgreSQL recovery/fencing/source-compatibility evidence and an actual historical same-source process-restart pass. P10-A4 has actual breakdown/urgent lifecycle passes; compact-status final-browser preflight remains open. P10-A5 remains OPEN for full quiet measurements and clean-checkout reproduction. No large-instance optimum, production deployment, accepted quiet speedup or final release pass is claimed.
+P10-A1/A2 have current scoped correctness passes. P10-A3 has current PostgreSQL recovery/fencing/source-compatibility evidence and an actual historical same-source process-restart pass. P10-A4 has actual breakdown/urgent lifecycle passes and the completed final-source compact-status browser preflight. P10-A5 remains OPEN for full quiet measurements and clean-checkout reproduction. No large-instance optimum, production deployment, accepted quiet speedup or final release pass is claimed.
 
-Scheduling handoff: all owned paths projects/10-routeweaver/** and .work/A10/** are WRITE-PAUSED for the coordinator's correctness milestone. The current artifact/source preparation is complete; no Maven, owned service or container remains running. A09's latest guard-source review predates the observed successful PG run; its requested final acknowledgment is still pending while the reviewer is unavailable. This pause does not close the remaining release gates.
-
-## Final-source live closure,2026-10-18T03:51Z
-
-Root executed the exact prepared source d5964723…: no-Maven artifact preflight, up, scoped reset, live demo, real Chromium compact-status check and down all returned0. The demo made101actual assertions; the browser checked ten behaviors including six route polylines/timelines, stranded cargo, urgent work, same-input baseline, live solve, CAS publication, compact107-character status and zero page errors. Actual results and ignored screenshot/DOM hashes are in [current lifecycle evidence](../evidence/lifecycle-current/operations.json). This closes the previously pending current-source UI runtime check; the full quiet30-solve/JMH and clean-checkout release gates remain open.
+Historical scheduling checkpoint: all owned paths were write-paused at 02:53 UTC for the correctness milestone, with A09's final acknowledgment pending. This checkpoint preceded the completed 03:51 final-source lifecycle and is superseded by the current evidence and remaining gates above. Full quiet corpus/JMH, final review and clean-checkout certification remain OPEN. No 10% tuning-goal result has been measured or claimed.

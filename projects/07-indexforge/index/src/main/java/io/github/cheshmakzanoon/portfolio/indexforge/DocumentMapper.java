@@ -15,6 +15,10 @@ public final class DocumentMapper {
   private DocumentMapper() {}
 
   public static Document map(SourceDocument s) {
+    return map(s,null);
+  }
+
+  public static Document map(SourceDocument s,SourceFacts.Unit facts) {
     Document d = new Document();
     exact(d, "key", s.key());
     exact(d, "tenant", s.tenant());
@@ -26,6 +30,12 @@ public final class DocumentMapper {
     exact(d, "kind", s.entry().kind());
     exact(d, "coordinates", s.entry().coordinates());
     exact(d, "version", s.entry().version());
+    if(facts!=null) {
+      exact(d,"source_schema",SourceFacts.SCHEMA);
+      exact(d,"source_inventory",Boolean.toString(facts.declarationInventoryKnown()));
+      try{d.add(new StoredField("source_facts",SourceWire.encode(facts)));}
+      catch(java.io.IOException invalid){throw new java.io.UncheckedIOException("source summary encoding",invalid);}
+    }
     if (s.entry().language().equals("java")) {
       d.add(
           new TextField(

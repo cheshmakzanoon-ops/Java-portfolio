@@ -2,6 +2,7 @@ package io.github.cheshmakzanoon.portfolio.indexforge;
 
 import java.io.*;
 import java.security.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.zip.*;
 
@@ -28,27 +29,27 @@ public final class SourceWire {
         for (var c : m.calls()) { expression(out,c.expression(),0); out.writeInt(c.position()); out.writeInt(c.block()); }
         out.writeInt(m.guards().size());
         for (var g : m.guards()) { expression(out,g.condition(),0);out.writeInt(g.end());out.writeInt(g.block());out.writeUTF(g.terminal()); }
-        out.writeInt(m.position()); out.writeBoolean(m.privateMember()); out.writeBoolean(m.staticMember()); out.writeBoolean(m.bindingUnknown());
+        out.writeInt(m.returned().size());
+        for (var r : m.returned()) { expression(out,r.expression(),0);out.writeInt(r.position());out.writeInt(r.block()); }
+        out.writeInt(m.position()); out.writeBoolean(m.privateMember()); out.writeBoolean(m.staticMember()); out.writeBoolean(m.bindingUnknown());out.writeBoolean(m.controlUnknown());
       }
     }
-    byte[] raw=bytes.toByteArray();bytes.reset();
+    byte[] raw=bytes.toByteArray();bytes.reset();bytes.write(ByteBuffer.allocate(4).putInt(raw.length).array());
     var compressor=new Deflater(Deflater.BEST_SPEED);
     try {
       compressor.setInput(raw);compressor.finish();byte[] buffer=new byte[4096];
-      var limited=new LimitedOutput(bytes,SourceFacts.SUMMARY_BYTES-32);
+      var limited=new LimitedOutput(bytes,SourceFacts.SUMMARY_BYTES-36);
       while(!compressor.finished()){int n=compressor.deflate(buffer);if(n==0)throw new IOException("source compression stalled");limited.write(buffer,0,n);}
     } finally {compressor.end();}
     byte[] body = bytes.toByteArray(); bytes.write(hash(body)); return bytes.toByteArray();
   }
 
   public static SourceFacts.Unit decode(byte[] data) throws IOException {
-    if (data.length < 32 || data.length > SourceFacts.SUMMARY_BYTES) throw new IOException("source summary byte quota");
+    int expected=decodedBytes(data);
     byte[] body = Arrays.copyOf(data,data.length-32);
-    if (!MessageDigest.isEqual(hash(body), Arrays.copyOfRange(data,data.length-32,data.length)))
-      throw new IOException("source summary checksum");
     var inflater=new Inflater();var raw=new ByteArrayOutputStream();
     try {
-      inflater.setInput(body);byte[] buffer=new byte[4096];
+      inflater.setInput(body,4,body.length-4);byte[] buffer=new byte[4096];
       var limited=new LimitedOutput(raw,SourceFacts.RAW_SUMMARY_BYTES);
       while(!inflater.finished()) {
         int n=inflater.inflate(buffer);
@@ -56,6 +57,7 @@ public final class SourceWire {
         limited.write(buffer,0,n);
       }
       if(inflater.getRemaining()!=0)throw new IOException("trailing compressed source bytes");
+      if(raw.size()!=expected)throw new IOException("source decoded size mismatch");
     }catch(DataFormatException invalid){throw new IOException("invalid compressed source frame",invalid);}
     finally{inflater.end();}
     try(var in = new DataInputStream(new ByteArrayInputStream(raw.toByteArray()))) {
@@ -76,18 +78,30 @@ public final class SourceWire {
         for(int c=count(in.readInt(),128);c>0;c--)calls.add(new SourceFacts.Invocation(expression(in,0),in.readInt(),in.readInt()));
         List<SourceFacts.Guard> guards=new ArrayList<>();
         for(int g=count(in.readInt(),128);g>0;g--)guards.add(new SourceFacts.Guard(expression(in,0),in.readInt(),in.readInt(),in.readUTF()));
-        members.add(new SourceFacts.Member(owner,name,returns,params,locals,identifiers,calls,guards,in.readInt(),in.readBoolean(),in.readBoolean(),in.readBoolean()));
+        List<SourceFacts.Returned> returned=new ArrayList<>();
+        for(int r=count(in.readInt(),128);r>0;r--)returned.add(new SourceFacts.Returned(expression(in,0),in.readInt(),in.readInt()));
+        members.add(new SourceFacts.Member(owner,name,returns,params,locals,identifiers,calls,guards,returned,in.readInt(),in.readBoolean(),in.readBoolean(),in.readBoolean(),in.readBoolean()));
       }
       if(in.read()!=-1)throw new IOException("trailing source facts");
       return new SourceFacts.Unit(status,pkg,imports,types,members);
     } catch (IllegalArgumentException invalid) { throw new IOException("invalid source facts",invalid); }
   }
 
+  /** Validate before expanding a multi-document graph so its aggregate allocation is bounded. */
+  public static int decodedBytes(byte[] data)throws IOException {
+    if(data.length<36||data.length>SourceFacts.SUMMARY_BYTES)throw new IOException("source summary byte quota");
+    byte[] body=Arrays.copyOf(data,data.length-32);
+    if(!MessageDigest.isEqual(hash(body),Arrays.copyOfRange(data,data.length-32,data.length)))throw new IOException("source summary checksum");
+    int length=ByteBuffer.wrap(body).getInt();
+    if(length<0||length>SourceFacts.RAW_SUMMARY_BYTES)throw new IOException("source decoded byte quota");
+    return length;
+  }
+
   private static void bindings(DataOutputStream out,List<SourceFacts.Binding> bindings)throws IOException {
-    out.writeInt(bindings.size());for(var b:bindings){out.writeUTF(b.name());out.writeUTF(b.type());expression(out,b.initializer(),0);out.writeBoolean(b.ambiguous());}
+    out.writeInt(bindings.size());for(var b:bindings){out.writeUTF(b.name());out.writeUTF(b.type());expression(out,b.initializer(),0);out.writeBoolean(b.ambiguous());out.writeInt(b.position());out.writeInt(b.block());}
   }
   private static List<SourceFacts.Binding> bindings(DataInputStream in)throws IOException {
-    List<SourceFacts.Binding> out=new ArrayList<>();for(int n=count(in.readInt(),64);n>0;n--)out.add(new SourceFacts.Binding(in.readUTF(),in.readUTF(),expression(in,0),in.readBoolean()));return out;
+    List<SourceFacts.Binding> out=new ArrayList<>();for(int n=count(in.readInt(),64);n>0;n--)out.add(new SourceFacts.Binding(in.readUTF(),in.readUTF(),expression(in,0),in.readBoolean(),in.readInt(),in.readInt()));return out;
   }
   private static void strings(DataOutputStream out,Collection<String> values)throws IOException {out.writeInt(values.size());for(String s:values)out.writeUTF(s);}
   private static List<String> strings(DataInputStream in,int max)throws IOException {List<String> out=new ArrayList<>();for(int n=count(in.readInt(),max);n>0;n--)out.add(in.readUTF());return out;}

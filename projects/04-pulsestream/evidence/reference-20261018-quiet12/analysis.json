@@ -1,0 +1,907 @@
+{
+  "classification": "small-json-analysis-pending-independent-raw-review",
+  "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "terminalSummary": "/workspace/Java-portfolio/.work/A04/quiet-runs/20261018T070840Z-405639/summary.json",
+  "reservation": "quiet-reference-12-pulsestream",
+  "durableRounds": [
+    {
+      "phase": "durable-full-1",
+      "directory": "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675",
+      "result": {
+        "schemaVersion": 1,
+        "project": "pulsestream",
+        "workload": "durable-v1-full",
+        "seed": 4404,
+        "run": "workload_1792307384907",
+        "database": "pulse_workload_1792307384907",
+        "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+        "recoveryDigest": "08cbd844fa1f48751a8c2e649458df0cf79df0d0b8ea4ce6bf2477ea99b43f08",
+        "committedDigest": "08cbd844fa1f48751a8c2e649458df0cf79df0d0b8ea4ce6bf2477ea99b43f08",
+        "resultDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+        "oracleDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+        "assertions": {
+          "failed": 0,
+          "passed": 6
+        },
+        "assertionBoundary": "exact admitted count, exact duplicates, independent source watermark, full recovered state digest, all published window fields/row count, independent result digest",
+        "measurements": {
+          "acceptedMeasurements": 1000000,
+          "duplicateCount": 1000,
+          "acceptedEventsPerSecond": 777.7219529811101,
+          "elapsedSeconds": 1285.806574145,
+          "producerPreparationSeconds": 11.28402763,
+          "databasePreparationSeconds": 1.782721374,
+          "checkpointSamples": 1018,
+          "checkpointP50Millis": 774.058505,
+          "checkpointP95Millis": 3330.102375,
+          "checkpointP99Millis": 5014.969897,
+          "maximumQueueBatches": 7,
+          "peakObservedHeapBytes": 481820672,
+          "databaseBytes": 391460543,
+          "databaseGrowthBytes": 383205376,
+          "recoveryMillis": 3075.732441,
+          "processCpuSeconds": 1065.11,
+          "averageProcessCpuCores": 0.8283594293397102,
+          "allocatedBytes": 60158233432,
+          "gcCollections": 1811,
+          "gcMillis": 47982,
+          "oracleValidationSeconds": 0.226653467,
+          "publishedWindows": 20000,
+          "watermark": 94000
+        },
+        "jdk": "25.0.4.1+1-LTS",
+        "jvmFlags": [
+          "-Xmx512m",
+          "-XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/workload.jfr,settings=profile,dumponexit=true",
+          "-Xlog:gc*,safepoint:file=/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/gc.log:time,uptime,level,tags",
+          "-Dpulse.sourceFingerprint=working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+          "-Dloader.main=io.github.cheshmakzanoon.portfolio.pulsestream.Workload",
+          "-Dloader.path=/workspace/Java-portfolio/projects/04-pulsestream/verification/target/pulsestream-verification-1.0.0-SNAPSHOT.jar"
+        ],
+        "timestamp": "2026-10-18T07:31:30.833304304Z",
+        "limitations": [
+          "Closed-loop drain after durable Kafka preparation; checkpoint latency excludes offered-load queueing and has coordinated-omission limits.",
+          "Each run starts a fresh isolated PostgreSQL database; setup/schema and source preparation are excluded from drain and reported separately.",
+          "Result outbox delivery excluded; SQL result/outbox writes included."
+        ]
+      }
+    },
+    {
+      "phase": "durable-full-2",
+      "directory": "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444",
+      "result": {
+        "schemaVersion": 1,
+        "project": "pulsestream",
+        "workload": "durable-v1-full",
+        "seed": 4404,
+        "run": "workload_1792308697440",
+        "database": "pulse_workload_1792308697440",
+        "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+        "recoveryDigest": "19270af63c6d663cb676bd0d74785394eddf0ef604fa64ab9ec2b4bee7a32b09",
+        "committedDigest": "19270af63c6d663cb676bd0d74785394eddf0ef604fa64ab9ec2b4bee7a32b09",
+        "resultDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+        "oracleDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+        "assertions": {
+          "failed": 0,
+          "passed": 6
+        },
+        "assertionBoundary": "exact admitted count, exact duplicates, independent source watermark, full recovered state digest, all published window fields/row count, independent result digest",
+        "measurements": {
+          "acceptedMeasurements": 1000000,
+          "duplicateCount": 1000,
+          "acceptedEventsPerSecond": 796.0468002575192,
+          "elapsedSeconds": 1256.2075492,
+          "producerPreparationSeconds": 5.359519229,
+          "databasePreparationSeconds": 1.985347233,
+          "checkpointSamples": 1017,
+          "checkpointP50Millis": 1122.618115,
+          "checkpointP95Millis": 2656.685288,
+          "checkpointP99Millis": 3674.227053,
+          "maximumQueueBatches": 7,
+          "peakObservedHeapBytes": 462946304,
+          "databaseBytes": 371414719,
+          "databaseGrowthBytes": 363159552,
+          "recoveryMillis": 3692.436002,
+          "processCpuSeconds": 1017.5,
+          "averageProcessCpuCores": 0.8099776192620257,
+          "allocatedBytes": 59620260224,
+          "gcCollections": 1683,
+          "gcMillis": 47729,
+          "oracleValidationSeconds": 0.2648713,
+          "publishedWindows": 20000,
+          "watermark": 94000
+        },
+        "jdk": "25.0.4.1+1-LTS",
+        "jvmFlags": [
+          "-Xmx512m",
+          "-XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/workload.jfr,settings=profile,dumponexit=true",
+          "-Xlog:gc*,safepoint:file=/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/gc.log:time,uptime,level,tags",
+          "-Dpulse.sourceFingerprint=working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+          "-Dloader.main=io.github.cheshmakzanoon.portfolio.pulsestream.Workload",
+          "-Dloader.path=/workspace/Java-portfolio/projects/04-pulsestream/verification/target/pulsestream-verification-1.0.0-SNAPSHOT.jar"
+        ],
+        "timestamp": "2026-10-18T07:52:48.276368144Z",
+        "limitations": [
+          "Closed-loop drain after durable Kafka preparation; checkpoint latency excludes offered-load queueing and has coordinated-omission limits.",
+          "Each run starts a fresh isolated PostgreSQL database; setup/schema and source preparation are excluded from drain and reported separately.",
+          "Result outbox delivery excluded; SQL result/outbox writes included."
+        ]
+      }
+    },
+    {
+      "phase": "durable-full-3",
+      "directory": "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382",
+      "result": {
+        "schemaVersion": 1,
+        "project": "pulsestream",
+        "workload": "durable-v1-full",
+        "seed": 4404,
+        "run": "workload_1792309979025",
+        "database": "pulse_workload_1792309979025",
+        "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+        "recoveryDigest": "6913869ab1882e5319be638b7ab1a9b93878cf3f49a29294b13c8cf47bfb00ac",
+        "committedDigest": "6913869ab1882e5319be638b7ab1a9b93878cf3f49a29294b13c8cf47bfb00ac",
+        "resultDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+        "oracleDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+        "assertions": {
+          "passed": 6,
+          "failed": 0
+        },
+        "assertionBoundary": "exact admitted count, exact duplicates, independent source watermark, full recovered state digest, all published window fields/row count, independent result digest",
+        "measurements": {
+          "acceptedMeasurements": 1000000,
+          "duplicateCount": 1000,
+          "acceptedEventsPerSecond": 1055.710360890415,
+          "elapsedSeconds": 947.229502566,
+          "producerPreparationSeconds": 10.674530157,
+          "databasePreparationSeconds": 2.230398316,
+          "checkpointSamples": 1018,
+          "checkpointP50Millis": 743.845907,
+          "checkpointP95Millis": 1816.285991,
+          "checkpointP99Millis": 2680.852611,
+          "maximumQueueBatches": 7,
+          "peakObservedHeapBytes": 471334912,
+          "databaseBytes": 393983679,
+          "databaseGrowthBytes": 385728512,
+          "recoveryMillis": 4008.790532,
+          "processCpuSeconds": 808.69,
+          "averageProcessCpuCores": 0.8537424117484695,
+          "allocatedBytes": 60099701400,
+          "gcCollections": 1849,
+          "gcMillis": 34733,
+          "oracleValidationSeconds": 0.19589824,
+          "publishedWindows": 20000,
+          "watermark": 94000
+        },
+        "jdk": "25.0.4.1+1-LTS",
+        "jvmFlags": [
+          "-Xmx512m",
+          "-XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/workload.jfr,settings=profile,dumponexit=true",
+          "-Xlog:gc*,safepoint:file=/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/gc.log:time,uptime,level,tags",
+          "-Dpulse.sourceFingerprint=working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+          "-Dloader.main=io.github.cheshmakzanoon.portfolio.pulsestream.Workload",
+          "-Dloader.path=/workspace/Java-portfolio/projects/04-pulsestream/verification/target/pulsestream-verification-1.0.0-SNAPSHOT.jar"
+        ],
+        "timestamp": "2026-10-18T08:09:07.032874564Z",
+        "limitations": [
+          "Closed-loop drain after durable Kafka preparation; checkpoint latency excludes offered-load queueing and has coordinated-omission limits.",
+          "Each run starts a fresh isolated PostgreSQL database; setup/schema and source preparation are excluded from drain and reported separately.",
+          "Result outbox delivery excluded; SQL result/outbox writes included."
+        ]
+      }
+    }
+  ],
+  "throughputAcrossRoundStatistics": {
+    "n": 3,
+    "arithmeticMean": 876.4930380430147,
+    "sampleStandardDeviation": 155.4769648963083,
+    "sampleCVPercent": 17.738528219624957,
+    "minimum": 777.7219529811101,
+    "maximum": 1055.710360890415
+  },
+  "aggregateAcceptedEventsPerSecond": 859.7851917596427,
+  "engines": {
+    "engine-original": {
+      "directory": "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706",
+      "originalJmhResult": {
+        "jmhVersion": "1.37",
+        "benchmark": "io.github.cheshmakzanoon.portfolio.pulsestream.EngineBenchmark.freshBatch",
+        "mode": "thrpt",
+        "threads": 1,
+        "forks": 3,
+        "jvm": "/workspace/.tools/jdk-25/bin/java",
+        "jvmArgs": [
+          "-Xmx512m",
+          "-Xmx512m"
+        ],
+        "jdkVersion": "25.0.4.1",
+        "vmName": "OpenJDK 64-Bit Server VM",
+        "vmVersion": "25.0.4.1+1-LTS",
+        "warmupIterations": 2,
+        "warmupTime": "1 s",
+        "warmupBatchSize": 1,
+        "measurementIterations": 3,
+        "measurementTime": "1 s",
+        "measurementBatchSize": 1,
+        "primaryMetric": {
+          "score": 26613.57531017209,
+          "scoreError": 16810.1486257798,
+          "scoreConfidence": [
+            9803.426684392292,
+            43423.723935951886
+          ],
+          "scorePercentiles": {
+            "0.0": 10557.481434256197,
+            "50.0": 32104.680874127916,
+            "90.0": 36915.38580122039,
+            "95.0": 36915.38580122039,
+            "99.0": 36915.38580122039,
+            "99.9": 36915.38580122039,
+            "99.99": 36915.38580122039,
+            "99.999": 36915.38580122039,
+            "99.9999": 36915.38580122039,
+            "100.0": 36915.38580122039
+          },
+          "scoreUnit": "ops/s",
+          "rawData": [
+            [
+              10557.481434256197,
+              11193.248400755389,
+              20211.153890850073
+            ],
+            [
+              30147.97890306907,
+              32449.067878160306,
+              32582.231314314715
+            ],
+            [
+              32104.680874127916,
+              36915.38580122039,
+              33360.949294794744
+            ]
+          ]
+        },
+        "secondaryMetrics": {
+          "gc.alloc.rate": {
+            "score": 406.92282558455855,
+            "scoreError": 323.32549350662276,
+            "scoreConfidence": [
+              83.59733207793579,
+              730.2483190911813
+            ],
+            "scorePercentiles": {
+              "0.0": 116.82847650618372,
+              "50.0": 359.79346219221827,
+              "90.0": 692.4416563242606,
+              "95.0": 692.4416563242606,
+              "99.0": 692.4416563242606,
+              "99.9": 692.4416563242606,
+              "99.99": 692.4416563242606,
+              "99.999": 692.4416563242606,
+              "99.9999": 692.4416563242606,
+              "100.0": 692.4416563242606
+            },
+            "scoreUnit": "MB/sec",
+            "rawData": [
+              [
+                116.82847650618372,
+                210.11251199957937,
+                286.3852180942895
+              ],
+              [
+                359.79346219221827,
+                610.1767269527335,
+                512.6910788411525
+              ],
+              [
+                335.20677635595683,
+                692.4416563242606,
+                538.6695229946531
+              ]
+            ]
+          },
+          "gc.alloc.rate.norm": {
+            "score": 19987.013178741778,
+            "scoreError": 798.5179448076152,
+            "scoreConfidence": [
+              19188.49523393416,
+              20785.531123549394
+            ],
+            "scorePercentiles": {
+              "0.0": 19678.216533333332,
+              "50.0": 19766.069463414635,
+              "90.0": 21126.617454545456,
+              "95.0": 21126.617454545456,
+              "99.0": 21126.617454545456,
+              "99.9": 21126.617454545456,
+              "99.99": 21126.617454545456,
+              "99.999": 21126.617454545456,
+              "99.9999": 21126.617454545456,
+              "100.0": 21126.617454545456
+            },
+            "scoreUnit": "B/op",
+            "rawData": [
+              [
+                21126.617454545456,
+                19694.696347826088,
+                19766.069463414635
+              ],
+              [
+                20237.516590163934,
+                19726.283323076925,
+                19770.654545454545
+              ],
+              [
+                20161.087753846154,
+                19678.216533333332,
+                19721.976597014924
+              ]
+            ]
+          },
+          "gc.count": {
+            "score": 16.0,
+            "scoreError": "NaN",
+            "scoreConfidence": [
+              16.0,
+              16.0
+            ],
+            "scorePercentiles": {
+              "0.0": 1.0,
+              "50.0": 2.0,
+              "90.0": 3.0,
+              "95.0": 3.0,
+              "99.0": 3.0,
+              "99.9": 3.0,
+              "99.99": 3.0,
+              "99.999": 3.0,
+              "99.9999": 3.0,
+              "100.0": 3.0
+            },
+            "scoreUnit": "counts",
+            "rawData": [
+              [
+                1.0,
+                1.0,
+                1.0
+              ],
+              [
+                1.0,
+                3.0,
+                2.0
+              ],
+              [
+                2.0,
+                3.0,
+                2.0
+              ]
+            ]
+          },
+          "gc.time": {
+            "score": 162.0,
+            "scoreError": "NaN",
+            "scoreConfidence": [
+              162.0,
+              162.0
+            ],
+            "scorePercentiles": {
+              "0.0": 6.0,
+              "50.0": 18.0,
+              "90.0": 46.0,
+              "95.0": 46.0,
+              "99.0": 46.0,
+              "99.9": 46.0,
+              "99.99": 46.0,
+              "99.999": 46.0,
+              "99.9999": 46.0,
+              "100.0": 46.0
+            },
+            "scoreUnit": "ms",
+            "rawData": [
+              [
+                46.0,
+                20.0,
+                19.0
+              ],
+              [
+                6.0,
+                18.0,
+                9.0
+              ],
+              [
+                14.0,
+                19.0,
+                11.0
+              ]
+            ]
+          },
+          "jfr": {
+            "score": "NaN",
+            "scoreError": "NaN",
+            "scoreConfidence": [
+              "NaN",
+              "NaN"
+            ],
+            "scorePercentiles": {
+              "0.0": "NaN",
+              "50.0": "NaN",
+              "90.0": "NaN",
+              "95.0": "NaN",
+              "99.0": "NaN",
+              "99.9": "NaN",
+              "99.99": "NaN",
+              "99.999": "NaN",
+              "99.9999": "NaN",
+              "100.0": "NaN"
+            },
+            "scoreUnit": "---",
+            "rawData": [
+              [
+                "NaN"
+              ],
+              [
+                "NaN"
+              ],
+              [
+                "NaN"
+              ]
+            ]
+          }
+        }
+      },
+      "forkMeans": [
+        13987.29457528722,
+        31726.42603184803,
+        34127.00532338102
+      ],
+      "acrossForkMeanStatistics": {
+        "n": 3,
+        "arithmeticMean": 26613.57531017209,
+        "sampleStandardDeviation": 11000.35995460275,
+        "sampleCVPercent": 41.33364204695284,
+        "minimum": 13987.29457528722,
+        "maximum": 34127.00532338102
+      }
+    },
+    "engine-current": {
+      "directory": "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155",
+      "originalJmhResult": {
+        "jmhVersion": "1.37",
+        "benchmark": "io.github.cheshmakzanoon.portfolio.pulsestream.EngineBenchmark.freshBatch",
+        "mode": "thrpt",
+        "threads": 1,
+        "forks": 3,
+        "jvm": "/workspace/.tools/jdk-25/bin/java",
+        "jvmArgs": [
+          "-Xmx512m",
+          "-Xmx512m"
+        ],
+        "jdkVersion": "25.0.4.1",
+        "vmName": "OpenJDK 64-Bit Server VM",
+        "vmVersion": "25.0.4.1+1-LTS",
+        "warmupIterations": 2,
+        "warmupTime": "1 s",
+        "warmupBatchSize": 1,
+        "measurementIterations": 3,
+        "measurementTime": "1 s",
+        "measurementBatchSize": 1,
+        "primaryMetric": {
+          "score": 176874.21730256474,
+          "scoreError": 120377.7706296325,
+          "scoreConfidence": [
+            56496.44667293223,
+            297251.9879321972
+          ],
+          "scorePercentiles": {
+            "0.0": 41341.72318326308,
+            "50.0": 196528.39186420976,
+            "90.0": 281707.2577055956,
+            "95.0": 281707.2577055956,
+            "99.0": 281707.2577055956,
+            "99.9": 281707.2577055956,
+            "99.99": 281707.2577055956,
+            "99.999": 281707.2577055956,
+            "99.9999": 281707.2577055956,
+            "100.0": 281707.2577055956
+          },
+          "scoreUnit": "ops/s",
+          "rawData": [
+            [
+              247761.22037162806,
+              196528.39186420976,
+              281707.2577055956
+            ],
+            [
+              207866.4230497205,
+              201567.6462319746,
+              147732.5661044961
+            ],
+            [
+              41341.72318326308,
+              141787.17433896437,
+              125575.55287323074
+            ]
+          ]
+        },
+        "secondaryMetrics": {
+          "gc.alloc.rate": {
+            "score": 979.2837076933208,
+            "scoreError": 746.3825367106141,
+            "scoreConfidence": [
+              232.90117098270673,
+              1725.6662444039348
+            ],
+            "scorePercentiles": {
+              "0.0": 122.6568767649298,
+              "50.0": 901.6790661236357,
+              "90.0": 1517.5870837002174,
+              "95.0": 1517.5870837002174,
+              "99.0": 1517.5870837002174,
+              "99.9": 1517.5870837002174,
+              "99.99": 1517.5870837002174,
+              "99.999": 1517.5870837002174,
+              "99.9999": 1517.5870837002174,
+              "100.0": 1517.5870837002174
+            },
+            "scoreUnit": "MB/sec",
+            "rawData": [
+              [
+                901.6790661236357,
+                1418.710974745968,
+                1517.5870837002174
+              ],
+              [
+                847.4595553208964,
+                1453.7353964757358,
+                891.451737654353
+              ],
+              [
+                122.6568767649298,
+                1004.5519419700056,
+                655.7207364841465
+              ]
+            ]
+          },
+          "gc.alloc.rate.norm": {
+            "score": 7642.760597963923,
+            "scoreError": 204.4976817251644,
+            "scoreConfidence": [
+              7438.262916238758,
+              7847.258279689087
+            ],
+            "scorePercentiles": {
+              "0.0": 7582.818686419753,
+              "50.0": 7592.698505050505,
+              "90.0": 7958.41980952381,
+              "95.0": 7958.41980952381,
+              "99.0": 7958.41980952381,
+              "99.9": 7958.41980952381,
+              "99.99": 7958.41980952381,
+              "99.999": 7958.41980952381,
+              "99.9999": 7958.41980952381,
+              "100.0": 7958.41980952381
+            },
+            "scoreUnit": "B/op",
+            "rawData": [
+              [
+                7645.701580645161,
+                7582.819797979798,
+                7587.997078014185
+              ],
+              [
+                7657.126498812351,
+                7582.818686419753,
+                7592.698505050505
+              ],
+              [
+                7958.41980952381,
+                7582.833964912281,
+                7594.42946031746
+              ]
+            ]
+          },
+          "gc.count": {
+            "score": 39.0,
+            "scoreError": "NaN",
+            "scoreConfidence": [
+              39.0,
+              39.0
+            ],
+            "scorePercentiles": {
+              "0.0": 2.0,
+              "50.0": 4.0,
+              "90.0": 6.0,
+              "95.0": 6.0,
+              "99.0": 6.0,
+              "99.9": 6.0,
+              "99.99": 6.0,
+              "99.999": 6.0,
+              "99.9999": 6.0,
+              "100.0": 6.0
+            },
+            "scoreUnit": "counts",
+            "rawData": [
+              [
+                6.0,
+                5.0,
+                6.0
+              ],
+              [
+                6.0,
+                4.0,
+                4.0
+              ],
+              [
+                2.0,
+                3.0,
+                3.0
+              ]
+            ]
+          },
+          "gc.time": {
+            "score": 326.0,
+            "scoreError": "NaN",
+            "scoreConfidence": [
+              326.0,
+              326.0
+            ],
+            "scorePercentiles": {
+              "0.0": 20.0,
+              "50.0": 36.0,
+              "90.0": 65.0,
+              "95.0": 65.0,
+              "99.0": 65.0,
+              "99.9": 65.0,
+              "99.99": 65.0,
+              "99.999": 65.0,
+              "99.9999": 65.0,
+              "100.0": 65.0
+            },
+            "scoreUnit": "ms",
+            "rawData": [
+              [
+                44.0,
+                52.0,
+                23.0
+              ],
+              [
+                36.0,
+                22.0,
+                28.0
+              ],
+              [
+                65.0,
+                36.0,
+                20.0
+              ]
+            ]
+          },
+          "jfr": {
+            "score": "NaN",
+            "scoreError": "NaN",
+            "scoreConfidence": [
+              "NaN",
+              "NaN"
+            ],
+            "scorePercentiles": {
+              "0.0": "NaN",
+              "50.0": "NaN",
+              "90.0": "NaN",
+              "95.0": "NaN",
+              "99.0": "NaN",
+              "99.9": "NaN",
+              "99.99": "NaN",
+              "99.999": "NaN",
+              "99.9999": "NaN",
+              "100.0": "NaN"
+            },
+            "scoreUnit": "---",
+            "rawData": [
+              [
+                "NaN"
+              ],
+              [
+                "NaN"
+              ],
+              [
+                "NaN"
+              ]
+            ]
+          }
+        }
+      },
+      "forkMeans": [
+        241998.95664714446,
+        185722.21179539707,
+        102901.48346515273
+      ],
+      "acrossForkMeanStatistics": {
+        "n": 3,
+        "arithmeticMean": 176874.21730256476,
+        "sampleStandardDeviation": 69969.5792206343,
+        "sampleCVPercent": 39.55894775830605,
+        "minimum": 102901.48346515273,
+        "maximum": 241998.95664714446
+      }
+    }
+  },
+  "rawInventory": [
+    {
+      "phase": "engine-original",
+      "artifactDirectories": [
+        "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706"
+      ],
+      "runnerRecordedArtifactFields": {
+        "artifactDirectories": [
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706"
+        ],
+        "artifacts": {
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706/baseline-engine-manifest.json": {
+            "bytes": 2164,
+            "sha256": "0815eee01b6a35130d3bac586e071ca9cf27ed79ce59e35f5f205e8253baffbb"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706/classpath.txt": {
+            "bytes": 11011,
+            "sha256": "b9d7c7bda455797ec5bcfccd4d1972f189754f801a2769147ed6f2314355161e"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706/console.log": {
+            "bytes": 9069,
+            "sha256": "5419662732a9a447cbea1a16c1ebef6ff1642707d110eac331908afaa4c2a6fb"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706/environment.json": {
+            "bytes": 1217,
+            "sha256": "a9b1ca3c7009aabb18f5ace0101e9ea85a8ed480c4eaf7402da4c43f052c83a4"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706/jfr/io.github.cheshmakzanoon.portfolio.pulsestream.EngineBenchmark.freshBatch-Throughput/profile.jfr": {
+            "bytes": 489555,
+            "sha256": "654366b1696b6cbacc43e53f15129eaac22e442d63a027aad71df377bef5eea5"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-baseline-1792307321405706/jmh.json": {
+            "bytes": 8047,
+            "sha256": "c94b09b59818092d49fa4f0a615a16bc16fb0f1a1d3b809bd9c9ea4c4b049c91"
+          }
+        }
+      }
+    },
+    {
+      "phase": "engine-current",
+      "artifactDirectories": [
+        "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155"
+      ],
+      "runnerRecordedArtifactFields": {
+        "artifactDirectories": [
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155"
+        ],
+        "artifacts": {
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155/console.log": {
+            "bytes": 9060,
+            "sha256": "20d76d746891a846cfeec19fc4cce26f8d1e8234444b8e1a48fea2a942182e4b"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155/environment.json": {
+            "bytes": 1217,
+            "sha256": "9184889e0a46d8b0bf0c2c28f842a067fe381dab2931267d6fc4301e6f083520"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155/jfr/io.github.cheshmakzanoon.portfolio.pulsestream.EngineBenchmark.freshBatch-Throughput/profile.jfr": {
+            "bytes": 505538,
+            "sha256": "3f73b4b384ee964908fb925b0fdb3cbcbbcbc917ad839fcada265f49d131bbcf"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/engine-1792307343406155/jmh.json": {
+            "bytes": 8020,
+            "sha256": "20018f0cebf7e668f8633e2c21f792cdd07d4f80130c373181a5161bd3832c82"
+          }
+        }
+      }
+    },
+    {
+      "phase": "dependencies-up",
+      "artifactDirectories": null,
+      "runnerRecordedArtifactFields": {}
+    },
+    {
+      "phase": "durable-full-1",
+      "artifactDirectories": [
+        "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675"
+      ],
+      "runnerRecordedArtifactFields": {
+        "artifactDirectories": [
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675"
+        ],
+        "artifacts": {
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/console.log": {
+            "bytes": 39319,
+            "sha256": "872f9a9d33e50fd98ff33fef0af9b0bfd75bd799fa686d93d2404b989e42738c"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/environment.json": {
+            "bytes": 1217,
+            "sha256": "99e305db174d0661cf9fede6a55266db4ed741784197ac99d2d7def1da919b84"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/gc.log": {
+            "bytes": 3135858,
+            "sha256": "62ec7de657788358be92304a39236690c378149a6a1d2ab6c3333780381eb699"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/result.json": {
+            "bytes": 2881,
+            "sha256": "1e3166eee20b0eae55bacb67820a4980799356afc00a7265719873d8b3673c5d"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/workload.jfr": {
+            "bytes": 20746630,
+            "sha256": "af9c0205f32192e1d16b88ae8cc8f06dcef2701f09b1e9f4298f176b0e396440"
+          }
+        }
+      }
+    },
+    {
+      "phase": "durable-full-2",
+      "artifactDirectories": [
+        "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444"
+      ],
+      "runnerRecordedArtifactFields": {
+        "artifactDirectories": [
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444"
+        ],
+        "artifacts": {
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/console.log": {
+            "bytes": 39315,
+            "sha256": "12ea541f9405ba889598da90691fcc17094445c57b42c1b977ef68187b618ab2"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/environment.json": {
+            "bytes": 1217,
+            "sha256": "498ec2e6d0739687b175d97ac36b867a78e7a37576d8443e68795861e0512e64"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/gc.log": {
+            "bytes": 2919443,
+            "sha256": "b53e15c9b7aa809ddd4184f1b9d271026c265b44e1cc4b01756e4a5849dd2e23"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/result.json": {
+            "bytes": 2877,
+            "sha256": "f6407192e827743f0e441f43de14ea31f036a6c6428c5bd9dd77ad57efc09cab"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/workload.jfr": {
+            "bytes": 19781122,
+            "sha256": "f31fa25caaa5a23d5419238248ee701a5f4ebe295525860a99591bb67d3b2445"
+          }
+        }
+      }
+    },
+    {
+      "phase": "durable-full-3",
+      "artifactDirectories": [
+        "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382"
+      ],
+      "runnerRecordedArtifactFields": {
+        "artifactDirectories": [
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382"
+        ],
+        "artifacts": {
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/console.log": {
+            "bytes": 39317,
+            "sha256": "1d8f40b09629ae33216fd8e07ac64fc0e047359878bf9e3a01a6b88638f5aa9b"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/environment.json": {
+            "bytes": 1217,
+            "sha256": "817d91e0ca07dd87b9a116f03db4570b1604ef394c55292e196a03385f9896f6"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/gc.log": {
+            "bytes": 3196967,
+            "sha256": "381f1d1951cb38397cfc15aba64a53f43feb1cbef19a6dccdfbdf25110939aab"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/result.json": {
+            "bytes": 2879,
+            "sha256": "307e638046fd95cb37e0f9164519928f8dbcbb732a31ee0b3362385b4f87bc3d"
+          },
+          "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/workload.jfr": {
+            "bytes": 19904459,
+            "sha256": "659800867cb3105d79bf2b8dca5561bf295302de107fa13f88a653e907ce6d4c"
+          }
+        }
+      }
+    }
+  ],
+  "boundaries": [
+    "Raw inventory/hash verification and JFR/profile interpretation remain separate review tasks.",
+    "Three sequential single-host rounds are not a stable capacity or SLO claim.",
+    "Per-round latency quantiles are not pooled into global quantiles.",
+    "Closed-loop checkpoint latency excludes offered-load queue waiting.",
+    "Java process metrics exclude container resource costs; supervision overhead is included, not independently quantified.",
+    "Engine microbenchmark ratio does not establish durable causal benefit; allocation totals do not identify a dominant cause."
+  ]
+}

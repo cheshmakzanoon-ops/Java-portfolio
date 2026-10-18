@@ -291,7 +291,7 @@ public final class Wave2Study {
         ingest(engine, access, fixtures);
         identities.add(
             NAMES[index] + "=" + RelevanceEvaluator.modelFingerprint(engine.rankingIdentity()));
-        for (var mode : QueryPlanner.Mode.values())
+        for (var mode : QueryPlanner.Mode.legacyValues())
           for (var query : headers) {
             var response =
                 engine.search(
@@ -340,7 +340,7 @@ public final class Wave2Study {
     List<String> summary = new ArrayList<>();
     for (String family : NAMES)
       if (rows.stream().anyMatch(r -> r.family().equals(family)))
-        for (var mode : QueryPlanner.Mode.values())
+        for (var mode : QueryPlanner.Mode.legacyValues())
           for (String split : List.of("development", "validation"))
             summary.add(
                 family + " " + mode + " " + split + " " + aggregate(rows, family, mode, split));

@@ -1,6 +1,6 @@
 # TenantShield execution status
 
-Current-instance correctness/security, asserted demo/reset and the full quiet reference workload have passed. **Independent measurement review, clean-checkout reproduction and repository-wide/remote-CI release gates remain open.** No complete repository release or production guarantee follows.
+Current-instance correctness/security, asserted demo/reset and the full quiet reference workload have passed. A04’s scoped measured-artifact review is closed with no blocking finding. **Clean-checkout reproduction and repository-wide/remote-CI release gates remain open.** No complete repository release or production guarantee follows.
 
 Executable source is `working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11`. Java/POM/scripts/fixtures remain frozen; this handoff changes analysis evidence/docs only. No A05 build, service or container is running. Coordinator owns all Git/shared writes.
 
@@ -10,7 +10,7 @@ Executable source is `working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197
 | P05-A2 | PASS within tested scope | Real OIDC verification; signed identity/audience/time negatives; server-side membership binding and raw body limits. |
 | P05-A3 | PASS within tested scope | Deterministic RBAC/ABAC/UNKNOWN/deny behavior; expected-prior immutable publication and atomic monotonic rollback. |
 | P05-A4 | PASS within tested scope | Older snapshot boundary, 30 new post-revocation denials, 160 concurrent version-specific readers, 100 alternating pooled reads and cache/failure tests. |
-| P05-A5 | Full execution passed; measurement review pending | Two 21-assertion protected demos with reset preservation, full seed, three 100k authenticated HTTP runs and both three-fork JMH methods. |
+| P05-A5 | Full execution passed; scoped measurement review closed with no blocker | Two 21-assertion protected demos with reset preservation, full seed, three 100k authenticated HTTP runs and both three-fork JMH methods. |
 
 ## Correctness and reviewed source lineage
 
@@ -38,7 +38,6 @@ The packet under `evidence/reference-20261018/` contains the small hash/stat env
 
 ## Remaining work and pause
 
-- Independent review of final metrics, raw hashes, source/artifact lineage and performance claims; no unreceived approval is claimed.
 - Coordinator clean-checkout, global/hosted-CI and Git publication validation, followed by the final release decision.
 - All owned paths write-paused after handoff. Preserve the seeded volume and every failed/successful artifact; no experiments are scheduled.
 

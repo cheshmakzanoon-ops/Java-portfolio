@@ -90,7 +90,7 @@ public final class PairwiseTrainer {
       double sum = reservoir.stream().mapToDouble(Choice::weight).sum();
       List<Pair> pairs = new ArrayList<>();
       for (var choice : reservoir) {
-        double[] difference = new double[SearchFeatureSchema.SIZE];
+        double[] difference = new double[scaler.means().length];
         for (int k = 0; k < difference.length; k++)
           difference[k] = values.get(choice.high())[k] - values.get(choice.low())[k];
         pairs.add(new Pair(difference, choice.weight() / sum));
@@ -103,7 +103,7 @@ public final class PairwiseTrainer {
     for (var query : perQuery)
       for (var pair : query)
         pairs.add(new Pair(pair.difference(), pair.weight() / perQuery.size()));
-    double[] weights = new double[SearchFeatureSchema.SIZE];
+    double[] weights = new double[scaler.means().length];
     Objective current = objective(pairs, weights, l2);
     double initial = current.loss();
     for (int iteration = 0; iteration <= iterations; iteration++) {

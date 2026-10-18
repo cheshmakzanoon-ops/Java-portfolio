@@ -23,8 +23,8 @@ public final class LinearRankingModel {
     this.means = SearchFeatureSchema.checked(means);
     if (scales == null
         || weights == null
-        || scales.length != SearchFeatureSchema.SIZE
-        || weights.length != SearchFeatureSchema.SIZE)
+        || scales.length != this.means.length
+        || weights.length != this.means.length)
       throw new IllegalArgumentException("model dimension");
     this.scales = scales.clone();
     this.weights = weights.clone();
@@ -63,6 +63,8 @@ public final class LinearRankingModel {
     return l2;
   }
 
+  public int dimensions(){return means.length;}
+
   public double[] means() {
     return means.clone();
   }
@@ -77,6 +79,7 @@ public final class LinearRankingModel {
 
   public double[] normalized(double[] input) {
     double[] values = SearchFeatureSchema.checked(input);
+    if(values.length!=means.length)throw new IllegalArgumentException("inference model schema dimension");
     for (int i = 0; i < values.length; i++)
       values[i] = Math.clamp((values[i] - means[i]) / scales[i], -8.0, 8.0);
     return values;
@@ -95,7 +98,7 @@ public final class LinearRankingModel {
     StringJoiner out = new StringJoiner(" ", "linearModel=" + identity + " ", "");
     for (int i = 0; i < values.length; i++)
       if (values[i] * weights[i] != 0)
-        out.add(SearchFeatureSchema.NAMES.get(i) + "Contribution=" + values[i] * weights[i]);
+        out.add(SearchFeatureSchema.names(values.length).get(i) + "Contribution=" + values[i] * weights[i]);
     return out.toString();
   }
 
@@ -105,8 +108,8 @@ public final class LinearRankingModel {
       try (var out = new DataOutputStream(buffer)) {
         out.writeInt(MAGIC);
         out.writeInt(1);
-        out.writeUTF(SearchFeatureSchema.VERSION);
-        out.writeInt(SearchFeatureSchema.SIZE);
+        out.writeUTF(SearchFeatureSchema.version(means.length));
+        out.writeInt(means.length);
         for (double[] array : List.of(means, scales, weights))
           for (double value : array) out.writeDouble(value);
         out.writeUTF(trainingExport);
@@ -146,11 +149,10 @@ public final class LinearRankingModel {
         Arrays.copyOfRange(bytes, body.length, bytes.length)))
       throw new IOException("model checksum");
     try (var in = new DataInputStream(new ByteArrayInputStream(body))) {
-      if (in.readInt() != MAGIC
-          || in.readInt() != 1
-          || !in.readUTF().equals(SearchFeatureSchema.VERSION)
-          || in.readInt() != SearchFeatureSchema.SIZE) throw new IOException("model schema");
-      double[][] arrays = new double[3][SearchFeatureSchema.SIZE];
+      if(in.readInt()!=MAGIC||in.readInt()!=1)throw new IOException("model schema");
+      String schema=in.readUTF();int dimensions=in.readInt();
+      if(!schema.equals(SearchFeatureSchema.version(dimensions)))throw new IOException("model schema");
+      double[][] arrays = new double[3][dimensions];
       for (double[] array : arrays)
         for (int i = 0; i < array.length; i++) array[i] = in.readDouble();
       var result =

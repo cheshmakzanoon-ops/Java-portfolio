@@ -1,0 +1,32 @@
+# Offline assembly plan — quiet12 remains active
+
+This scratch packet is not a measured-study pass. It was prepared while durable round3 was active. Do not change frozen product/runtime/runner/READY/public documentation. Do not execute report assembly, Java/JFR/Maven/Docker, scans or hashes until root reports terminal outcome and explicitly releases postprocessing.
+
+## Terminal and lineage gate
+
+- Obtain actual quiet12 outer reservation, start/end/exit, all-three-lock quiet preflight and host/process/container scope evidence. Require terminal runner exit0/status MEASUREMENTS_PASSED and successful scoped teardown with no remaining owned services. A passing third workload alone does not establish that gate.
+- Confirm all five measurement phases belong to this one reservation: original-engine3forks, current-engine3forks, durable full1/full2/full3. Do not borrow quiet10 engine rows. Keep quiet10 failure/raw outputs immutable and separately labeled.
+- Require unchanged source2f7d0008…, runner3be9d084…, READY a6f41eec…, baseline manifest0815eee0…; use runner recorded hashes and authorized verification after release. Runtime build129inputs and app receipts must retain current recert lineage. Original baseline source/classes stay independent of optimized classpath.
+- Index exact phase commands/exits, fresh output directories, raw JSON/environment/GC/JFR/JMH logs, artifact sizes and root-runner hashes. Copy only small public envelopes; keep large raw artifacts in the local indexed reference directory. Flag missing/empty/mismatched files rather than restamp them.
+
+## Durable correctness and workload
+
+- Each of three distinct run/database/topic identities: seed4404, 8partitions, 10,000keys, 1,000,000accepted measurements, 1,000duplicates, six assertions passed/zero failed, watermark94,000 and 20,000published windows.
+- Per round committedDigest equals recoveryDigest and resultDigest equals independently derived oracleDigest. Result digest must match across all three rounds. State digests can differ between rounds because run/source identities differ; require equality within each round, not falsely across rounds.
+- Read exact measured boundaries in result/environment and frozen Workload entrypoint. Report excluded source/schema preparation times separately. SQL result/outbox writes are included; result-outbox delivery is excluded. Report recovery as its own measured operation, not startup availability.
+
+## Tables and variability
+
+- Preserve each round's raw duration, accepted events/s, checkpoint count/p50/p95/p99, process CPU seconds/average cores, allocated bytes, observed peak heap, GC collections/time, database size/growth, recovery time and producer/schema/oracle preparation times.
+- Recompute throughput as acceptedMeasurements / elapsedSeconds and process average cores as processCpuSeconds / elapsedSeconds with precision tolerance. Clearly label sample-standard-deviation CV across three round throughput rates, arithmetic mean of rates, range, and aggregate total events / total elapsed. Three sequential rounds on one host do not establish stable capacity or a service-level objective.
+- Do not pool or average per-round p95/p99 into a global percentile. Present per-round values/range, with closed-loop coordinated-omission caveat. Peak heap is an observed maximum, not a complete peak bound. Allocations are measured Java allocations, not retained heap.
+- JMH: preserve score/unit/mode/params/forks/warmup/measurement settings, original/current primary/GC secondary metrics, actual3fork ×3measurement samples, individual fork means and sample CV across fork means. Keep JMH supplied confidence interval/error semantics unchanged. State which direction is better before describing a ratio. Do not treat nine samples as nine independent process forks.
+- Microbenchmark runs fresh500record engine transitions and uses a preserved old Engine classpath plus the same current harness/profilers. A microbenchmark ratio does not establish durable end-to-end benefit; there is no old-engine durable control in this study.
+
+## Interpretation and review
+
+- Full recording/CPU/GC/environment evidence must be indexed and inspected only after release. Any JFR summaries need exact commands and distinct derived-artifact hashes; raw files remain untouched. Check recording bounds and lost-event/coverage limitations before naming sampled hot methods.
+- The approximately60GB allocated per completed round is an observation. Copying full state/dedup maps, snapshot encoding/compression and SQL replacement are cost hypotheses until attributed by appropriate profiles/control experiments. GC time is one measured component; percentages of wall time do not account for every resource or prove a dominant bottleneck.
+- Java process CPU/allocation/heap excludes Kafka/PostgreSQL container CPU/memory and Python/Docker supervision. The host has a finite CPU/memory quota; report exact cgroup/JDK/heap/GC/Compose image/config/environment boundaries. Docker inspect/top/process supervision runs about every2s while dependencies are active: its overhead is included, not independently quantified.
+- Preserve all failures and disclose reservation/setup/recovery exclusions, sequential-order/cache effects, one-host/three-round sample size and instrumentation overhead. No extrapolation to saturation, open-loop latency, concurrent tenants or production availability.
+- After root terminal grant, assemble a small review packet with exact source/artifact lineage and honest numerical claims. Independent read-only artifact/statistics review precedes final public docs/release acceptance. Root owns Git. No product optimization or new measurement is implied by postprocessing authorization.

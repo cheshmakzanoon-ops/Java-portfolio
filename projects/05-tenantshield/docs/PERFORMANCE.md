@@ -63,4 +63,4 @@ TENANTSHIELD_QUIET_GRANTED=1 .work/A05/run-reference-window.sh
 
 It uses no-Maven mode, frozen source/artifacts, retained seeded volume, both full JMH methods and three full HTTP processes, then owned teardown even on failure. The first quiet attempt failed before JMH because extraction omitted archive-root benchmark metadata; its exact failure remains `reference-attempt-5-failed.json`. The repaired metadata extraction passed 18 unit methods, actual discovery and eight integrity checks before this successful study. No failed or diagnostic run was pooled into these results.
 
-Independent measured-artifact review, clean-checkout reproduction and repository-wide/remote-CI release validation remain open. Current-instance workload success is not a production SLA, capacity guarantee or complete repository release.
+A04’s scoped measured-artifact review is closed with no blocking finding; [REVIEW.md](REVIEW.md) records its scope and pre-closure packet identity. Clean-checkout reproduction and repository-wide/remote-CI release validation remain open. Current-instance workload success is not a production SLA, capacity guarantee or complete repository release.

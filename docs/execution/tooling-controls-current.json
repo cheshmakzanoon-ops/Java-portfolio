@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAtUtc": "2026-10-18T08:37:42.118942+00:00",
+  "reservation": "quiet-validation-13-threadlens-stress",
+  "sourceFiles": {
+    ".work/A08/prepare-reference-9.py": "e0c29aca2eb67cdd84370ea809b1ff3e63f23ec07e449ae2ec6fa6759d83476f",
+    ".work/A08/execute-prepared-reference-9.py": "20621fb941c36b443a8274b13c87233a1e6d459ef193d6b3080f86c432a0f8e7",
+    ".work/A08/reference_owned_process.py": "3a12303c3688d6cc454b1ce69dfe48e1e389f044eaa8ea2c8b7dce93bca42db3",
+    ".work/A08/test_reference_helpers.py": "9b680513a12173755ff62acc6267a17d35641c8d9e8e5f25721ed210ef71a4ca",
+    ".work/coordinator/validate-clean-checkout.py": "a6ac4c8ece069c6c8baf38c30bbc93ca39d02cf7bf113f6eb85e2e2d018ed715",
+    ".work/A02/test-cleancheck-review.py": "6afb64408040af84a7c5869211c90eae665f3ee9b30cf66f978be60c31e5bfd1",
+    ".work/A02/cleancheck-process-controls.py": "b89334390973761818d870a4b42cf77b7ca85fb4996bedb92e090333d4dc78e0"
+  },
+  "threadlensHelpers": {
+    "actualTests": 13,
+    "failures": 0,
+    "errors": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 7.661,
+    "log": ".work/coordinator/quiet-validation-13-threadlens-stress/command.log"
+  },
+  "cleanCheckoutPureControls": {
+    "actualTests": 15,
+    "failures": 0,
+    "errors": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 0.193,
+    "scope": "Owner-reported tiny-filesystem/AST mock controls; root independently observed prior10-method pass."
+  },
+  "cleanCheckoutActualProcessControls": {
+    "status": "PASS",
+    "elapsedSeconds": 23.75565177200042,
+    "actualCases": 2,
+    "unrelatedFixtureSpared": true,
+    "remainingOwnedProcessesIncludingZombies": [],
+    "cleanupErrors": [],
+    "rawResults": ".work/A02/process-controls-20261018T081052575250Z/control-results.json"
+  },
+  "limitations": [
+    "Bounded exercised cases do not prove every process interleaving.",
+    "Actual clean checkout/builds/demos and the ThreadLens complete84 overhead study remain pending."
+  ],
+  "threadlensStress": {
+    "status": "PASS",
+    "requestedSeconds": 1200,
+    "actualSeconds": 1202.66918876,
+    "scope": "Functional stress with intentional overload/incomplete windows; not overhead acceptance.",
+    "receipt": "docs/execution/performance-reservations/013-threadlens-stress.json"
+  }
+}

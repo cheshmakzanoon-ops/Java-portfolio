@@ -1,0 +1,15 @@
+# Pre-execution endpoint and binding clarification
+
+Root approved this generic clarification before any wave3 feature export, score, fit or VAL access. Both earlier frozen scratch drafts remain unchanged. The finite16dimensions, R0/R1/R2/R3 families and L2grid remain unchanged.
+
+Linked-value dimension12 may use the actual normalized Java primitive-type lexeme of an explicitly declared parameter when that parameter's value actually feeds a supported/resolved consumer. Apply this uniformly to boolean, byte, char, short, int, long, float and double, including their array element types. Do not add words such as “array”, “raw”, “safe” or “input” that are absent from the declared lexeme. R1/feature10 remains executable-identifier overlap; this adds no signature/visibility/helper bonus there.
+
+Supported typed producer positions are explicit parameters of a syntactically observed method/constructor. A proven single-assignment local alias of that parameter may preserve the same producer within the bounded same-member dependency walk. A field, receiver state, generic type variable, unproven var/overload/cast, unresolved capture or arbitrary computed result never gains a parameter-type anchor. Source positions/scopes and conservative provenance checks must prevent unused parameter types or types in another method from matching a consumer. This is observed query-conditioned dataflow, not proof that the user intended raw input or a particular utility.
+
+NO_IDENTIFIERS masks these source/type anchors; NO_CODE_FEATURES disables all new source dimensions and usage ordering. NO_API_DOCS keeps the independent primitive lexeme anchor while removing JDK prose. Required negatives before export: unused byte[] and each other primitive kind; a different consumed value; field/object-state digest rather than the parameter; wrong receiver for a claimed chain; unrelated method; reassigned/shadowed/generic/varargs producers. Assert the relevant dimension independently rather than claiming that all lexical/API relevance disappears.
+
+The binder may preserve equality of the SAME unresolved nominal type spelling in the SAME source lexical scope when no generic/inherited ambiguity is present. This is an opaque scoped type identity, not a resolved JDK/API class or javac attribution. It never crosses files or produces API prose. External/cross-file inference still needs the declared supported unique source type or catalog signature rules; unknown supertypes and inherited overloads abstain.
+
+Declarations inside local/anonymous classes and explicit field/initializer executable scopes must be included in the bounded AST inventory even when their captured bindings cannot be resolved. Unsupported declaration inventory still triggers R3's whole-query membership bypass under addendum1. A derived API-anchor quota can remove derived feature evidence without claiming an API behavior; it cannot erase a known declaration or silently certify a missing declaration inventory.
+
+All code remains uncompiled/unverified at this clarification; no Java/Maven/training/evaluation is authorized during the active reference reservation.

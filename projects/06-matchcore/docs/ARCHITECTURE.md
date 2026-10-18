@@ -14,7 +14,7 @@ flowchart LR
   B --> C
 ```
 
-`matching-core` owns the original algorithm. Ordered TreeMaps find best prices; each level has a doubly linked FIFO and aggregate quantity; a hash index maps account/order to its node. Cancel/unlink is O(1) after lookup; a new price level is O(log levels); matching traverses only consumed makers. Remaining orders are immutable only at the view boundary.
+`matching-core` owns the original algorithm. Ordered TreeMaps find best prices; each level has a doubly linked FIFO and aggregate quantity; a hash index maps account/order to its node. FIFO pointer unlink is O(1) after lookup; removing an emptied price level from its TreeMap is O(log P), where P is the number of price levels. Creating a new price level is also O(log P); matching traverses only consumed makers. Remaining orders are immutable only at the view boundary.
 
 `journal` owns versioned NIO records and the exclusive file lock. A 24-byte independently checksummed header contains magic, schema, sequence and bounded length; payload JSON and its CRC32C follow. Full-write loops precede `force(true)`. Only incomplete final records can be truncated. Every complete record and every sequence must validate, even if a snapshot exists.
 

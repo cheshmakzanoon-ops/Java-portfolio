@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "classification": "separate-semantic-addendum-pending-independent-review",
+  "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "parent19FileFingerprint": "44bbb7ccb2615d9fb78a4c08c92902602c8de039499e4e80faf71e5b424dea15",
+  "parentPacketUnchanged": true,
+  "recordings": [
+    {
+      "phase": "engine-original",
+      "path": ".work/A04/runtime/engine-baseline-1792307321405706/jfr/io.github.cheshmakzanoon.portfolio.pulsestream.EngineBenchmark.freshBatch-Throughput/profile.jfr",
+      "bytes": 489555,
+      "sha256": "654366b1696b6cbacc43e53f15129eaac22e442d63a027aad71df377bef5eea5"
+    },
+    {
+      "phase": "engine-current",
+      "path": ".work/A04/runtime/engine-1792307343406155/jfr/io.github.cheshmakzanoon.portfolio.pulsestream.EngineBenchmark.freshBatch-Throughput/profile.jfr",
+      "bytes": 505538,
+      "sha256": "3f73b4b384ee964908fb925b0fdb3cbcbbcbc917ad839fcada265f49d131bbcf"
+    },
+    {
+      "phase": "durable-full-1",
+      "path": ".work/A04/runtime/durable-full-1792307383408675/workload.jfr",
+      "bytes": 20746630,
+      "sha256": "af9c0205f32192e1d16b88ae8cc8f06dcef2701f09b1e9f4298f176b0e396440"
+    },
+    {
+      "phase": "durable-full-2",
+      "path": ".work/A04/runtime/durable-full-1792308696512444/workload.jfr",
+      "bytes": 19781122,
+      "sha256": "f31fa25caaa5a23d5419238248ee701a5f4ebe295525860a99591bb67d3b2445"
+    },
+    {
+      "phase": "durable-full-3",
+      "path": ".work/A04/runtime/durable-full-1792309976615382/workload.jfr",
+      "bytes": 19904459,
+      "sha256": "659800867cb3105d79bf2b8dca5561bf295302de107fa13f88a653e907ce6d4c"
+    }
+  ],
+  "commands": 16,
+  "allExitCodes": 0,
+  "analyzerStarted": "2026-10-18T08:20:07.849916+00:00",
+  "analyzerEnded": "2026-10-18T08:20:23.386556+00:00",
+  "analysisWallSeconds": 15.53664880299766,
+  "maxHeapMiB": 256,
+  "activeProcessorCount": 1,
+  "maximumConcurrentAnalyzers": 1,
+  "secondsCapPerCommand": 45,
+  "secondsCapTotal": 180,
+  "outputCapBytesPerCommand": 1048576,
+  "actualCombinedOutputBytes": 113881,
+  "views": [
+    "summary",
+    "hot-methods",
+    "allocation-by-site"
+  ],
+  "recordingDurationSecondsRounded": [
+    3,
+    4,
+    1306,
+    1271,
+    969
+  ],
+  "executionSampleCounts": [
+    276,
+    165,
+    31487,
+    30577,
+    24889
+  ],
+  "allocationSampleCounts": [
+    960,
+    960,
+    144465,
+    140285,
+    143380
+  ],
+  "recordedDataLossEvents": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "interpretation": [
+    "All5retained recordings parsed successfully. Engine records cover3/4seconds; durable records1306/1271/969seconds.",
+    "Durable sampled leaf HashMap.putVal is19.31\u201319.47%of displayed execution samples and HashMap.getNode14.46\u201314.75%. HashMap.newNode accounts for35.30\u201336.17%of sampled allocation pressure.",
+    "Serialization handle-table and deflate methods also appear in durable sampled hot-method views. Samples support cost investigation, not exhaustive wall-time attribution or a dominant-cause claim.",
+    "Engine original retained record samples array/list copying; current retained record samples regex/map operations. One short retained record per variant does not cover all forks or establish causal share of full-study speedup.",
+    "Zero recorded DataLoss entries is an observed count, not a guarantee of complete event capture. Execution/allocation views are sampled and omit or underrepresent blocked/off-CPU time.",
+    "Analysis occurred only after quiet12ended, during declared shared functional-stress13 background load; it was not a quiet performance window. All16official analyzer child processes completed/reaped by08:20:23UTC."
+  ],
+  "rawSemanticOutputDirectory": ".work/A04/postprocess-prep-quiet12/jfr-semantic-20261018T082007Z",
+  "exactCommandAndOutputHashes": "activity.json",
+  "extractedTables": "sampled-tables.json",
+  "remaining": "Independent measured-artifact/semantic interpretation review and root release. Optional per-fork recapture proposal remains unimplemented."
+}

@@ -84,7 +84,7 @@ public final class SourceJavaParser {
           if(fields.size()>64||members.size()>128)throw new Quota();
         }
         types.add(new SourceFacts.Type(owner,record||flags.contains(Modifier.FINAL)||c.getKind()==Tree.Kind.ENUM,
-            named.local()||c.getExtendsClause()!=null||!c.getImplementsClause().isEmpty(),fields,components));
+            named.local()||!c.getTypeParameters().isEmpty()||c.getExtendsClause()!=null||!c.getImplementsClause().isEmpty(),fields,components));
         if(types.size()>128)throw new Quota();
       }
       var result=new SourceFacts.Unit(SourceFacts.Status.OBSERVED,pkg,imports,types,members);
@@ -102,10 +102,12 @@ public final class SourceJavaParser {
   private static SourceFacts.Member member(CompilationUnitTree unit,SourcePositions positions,String owner,MethodTree method,Set<String> fieldNames) {
     List<SourceFacts.Binding> parameters=new ArrayList<>();
     for(var parameter:method.getParameters())parameters.add(binding(parameter));
-    return executable(unit,positions,owner,method.getName().toString(),type(method.getReturnType()),parameters,
+    var result=executable(unit,positions,owner,method.getName().toString(),type(method.getReturnType()),parameters,
         method.getBody(),(int)positions.getStartPosition(unit,method),
         method.getModifiers().getFlags().contains(Modifier.PRIVATE),
         method.getModifiers().getFlags().contains(Modifier.STATIC),fieldNames);
+    boolean unsupported=!method.getTypeParameters().isEmpty()||method.getParameters().stream().anyMatch(p->p.toString().contains("..."));
+    return !unsupported?result:new SourceFacts.Member(result.owner(),result.name(),result.returnType(),result.parameters(),result.locals(),result.identifiers(),result.calls(),result.guards(),result.returned(),result.position(),result.privateMember(),result.staticMember(),true,result.controlUnknown());
   }
 
   private static SourceFacts.Member executable(CompilationUnitTree unit,SourcePositions positions,String owner,
@@ -113,6 +115,7 @@ public final class SourceJavaParser {
       boolean privateMember,boolean staticMember,Set<String> fieldNames) {
     Map<String,SourceFacts.Binding> locals=new LinkedHashMap<>();
     Set<String> identifiers=new TreeSet<>();List<SourceFacts.Invocation> calls=new ArrayList<>();List<SourceFacts.Guard> guards=new ArrayList<>();
+    Set<String> writes=new HashSet<>();List<SourceFacts.Returned> returned=new ArrayList<>();
     var pending=new ArrayDeque<Visit>();
     if(body!=null)pending.push(new Visit(body,(int)positions.getStartPosition(unit,body),false));
     int nodes=0;boolean unknown=false,uncertainControl=false;
@@ -120,36 +123,48 @@ public final class SourceJavaParser {
       Visit visit=pending.pop();Tree t=visit.tree();
       if(++nodes>512)throw new Quota();
       // Nested/local classes have separate executable scopes and may capture unknown bindings.
-      if(t instanceof ClassTree){unknown=true;continue;}
+      if(t instanceof ClassTree)continue;
+      if(t instanceof LambdaExpressionTree){unknown=true;uncertainControl=true;continue;}
       int block=t instanceof BlockTree?(int)positions.getStartPosition(unit,t):visit.block();
       boolean controlUnknown=visit.controlUnknown()||t instanceof TryTree||t instanceof SwitchTree
           ||t instanceof SynchronizedTree||t instanceof BreakTree||t instanceof ContinueTree;
       if(controlUnknown)uncertainControl=true;
       if(t instanceof VariableTree v) {
-        String name=v.getName().toString();var b=binding(v);
-        if(locals.containsKey(name)){b=new SourceFacts.Binding(name,b.type(),b.initializer(),true);unknown=true;}
+        String name=v.getName().toString();var base=binding(v);
+        var b=new SourceFacts.Binding(name,base.type(),base.initializer(),false,(int)positions.getStartPosition(unit,t),block);
+        if(locals.containsKey(name)||parameters.stream().anyMatch(p->p.name().equals(name))){b=new SourceFacts.Binding(name,b.type(),b.initializer(),true,b.position(),b.block());unknown=true;}
         locals.put(name,b);
       }
       if(t instanceof AssignmentTree a&&a.getVariable() instanceof IdentifierTree i) {
-        String name=i.getName().toString();var old=locals.get(name);
-        if(old!=null)locals.put(name,new SourceFacts.Binding(name,old.type(),old.initializer(),true));
+        String name=i.getName().toString();writes.add(name);var old=locals.get(name);
+        if(old!=null)locals.put(name,new SourceFacts.Binding(name,old.type(),old.initializer(),true,old.position(),old.block()));
       }
       if(t instanceof CompoundAssignmentTree a&&a.getVariable() instanceof IdentifierTree i) {
         String name=i.getName().toString();var old=locals.get(name);
         if(old!=null) {
           boolean supported=Set.of("int","long").contains(old.type())&&a.getKind()==Tree.Kind.PLUS_ASSIGNMENT&&old.initializer().kind().equals("literal")
-              &&old.initializer().text().equals("zero")&&a.getExpression() instanceof IdentifierTree;
+              &&old.initializer().text().startsWith("zero:")&&a.getExpression() instanceof IdentifierTree;
           locals.put(name,new SourceFacts.Binding(name,old.type(),supported?
-              new SourceFacts.Expression("sum","accumulator",List.of(old.initializer(),expression(a.getExpression(),0))):old.initializer(),!supported));
-        }
+              new SourceFacts.Expression("sum","accumulator",List.of(old.initializer(),expression(a.getExpression(),0))):old.initializer(),!supported,old.position(),old.block()));
+        }else writes.add(name);
       }
+      if(t instanceof UnaryTree unary&&Set.of(Tree.Kind.PREFIX_INCREMENT,Tree.Kind.PREFIX_DECREMENT,
+          Tree.Kind.POSTFIX_INCREMENT,Tree.Kind.POSTFIX_DECREMENT).contains(t.getKind())&&unary.getExpression() instanceof IdentifierTree i)writes.add(i.getName().toString());
+      if(t instanceof ReturnTree r&&r.getExpression()!=null)
+        returned.add(new SourceFacts.Returned(expression(r.getExpression(),0),(int)positions.getStartPosition(unit,t),block));
       if(t instanceof MethodInvocationTree invocation)
         calls.add(new SourceFacts.Invocation(expression(invocation,0),(int)positions.getStartPosition(unit,t),block));
+      if(t instanceof NewClassTree construction) {
+        List<SourceFacts.Expression> args=new ArrayList<>();
+        args.add(construction.getClassBody()==null?new SourceFacts.Expression("new",type(construction.getIdentifier()),List.of()):SourceFacts.Expression.unknown());
+        for(Tree arg:construction.getArguments())args.add(expression(arg,1));
+        calls.add(new SourceFacts.Invocation(new SourceFacts.Expression("call","<init>",args),(int)positions.getStartPosition(unit,t),block));
+      }
       if(t instanceof MemberReferenceTree reference) {
         // Unknown arity reference remains in the potential-call inventory; not a false zero.
         calls.add(new SourceFacts.Invocation(new SourceFacts.Expression("call",reference.getName().toString(),
-            List.of(expression(reference.getQualifierExpression(),0),SourceFacts.Expression.unknown())),
-            (int)positions.getStartPosition(unit,t),block));unknown=true;
+            List.of(expression(reference.getQualifierExpression(),0),new SourceFacts.Expression("unknown","reference",List.of()))),
+            (int)positions.getStartPosition(unit,t),block));
       }
       if(t instanceof IfTree branch&&!controlUnknown&&branch.getElseStatement()==null) {
         String terminal=terminal(branch.getThenStatement());
@@ -158,12 +173,12 @@ public final class SourceJavaParser {
       }
       if(t instanceof IdentifierTree i)identifiers.add(i.getName().toString());
       if(t instanceof MemberSelectTree select)identifiers.add(select.getIdentifier().toString());
-      if(locals.size()>64||calls.size()>128||guards.size()>128||identifiers.size()>128)throw new Quota();
+      if(locals.size()>64||calls.size()>128||guards.size()>128||returned.size()>128||identifiers.size()>128)throw new Quota();
       var childList=children(t);
       for(int i=childList.size()-1;i>=0;i--) {
         Tree child=childList.get(i);
         if(t instanceof VariableTree v&&(child==v.getType()||child==v.getModifiers()))continue;
-        if(t instanceof NewClassTree n&&(child==n.getIdentifier()||child==n.getClassBody())) { if(child==n.getClassBody())unknown=true;continue; }
+        if(t instanceof NewClassTree n&&(child==n.getIdentifier()||child==n.getClassBody()))continue;
         pending.push(new Visit(child,block,controlUnknown));
       }
     }
@@ -171,10 +186,16 @@ public final class SourceJavaParser {
     // uppercase-name/owner/style heuristic and no class/import text in this coordinate.
     Set<String> variableNames=new HashSet<>(locals.keySet());variableNames.addAll(fieldNames);
     parameters.forEach(p->variableNames.add(p.name()));identifiers.retainAll(variableNames);
-    for(var call:calls)identifiers.add(call.expression().text());
+    for(var call:calls)if(!call.expression().text().equals("<init>"))identifiers.add(call.expression().text());
     if(uncertainControl)guards.clear();
-    return new SourceFacts.Member(owner,memberName,returnType,parameters,
-        new ArrayList<>(locals.values()),identifiers,calls,guards,position,privateMember,staticMember,unknown);
+    List<SourceFacts.Binding> checkedParameters=new ArrayList<>();
+    for(var p:parameters)checkedParameters.add(writes.contains(p.name())?
+        new SourceFacts.Binding(p.name(),p.type(),p.initializer(),true):p);
+    for(String written:writes)if(locals.containsKey(written)) {
+      var old=locals.get(written);locals.put(written,new SourceFacts.Binding(old.name(),old.type(),old.initializer(),true,old.position(),old.block()));
+    }
+    return new SourceFacts.Member(owner,memberName,returnType,checkedParameters,
+        new ArrayList<>(locals.values()),identifiers,calls,guards,returned,position,privateMember,staticMember,unknown,uncertainControl);
   }
 
   private static SourceFacts.Binding binding(VariableTree variable) {
@@ -213,7 +234,7 @@ public final class SourceJavaParser {
           literal.getValue() instanceof Character?"char":literal.getValue() instanceof Boolean?"boolean":
           literal.getValue() instanceof Long?"long":literal.getValue() instanceof Integer?"int":
           literal.getValue() instanceof Float?"float":"double";
-      if(literal.getValue() instanceof Number n&&n.doubleValue()==0)kind="zero";
+      if(literal.getValue() instanceof Number n&&n.doubleValue()==0)kind="zero:"+kind;
       return new SourceFacts.Expression("literal",kind,List.of());
     }
     if(tree instanceof UnaryTree unary&&tree.getKind()==Tree.Kind.LOGICAL_COMPLEMENT)
@@ -236,12 +257,12 @@ public final class SourceJavaParser {
     int opening=source.indexOf('{',Math.max(0,start));return opening<0?0:opening;
   }
   private static final class Quota extends RuntimeException {}
-  private static final class MemorySource extends SimpleJavaFileObject {
+  static final class MemorySource extends SimpleJavaFileObject {
     private final String source;
     MemorySource(String source){super(URI.create("string:///Opaque.java"),Kind.SOURCE);this.source=source;}
     @Override public CharSequence getCharContent(boolean ignored){return source;}
   }
-  private static final class DeniedFiles extends ForwardingJavaFileManager<StandardJavaFileManager> {
+  static final class DeniedFiles extends ForwardingJavaFileManager<StandardJavaFileManager> {
     DeniedFiles(StandardJavaFileManager manager){super(manager);}
     @Override public boolean hasLocation(Location location){return false;}
     @Override public ClassLoader getClassLoader(Location location){return null;}

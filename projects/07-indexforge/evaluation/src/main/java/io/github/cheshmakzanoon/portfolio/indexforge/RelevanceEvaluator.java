@@ -152,7 +152,7 @@ public final class RelevanceEvaluator {
       StringBuilder rows =
           new StringBuilder("phase,mode,query,split,type,ndcg10,mrr10,recall20,returnedPaths\n");
       List<String> summary = new ArrayList<>();
-      for (var mode : QueryPlanner.Mode.values()) {
+      for (var mode : QueryPlanner.Mode.legacyValues()) {
         for (String split : List.of("development", "validation")) {
           double ndcg = 0, mrr = 0, recall = 0;
           int n = 0, identifiers = 0;
@@ -209,7 +209,7 @@ public final class RelevanceEvaluator {
         }
       }
       String selected =
-          Arrays.stream(QueryPlanner.Mode.values())
+          QueryPlanner.Mode.legacyValues().stream()
               .filter(
                   mode ->
                       validationIdentifier.get(mode.name()) >= validationIdentifier.get("BASELINE")
@@ -243,7 +243,7 @@ public final class RelevanceEvaluator {
         if (!Files.exists(selection) || !Files.readString(selection).equals(decision))
           throw new IOException("run development phase and freeze selection before held-out");
         EvaluationSeal.claim(fixtures, output, decision);
-        for (var mode : QueryPlanner.Mode.values()) {
+        for (var mode : QueryPlanner.Mode.legacyValues()) {
           double ndcg = 0, identifierMrr = 0, recall = 0;
           int n = 0, ids = 0;
           for (Judged q : queries)

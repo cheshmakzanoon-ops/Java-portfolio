@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T07:08:40.127270+00:00",
+    "command": [
+      "env",
+      "PULSE_QUIET_RESERVATION=quiet-reference-12-pulsestream",
+      "python3",
+      ".work/A04/run-quiet.py"
+    ],
+    "sourceRevision": "8de23c7c3c88e81cb7a0fd1d086f2ef90a4e165c",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T07:08:40.130096+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 10100858880,
+    "exitCode": 0,
+    "completedAtUtc": "2026-10-18T08:09:12.050498+00:00",
+    "elapsedSeconds": 3631.920948990999,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "PASS"
+  },
+  "runnerSummary": ".work/A04/quiet-runs/20261018T070840Z-405639/summary.json",
+  "runnerSummarySha256": "67c122e3fc22f6ad3d219dbe9fc46a8027fad9b6bbe7b175c24490b6341bc493",
+  "runnerStatus": "MEASUREMENTS_PASSED",
+  "teardown": {
+    "attempted": true,
+    "composeStopExitCode": 0,
+    "fallbackContainerIds": [],
+    "errors": [],
+    "success": true
+  },
+  "result": "PASS_FULL_MEASUREMENTS_AND_TEARDOWN",
+  "durableRounds": [
+    {
+      "rawResult": "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792307383408675/result.json",
+      "sha256": "1e3166eee20b0eae55bacb67820a4980799356afc00a7265719873d8b3673c5d",
+      "assertions": {
+        "failed": 0,
+        "passed": 6
+      },
+      "measurements": {
+        "acceptedMeasurements": 1000000,
+        "duplicateCount": 1000,
+        "acceptedEventsPerSecond": 777.7219529811101,
+        "elapsedSeconds": 1285.806574145,
+        "producerPreparationSeconds": 11.28402763,
+        "databasePreparationSeconds": 1.782721374,
+        "checkpointSamples": 1018,
+        "checkpointP50Millis": 774.058505,
+        "checkpointP95Millis": 3330.102375,
+        "checkpointP99Millis": 5014.969897,
+        "maximumQueueBatches": 7,
+        "peakObservedHeapBytes": 481820672,
+        "databaseBytes": 391460543,
+        "databaseGrowthBytes": 383205376,
+        "recoveryMillis": 3075.732441,
+        "processCpuSeconds": 1065.11,
+        "averageProcessCpuCores": 0.8283594293397102,
+        "allocatedBytes": 60158233432,
+        "gcCollections": 1811,
+        "gcMillis": 47982,
+        "oracleValidationSeconds": 0.226653467,
+        "publishedWindows": 20000,
+        "watermark": 94000
+      },
+      "committedDigest": "08cbd844fa1f48751a8c2e649458df0cf79df0d0b8ea4ce6bf2477ea99b43f08",
+      "recoveryDigest": "08cbd844fa1f48751a8c2e649458df0cf79df0d0b8ea4ce6bf2477ea99b43f08",
+      "resultDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+      "oracleDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a"
+    },
+    {
+      "rawResult": "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792308696512444/result.json",
+      "sha256": "f6407192e827743f0e441f43de14ea31f036a6c6428c5bd9dd77ad57efc09cab",
+      "assertions": {
+        "failed": 0,
+        "passed": 6
+      },
+      "measurements": {
+        "acceptedMeasurements": 1000000,
+        "duplicateCount": 1000,
+        "acceptedEventsPerSecond": 796.0468002575192,
+        "elapsedSeconds": 1256.2075492,
+        "producerPreparationSeconds": 5.359519229,
+        "databasePreparationSeconds": 1.985347233,
+        "checkpointSamples": 1017,
+        "checkpointP50Millis": 1122.618115,
+        "checkpointP95Millis": 2656.685288,
+        "checkpointP99Millis": 3674.227053,
+        "maximumQueueBatches": 7,
+        "peakObservedHeapBytes": 462946304,
+        "databaseBytes": 371414719,
+        "databaseGrowthBytes": 363159552,
+        "recoveryMillis": 3692.436002,
+        "processCpuSeconds": 1017.5,
+        "averageProcessCpuCores": 0.8099776192620257,
+        "allocatedBytes": 59620260224,
+        "gcCollections": 1683,
+        "gcMillis": 47729,
+        "oracleValidationSeconds": 0.2648713,
+        "publishedWindows": 20000,
+        "watermark": 94000
+      },
+      "committedDigest": "19270af63c6d663cb676bd0d74785394eddf0ef604fa64ab9ec2b4bee7a32b09",
+      "recoveryDigest": "19270af63c6d663cb676bd0d74785394eddf0ef604fa64ab9ec2b4bee7a32b09",
+      "resultDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+      "oracleDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a"
+    },
+    {
+      "rawResult": "/workspace/Java-portfolio/.work/A04/runtime/durable-full-1792309976615382/result.json",
+      "sha256": "307e638046fd95cb37e0f9164519928f8dbcbb732a31ee0b3362385b4f87bc3d",
+      "assertions": {
+        "passed": 6,
+        "failed": 0
+      },
+      "measurements": {
+        "acceptedMeasurements": 1000000,
+        "duplicateCount": 1000,
+        "acceptedEventsPerSecond": 1055.710360890415,
+        "elapsedSeconds": 947.229502566,
+        "producerPreparationSeconds": 10.674530157,
+        "databasePreparationSeconds": 2.230398316,
+        "checkpointSamples": 1018,
+        "checkpointP50Millis": 743.845907,
+        "checkpointP95Millis": 1816.285991,
+        "checkpointP99Millis": 2680.852611,
+        "maximumQueueBatches": 7,
+        "peakObservedHeapBytes": 471334912,
+        "databaseBytes": 393983679,
+        "databaseGrowthBytes": 385728512,
+        "recoveryMillis": 4008.790532,
+        "processCpuSeconds": 808.69,
+        "averageProcessCpuCores": 0.8537424117484695,
+        "allocatedBytes": 60099701400,
+        "gcCollections": 1849,
+        "gcMillis": 34733,
+        "oracleValidationSeconds": 0.19589824,
+        "publishedWindows": 20000,
+        "watermark": 94000
+      },
+      "committedDigest": "6913869ab1882e5319be638b7ab1a9b93878cf3f49a29294b13c8cf47bfb00ac",
+      "recoveryDigest": "6913869ab1882e5319be638b7ab1a9b93878cf3f49a29294b13c8cf47bfb00ac",
+      "resultDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a",
+      "oracleDigest": "3e14e1afbbb53320f83f34646a886460b0ded294e4b6c036ddfbf5b230dbac4a"
+    }
+  ],
+  "limitations": [
+    "Three sequential single-host rounds; variability must be published, no stable capacity or production guarantee.",
+    "All three-fork JMH samples/GC metrics are retained, but the built-in JFR profiler reused its file path so only one recording per engine was retained.",
+    "A separate recording-retention repair and micro-only remeasurement is proposed; original complete quiet12 evidence stays unchanged.",
+    "Complete project acceptance and repository release still require remaining reviews and release checks."
+  ]
+}

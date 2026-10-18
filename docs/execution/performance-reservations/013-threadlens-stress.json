@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-18T08:37:42.117967+00:00",
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T08:10:44.501460+00:00",
+    "command": [
+      "bash",
+      "-c",
+      "set -euo pipefail; source scripts/cloud-env.sh; python3 .work/A08/test_reference_helpers.py -v; python3 .work/A02/cleancheck-process-controls.py --execute-after-quiet-release; THREADLENS_VALIDATION_GRANT=quiet-validation-13-threadlens-stress python3 .work/A08/run-repair-validation-v3.py stress /workspace/Java-portfolio/.work/A08/repair-observer-stress-v3"
+    ],
+    "sourceRevision": "c87ee5ed99c59983b83469ba04da7862c794bd63",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T08:10:44.505425+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 7336587264,
+    "exitCode": 0,
+    "completedAtUtc": "2026-10-18T08:31:25.680582+00:00",
+    "elapsedSeconds": 1241.175801575002,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "PASS"
+  },
+  "context": {
+    "schemaVersion": 1,
+    "startedAtUtc": "2026-10-18T08:11:16.739441+00:00",
+    "sourceFingerprint": "9e98ad70e9ec2e5ad8bbdf0c54baf1f24d02f461975f7dea00c2d26fd90fc9d1",
+    "collectionConfiguration": "v3-allocation50-park-class-only",
+    "agentSha256": "094eb380612ecdd362fba1e3b986482de3cec361e3b8c36550a25b1b9af28055",
+    "reservation": "quiet-validation-13-threadlens-stress",
+    "scope": "functional settings/cause/boundedness validation; not overhead acceptance",
+    "completedAtUtc": "2026-10-18T08:31:25.651561+00:00",
+    "exitCode": 0
+  },
+  "completed": {
+    "stress": {
+      "allWindowsIncomplete": true,
+      "boundedMethods": 10000,
+      "boundedWindows": 900,
+      "contention": "functional stress on shared build host; not overhead evidence",
+      "elapsedSeconds": 1202.66918876,
+      "fixtureSecretAbsent": true,
+      "hostOperations": [
+        2690660,
+        5196684,
+        135751,
+        135645
+      ],
+      "hostWorkerFailed": false,
+      "observerDirectoryBytes": 34529357,
+      "overflowCounters": {
+        "allocationOverflow": 0,
+        "callbackFailures": 0,
+        "clippedStrings": 61,
+        "consumerFailures": 0,
+        "contentionOverflow": 0,
+        "durationClipped": 0,
+        "jfrDataLossBytes": 0,
+        "missingSampleStacks": 0,
+        "queueDrops": 58999215,
+        "stackOverflow": 340866,
+        "timingOverflow": 0,
+        "truncatedStacks": 0,
+        "unsupportedFields": 0,
+        "windowOverflow": 29552
+      },
+      "passed": true,
+      "peakConservativeQueuePayloadBytes": 27679440,
+      "peakObservedHeapBytes": 208660048,
+      "peakObserverDirectoryBytes": 34529357,
+      "profileEventCount": 182393,
+      "queueDrops": 58999215,
+      "queueRetainedBytesAfterDrain": 0,
+      "recordingBytes": 29677582,
+      "requestedSeconds": 1200,
+      "stopReason": "closed",
+      "syntheticIngressOffered": 58234000
+    },
+    "agentStatus": {
+      "statusVersion": "2",
+      "collectionHealthy": "true",
+      "queueDrops": "0",
+      "shutdownDiscarded": "0",
+      "incomplete": "false",
+      "probeFailures": "0",
+      "methodOverflow": "0",
+      "timingHistogramOverflow": "0",
+      "durationClipped": "0",
+      "observedTimingEvents": "271396",
+      "acceptedTimingReservations": "271396",
+      "producerQuiesced": "true",
+      "unfinishedProbeExits": "0",
+      "rawTimingRowsOmitted": "261396",
+      "activeMethodIdLimit": "1",
+      "activeQueueCapacity": "65536",
+      "skips": "{constructorOrInitializer=3, namedModule=1, outsideAllowlist=522, outsideMethodSelection=3, toolOrJdk=36, unsupportedLoader=900}",
+      "statusComplete": "true"
+    },
+    "monitorHostOperationsEqualAcceptedPlusDrops": true,
+    "scope": "shared-host functional boundedness only; not overhead performance"
+  },
+  "scope": "Current-source functional boundedness, stress, replay and privacy validation; not overhead or stable-capacity acceptance. Intentional overload has explicit queue/stack/window loss and all incomplete windows.",
+  "rawFiles": [
+    {
+      "path": ".work/coordinator/quiet-validation-13-threadlens-stress/reservation.json",
+      "bytes": 1198,
+      "sha256": "f28d90811fffab9de520af67204e470bc6220e9211a54b809cd622cc5d7d9fb8"
+    },
+    {
+      "path": ".work/coordinator/quiet-validation-13-threadlens-stress/background-activities.json",
+      "bytes": 1183,
+      "sha256": "d400f706d4b3719ad532659c24d112ed7ae2486a955fb7bc38d5c31a54496d45"
+    },
+    {
+      "path": ".work/coordinator/quiet-validation-13-threadlens-stress/command.log",
+      "bytes": 2872,
+      "sha256": "f62966124b7913fc04f207f37ac1d634c17973f0c0e4fc3a09d0a406b4589a0e"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/context.json",
+      "bytes": 538,
+      "sha256": "7edcbd72aace6ff28b1fde16535b6e3984aef9011ac522d82745407d9d0619bc"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/completed.json",
+      "bytes": 2097,
+      "sha256": "c3fa6dca17e2390c7d1cb2feacb6075d4475bb220e4fa0e30cf1fcb54293df85"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/command.json",
+      "bytes": 1508,
+      "sha256": "d9a721d35e645c4171696ab556cd064df89caa86ffbb6ea8b45a2bac25460043"
+    },
+    {
+      "path": ".work/A08/repair-observer-stress-v3/agent.yaml",
+      "bytes": 240,
+      "sha256": "bb0b1a5208ed09eb8ac1999cd5ccef2a2eb4f5d6c97bc9670b2cce1a1836505c"
+    }
+  ],
+  "independentTeardown": {
+    "passed": true,
+    "command": "python3 scripts/check-stopped.py threadlens",
+    "observedAtUtc": "2026-10-18T08:37:42.118350+00:00"
+  },
+  "pending": [
+    "Full84-JVM overhead study with actual current configuration",
+    "Actual fresh clean-checkout builds, integration checks and demos"
+  ]
+}

@@ -4,7 +4,7 @@ import java.util.*;
 
 /** Bounded parse-only observations. No record claims runtime behavior or compiler attribution. */
 public final class SourceFacts {
-  public static final String SCHEMA = "source-facts-v1";
+  public static final String SCHEMA = "source-facts-v2";
   public static final int SOURCE_BYTES = 65_536;
   public static final int SUMMARY_BYTES = 16_384;
   public static final int RAW_SUMMARY_BYTES = 262_144;
@@ -27,9 +27,15 @@ public final class SourceFacts {
     public static Expression name(String name) { return new Expression("name", name, List.of()); }
   }
 
-  public record Binding(String name, String type, Expression initializer, boolean ambiguous) {
+  public record Binding(String name, String type, Expression initializer, boolean ambiguous,
+      int position, int block) {
     public Binding {
       name = text(name); type = text(type); Objects.requireNonNull(initializer);
+      if (position < -1 || block < -1 || (position == -1) != (block == -1))
+        throw new IllegalArgumentException("binding position");
+    }
+    public Binding(String name, String type, Expression initializer, boolean ambiguous) {
+      this(name, type, initializer, ambiguous, -1, -1);
     }
   }
 
@@ -50,9 +56,18 @@ public final class SourceFacts {
     }
   }
 
+  /** A returned expression in its actual executable scope, never a nested lambda's return. */
+  public record Returned(Expression expression, int position, int block) {
+    public Returned {
+      Objects.requireNonNull(expression);
+      if (position < 0 || block < 0) throw new IllegalArgumentException("return position");
+    }
+  }
+
   public record Member(String owner, String name, String returnType, List<Binding> parameters,
       List<Binding> locals, Set<String> identifiers, List<Invocation> calls, List<Guard> guards,
-      int position, boolean privateMember, boolean staticMember, boolean bindingUnknown) {
+      List<Returned> returned, int position, boolean privateMember, boolean staticMember,
+      boolean bindingUnknown, boolean controlUnknown) {
     public Member {
       owner = text(owner); name = text(name); returnType = text(returnType);
       parameters = bounded(parameters, 64); locals = bounded(locals, 64);
@@ -60,6 +75,14 @@ public final class SourceFacts {
       if (identifiers.size() > 128 || position < 0) throw new IllegalArgumentException("member quota");
       identifiers.forEach(SourceFacts::text);
       calls = bounded(calls, OPERATIONS); guards = bounded(guards, OPERATIONS);
+      returned = bounded(returned, OPERATIONS);
+    }
+
+    public Member(String owner, String name, String returnType, List<Binding> parameters,
+        List<Binding> locals, Set<String> identifiers, List<Invocation> calls, List<Guard> guards,
+        int position, boolean privateMember, boolean staticMember, boolean bindingUnknown) {
+      this(owner, name, returnType, parameters, locals, identifiers, calls, guards, List.of(),
+          position, privateMember, staticMember, bindingUnknown, false);
     }
 
     public String signature() {
