@@ -1,0 +1,1519 @@
+{
+  "schemaVersion": 1,
+  "project": "threadlens",
+  "acceptanceGate": "P08-A2",
+  "status": "PASS",
+  "scope": "fresh v3 planted cause correctness; not overhead acceptance or changed-observer stress",
+  "buildInputFingerprint": "9e98ad70e9ec2e5ad8bbdf0c54baf1f24d02f461975f7dea00c2d26fd90fc9d1",
+  "agentSha256": "094eb380612ecdd362fba1e3b986482de3cec361e3b8c36550a25b1b9af28055",
+  "collectionConfiguration": "v3-allocation50-park-class-only",
+  "declaredEventSettings": {
+    "executionPeriod": "20 ms",
+    "allocationThrottle": "50/s",
+    "monitorThreshold": "2 ms",
+    "parkThreshold": "2 ms",
+    "parkStackTrace": false,
+    "allocationStackTrace": true,
+    "monitorStackTrace": true,
+    "allSixCategoriesRetained": true
+  },
+  "actualProducerSettings": {
+    "jdk.DataLoss#enabled": "true",
+    "jdk.DataLoss#stackTrace": "false",
+    "jdk.ExecutionSample#enabled": "true",
+    "jdk.ExecutionSample#period": "20000000 ns",
+    "jdk.ExecutionSample#stackTrace": "true",
+    "jdk.GarbageCollection#enabled": "true",
+    "jdk.GarbageCollection#stackTrace": "false",
+    "jdk.JavaMonitorEnter#enabled": "true",
+    "jdk.JavaMonitorEnter#stackTrace": "true",
+    "jdk.JavaMonitorEnter#threshold": "2000000 ns",
+    "jdk.ObjectAllocationSample#enabled": "true",
+    "jdk.ObjectAllocationSample#stackTrace": "true",
+    "jdk.ObjectAllocationSample#throttle": "50/s",
+    "jdk.ThreadPark#enabled": "true",
+    "jdk.ThreadPark#stackTrace": "false",
+    "jdk.ThreadPark#threshold": "2000000 ns"
+  },
+  "actualProducerSettingsSidecarsVerified": 42,
+  "runtimeArtifacts": [
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/cli/target/threadlens-cli-1.0.0-SNAPSHOT.jar",
+      "sha256": "345d93b7e0674a00f929fb26dff6cb5792309689643ec62bff75ea41dd4e74f4"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/jfr/target/threadlens-jfr-1.0.0-SNAPSHOT.jar",
+      "sha256": "21ee9651c15f5bb2e79268b7941c5ff9c5a6c25a0fa59faa0543f40fbe598ed0"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/probe/target/threadlens-probe-1.0.0-SNAPSHOT.jar",
+      "sha256": "295bbd18c9e859886db71194228c7681b60581a5ba11668f974652624e29318a"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/analysis/target/threadlens-analysis-1.0.0-SNAPSHOT.jar",
+      "sha256": "9a6c8b0311b7a1bc8dd5ec34e088c12690fb1d36be6454b584fc05c3f44aeeba"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/report/target/threadlens-report-1.0.0-SNAPSHOT.jar",
+      "sha256": "4dfe9e834dd44e678eac33d675db204321ea04aaf269f53f4c771486dd3e5c3d"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/workloads/target/threadlens-workloads-1.0.0-SNAPSHOT.jar",
+      "sha256": "1076e80bfafa914c479198e9414d3d7b15b5c8e07c6d095b59bb4b8ecfc899e9"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.jar",
+      "sha256": "22d1d4316c4ec13a68b559e98c8256d69071593731da96136640f864fa14fad8"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-databind/2.21.5/jackson-databind-2.21.5.jar",
+      "sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-core/2.21.5/jackson-core-2.21.5.jar",
+      "sha256": "b64b5874162b503a0e58a8f7758266e8dd9f91bf49e3a59ae0b5f47589a231b7"
+    }
+  ],
+  "functionalCertificate": {
+    "path": ".work/A08/repair-v3-checkpoint.json",
+    "sha256": "fe9d4c6ad70294937d5d9f38f0bb83caf26a354e2d0f57affc35ac98370fe473",
+    "publicCopy": "projects/08-threadlens/evidence/repair-verification-v3.json",
+    "methods": 118,
+    "ordinaryMethods": 113,
+    "integrationMethods": 5,
+    "mutationsKilled": 256,
+    "mutationsGenerated": 266
+  },
+  "preservationAndFaultReports": {
+    "TransformationTest": {
+      "path": "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.TransformationTest.xml",
+      "sha256": "0e0d44968bf645797d059315877799cb313a004fd99ecc3e3b1258816203ecec",
+      "methods": 50,
+      "passedTestNames": [
+        "fortyEightOutputAndIdentityCases()[1]",
+        "fortyEightOutputAndIdentityCases()[2]",
+        "fortyEightOutputAndIdentityCases()[3]",
+        "fortyEightOutputAndIdentityCases()[4]",
+        "fortyEightOutputAndIdentityCases()[5]",
+        "fortyEightOutputAndIdentityCases()[6]",
+        "fortyEightOutputAndIdentityCases()[7]",
+        "fortyEightOutputAndIdentityCases()[8]",
+        "fortyEightOutputAndIdentityCases()[9]",
+        "fortyEightOutputAndIdentityCases()[10]",
+        "fortyEightOutputAndIdentityCases()[11]",
+        "fortyEightOutputAndIdentityCases()[12]",
+        "fortyEightOutputAndIdentityCases()[13]",
+        "fortyEightOutputAndIdentityCases()[14]",
+        "fortyEightOutputAndIdentityCases()[15]",
+        "fortyEightOutputAndIdentityCases()[16]",
+        "fortyEightOutputAndIdentityCases()[17]",
+        "fortyEightOutputAndIdentityCases()[18]",
+        "fortyEightOutputAndIdentityCases()[19]",
+        "fortyEightOutputAndIdentityCases()[20]",
+        "fortyEightOutputAndIdentityCases()[21]",
+        "fortyEightOutputAndIdentityCases()[22]",
+        "fortyEightOutputAndIdentityCases()[23]",
+        "fortyEightOutputAndIdentityCases()[24]",
+        "fortyEightOutputAndIdentityCases()[25]",
+        "fortyEightOutputAndIdentityCases()[26]",
+        "fortyEightOutputAndIdentityCases()[27]",
+        "fortyEightOutputAndIdentityCases()[28]",
+        "fortyEightOutputAndIdentityCases()[29]",
+        "fortyEightOutputAndIdentityCases()[30]",
+        "fortyEightOutputAndIdentityCases()[31]",
+        "fortyEightOutputAndIdentityCases()[32]",
+        "fortyEightOutputAndIdentityCases()[33]",
+        "fortyEightOutputAndIdentityCases()[34]",
+        "fortyEightOutputAndIdentityCases()[35]",
+        "fortyEightOutputAndIdentityCases()[36]",
+        "fortyEightOutputAndIdentityCases()[37]",
+        "fortyEightOutputAndIdentityCases()[38]",
+        "fortyEightOutputAndIdentityCases()[39]",
+        "fortyEightOutputAndIdentityCases()[40]",
+        "fortyEightOutputAndIdentityCases()[41]",
+        "fortyEightOutputAndIdentityCases()[42]",
+        "fortyEightOutputAndIdentityCases()[43]",
+        "fortyEightOutputAndIdentityCases()[44]",
+        "fortyEightOutputAndIdentityCases()[45]",
+        "fortyEightOutputAndIdentityCases()[46]",
+        "fortyEightOutputAndIdentityCases()[47]",
+        "fortyEightOutputAndIdentityCases()[48]",
+        "unsafeTransformationAndScopeAreSkipped",
+        "transformedFixturePassesJvmVerificationAndObserverFault"
+      ]
+    },
+    "StartupFaultIT": {
+      "path": "projects/08-threadlens/compatibility/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.StartupFaultIT.xml",
+      "sha256": "d5fa86f00c04e50c617a719dc40f30a05d32b72474d438edb4fe32029105e7c2",
+      "methods": 5,
+      "passedTestNames": [
+        "malformedConfigAndUnwritableOutputDoNotPreventHostStartup",
+        "systemExitSealsAdmissionAndReportsPausedProducerAfterConsumerFinishes",
+        "methodCeilingIsExplicitInActualPackagedReport",
+        "installedShadedAgentSaturatesQueueButPreservesHost",
+        "configLimitsAndUnknownKeysAreStrict"
+      ]
+    },
+    "PrimitiveDrainTest": {
+      "path": "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.PrimitiveDrainTest.xml",
+      "sha256": "19b9f2455af3cb64e401f75c6306748d53593c5d6435036d4e79c143c1a7c7ba",
+      "methods": 10,
+      "passedTestNames": [
+        "disabledQuiescenceAndSealingExposePausedProducerWithoutLatePublication",
+        "boundedQuiescenceWaitsForAdmittedExitAndPreservesItsAcceptedRecord",
+        "primitivePublicationConservesConcurrentPlatformAndVirtualProducers",
+        "callbackFailureConsumesExactlyOnceAndReclaimsBeforeInvokingObserver",
+        "concurrentRecoverableFailuresAreCountedExactlyAfterAdmission",
+        "primitiveAndImmutableConsumersShareExactCapacityAndPayloadAcrossReuse",
+        "inclusiveMaximumCapacityIsAccepted",
+        "sealRejectsLateAdmissionButPreservesAlreadyAcceptedRecords",
+        "guardSuppressesReentryAndFaultCleanupAllowsSubsequentPublication",
+        "nonPowerOfTwoSlotsRemainDistinct"
+      ]
+    },
+    "TimingImporterTest": {
+      "path": "projects/08-threadlens/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.report.TimingImporterTest.xml",
+      "sha256": "e675e50bdaadc973317eb172b27e08329e1e1882f7caaba92b146a9864c4ec87",
+      "methods": 7,
+      "passedTestNames": [
+        "malformedTimingDataIsRejected",
+        "selectionOverflowAndBoundedReasonsSurviveReportRoundtrip",
+        "absentAndTruncatedStatusCannotLookHealthy",
+        "primitiveTimingReplayPreservesDistributionsAndLosses",
+        "completeHistogramSummarySupersedesBoundedRawPrefix",
+        "missingOrTruncatedSummaryCannotTurnRawPrefixIntoCompleteDistribution",
+        "healthyTruncatedLegacyAndDuplicateStatusNeverLookComplete"
+      ]
+    }
+  },
+  "driver": {
+    "path": ".work/A08/run-repair-validation-v3.py",
+    "sha256": "e9da77c4a00b7c1c65221c31f7262d25d01d8176c4df0f4a8069e6c744c4c5e6"
+  },
+  "context": {
+    "schemaVersion": 1,
+    "startedAtUtc": "2026-10-18T07:00:21.768910+00:00",
+    "sourceFingerprint": "9e98ad70e9ec2e5ad8bbdf0c54baf1f24d02f461975f7dea00c2d26fd90fc9d1",
+    "collectionConfiguration": "v3-allocation50-park-class-only",
+    "agentSha256": "094eb380612ecdd362fba1e3b986482de3cec361e3b8c36550a25b1b9af28055",
+    "reservation": "quiet-validation-11-threadlens-cause",
+    "scope": "functional settings/cause/boundedness validation; not overhead acceptance",
+    "completedAtUtc": "2026-10-18T07:05:14.042452+00:00",
+    "exitCode": 0
+  },
+  "outerReservation": {
+    "path": ".work/coordinator/quiet-validation-11-threadlens-cause/reservation.json",
+    "sha256": "353685b41b02cc915ac88351ab8d24bd60ef3fd4981360499df09de6325a5941",
+    "observed": {
+      "requestedAtUtc": "2026-10-18T07:00:21.595756+00:00",
+      "command": [
+        "env",
+        "THREADLENS_VALIDATION_GRANT=quiet-validation-11-threadlens-cause",
+        "python3",
+        ".work/A08/run-repair-validation-v3.py",
+        "cause",
+        "/workspace/Java-portfolio/.work/A08/repair-cause-v3"
+      ],
+      "sourceRevision": "e60cdd11d89b0608f02ff5aa6c9b520d16dafefe",
+      "lockPaths": [
+        "/workspace/Java-portfolio/.work/build-slots/0.lock",
+        "/workspace/Java-portfolio/.work/build-slots/1.lock",
+        "/workspace/Java-portfolio/.work/build-slots/2.lock"
+      ],
+      "startedAtUtc": "2026-10-18T07:00:21.602047+00:00",
+      "otherJavaProcessesAtReservation": [],
+      "otherApplicationContainersAtReservation": [],
+      "cpuQuota": "400000 100000",
+      "memoryLimit": "34359738368",
+      "filesystemType": "overlayfs",
+      "freeDiskBytes": 10112864256,
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-18T07:05:14.095877+00:00",
+      "elapsedSeconds": 292.49423875799766,
+      "remainingJavaProcesses": [],
+      "remainingApplicationContainers": [],
+      "result": "PASS"
+    }
+  },
+  "protocol": {
+    "seed": 80842,
+    "pairedBlocksPerCause": 7,
+    "causes": [
+      "cpu",
+      "allocation",
+      "contention"
+    ],
+    "randomizedModes": [
+      "baseline",
+      "regressed"
+    ],
+    "warmupSeconds": 1,
+    "measurementSeconds": 4,
+    "recordedWorkloadJvms": 42,
+    "sequentialOfflineAnalyzerJvms": 42,
+    "minimumIdentifiedPairsPerCause": 6,
+    "recordingIncludesWarmup": true,
+    "applicationHeapMiB": 256,
+    "applicationActiveProcessorCount": 4,
+    "analyzerHeapMiB": 512,
+    "analyzerActiveProcessorCount": 2
+  },
+  "summary": {
+    "cpu": {
+      "identified": 7,
+      "trials": 7
+    },
+    "allocation": {
+      "identified": 7,
+      "trials": 7
+    },
+    "contention": {
+      "identified": 7,
+      "trials": 7
+    },
+    "freshJvmRuns": 42,
+    "warmupSeconds": 1,
+    "measurementSeconds": 4,
+    "minimumPerCause": 6,
+    "passed": true,
+    "allSevenByCause": true
+  },
+  "trials": [
+    {
+      "workload": "cpu",
+      "pair": 0,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.WorkloadMain.lambda$run$0(Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/atomic/AtomicBoolean;Ljava/lang/String;ZZ[Lorg/HdrHistogram/Histogram;I[J)V",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.operation(Ljava/lang/String;Z)V"
+        ]
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:00:23.690427959Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.007757322,
+          "workers": 1,
+          "operations": 74861,
+          "throughputOpsPerSecond": 18679.02519672572,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 61855,
+          "latencyP99Nanos": 228735,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 82392,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:00:30.176374365Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.007331478,
+          "workers": 1,
+          "operations": 16568,
+          "throughputOpsPerSecond": 4134.422143752591,
+          "latencyP50Nanos": 161919,
+          "latencyP95Nanos": 563711,
+          "latencyP99Nanos": 1651711,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 74892,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "cpu",
+      "pair": 1,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.operation(Ljava/lang/String;Z)V",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.WorkloadMain.lambda$run$0(Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/atomic/AtomicBoolean;Ljava/lang/String;ZZ[Lorg/HdrHistogram/Histogram;I[J)V"
+        ]
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:00:36.835311514Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.002186117,
+          "workers": 1,
+          "operations": 62749,
+          "throughputOpsPerSecond": 15678.68114215439,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 115007,
+          "latencyP99Nanos": 662015,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 74328,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:00:43.262268302Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004967882,
+          "workers": 1,
+          "operations": 16607,
+          "throughputOpsPerSecond": 4146.600045068726,
+          "latencyP50Nanos": 160639,
+          "latencyP95Nanos": 340479,
+          "latencyP99Nanos": 2240511,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 74540,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "cpu",
+      "pair": 2,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.operation(Ljava/lang/String;Z)V",
+          "org.HdrHistogram.AbstractHistogram.updateMinAndMax(J)V"
+        ]
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:00:49.900156942Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.007113443,
+          "workers": 1,
+          "operations": 65930,
+          "throughputOpsPerSecond": 16453.24020341193,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 72639,
+          "latencyP99Nanos": 526335,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 73528,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:00:56.736664996Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.005899395,
+          "workers": 1,
+          "operations": 16506,
+          "throughputOpsPerSecond": 4120.4229992900255,
+          "latencyP50Nanos": 160767,
+          "latencyP95Nanos": 615423,
+          "latencyP99Nanos": 1548287,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 73744,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "cpu",
+      "pair": 3,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.WorkloadMain.lambda$run$0(Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/atomic/AtomicBoolean;Ljava/lang/String;ZZ[Lorg/HdrHistogram/Histogram;I[J)V",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.operation(Ljava/lang/String;Z)V"
+        ]
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:04.332290277Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.010611892,
+          "workers": 1,
+          "operations": 14069,
+          "throughputOpsPerSecond": 3507.943520554444,
+          "latencyP50Nanos": 161919,
+          "latencyP95Nanos": 945663,
+          "latencyP99Nanos": 2256895,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 75856,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:11.092247517Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.011406423,
+          "workers": 1,
+          "operations": 76052,
+          "throughputOpsPerSecond": 18958.936587413446,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 61343,
+          "latencyP99Nanos": 168191,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 74516,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "cpu",
+      "pair": 4,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.operation(Ljava/lang/String;Z)V",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.WorkloadMain.lambda$run$0(Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/atomic/AtomicBoolean;Ljava/lang/String;ZZ[Lorg/HdrHistogram/Histogram;I[J)V"
+        ]
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:17.430195308Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.003648107,
+          "workers": 1,
+          "operations": 78343,
+          "throughputOpsPerSecond": 19567.90354852233,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 60959,
+          "latencyP99Nanos": 155391,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 75564,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:24.830440589Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.003718829,
+          "workers": 1,
+          "operations": 17820,
+          "throughputOpsPerSecond": 4450.8620013286145,
+          "latencyP50Nanos": 160639,
+          "latencyP95Nanos": 319999,
+          "latencyP99Nanos": 1742847,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 88708,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "cpu",
+      "pair": 5,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "java.lang.Math.min(JJ)J",
+          "java.lang.classfile.ClassFile.of()Ljava/lang/classfile/ClassFile;"
+        ]
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:31.459916258Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.009603638,
+          "workers": 1,
+          "operations": 66440,
+          "throughputOpsPerSecond": 16570.216410004166,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 79487,
+          "latencyP99Nanos": 556543,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 76344,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:37.983425895Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.014070756,
+          "workers": 1,
+          "operations": 18106,
+          "throughputOpsPerSecond": 4510.63299592719,
+          "latencyP50Nanos": 160639,
+          "latencyP95Nanos": 415487,
+          "latencyP99Nanos": 1470463,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 74172,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "cpu",
+      "pair": 6,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "topThreeObservedSelfMethods": [
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.ControlledWorkload.plantedCpuHotspot(I)J",
+          "io.github.cheshmakzanoon.portfolio.threadlens.workloads.WorkloadMain.lambda$run$0(Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/CountDownLatch;Ljava/util/concurrent/atomic/AtomicBoolean;Ljava/lang/String;ZZ[Lorg/HdrHistogram/Histogram;I[J)V",
+          "jdk.internal.classfile.impl.SplitConstantPool.map()Ljdk/internal/classfile/impl/EntryMap;"
+        ]
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:44.759380812Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.003277819,
+          "workers": 1,
+          "operations": 19642,
+          "throughputOpsPerSecond": 4906.479362180884,
+          "latencyP50Nanos": 160639,
+          "latencyP95Nanos": 251647,
+          "latencyP99Nanos": 1251327,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 76468,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "cpu",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:51.459629354Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004126927,
+          "workers": 1,
+          "operations": 76099,
+          "throughputOpsPerSecond": 19005.14179180015,
+          "latencyP50Nanos": 40159,
+          "latencyP95Nanos": 60863,
+          "latencyP99Nanos": 196735,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 76584,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 0,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4260034192,
+        "regressedByteArrayWeightedBytes": 41523201104
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:01:58.238275699Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004253214,
+          "workers": 1,
+          "operations": 288211,
+          "throughputOpsPerSecond": 71976.21743608345,
+          "latencyP50Nanos": 8303,
+          "latencyP95Nanos": 14495,
+          "latencyP99Nanos": 46079,
+          "gcCollections": 272,
+          "gcMillis": 449,
+          "rssPeakKiB": 203776,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:05.578200534Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.003146347,
+          "workers": 1,
+          "operations": 778049,
+          "throughputOpsPerSecond": 194359.3694952167,
+          "latencyP50Nanos": 2607,
+          "latencyP95Nanos": 3183,
+          "latencyP99Nanos": 14927,
+          "gcCollections": 20,
+          "gcMillis": 71,
+          "rssPeakKiB": 221744,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 1,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4505384520,
+        "regressedByteArrayWeightedBytes": 38123681104
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:11.942612047Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.002446173,
+          "workers": 1,
+          "operations": 252942,
+          "throughputOpsPerSecond": 63196.85239149873,
+          "latencyP50Nanos": 8495,
+          "latencyP95Nanos": 16575,
+          "latencyP99Nanos": 79039,
+          "gcCollections": 237,
+          "gcMillis": 373,
+          "rssPeakKiB": 206696,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:19.074321275Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.003098354,
+          "workers": 1,
+          "operations": 896277,
+          "throughputOpsPerSecond": 223895.82287040656,
+          "latencyP50Nanos": 2623,
+          "latencyP95Nanos": 3209,
+          "latencyP99Nanos": 11071,
+          "gcCollections": 24,
+          "gcMillis": 98,
+          "rssPeakKiB": 222124,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 2,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4829802872,
+        "regressedByteArrayWeightedBytes": 49062189200
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:26.217386788Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.005358367,
+          "workers": 1,
+          "operations": 1017417,
+          "throughputOpsPerSecond": 254013.9749747391,
+          "latencyP50Nanos": 2605,
+          "latencyP95Nanos": 3005,
+          "latencyP99Nanos": 4451,
+          "gcCollections": 26,
+          "gcMillis": 63,
+          "rssPeakKiB": 222904,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:33.267902687Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.001822572,
+          "workers": 1,
+          "operations": 311139,
+          "throughputOpsPerSecond": 77749.32406473518,
+          "latencyP50Nanos": 7599,
+          "latencyP95Nanos": 11503,
+          "latencyP99Nanos": 44511,
+          "gcCollections": 292,
+          "gcMillis": 622,
+          "rssPeakKiB": 205576,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 3,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4544131504,
+        "regressedByteArrayWeightedBytes": 51247687960
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:40.009629181Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.005920733,
+          "workers": 1,
+          "operations": 334882,
+          "throughputOpsPerSecond": 83596.76147391208,
+          "latencyP50Nanos": 7519,
+          "latencyP95Nanos": 11871,
+          "latencyP99Nanos": 41375,
+          "gcCollections": 315,
+          "gcMillis": 338,
+          "rssPeakKiB": 204808,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:46.810218462Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004652317,
+          "workers": 1,
+          "operations": 886214,
+          "throughputOpsPerSecond": 221296.11508044435,
+          "latencyP50Nanos": 2611,
+          "latencyP95Nanos": 3051,
+          "latencyP99Nanos": 9759,
+          "gcCollections": 24,
+          "gcMillis": 74,
+          "rssPeakKiB": 220452,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 4,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4967097320,
+        "regressedByteArrayWeightedBytes": 36314536296
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:53.566284356Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004977578,
+          "workers": 1,
+          "operations": 922922,
+          "throughputOpsPerSecond": 230443.73708101694,
+          "latencyP50Nanos": 2613,
+          "latencyP95Nanos": 3041,
+          "latencyP99Nanos": 16639,
+          "gcCollections": 24,
+          "gcMillis": 58,
+          "rssPeakKiB": 221064,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:02:59.741807783Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004931327,
+          "workers": 1,
+          "operations": 216080,
+          "throughputOpsPerSecond": 53953.48443136987,
+          "latencyP50Nanos": 8431,
+          "latencyP95Nanos": 15311,
+          "latencyP99Nanos": 87679,
+          "gcCollections": 203,
+          "gcMillis": 349,
+          "rssPeakKiB": 203352,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 5,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4532112384,
+        "regressedByteArrayWeightedBytes": 44675984344
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:06.188420946Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004297378,
+          "workers": 1,
+          "operations": 295465,
+          "throughputOpsPerSecond": 73786.97736669445,
+          "latencyP50Nanos": 8367,
+          "latencyP95Nanos": 14063,
+          "latencyP99Nanos": 65215,
+          "gcCollections": 278,
+          "gcMillis": 358,
+          "rssPeakKiB": 205464,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:12.576883934Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.004584724,
+          "workers": 1,
+          "operations": 857292,
+          "throughputOpsPerSecond": 214077.62828992904,
+          "latencyP50Nanos": 2617,
+          "latencyP95Nanos": 3079,
+          "latencyP99Nanos": 11783,
+          "gcCollections": 23,
+          "gcMillis": 83,
+          "rssPeakKiB": 220368,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "allocation",
+      "pair": 6,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "baselineByteArrayWeightedBytes": 4020855224,
+        "regressedByteArrayWeightedBytes": 34995498056
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:19.642340658Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.002792901,
+          "workers": 1,
+          "operations": 833851,
+          "throughputOpsPerSecond": 208317.29760280193,
+          "latencyP50Nanos": 2617,
+          "latencyP95Nanos": 3097,
+          "latencyP99Nanos": 14879,
+          "gcCollections": 21,
+          "gcMillis": 92,
+          "rssPeakKiB": 221336,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "allocation",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:26.712851595Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.006988251,
+          "workers": 1,
+          "operations": 231275,
+          "throughputOpsPerSecond": 57717.913183868724,
+          "latencyP50Nanos": 8295,
+          "latencyP95Nanos": 16311,
+          "latencyP99Nanos": 93695,
+          "gcCollections": 217,
+          "gcMillis": 475,
+          "rssPeakKiB": 218464,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 0,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14959612093,
+        "regressedPlantedMonitorNanos": 15021217859
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:34.311883606Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.024850077,
+          "workers": 4,
+          "operations": 954,
+          "throughputOpsPerSecond": 237.0274623275117,
+          "latencyP50Nanos": 4128767,
+          "latencyP95Nanos": 6139903,
+          "latencyP99Nanos": 405012479,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 75552,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:41.670490098Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.015738409,
+          "workers": 4,
+          "operations": 18134,
+          "throughputOpsPerSecond": 4515.73238918113,
+          "latencyP50Nanos": 186879,
+          "latencyP95Nanos": 496127,
+          "latencyP99Nanos": 27705343,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 77472,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 1,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14688553040,
+        "regressedPlantedMonitorNanos": 15034529775
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:49.057277719Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.017847939,
+          "workers": 4,
+          "operations": 957,
+          "throughputOpsPerSecond": 238.18721229111205,
+          "latencyP50Nanos": 4124671,
+          "latencyP95Nanos": 6168575,
+          "latencyP99Nanos": 450363391,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 74816,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:03:55.944846372Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.014052253,
+          "workers": 4,
+          "operations": 21161,
+          "throughputOpsPerSecond": 5271.730078796261,
+          "latencyP50Nanos": 172543,
+          "latencyP95Nanos": 227327,
+          "latencyP99Nanos": 16441343,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 76796,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 2,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14952706020,
+        "regressedPlantedMonitorNanos": 15034823808
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:02.642223952Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.024344852,
+          "workers": 4,
+          "operations": 968,
+          "throughputOpsPerSecond": 240.53604638750778,
+          "latencyP50Nanos": 4104191,
+          "latencyP95Nanos": 4456447,
+          "latencyP99Nanos": 419168255,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 76244,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:10.434902229Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.009693035,
+          "workers": 4,
+          "operations": 20298,
+          "throughputOpsPerSecond": 5062.232899830947,
+          "latencyP50Nanos": 175999,
+          "latencyP95Nanos": 239999,
+          "latencyP99Nanos": 20987903,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 91724,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 3,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14966202050,
+        "regressedPlantedMonitorNanos": 15030027139
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:18.710773481Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.00910196,
+          "workers": 4,
+          "operations": 17623,
+          "throughputOpsPerSecond": 4395.747520474635,
+          "latencyP50Nanos": 183679,
+          "latencyP95Nanos": 367871,
+          "latencyP99Nanos": 25313279,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 78388,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:25.382241826Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.026004182,
+          "workers": 4,
+          "operations": 964,
+          "throughputOpsPerSecond": 239.4433677714446,
+          "latencyP50Nanos": 4106239,
+          "latencyP95Nanos": 73072639,
+          "latencyP99Nanos": 258998271,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 77508,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 4,
+      "randomizedOrder": [
+        "regressed",
+        "baseline"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14952460424,
+        "regressedPlantedMonitorNanos": 15044847927
+      },
+      "measurements": {
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:32.064474352Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.027152187,
+          "workers": 4,
+          "operations": 952,
+          "throughputOpsPerSecond": 236.39533739825856,
+          "latencyP50Nanos": 4122623,
+          "latencyP95Nanos": 29917183,
+          "latencyP99Nanos": 330301439,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 78668,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:39.599782079Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.02325161,
+          "workers": 4,
+          "operations": 19039,
+          "throughputOpsPerSecond": 4732.24193900217,
+          "latencyP50Nanos": 180095,
+          "latencyP95Nanos": 297727,
+          "latencyP99Nanos": 22462463,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 78444,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 5,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14934469893,
+        "regressedPlantedMonitorNanos": 15025867263
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:46.535487258Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.012629477,
+          "workers": 4,
+          "operations": 17028,
+          "throughputOpsPerSecond": 4243.601383482534,
+          "latencyP50Nanos": 179199,
+          "latencyP95Nanos": 450303,
+          "latencyP99Nanos": 17661951,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 76444,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:04:53.027549099Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.015676947,
+          "workers": 4,
+          "operations": 972,
+          "throughputOpsPerSecond": 242.05134347924923,
+          "latencyP50Nanos": 4095999,
+          "latencyP95Nanos": 5259263,
+          "latencyP99Nanos": 413663231,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 75008,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    },
+    {
+      "workload": "contention",
+      "pair": 6,
+      "randomizedOrder": [
+        "baseline",
+        "regressed"
+      ],
+      "identified": true,
+      "details": {
+        "baselinePlantedMonitorNanos": 14962831952,
+        "regressedPlantedMonitorNanos": 15023481909
+      },
+      "measurements": {
+        "baseline": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": false,
+          "mode": "jfr",
+          "started": "2026-10-18T07:05:00.612849884Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.005798503,
+          "workers": 4,
+          "operations": 19075,
+          "throughputOpsPerSecond": 4761.847103820738,
+          "latencyP50Nanos": 175487,
+          "latencyP95Nanos": 284159,
+          "latencyP99Nanos": 26542079,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 75940,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        },
+        "regressed": {
+          "collectionConfiguration": "v3-allocation50-park-class-only",
+          "kind": "contention",
+          "regressed": true,
+          "mode": "jfr",
+          "started": "2026-10-18T07:05:09.008493415Z",
+          "warmupSeconds": 1,
+          "requestedMeasurementSeconds": 4,
+          "actualMeasurementSeconds": 4.019065233,
+          "workers": 4,
+          "operations": 940,
+          "throughputOpsPerSecond": 233.8852308944347,
+          "latencyP50Nanos": 4110335,
+          "latencyP95Nanos": 6561791,
+          "latencyP99Nanos": 489684991,
+          "gcCollections": 0,
+          "gcMillis": 0,
+          "rssPeakKiB": 78276,
+          "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+          "recordingIncludesWarmup": true
+        }
+      }
+    }
+  ],
+  "rawEvidence": {
+    "rootLocator": ".work/A08/repair-cause-v3",
+    "rawIndex": "projects/08-threadlens/evidence/planted-cause-v3-raw-index.json",
+    "rawIndexSha256": "0b2ed5f40e04a6fe27d59d741e8792626a81e603717001f7d3f99f850d49f93a",
+    "files": 339,
+    "totalBytes": 7639454
+  },
+  "limits": [
+    "Cause criteria compare normalized recordings that include warmup; they do not establish time-isolated regression effect sizes.",
+    "Allocation weights and CPU samples are sampling observations; allocation50/s has lower rare-class and temporal sensitivity than the archived150/s configuration.",
+    "Park class/duration remain available but park caller stacks are intentionally absent.",
+    "No result here certifies the pending1200s changed-observer stress or full84-JVM overhead rerun.",
+    "Windows and macOS remain untested."
+  ]
+}

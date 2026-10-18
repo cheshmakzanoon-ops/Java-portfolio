@@ -7,6 +7,7 @@ import jdk.jfr.EventType;
 import jdk.jfr.FlightRecorder;
 
 public final class EventCapabilities {
+  public static final String CONFIGURATION_VERSION = "v3-allocation50-park-class-only";
   public static final List<String> REQUESTED =
       List.of(
           "jdk.ExecutionSample",
@@ -45,7 +46,9 @@ public final class EventCapabilities {
             settings.put(
                 name + "#stackTrace",
                 Boolean.toString(
-                    !name.equals("jdk.GarbageCollection") && !name.equals("jdk.DataLoss")));
+                    !name.equals("jdk.GarbageCollection")
+                        && !name.equals("jdk.DataLoss")
+                        && !name.equals("jdk.ThreadPark")));
           }
         });
     if (capabilities
@@ -53,7 +56,7 @@ public final class EventCapabilities {
         .supported()) settings.put("jdk.ExecutionSample#period", "20 ms");
     if (capabilities
         .getOrDefault("jdk.ObjectAllocationSample", new Capability(false, List.of()))
-        .supported()) settings.put("jdk.ObjectAllocationSample#throttle", "150/s");
+        .supported()) settings.put("jdk.ObjectAllocationSample#throttle", "50/s");
     for (String name : List.of("jdk.JavaMonitorEnter", "jdk.ThreadPark"))
       if (capabilities.getOrDefault(name, new Capability(false, List.of())).supported())
         settings.put(name + "#threshold", "2 ms");

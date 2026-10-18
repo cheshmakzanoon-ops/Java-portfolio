@@ -9,6 +9,27 @@ import java.util.TreeMap;
 
 /** Reads bounded histogram summaries preferentially; legacy raw TSV is only a fallback. */
 public final class TimingImporter {
+  private static final java.util.Set<String> STATUS_FIELDS =
+      java.util.Set.of(
+          "statusVersion",
+          "statusComplete",
+          "collectionHealthy",
+          "queueDrops",
+          "shutdownDiscarded",
+          "incomplete",
+          "probeFailures",
+          "methodOverflow",
+          "timingHistogramOverflow",
+          "durationClipped",
+          "observedTimingEvents",
+          "acceptedTimingReservations",
+          "producerQuiesced",
+          "unfinishedProbeExits",
+          "rawTimingRowsOmitted",
+          "activeMethodIdLimit",
+          "activeQueueCapacity",
+          "skips");
+
   public record Result(
       Map<String, ContentionSummary.Timing> timings,
       long exits,
@@ -23,6 +44,14 @@ public final class TimingImporter {
       boolean incomplete,
       long rawRowsOmitted,
       long durationClipped,
+      boolean statusComplete,
+      long producerObservedEvents,
+      long acceptedReservations,
+      boolean producerQuiesced,
+      long unaccountedEvents,
+      long unfinishedProbeExits,
+      long methodSelectionOverflow,
+      Map<String, Long> selectionSkips,
       Map<String, Integer> activeLimits) {}
 
   public Result read(Path directory) throws IOException {
@@ -31,7 +60,8 @@ public final class TimingImporter {
       TreeMap<String, ContentionSummary.Timing> timings = new TreeMap<>();
       long exits = 0, exceptions = 0, unknown = 0, overflow = 0;
       Path summary = directory.resolve("timing-summary.tsv");
-      if (Files.exists(summary)) {
+      boolean fullSummary = Files.exists(summary);
+      if (fullSummary) {
         if (Files.size(summary) > 65536) throw new IOException("timing summary bounds");
         java.util.HashSet<Integer> ids = new java.util.HashSet<>();
         try (var reader = Files.newBufferedReader(summary, StandardCharsets.UTF_8)) {
@@ -93,7 +123,17 @@ public final class TimingImporter {
         timings.putAll(histogram.snapshot());
         overflow = histogram.overflow();
       }
-      long drops = 0, failures = 0, discarded = 0, rawOmitted = 0, clipped = 0;
+      long drops = 0,
+          failures = 0,
+          discarded = 0,
+          rawOmitted = 0,
+          clipped = 0,
+          selectionOverflow = 0;
+      Map<String, Long> skips = Map.of();
+      long observed = -1, accepted = -1, unfinished = -1;
+      int version = 0;
+      boolean completeMarker = false, quiesced = false;
+      java.util.Set<String> seen = new java.util.HashSet<>();
       boolean healthy = false, incomplete = true;
       Map<String, Integer> active = new TreeMap<>();
       Path status = directory.resolve("observer-status.txt");
@@ -102,7 +142,11 @@ public final class TimingImporter {
         for (String line : Files.readAllLines(status)) {
           String[] row = line.split("=", 2);
           if (row.length != 2) continue;
+          if (STATUS_FIELDS.contains(row[0]) && !seen.add(row[0]))
+            throw new IOException("duplicate timing status field: " + row[0]);
           switch (row[0]) {
+            case "statusVersion" -> version = Math.toIntExact(nonnegative(row[1]));
+            case "statusComplete" -> completeMarker = bool(row[1]);
             case "queueDrops" -> drops = nonnegative(row[1]);
             case "probeFailures" -> failures = nonnegative(row[1]);
             case "shutdownDiscarded" -> discarded = nonnegative(row[1]);
@@ -112,6 +156,12 @@ public final class TimingImporter {
                 overflow = Math.addExact(overflow, nonnegative(row[1]));
             case "rawTimingRowsOmitted" -> rawOmitted = nonnegative(row[1]);
             case "durationClipped" -> clipped = nonnegative(row[1]);
+            case "methodOverflow" -> selectionOverflow = nonnegative(row[1]);
+            case "observedTimingEvents" -> observed = nonnegative(row[1]);
+            case "acceptedTimingReservations" -> accepted = nonnegative(row[1]);
+            case "producerQuiesced" -> quiesced = bool(row[1]);
+            case "unfinishedProbeExits" -> unfinished = nonnegative(row[1]);
+            case "skips" -> skips = selectionSkips(row[1]);
             case "activeMethodIdLimit" ->
                 active.put("methodIds", Math.toIntExact(nonnegative(row[1])));
             case "activeQueueCapacity" ->
@@ -120,6 +170,14 @@ public final class TimingImporter {
           }
         }
       }
+      boolean completeStatus = version == 2 && completeMarker && seen.containsAll(STATUS_FIELDS);
+      long accounted = Math.addExact(exits, unknown);
+      if (fullSummary) accounted = Math.addExact(accounted, overflow);
+      if (observed >= 0 && accounted > observed)
+        throw new IOException("timing summary exceeds producer observed total");
+      long unaccounted = observed < 0 ? 0 : observed - accounted;
+      boolean reservationMismatch =
+          accepted >= 0 && observed >= 0 && accepted != Math.addExact(observed, discarded);
       return new Result(
           timings,
           exits,
@@ -132,14 +190,29 @@ public final class TimingImporter {
           Files.exists(status),
           healthy,
           incomplete
+              || !completeStatus
+              || !quiesced
+              || unfinished > 0
+              || unaccounted > 0
+              || reservationMismatch
+              || (!fullSummary && rawOmitted > 0)
               || !healthy
               || drops > 0
               || failures > 0
               || discarded > 0
               || unknown > 0
+              || selectionOverflow > 0
               || overflow > 0,
           rawOmitted,
           clipped,
+          completeStatus,
+          observed,
+          accepted,
+          quiesced,
+          unaccounted,
+          unfinished,
+          selectionOverflow,
+          skips,
           Map.copyOf(active));
     } catch (NumberFormatException | ArithmeticException invalid) {
       throw new IOException("invalid timing number", invalid);
@@ -177,6 +250,22 @@ public final class TimingImporter {
     return Boolean.parseBoolean(value);
   }
 
+  private static Map<String, Long> selectionSkips(String value) throws IOException {
+    if (value.length() > 4096 || !value.startsWith("{") || !value.endsWith("}"))
+      throw new IOException("invalid selection skip metadata");
+    TreeMap<String, Long> result = new TreeMap<>();
+    String body = value.substring(1, value.length() - 1);
+    if (body.isEmpty()) return Map.of();
+    for (String item : body.split(", ", -1)) {
+      String[] pair = item.split("=", -1);
+      if (pair.length != 2 || !pair[0].matches("[A-Za-z][A-Za-z0-9]{0,63}") || result.size() == 32)
+        throw new IOException("invalid selection skip entry");
+      if (result.putIfAbsent(pair[0], nonnegative(pair[1])) != null)
+        throw new IOException("duplicate selection skip reason");
+    }
+    return Map.copyOf(result);
+  }
+
   public Profile merge(Profile profile, Result timing) {
     Map<String, Long> counters = new TreeMap<>(profile.counters());
     counters.put("observedTimingExits", timing.exits());
@@ -187,10 +276,25 @@ public final class TimingImporter {
     counters.put("probeFailures", timing.probeFailures());
     counters.put("timingShutdownDiscarded", timing.shutdownDiscarded());
     counters.put("timingStatusMissing", timing.statusPresent() ? 0L : 1L);
+    counters.put("timingStatusComplete", timing.statusComplete() ? 1L : 0L);
+    counters.put("timingSelectionCoverageKnown", timing.statusComplete() ? 1L : 0L);
+    counters.put("timingProducerQuiesced", timing.producerQuiesced() ? 1L : 0L);
+    if (timing.acceptedReservations() >= 0)
+      counters.put("timingAcceptedReservations", timing.acceptedReservations());
+    counters.put("timingProducerCountUnknown", timing.producerObservedEvents() < 0 ? 1L : 0L);
+    if (timing.producerObservedEvents() >= 0)
+      counters.put("timingProducerObservedEvents", timing.producerObservedEvents());
+    counters.put("timingUnaccountedEvents", timing.unaccountedEvents());
+    if (timing.unfinishedProbeExits() >= 0)
+      counters.put("timingUnfinishedProbeExits", timing.unfinishedProbeExits());
     counters.put("timingCollectionUnhealthy", timing.collectionHealthy() ? 0L : 1L);
     counters.put("timingIncomplete", timing.incomplete() ? 1L : 0L);
     counters.put("rawTimingPrefixRowsOmitted", timing.rawRowsOmitted());
     counters.put("timingDurationClipped", timing.durationClipped());
+    counters.put("timingMethodSelectionOverflow", timing.methodSelectionOverflow());
+    timing
+        .selectionSkips()
+        .forEach((reason, count) -> counters.put("timingSelectionSkip." + reason, count));
     return new Profile(
         profile.eventCount(),
         profile.sampleCount(),

@@ -74,7 +74,10 @@ public record ReportDocument(
             "contention",
             "observed event wall duration in nanoseconds; threshold declared in settings; unknown without manifest",
             "parking",
-            "observed event wall duration in nanoseconds; threshold declared in settings; unknown without manifest",
+            "observed event wall duration in nanoseconds; threshold declared in settings; unknown without manifest"
+                + ("false".equals(settings.get("jdk.ThreadPark#stackTrace"))
+                    ? "; parked class attribution only, producer park stacks disabled"
+                    : ""),
             "timing",
             "selected observed invocations, wall nanoseconds inside injected bytecode; implicit synchronized-method monitor acquisition before bytecode excluded",
             "timeline",

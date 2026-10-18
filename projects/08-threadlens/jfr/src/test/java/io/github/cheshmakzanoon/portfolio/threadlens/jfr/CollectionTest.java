@@ -36,6 +36,11 @@ class CollectionTest {
     var current = EventCapabilities.discover();
     assertTrue(current.get("jdk.ExecutionSample").supported());
     assertEquals("20 ms", EventCapabilities.settings(current).get("jdk.ExecutionSample#period"));
+    assertEquals("false", EventCapabilities.settings(current).get("jdk.ThreadPark#stackTrace"));
+    assertEquals(
+        "50/s", EventCapabilities.settings(current).get("jdk.ObjectAllocationSample#throttle"));
+    assertEquals(
+        "true", EventCapabilities.settings(current).get("jdk.JavaMonitorEnter#stackTrace"));
   }
 
   @Test

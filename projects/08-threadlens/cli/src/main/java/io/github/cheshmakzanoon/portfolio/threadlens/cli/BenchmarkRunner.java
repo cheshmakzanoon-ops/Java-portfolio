@@ -64,6 +64,7 @@ public final class BenchmarkRunner {
         "operator must record exclusive host reservation; runner cannot infer external contention");
     environment.put("jdkFlags", List.of("-Xms256m", "-Xmx256m", "-XX:ActiveProcessorCount=4"));
     environment.put("eventSettings", EventCapabilities.settings(EventCapabilities.discover()));
+    environment.put("collectionConfiguration", EventCapabilities.CONFIGURATION_VERSION);
     for (String file :
         List.of(
             "/proc/cpuinfo",
@@ -146,11 +147,17 @@ public final class BenchmarkRunner {
               || observation.path("actualMeasurementSeconds").asDouble() < seconds)
             throw new IllegalStateException("invalid benchmark duration");
           observations.get(mode).add(observation);
-          if (!mode.equals("baseline"))
-            JSON.writerWithDefaultPrettyPrinter()
-                .writeValue(
-                    Path.of(recording + ".settings.json").toFile(),
-                    EventCapabilities.settings(EventCapabilities.discover()));
+          // Preserve the producing child's Recording.getSettings() sidecar. Do not overwrite
+          // actual producer settings with a declaration inferred in this parent JVM.
+          if (!mode.equals("baseline")) {
+            var settings = SettingsManifest.read(Path.of(recording + ".settings.json"));
+            if (!"false".equals(settings.get("jdk.ThreadPark#stackTrace")))
+              throw new IllegalStateException(
+                  "workload park-stack setting differs from declared configuration");
+            if (!"50/s".equals(settings.get("jdk.ObjectAllocationSample#throttle")))
+              throw new IllegalStateException(
+                  "workload allocation setting differs from declared configuration");
+          }
           if (mode.equals("instrumented")) {
             String status = Files.readString(run.resolve("agent/observer-status.txt"));
             Path summary = run.resolve("agent/timing-summary.tsv");

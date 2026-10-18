@@ -43,30 +43,38 @@ public final class ThreadLensPremain {
                   () -> {
                     try (writer) {
                       writer.write("methodId\tstartedMonotonicNanos\tdurationNanos\texceptional\n");
-                      long rawRows = 0, nextDiskCheck = System.nanoTime();
+                      long nextDiskCheck = System.nanoTime();
+                      long[] raw = new long[2]; // Single-consumer rows and omissions.
+                      TimingBuffer.TimingConsumer sink =
+                          (method, start, duration, exceptional) -> {
+                            statistics.accept(method, start, duration, exceptional);
+                            if (raw[0] < TimingStatistics.RAW_ROWS) {
+                              writer.write(
+                                  method
+                                      + "\t"
+                                      + start
+                                      + "\t"
+                                      + duration
+                                      + "\t"
+                                      + exceptional
+                                      + "\n");
+                              raw[0]++;
+                            } else {
+                              // Only this consumer writes; publish without an atomic RMW.
+                              rawOmitted.set(++raw[1]);
+                            }
+                          };
                       while (running.get() || buffer.pending() > 0) {
                         if (!running.get() && System.nanoTime() >= drainDeadline.get()) {
                           shutdownDiscarded.set(buffer.pending());
                           healthy.set(false);
                           break;
                         }
-                        var timing = buffer.poll();
-                        if (timing == null) {
+                        int drained = 0;
+                        // Bound bookkeeping latency even when producers keep the queue nonempty.
+                        for (int batch = 0; batch < 64 && buffer.pollTo(sink); batch++) drained++;
+                        if (drained == 0) {
                           LockSupport.parkNanos(500_000);
-                        } else {
-                          statistics.accept(timing);
-                          if (rawRows < TimingStatistics.RAW_ROWS) {
-                            writer.write(
-                                timing.methodId()
-                                    + "\t"
-                                    + timing.startedNanos()
-                                    + "\t"
-                                    + timing.durationNanos()
-                                    + "\t"
-                                    + timing.exceptional()
-                                    + "\n");
-                            rawRows++;
-                          } else rawOmitted.incrementAndGet();
                         }
                         if (System.nanoTime() >= nextDiskCheck) {
                           nextDiskCheck = System.nanoTime() + 1_000_000_000L;
@@ -91,7 +99,10 @@ public final class ThreadLensPremain {
               Thread.ofPlatform()
                   .unstarted(
                       () -> {
-                        TimingProbe.disable();
+                        boolean producerQuiesced = TimingProbe.disableAndAwait(2_000_000_000L);
+                        int unfinishedExits = TimingProbe.inFlightExits();
+                        long acceptedReservations = buffer.seal();
+                        if (!producerQuiesced || unfinishedExits > 0) healthy.set(false);
                         drainDeadline.set(System.nanoTime() + 2_000_000_000L);
                         running.set(false);
                         try {
@@ -121,7 +132,7 @@ public final class ThreadLensPremain {
                               StandardOpenOption.CREATE_NEW);
                           Files.writeString(
                               config.outputDirectory().resolve("observer-status.txt"),
-                              "collectionHealthy="
+                              "statusVersion=2\ncollectionHealthy="
                                   + healthy.get()
                                   + "\nqueueDrops="
                                   + buffer.dropped()
@@ -131,6 +142,7 @@ public final class ThreadLensPremain {
                                   + (buffer.dropped() > 0
                                       || buffer.pending() > 0
                                       || !healthy.get()
+                                      || TimingProbe.failures() > 0
                                       || statistics.overflow() > 0)
                                   + "\nprobeFailures="
                                   + TimingProbe.failures()
@@ -142,6 +154,12 @@ public final class ThreadLensPremain {
                                   + statistics.clipped()
                                   + "\nobservedTimingEvents="
                                   + statistics.observed()
+                                  + "\nacceptedTimingReservations="
+                                  + acceptedReservations
+                                  + "\nproducerQuiesced="
+                                  + producerQuiesced
+                                  + "\nunfinishedProbeExits="
+                                  + unfinishedExits
                                   + "\nrawTimingRowsOmitted="
                                   + rawOmitted.get()
                                   + "\nactiveMethodIdLimit="
@@ -150,7 +168,7 @@ public final class ThreadLensPremain {
                                   + config.queueCapacity()
                                   + "\nskips="
                                   + policy.reasons()
-                                  + "\n",
+                                  + "\nstatusComplete=true\n",
                               StandardCharsets.UTF_8,
                               StandardOpenOption.CREATE_NEW);
                         } catch (Exception recoverable) {

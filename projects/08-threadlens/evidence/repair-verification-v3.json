@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "project": "threadlens",
+  "status": "FUNCTIONAL_MUTATION_PASS_RUNTIME_ACCEPTANCE_PENDING",
+  "sourceRevision": "608f2565d073a89b84ce585ccd4a2942c97a02be",
+  "buildInputFingerprint": "9e98ad70e9ec2e5ad8bbdf0c54baf1f24d02f461975f7dea00c2d26fd90fc9d1",
+  "sourceHashScope": "common.sh sorted repository-relative root POM/wrapper/.mvn plus project source/POM/scripts path+bytes; docs/evidence/scratch excluded",
+  "sourceFiles": {
+    ".mvn/wrapper/maven-wrapper.properties": "255ec440cb86971daf3c2b741a610f7142c58914b90fd935965e9d0265df2690",
+    "mvnw": "c30af25684ed209b0c75b889bef71706e5da7dae993cf2a924f8fc1990d9dc71",
+    "pom.xml": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+    "projects/08-threadlens/agent/pom.xml": "f7381aa2a8ccacea29bda99108f741cdcf830d518489b8ffcfd142b322be71a6",
+    "projects/08-threadlens/agent/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/AgentConfig.java": "fd3efe41a2c055ba5bb6d992188f609352adfafd037802ea3a1d01e7f9a8ed76",
+    "projects/08-threadlens/agent/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/InstrumentationPolicy.java": "503a42b109736b528b0e85c65a940d034fac245d5533c5040c1abf0b4f3e3463",
+    "projects/08-threadlens/agent/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/SafeHierarchy.java": "f4a36ea83a244342dca64ef696909d052f8fee830f1955052330fc6d89a852cb",
+    "projects/08-threadlens/agent/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/ThreadLensPremain.java": "fe1f5f2068b11ae4f3c0eb76249bf143ed77f77e1953e8f04401a2dd504fc08c",
+    "projects/08-threadlens/agent/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingStatistics.java": "5221cbac71961a40fe134198778e44f0eea070134e783ddf471eb1857504918c",
+    "projects/08-threadlens/agent/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingTransformer.java": "6d44bab42564b1e965249c3de7428bb48dd84fdc320be6b28b12c9a6c00fbfea",
+    "projects/08-threadlens/agent/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/SafeHierarchyTest.java": "edd9f31bde047e81b34c27d1d7cd2c39e02bf57673024bdcb40a0b5ce44abe5e",
+    "projects/08-threadlens/agent/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingStatisticsTest.java": "abecc1cb60b2f6f4c5d8a5f0dc664f7439a9782ca4b734fc6d1bc1aa5e73867f",
+    "projects/08-threadlens/agent/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/compatibility/TransformationTest.java": "5310f0c17ba3916bcf847ceb6ebed03ba987e83a98b652ea348b0b3140d42278",
+    "projects/08-threadlens/analysis/pom.xml": "1b6144f49e2b535ed6d9f8a2422126f059da3fd2077d74fc3894aaabb13f0754",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/AllocationSummary.java": "283e361e19019526b9b299f017cfc19babddbd96bcc55f5a36783f1f40c3240a",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/ContentionSummary.java": "2d10d76038731351fcb217879cf8731119baaa755dd0654c6f01c221444c0031",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/NormalizedEvent.java": "2ed327c08e211f594eb727582a0b68b0b4bdf318124d9fa1de881e627abb1c88",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/Profile.java": "e51952cde9e0558c333df82a84ee9c9265d0cbbd8df818b47aae241fb2363642",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/ProfileAccumulator.java": "af33c00bddc894a9747a2d163f7430f29942a67ee293e721746e6d2f8cf13d8d",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/ProfileComparator.java": "b4a635125d89deed13a434b92718cce6d00c90d8144e6663d71c51e19643ea48",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/StackAggregator.java": "7f518933e83384a2fe7788429c2452919f9dcbe60258c57dfcc89cdacaf87fdc",
+    "projects/08-threadlens/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/WindowAccumulator.java": "fd4042b8763e6771a3fa9f193d3156a743c7aef7c11d813bfb09f3ec2d73b275",
+    "projects/08-threadlens/analysis/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/AggregationTest.java": "54692b08213494e22ba72593590a1f1a3c37ee47d0ddcf025c322616c340024c",
+    "projects/08-threadlens/analysis/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/LimitsTest.java": "76e28110c3742af831b0770886d71c655c16cb21de8d945e698e956a19da1adf",
+    "projects/08-threadlens/analysis/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/analysis/StatisticalOracleTest.java": "87722969118c0e129ec3eadcb5d8c319c9aa2b69503a3792341a070f7a21666f",
+    "projects/08-threadlens/cli/pom.xml": "91d0b78bca8f3c16e58c2ffc019ac0e9a4df2a4dbb5a4df479741065577ed020",
+    "projects/08-threadlens/cli/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/BenchmarkRunner.java": "788f3507ad77e2b51c7ac5116fec89e5c04fc2390568749b81c61b99fe1328c5",
+    "projects/08-threadlens/cli/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/BoundedStress.java": "f1d33aca655b846fdbf34278b8f769cbcf99c5fc57e17dde41d51d8a9c286189",
+    "projects/08-threadlens/cli/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/ObserverStress.java": "ae8160cee56d80212399613749b4448c8c12a7729ef34b8e1a9489a81a1b0bac",
+    "projects/08-threadlens/cli/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/SettingsManifest.java": "d1ab9a84392453b7aa52ca66a9b2dac28440ac19b7b30b57ba374c0aac1bbf07",
+    "projects/08-threadlens/cli/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/ThreadLensCli.java": "a01a3310f7c366454acda19c008128629ef3de3b96886782109c5f6da173d3c9",
+    "projects/08-threadlens/cli/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/SettingsManifestTest.java": "c94310003e42e239969c4abb6eb598de05495ba3792124c3e7096e067935a8b3",
+    "projects/08-threadlens/compatibility/pom.xml": "8befe81106b163f7732d2878aa7ca8f5ee9ef65464284b1616cee30e51b9e408",
+    "projects/08-threadlens/compatibility/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/compatibility/CollectionSettingsTest.java": "b6e3f919ecdad9269831dbabf30fe1052913f01bab4d95899b951b23e9dae56e",
+    "projects/08-threadlens/compatibility/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/compatibility/StartupFaultIT.java": "2899a967df2b3c37098b41618e33d0f62dfe3cc10a6bf020c4e4dbeb2acc1c28",
+    "projects/08-threadlens/jfr/pom.xml": "9fe498df35297e9f7df3865ab65c7bfa9d824d1bb31680a3fe2448d6710bf863",
+    "projects/08-threadlens/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/EventCapabilities.java": "2f77a5aaf72db2fc96739c8992b8db5af5a202d541e7648becc917accb85f7a4",
+    "projects/08-threadlens/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/EventNormalizer.java": "63ca06180fd668852ad0ec685a0413de9b25127bbbd8d4ddf251d4c0a366c525",
+    "projects/08-threadlens/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/EventQueue.java": "bc0393be235481f273c170ab6bed49cda7102bbc5841684a3d61e18d27172f96",
+    "projects/08-threadlens/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/RecordingController.java": "e4417179a994f0deff7a2eada1d657c510d5588a7f6101c500e61e6a19358395",
+    "projects/08-threadlens/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/RecordingImporter.java": "84aa9b611876403c1c4b367f03568aeefbe82b1a44b2358304b4fa61277ed6be",
+    "projects/08-threadlens/jfr/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/CollectionTest.java": "95bb0a258734f2dae5a8371938d0db1b25fdc1a52144f7785edc36787dd80f65",
+    "projects/08-threadlens/jfr/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/PrivacyTest.java": "ad7a6b8b412a5d87276e06f5bd1d2daed0fbc57d9684aa3ca7206c0dcdeb4400",
+    "projects/08-threadlens/pom.xml": "99d4330629e0a119667915f109629b310a7ee98a31610240dd80b7df48571b4d",
+    "projects/08-threadlens/probe/pom.xml": "34b530755493ae34f2c53c4f3515eff34cac5301c4678bd93fec06e5bd55f129",
+    "projects/08-threadlens/probe/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/probe/MethodRegistry.java": "448f88d7bd71a6e42f28ab509fd6a100cb8e852e2e0e98ee300b1662c9cce4e2",
+    "projects/08-threadlens/probe/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/probe/TimingBuffer.java": "17bc2c034756fe4e5812326b5c76e5e774199c735be7eca72c5dc79d3bc77361",
+    "projects/08-threadlens/probe/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/probe/TimingProbe.java": "5e3633560739ceb8e687afac33f6a39d7117c39df6b9734ffe23fa8105c442ed",
+    "projects/08-threadlens/probe/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/probe/PrimitiveDrainTest.java": "67ba1a5de084fdd52d8af90abbe28354fa4c0511b1eed5aeeb9a8527ff3c02ee",
+    "projects/08-threadlens/probe/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/probe/ProbeLimitsTest.java": "95f0aa0fb8a990b3e6f5bb9afb3a4edd6c1dcaa4b9908e2306c2d65a59600933",
+    "projects/08-threadlens/probe/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/probe/ProbeTest.java": "88c0fff79f889692aab3a2ba277669a0b89121c3af279eb27825c4a0c110448a",
+    "projects/08-threadlens/report/pom.xml": "9d77dbc81e55f7b3a3a65762a4e523acbfb0b69f56328e96c6c8b2f1a145f701",
+    "projects/08-threadlens/report/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/report/ReportDocument.java": "80a3a133a0ef2dd0b56856a766cf6a729fa3bbb9049ad28c23a13806c7ade00c",
+    "projects/08-threadlens/report/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/report/ReportWriter.java": "968ec5ca01a811560e1e276d968fc11fb4500351514804b83cefc3562189f54d",
+    "projects/08-threadlens/report/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/report/TimingImporter.java": "d05d6ccdcda5f280c01f8b107fe29df79c542b3d32140420f9d7911f360b51de",
+    "projects/08-threadlens/report/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/report/ReportTest.java": "cec4fb8cc5649cf5fe3c0bd6cd3ce4be9837e473a6de3e10780fcdae989aaa0c",
+    "projects/08-threadlens/report/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/report/TimingImporterTest.java": "93cd7b2a55cec35e5ef7422e14c7b3963570c36ac1500ac773746605dc7ee03b",
+    "projects/08-threadlens/scripts/benchmark.sh": "b0a0fed747274051eeab16bcedf87741331e80ef06b3ff6aa57d791d0653b5f0",
+    "projects/08-threadlens/scripts/common.sh": "04db3705c269f7c032d4bbd2a5c5693c389b67e9cee0f15cecbaa70ac39b68b3",
+    "projects/08-threadlens/scripts/demo.sh": "9624d7000ea9d0eedb489c8d6fa954c3e9b627ef75cb08885cdecd7145a4f437",
+    "projects/08-threadlens/scripts/down.sh": "e44f7acd806a5d772c580f86803912e3942f7c18ef6338c5a250e4bef5cccc59",
+    "projects/08-threadlens/scripts/evidence.py": "29927dd0f261ad67406c451ba3e0e701d996948d3ed4c509d57b9271d6d978dc",
+    "projects/08-threadlens/scripts/regression-trials.sh": "93ac53cd48e0bc19c6586bcce16c1a3b4e84fffe144dd074c742e721f59ad485",
+    "projects/08-threadlens/scripts/reset-demo.sh": "4472bbf8a83a2ca77fcca14b15a2f7e21e6b72a2cb0275e075b674c9320cc19e",
+    "projects/08-threadlens/scripts/up.sh": "d09571dbaaec5b7a0ca14edc6ef4a0b11d7dc5733ebc7f176919e116ebc4e86b",
+    "projects/08-threadlens/workloads/pom.xml": "2438216c84982d958ddc2d808a29c50aecce8ff6b59ea04fa2d470076b4e76b6",
+    "projects/08-threadlens/workloads/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/workloads/ControlledWorkload.java": "b5f67079b92660bcaeb088bc8d672d665e16b565ec454df17febe6d2dc455764",
+    "projects/08-threadlens/workloads/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/workloads/WorkloadMain.java": "24119522b3900ac68c969b27a501bc0191cd7d8167180fd9a03fad186dcfb887"
+  },
+  "collectionConfiguration": "v3-allocation50-park-class-only",
+  "eventSettings": {
+    "executionPeriod": "20 ms",
+    "allocationThrottle": "50/s",
+    "monitorThreshold": "2 ms",
+    "parkThreshold": "2 ms",
+    "parkStackTrace": false,
+    "allocationStackTrace": true,
+    "monitorStackTrace": true,
+    "allSixCategoriesRetained": true
+  },
+  "command": "source scripts/cloud-env.sh; export PORTFOLIO_TEST_RUN_STARTED=$(date +%s); ./mvnw -f projects/08-threadlens/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A08/m2 -B -ntp -Pintegration,mutation com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply clean verify org.apache.maven.plugins:maven-dependency-plugin:3.11.0:build-classpath -DincludeScope=runtime -Dmdep.outputFile=target/runtime-classpath.txt",
+  "exitCode": 0,
+  "completedAtUtc": "2026-10-18T06:52:15Z",
+  "positiveTestRunCutoffEpoch": 1792306219,
+  "testReports": [
+    {
+      "report": "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.agent.SafeHierarchyTest.xml",
+      "sha256": "111df399fd825e7ac86f4243ba90acfc25eb7beb2e2242ee5232a96119bd25ee",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.agent.TimingStatisticsTest.xml",
+      "sha256": "c0afb91ae7964f9f73f90be4f0a2fec2cffa5a961c1778b0bb95e1b7f2d1ccea",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.TransformationTest.xml",
+      "sha256": "0e0d44968bf645797d059315877799cb313a004fd99ecc3e3b1258816203ecec",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 50,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.analysis.AggregationTest.xml",
+      "sha256": "2680aff8b591ecc95f0331b2b4747b0ff2f5c6c19abecf4c114b05022ab16d20",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.analysis.LimitsTest.xml",
+      "sha256": "3b11cb5df0d1e974cf401199bd787647b8a722e7f6fad6efb21f559be017d596",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.analysis.StatisticalOracleTest.xml",
+      "sha256": "34c32e9e890f607386883ad24032505a94afba113e8635dc5fc39a0136af7c63",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.cli.SettingsManifestTest.xml",
+      "sha256": "064d91900f13c08c5009057b9e3f4fbe2ad3c17742f2bf4f9b5977c0e16a8e1d",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/compatibility/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.StartupFaultIT.xml",
+      "sha256": "d5fa86f00c04e50c617a719dc40f30a05d32b72474d438edb4fe32029105e7c2",
+      "kind": "integration",
+      "fresh": true,
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/compatibility/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.CollectionSettingsTest.xml",
+      "sha256": "0a2b6b3c9d9c073cf0ac7fef2259afb1b5f415858cb7b42e0af6ecce2746c34e",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.jfr.CollectionTest.xml",
+      "sha256": "e53e7581c41a71e9392cb4f33c954b976b17013828216f0f66c73b459b64ca5f",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.jfr.PrivacyTest.xml",
+      "sha256": "380fe37a6770ee2a9283266b90bdb74b0dae78f6728d84167db96828b3b47a6a",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.PrimitiveDrainTest.xml",
+      "sha256": "19b9f2455af3cb64e401f75c6306748d53593c5d6435036d4e79c143c1a7c7ba",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.ProbeLimitsTest.xml",
+      "sha256": "1c4c4db07fda517b1caad71f6da7db2523866a913b8545d3105a9b7ff46e4757",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.ProbeTest.xml",
+      "sha256": "ee920fdd3653474738e725cae54c5c314f5f03a69cff60427090668ea0e23db4",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.report.ReportTest.xml",
+      "sha256": "e543b2054ff2062d9f541fe171a52d10c394c8470e65b5c129f432996b454d4c",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "report": "projects/08-threadlens/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.report.TimingImporterTest.xml",
+      "sha256": "e675e50bdaadc973317eb172b27e08329e1e1882f7caaba92b146a9864c4ec87",
+      "kind": "ordinary",
+      "fresh": true,
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totalMethods": 118,
+  "ordinaryMethods": 113,
+  "integrationMethods": 5,
+  "rootIntegrationCheckerExitCode": 0,
+  "mutation": {
+    "probe": {
+      "statusCounts": {
+        "KILLED": 68,
+        "SURVIVED": 7
+      },
+      "generated": 75,
+      "strictKilledPercent": 90.66666666666666,
+      "xml": "projects/08-threadlens/probe/target/pit-reports/mutations.xml",
+      "xmlSha256": "a20cc4380924f3203374913f745e9c81c7c84ae9a2da3ae462083315a4ca07ff"
+    },
+    "analysis": {
+      "statusCounts": {
+        "KILLED": 163,
+        "SURVIVED": 2
+      },
+      "generated": 165,
+      "strictKilledPercent": 98.7878787878788,
+      "xml": "projects/08-threadlens/analysis/target/pit-reports/mutations.xml",
+      "xmlSha256": "f7269e3713058dcb9cb77e4995c4323b9327093c54aeb8b490baf30efad699e8"
+    },
+    "agent": {
+      "statusCounts": {
+        "KILLED": 25,
+        "SURVIVED": 1
+      },
+      "generated": 26,
+      "strictKilledPercent": 96.15384615384616,
+      "xml": "projects/08-threadlens/agent/target/pit-reports/mutations.xml",
+      "xmlSha256": "950011a162f65a570755a93419bcbabec4eca6eca7bda8136a65d8bba59f92b6"
+    }
+  },
+  "coverage": {
+    "probe": {
+      "BRANCH": {
+        "covered": 52,
+        "missed": 2
+      },
+      "LINE": {
+        "covered": 118,
+        "missed": 2
+      }
+    },
+    "analysis": {
+      "BRANCH": {
+        "covered": 131,
+        "missed": 7
+      },
+      "LINE": {
+        "covered": 246,
+        "missed": 0
+      }
+    },
+    "agent": {
+      "BRANCH": {
+        "covered": 95,
+        "missed": 115
+      },
+      "LINE": {
+        "covered": 181,
+        "missed": 180
+      }
+    }
+  },
+  "runtimeArtifacts": [
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/cli/target/threadlens-cli-1.0.0-SNAPSHOT.jar",
+      "sha256": "345d93b7e0674a00f929fb26dff6cb5792309689643ec62bff75ea41dd4e74f4"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/jfr/target/threadlens-jfr-1.0.0-SNAPSHOT.jar",
+      "sha256": "21ee9651c15f5bb2e79268b7941c5ff9c5a6c25a0fa59faa0543f40fbe598ed0"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/probe/target/threadlens-probe-1.0.0-SNAPSHOT.jar",
+      "sha256": "295bbd18c9e859886db71194228c7681b60581a5ba11668f974652624e29318a"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/analysis/target/threadlens-analysis-1.0.0-SNAPSHOT.jar",
+      "sha256": "9a6c8b0311b7a1bc8dd5ec34e088c12690fb1d36be6454b584fc05c3f44aeeba"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/report/target/threadlens-report-1.0.0-SNAPSHOT.jar",
+      "sha256": "4dfe9e834dd44e678eac33d675db204321ea04aaf269f53f4c771486dd3e5c3d"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-threadlens/workloads/target/threadlens-workloads-1.0.0-SNAPSHOT.jar",
+      "sha256": "1076e80bfafa914c479198e9414d3d7b15b5c8e07c6d095b59bb4b8ecfc899e9"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.jar",
+      "sha256": "22d1d4316c4ec13a68b559e98c8256d69071593731da96136640f864fa14fad8"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-databind/2.21.5/jackson-databind-2.21.5.jar",
+      "sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-core/2.21.5/jackson-core-2.21.5.jar",
+      "sha256": "b64b5874162b503a0e58a8f7758266e8dd9f91bf49e3a59ae0b5f47589a231b7"
+    }
+  ],
+  "agentArtifact": {
+    "path": "/workspace/Java-portfolio/projects/08-threadlens/agent/target/threadlens-agent-1.0.0-SNAPSHOT.jar",
+    "sha256": "094eb380612ecdd362fba1e3b986482de3cec361e3b8c36550a25b1b9af28055"
+  },
+  "limitations": [
+    "No fresh cause, final stress or overhead study has run on this checkpoint.",
+    "Original full84 failure and immutable inputs remain preserved.",
+    "Atomic in-flight accounting adds runtime cost; no speedup assumed."
+  ],
+  "selectedAgentCoreCoverage": {
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/InstrumentationPolicy": {
+      "BRANCH": {
+        "covered": 32,
+        "missed": 2
+      },
+      "LINE": {
+        "covered": 30,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/SafeHierarchy": {
+      "BRANCH": {
+        "covered": 35,
+        "missed": 3
+      },
+      "LINE": {
+        "covered": 39,
+        "missed": 1
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingTransformer$2": {
+      "BRANCH": {
+        "covered": 4,
+        "missed": 0
+      },
+      "LINE": {
+        "covered": 10,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/SafeHierarchy$Type": {
+      "LINE": {
+        "covered": 1,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingStatistics": {
+      "BRANCH": {
+        "covered": 14,
+        "missed": 0
+      },
+      "LINE": {
+        "covered": 52,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingTransformer$1": {
+      "LINE": {
+        "covered": 2,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingStatistics$Entry": {
+      "LINE": {
+        "covered": 2,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingTransformer": {
+      "BRANCH": {
+        "covered": 8,
+        "missed": 0
+      },
+      "LINE": {
+        "covered": 22,
+        "missed": 0
+      }
+    },
+    "io/github/cheshmakzanoon/portfolio/threadlens/agent/TimingTransformer$2$1": {
+      "BRANCH": {
+        "covered": 2,
+        "missed": 0
+      },
+      "LINE": {
+        "covered": 24,
+        "missed": 0
+      }
+    }
+  },
+  "rootMutationCheckerExitCode": 0
+}

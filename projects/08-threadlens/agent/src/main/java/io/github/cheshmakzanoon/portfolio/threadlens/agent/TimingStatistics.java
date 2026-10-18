@@ -21,22 +21,30 @@ public final class TimingStatistics {
   private final TreeMap<Integer, Entry> methods = new TreeMap<>();
   private final long startedMillis = System.currentTimeMillis();
   private long overflow, clipped, observed;
+  private int lastMethod;
+  private Entry lastEntry;
 
   public void accept(TimingBuffer.Timing timing) {
+    accept(timing.methodId(), timing.startedNanos(), timing.durationNanos(), timing.exceptional());
+  }
+
+  public void accept(int methodId, long startedNanos, long durationNanos, boolean exceptional) {
     observed++;
-    Entry entry = methods.get(timing.methodId());
+    Entry entry = lastEntry != null && lastMethod == methodId ? lastEntry : methods.get(methodId);
     if (entry == null) {
       if (methods.size() == SUBJECT_LIMIT) {
         overflow++;
         return;
       }
       entry = new Entry();
-      methods.put(timing.methodId(), entry);
+      methods.put(methodId, entry);
     }
+    lastMethod = methodId;
+    lastEntry = entry;
     entry.events++;
-    if (timing.exceptional()) entry.exceptions++;
-    entry.total = Math.addExact(entry.total, timing.durationNanos());
-    long duration = timing.durationNanos();
+    if (exceptional) entry.exceptions++;
+    entry.total = Math.addExact(entry.total, durationNanos);
+    long duration = durationNanos;
     if (duration > MAX_NANOS) {
       duration = MAX_NANOS;
       clipped++;

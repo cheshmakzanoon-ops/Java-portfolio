@@ -17,6 +17,16 @@ class TimingImporterTest {
         "methodId\tstartedMonotonicNanos\tdurationNanos\texceptional\n" + rows);
   }
 
+  String completeStatus(long observed, long omitted) {
+    return "statusVersion=2\ncollectionHealthy=true\nqueueDrops=0\nshutdownDiscarded=0\nincomplete=false\nprobeFailures=0\nmethodOverflow=0\ntimingHistogramOverflow=0\ndurationClipped=0\nobservedTimingEvents="
+        + observed
+        + "\nacceptedTimingReservations="
+        + observed
+        + "\nproducerQuiesced=true\nunfinishedProbeExits=0\nrawTimingRowsOmitted="
+        + omitted
+        + "\nactiveMethodIdLimit=100\nactiveQueueCapacity=2\nskips={}\nstatusComplete=true\n";
+  }
+
   @Test
   void primitiveTimingReplayPreservesDistributionsAndLosses() throws Exception {
     fixture("0\t123\t100\tfalse\n0\t234\t200\ttrue\n1\t345\t300\tfalse\n");
@@ -75,9 +85,7 @@ class TimingImporterTest {
     Files.writeString(
         directory.resolve("timing-summary.tsv"),
         "methodId\texits\texceptionalExits\ttotalNanos\tp50Nanos\tp95Nanos\tp99Nanos\n0\t100002\t1\t30000300\t300\t301\t301\n");
-    Files.writeString(
-        directory.resolve("observer-status.txt"),
-        "collectionHealthy=true\nincomplete=false\nqueueDrops=0\nshutdownDiscarded=0\nprobeFailures=0\nrawTimingRowsOmitted=90002\nactiveMethodIdLimit=100\nactiveQueueCapacity=2\n");
+    Files.writeString(directory.resolve("observer-status.txt"), completeStatus(100002, 90002));
     var result = new TimingImporter().read(directory);
     assertEquals(100002, result.exits());
     assertEquals(90002, result.rawRowsOmitted());
@@ -85,5 +93,86 @@ class TimingImporterTest {
     assertEquals(2, result.activeLimits().get("queueCapacity"));
     assertEquals(100, result.activeLimits().get("methodIds"));
     assertEquals(301, result.timings().get("a.method()V").p99Nanos());
+  }
+
+  @Test
+  void missingOrTruncatedSummaryCannotTurnRawPrefixIntoCompleteDistribution() throws Exception {
+    fixture("0\t1\t100\tfalse\n");
+    Files.writeString(directory.resolve("observer-status.txt"), completeStatus(100002, 90002));
+    var importer = new TimingImporter();
+    var missing = importer.read(directory);
+    assertTrue(missing.incomplete());
+    assertEquals(1, missing.exits());
+    assertEquals(100002, missing.producerObservedEvents());
+    assertEquals(100001, missing.unaccountedEvents());
+    Files.writeString(
+        directory.resolve("timing-summary.tsv"),
+        "methodId\texits\texceptionalExits\ttotalNanos\tp50Nanos\tp95Nanos\tp99Nanos\n0\t2\t0\t200\t100\t100\t100\n");
+    var truncated = importer.read(directory);
+    assertTrue(truncated.incomplete());
+    assertEquals(100000, truncated.unaccountedEvents());
+    Files.writeString(directory.resolve("observer-status.txt"), completeStatus(1, 0));
+    assertThrows(java.io.IOException.class, () -> importer.read(directory));
+  }
+
+  @Test
+  void healthyTruncatedLegacyAndDuplicateStatusNeverLookComplete() throws Exception {
+    fixture("0\t1\t100\tfalse\n");
+    var importer = new TimingImporter();
+    for (String text :
+        java.util.List.of(
+            "collectionHealthy=true\nincomplete=false\n",
+            "statusVersion=2\ncollectionHealthy=true\nincomplete=false\nstatusComplete=true\n",
+            completeStatus(1, 0).replace("methodOverflow=0\n", ""))) {
+      Files.writeString(directory.resolve("observer-status.txt"), text);
+      var r = importer.read(directory);
+      assertFalse(r.statusComplete());
+      assertTrue(r.incomplete());
+    }
+    Files.writeString(directory.resolve("observer-status.txt"), completeStatus(1, 0));
+    assertFalse(importer.read(directory).incomplete());
+    for (String duplicate :
+        java.util.List.of(
+            "methodOverflow=0\n",
+            "collectionHealthy=true\n",
+            "statusComplete=true\n",
+            "queueDrops=0\n")) {
+      Files.writeString(directory.resolve("observer-status.txt"), completeStatus(1, 0) + duplicate);
+      assertThrows(java.io.IOException.class, () -> importer.read(directory));
+    }
+  }
+
+  @Test
+  void selectionOverflowAndBoundedReasonsSurviveReportRoundtrip() throws Exception {
+    fixture("0\t1\t100\tfalse\n");
+    Files.writeString(
+        directory.resolve("observer-status.txt"),
+        "collectionHealthy=true\nincomplete=false\nmethodOverflow=1\nskips={methodCeiling=1, outsideAllowlist=17}\nqueueDrops=0\n");
+    var importer = new TimingImporter();
+    var result = importer.read(directory);
+    assertTrue(result.incomplete());
+    assertEquals(1, result.methodSelectionOverflow());
+    assertEquals(17, result.selectionSkips().get("outsideAllowlist"));
+    var p = importer.merge(new ProfileAccumulator(1, 1, 1).snapshot(), result);
+    var doc =
+        ReportDocument.create(
+            "selection-fixture", p, java.util.Map.of(), java.util.Map.of(), p.counters());
+    Path json = directory.resolve("report.json"), html = directory.resolve("report.html");
+    ReportWriter.json(json, doc);
+    ReportWriter.html(html, doc);
+    assertEquals(1, ReportWriter.read(json).lossCounters().get("timingMethodSelectionOverflow"));
+    assertTrue(Files.readString(html).contains("timingSelectionSkip.methodCeiling"));
+    assertTrue(ReportWriter.read(json).missingEventStatus().contains("incomplete"));
+    for (String bad :
+        java.util.List.of(
+            "{methodCeiling=-1}",
+            "{methodCeiling=1, methodCeiling=2}",
+            "{<script>=1}",
+            "x".repeat(4097))) {
+      Files.writeString(directory.resolve("observer-status.txt"), "skips=" + bad + "\n");
+      assertThrows(java.io.IOException.class, () -> importer.read(directory));
+    }
+    Files.writeString(directory.resolve("observer-status.txt"), "methodOverflow=-1\n");
+    assertThrows(java.io.IOException.class, () -> importer.read(directory));
   }
 }

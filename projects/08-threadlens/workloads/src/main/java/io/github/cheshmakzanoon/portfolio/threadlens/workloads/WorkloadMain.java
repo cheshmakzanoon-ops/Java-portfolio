@@ -20,6 +20,8 @@ import org.HdrHistogram.Histogram;
  * labelled.
  */
 public final class WorkloadMain {
+  public static final String COLLECTION_CONFIGURATION = "v3-allocation50-park-class-only";
+
   private WorkloadMain() {}
 
   public static void main(String[] args) throws Exception {
@@ -49,10 +51,13 @@ public final class WorkloadMain {
       if (available.contains("jdk.ExecutionSample"))
         recording.enable("jdk.ExecutionSample").withPeriod(Duration.ofMillis(20)).withStackTrace();
       if (available.contains("jdk.ObjectAllocationSample"))
-        recording.enable("jdk.ObjectAllocationSample").with("throttle", "150/s").withStackTrace();
+        recording.enable("jdk.ObjectAllocationSample").with("throttle", "50/s").withStackTrace();
       for (String name : List.of("jdk.JavaMonitorEnter", "jdk.ThreadPark"))
-        if (available.contains(name))
-          recording.enable(name).withThreshold(Duration.ofMillis(2)).withStackTrace();
+        if (available.contains(name)) {
+          var setting = recording.enable(name).withThreshold(Duration.ofMillis(2));
+          if (name.equals("jdk.ThreadPark")) setting.withoutStackTrace();
+          else setting.withStackTrace();
+        }
       for (String name : List.of("jdk.GarbageCollection", "jdk.DataLoss"))
         if (available.contains(name)) recording.enable(name).withoutStackTrace();
       recording.start();
@@ -74,7 +79,9 @@ public final class WorkloadMain {
     }
     Files.createDirectories(output.toAbsolutePath().getParent());
     String json =
-        "{\n\"kind\":\""
+        "{\n\"collectionConfiguration\":\""
+            + COLLECTION_CONFIGURATION
+            + "\",\"kind\":\""
             + kind
             + "\",\"regressed\":"
             + regressed
