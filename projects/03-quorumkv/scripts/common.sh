@@ -9,10 +9,12 @@ PORT=${QUORUMKV_PORT:-18300}
 quorum_build() {
  local stamp="$PROJECT/raft-verification/target/verified-source.sha256" before after
  before=$(python3 "$PROJECT/scripts/source-fingerprint.py")
- if [[ ! -f "$PROJECT/raft-verification/target/runtime-classpath.txt" || ! -f "$stamp" || "$(cat "$stamp" 2>/dev/null || true)" != "$before" ]]; then
+ if [[ ! -f "$PROJECT/raft-verification/target/runtime-classpath.txt" || ! -f "$stamp" || "$(cat "$stamp" 2>/dev/null || true)" != "$before" ]] || ! python3 "$PROJECT/scripts/runtime-artifacts.py" check >/dev/null 2>&1; then
+  if [[ ${QUORUMKV_PREPARED:-0} == 1 ]]; then echo "Prepared source/artifacts are absent or stale; verify before reserving the quiet host." >&2; return 1; fi
   "$ROOT/mvnw" -f "$PROJECT/pom.xml" -Dmaven.repo.local="$CACHE" -B -ntp verify
   after=$(python3 "$PROJECT/scripts/source-fingerprint.py")
   if [[ $before != "$after" ]]; then echo 'Source changed during verification; rerun command.' >&2; return 1; fi
+  python3 "$PROJECT/scripts/runtime-artifacts.py" write
   printf '%s\n' "$after" > "$stamp"
  fi
 }

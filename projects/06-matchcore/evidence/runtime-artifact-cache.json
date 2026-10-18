@@ -1,0 +1,126 @@
+{
+  "observedAtUtc": "2026-10-18T02:35:55.485882+00:00",
+  "sourceFingerprint": "62fc0b0351864486ffa736bd64f444393e3dda894f93677c7ca95448dab1ce83",
+  "scope": "Operational artifact cache repair after A05 review; no production Java changes",
+  "ordinaryVerification": {
+    "exitCode": 0,
+    "counts": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "freshReportCutoffUnix": 1792290863,
+    "rawLog": ".work/coordinator/matchcore-artifact-boundary-verify.log",
+    "sha256": "71461f41617a5d8a19b196be78247aeff1073403f7eef0430d1c34749b635bd5"
+  },
+  "actualArtifactChecks": [
+    {
+      "case": "untouched actual verified outputs",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "modified compiled class",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "exact restoration after modified compiled class",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "modified dependency JAR",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "exact restoration after modified dependency JAR",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "modified runtime classpath",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "exact restoration after modified runtime classpath",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "changed executable source",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "exact restoration after changed executable source",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "unexpected extra compiled resource",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "symbolic link compiled root",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "exact restoration after symbolic link compiled root",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "symbolic link dependency JAR",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "exact restoration after symbolic link dependency JAR",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "symbolic link nested directory",
+      "exitCode": 1,
+      "expectedSuccess": false,
+      "stderr": "Prepared source/artifacts are absent or stale; verify before reserving the quiet host."
+    },
+    {
+      "case": "actual prepared cache reuse without Maven",
+      "exitCode": 0,
+      "expectedSuccess": true,
+      "stderr": ""
+    },
+    {
+      "case": "effective Java classpath contains no caller-CWD empty element",
+      "exitCode": 0,
+      "expectedSuccess": true
+    }
+  ],
+  "snapshotArtifactCount": 67,
+  "quietPreparedMode": "MATCHCORE_PREPARED=1 refuses absent/stale source or artifacts before Maven",
+  "limitations": [
+    "Trusted local build receipt, not a cryptographic attestation.",
+    "Full mandatory system measurements remain unrun."
+  ]
+}

@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public final class Model {
+  private static final java.util.regex.Pattern IDENTIFIER =
+      java.util.regex.Pattern.compile("[a-zA-Z0-9_-]{1,64}");
+
   private Model() {}
 
   public enum Type {
@@ -71,7 +74,7 @@ public final class Model {
   }
 
   public static boolean identifier(String s) {
-    return s != null && s.matches("[a-zA-Z0-9_-]{1,64}");
+    return s != null && IDENTIFIER.matcher(s).matches();
   }
 
   public static long decimalPrice(String text) {

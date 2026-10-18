@@ -22,6 +22,22 @@ class BookTest {
   }
 
   @Test
+  void malformedIdentityCannotAllocateSequenceOrChangeState() {
+    String longest = "A_0-".repeat(16);
+    Command valid =
+        new Command(longest, longest, Type.INIT, null, null, 0, 0, null, false, 1000, 10);
+    b.apply(1, valid);
+    for (String invalid :
+        java.util.Arrays.asList(null, "", " ", "a:b", "../a", "a\nb", "é", "a".repeat(65))) {
+      View before = b.view();
+      Command malformed =
+          new Command(invalid, longest, Type.INIT, null, null, 0, 0, null, false, 1, 0);
+      assertThrows(IllegalArgumentException.class, () -> b.apply(2, malformed));
+      assertEquals(before, b.view());
+    }
+  }
+
+  @Test
   void exactRiskAndFokSelfTrade() {
     apply(init("a", 1000, 20));
     apply(init("b", 1000, 20));
