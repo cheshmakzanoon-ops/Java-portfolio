@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "project": "clearledger",
+  "recordedAtUtc": "2026-10-18T01:57:42.138428+00:00",
+  "command": "projects/01-clearledger/scripts/microbenchmark.sh smoke",
+  "exitCode": 0,
+  "sourceRevision": "working-tree:7ed01158f594a0548aea199e74135e6bfedba6f6dde20ff03c389d0763b43dfa",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "benchmarkCases": [
+    {
+      "benchmark": "io.github.cheshmakzanoon.portfolio.clearledger.AccountingBenchmark.canonicalDigest",
+      "parameters": {
+        "lines": "2"
+      },
+      "forks": 1,
+      "warmupIterations": 1,
+      "measurementIterations": 1,
+      "gcProfilerPresent": true
+    },
+    {
+      "benchmark": "io.github.cheshmakzanoon.portfolio.clearledger.AccountingBenchmark.canonicalDigest",
+      "parameters": {
+        "lines": "100"
+      },
+      "forks": 1,
+      "warmupIterations": 1,
+      "measurementIterations": 1,
+      "gcProfilerPresent": true
+    },
+    {
+      "benchmark": "io.github.cheshmakzanoon.portfolio.clearledger.AccountingBenchmark.parseExactMoney",
+      "parameters": {
+        "lines": "2"
+      },
+      "forks": 1,
+      "warmupIterations": 1,
+      "measurementIterations": 1,
+      "gcProfilerPresent": true
+    },
+    {
+      "benchmark": "io.github.cheshmakzanoon.portfolio.clearledger.AccountingBenchmark.parseExactMoney",
+      "parameters": {
+        "lines": "100"
+      },
+      "forks": 1,
+      "warmupIterations": 1,
+      "measurementIterations": 1,
+      "gcProfilerPresent": true
+    }
+  ],
+  "rawArtifacts": [
+    ".work/A01/microbenchmark-smoke.log",
+    "projects/01-clearledger/target/microbenchmark/smoke/results.json",
+    "projects/01-clearledger/target/microbenchmark/smoke/environment.json"
+  ],
+  "limitations": [
+    "shared-host100ms smoke validates annotation processing/forked execution/result consumption/GC profiler only",
+    "no latency/throughput result is promoted as full performance evidence",
+    "full quiet3fork/3warmup/5measurement runs remain open"
+  ]
+}

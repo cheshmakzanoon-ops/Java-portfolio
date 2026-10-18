@@ -73,17 +73,18 @@ public final class Projector {
             .get("generation"));
   }
 
-  private static long pendingOn(Connection c, UUID generation) throws SQLException {
+  private static long pendingOn(Connection c, UUID generation, UUID tenant) throws SQLException {
     return Long.parseLong(
         LedgerStore.query(
                 c,
-                "SELECT count(*) AS n FROM ledger.outbox_event e WHERE NOT EXISTS(SELECT FROM ledger.projection_checkpoint p WHERE p.generation=? AND p.event_id=e.id)",
+                "SELECT count(*) AS n FROM ledger.outbox_event e WHERE e.tenant_id=? AND NOT EXISTS(SELECT FROM ledger.projection_checkpoint p WHERE p.generation=? AND p.event_id=e.id)",
+                tenant,
                 generation)
             .getFirst()
             .get("n"));
   }
 
-  public Map<String, Object> freshness() {
+  public Map<String, Object> freshness(UUID tenant) {
     return store.tx(
         c -> {
           var generation = generationOn(c);
@@ -91,7 +92,7 @@ public final class Projector {
               "generation",
               generation,
               "pendingEvents",
-              pendingOn(c, generation),
+              pendingOn(c, generation, tenant),
               "authoritative",
               false,
               "snapshot",
@@ -118,7 +119,7 @@ public final class Projector {
               "authoritative",
               false,
               "pendingEvents",
-              pendingOn(c, generation),
+              pendingOn(c, generation, tenant),
               "balances",
               rows,
               "snapshot",

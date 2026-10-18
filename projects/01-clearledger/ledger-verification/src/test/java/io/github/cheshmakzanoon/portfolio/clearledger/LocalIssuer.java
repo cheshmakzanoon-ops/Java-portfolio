@@ -81,6 +81,22 @@ final class LocalIssuer implements AutoCloseable {
     return token(tenant, scopes, issuer, "clearledger", Instant.now().plusSeconds(300), false);
   }
 
+  String identityToken(Object subject, Object tenantValue) throws Exception {
+    var claims = new HashMap<String, Object>();
+    claims.put("iss", issuer);
+    claims.put("aud", List.of("clearledger"));
+    claims.put("exp", Instant.now().plusSeconds(300).getEpochSecond());
+    claims.put("scope", "ledger.read");
+    if (subject != null) claims.put("sub", subject);
+    if (tenantValue != null) claims.put("tenant", tenantValue);
+    var jwt =
+        new JWSObject(
+            new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("local-oidc").build(),
+            new Payload(claims));
+    jwt.sign(new RSASSASigner(key));
+    return jwt.serialize();
+  }
+
   public void close() {
     server.stop(0);
   }

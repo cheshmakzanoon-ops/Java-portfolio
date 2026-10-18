@@ -13,6 +13,25 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @SpringBootApplication
 public class ClearLedgerApplication {
+  @Bean
+  org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer strictRequestJson() {
+    return builder ->
+        builder
+            .withCoercionConfig(
+                tools.jackson.databind.type.LogicalType.Textual,
+                config -> {
+                  for (var shape :
+                      java.util.List.of(
+                          tools.jackson.databind.cfg.CoercionInputShape.Integer,
+                          tools.jackson.databind.cfg.CoercionInputShape.Float,
+                          tools.jackson.databind.cfg.CoercionInputShape.Boolean))
+                    config.setCoercion(shape, tools.jackson.databind.cfg.CoercionAction.Fail);
+                })
+            .disable(tools.jackson.databind.DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+            .enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            .enable(tools.jackson.databind.cfg.EnumFeature.FAIL_ON_NUMBERS_FOR_ENUMS);
+  }
+
   public static void main(String[] args) {
     SpringApplication.run(ClearLedgerApplication.class, args);
   }
@@ -51,16 +70,31 @@ public class ClearLedgerApplication {
                       "HmacSHA256"))
               .macAlgorithm(MacAlgorithm.HS256)
               .build();
+      preserveIdentityTypes(decoder);
       decoder.setJwtValidator(validators(issuer));
-      return decoder;
+      return StrictIdentityDecoder.wrap(decoder);
     }
     return protectedDecoder(issuer);
   }
 
   public static JwtDecoder protectedDecoder(String issuer) {
     var d = (NimbusJwtDecoder) JwtDecoders.fromIssuerLocation(issuer);
+    preserveIdentityTypes(d);
     d.setJwtValidator(validators(issuer));
-    return d;
+    return StrictIdentityDecoder.wrap(d);
+  }
+
+  static void preserveIdentityTypes(NimbusJwtDecoder decoder) {
+    var defaults = MappedJwtClaimSetConverter.withDefaults(Map.of());
+    decoder.setClaimSetConverter(
+        raw -> {
+          var converted = new HashMap<String, Object>(defaults.convert(raw));
+          for (String name : List.of("sub", "tenant")) {
+            if (raw.containsKey(name)) converted.put(name, raw.get(name));
+            else converted.remove(name);
+          }
+          return converted;
+        });
   }
 
   static OAuth2TokenValidator<Jwt> validators(String issuer) {
@@ -68,7 +102,14 @@ public class ClearLedgerApplication {
         JwtValidators.createDefaultWithIssuer(issuer),
         jwt -> {
           try {
-            UUID.fromString(jwt.getClaimAsString("tenant"));
+            Object subject = jwt.getClaims().get("sub"), tenant = jwt.getClaims().get("tenant");
+            if (!(subject instanceof String sub)
+                || sub.isBlank()
+                || sub.length() > 255
+                || !(tenant instanceof String id)
+                || id.length() != 36
+                || !UUID.fromString(id).toString().equalsIgnoreCase(id))
+              throw new IllegalArgumentException();
             if (!jwt.getAudience().contains("clearledger")
                 || jwt.getExpiresAt() == null
                 || jwt.getSubject() == null) throw new IllegalArgumentException();
@@ -86,6 +127,8 @@ public class ClearLedgerApplication {
             a ->
                 a.requestMatchers("/health")
                     .permitAll()
+                    .requestMatchers("/v1/reports/replay")
+                    .hasAuthority("SCOPE_ledger.system")
                     .requestMatchers("/v1/reports/**")
                     .hasAuthority("SCOPE_ledger.admin")
                     .requestMatchers("/v1/reconciliation/**", "/v1/statements/**")

@@ -20,6 +20,57 @@ public final class Workload {
 
   record Intent(UUID tenant, String key, Journal journal, boolean reverse) {}
 
+  static final class ClientOutcomes {
+    final AtomicLong retries = new AtomicLong();
+    final AtomicLong temporaryResults = new AtomicLong();
+    final AtomicLong exhaustions = new AtomicLong();
+    final AtomicLong completed = new AtomicLong();
+    final AtomicLong failed = new AtomicLong();
+
+    Map<String, Object> snapshot() {
+      return Map.of(
+          "temporaryClientResults", temporaryResults.get(),
+          "clientRetryAttempts", retries.get(),
+          "clientRetryExhaustions", exhaustions.get(),
+          "clientAttemptBudgetPerOperation", 6,
+          "completedInputGroups", completed.get(),
+          "failedInputGroups", failed.get());
+    }
+  }
+
+  @FunctionalInterface
+  interface Pause {
+    void sleep(long millis) throws InterruptedException;
+  }
+
+  static <T> T retryClient(java.util.function.Supplier<T> request, ClientOutcomes outcomes) {
+    return retryClient(request, outcomes, Thread::sleep);
+  }
+
+  static <T> T retryClient(
+      java.util.function.Supplier<T> request, ClientOutcomes outcomes, Pause pause) {
+    for (int attempt = 0; attempt < 6; attempt++) {
+      try {
+        return request.get();
+      } catch (LedgerStore.LedgerException temporary) {
+        if (!temporary.temporary) throw temporary;
+        outcomes.temporaryResults.incrementAndGet();
+        if (attempt == 5) {
+          outcomes.exhaustions.incrementAndGet();
+          throw temporary;
+        }
+        try {
+          pause.sleep(Math.min(1600, 100L << attempt) + ThreadLocalRandom.current().nextLong(100));
+          outcomes.retries.incrementAndGet();
+        } catch (InterruptedException interrupted) {
+          Thread.currentThread().interrupt();
+          throw new IllegalStateException("CLIENT_RETRY_INTERRUPTED", interrupted);
+        }
+      }
+    }
+    throw new IllegalStateException("CLIENT_RETRY_BOUND");
+  }
+
   public static void main(String[] args) throws Exception {
     int count = args.length > 0 ? Integer.parseInt(args[0]) : 100000;
     int writers = args.length > 1 ? Integer.parseInt(args[1]) : 1;
@@ -65,9 +116,21 @@ public final class Workload {
             return null;
           });
       for (int i = 0; i < count; i++) {
-        int t = random.nextInt(20), currency = random.nextInt(3);
-        int a = random.nextInt(166) * 3 + currency, b = random.nextInt(166) * 3 + currency;
-        if (a == b) b = (b + 3) % 498;
+        int t, currency, a, b;
+        if (i < 10000) {
+          t = i % 20;
+          a = i / 20;
+          currency = a % 3;
+          int cardinality = (499 - currency) / 3 + 1;
+          b = (((a - currency) / 3 + 1) % cardinality) * 3 + currency;
+        } else {
+          t = random.nextInt(20);
+          currency = random.nextInt(3);
+          int cardinality = (499 - currency) / 3 + 1;
+          a = random.nextInt(cardinality) * 3 + currency;
+          b = random.nextInt(cardinality) * 3 + currency;
+          if (a == b) b = (((a - currency) / 3 + 1) % cardinality) * 3 + currency;
+        }
         var n = BigInteger.valueOf(random.nextInt(10000) + 1);
         var lines = new ArrayList<Journal.Line>();
         lines.add(new Journal.Line(id("account-" + t + "-" + a), Journal.Side.DEBIT, n));
@@ -89,13 +152,18 @@ public final class Workload {
         if (reverse) oracle.apply(j.reversed(j.date()));
         intents.add(new Intent(id("fixture-tenant-" + t), "fixture-" + i, j, reverse));
       }
-      var expectedBalances = oracle.balances();
+      var expectedBalances = new HashMap<UUID, BigInteger>();
+      for (int t = 0; t < 20; t++)
+        for (int account = 0; account < 500; account++)
+          expectedBalances.put(id("account-" + t + "-" + account), BigInteger.ZERO);
+      expectedBalances.putAll(oracle.balances());
       var expected = new StringBuilder("account,debit_minus_credit_minor\n");
       expectedBalances.entrySet().stream()
           .sorted(Map.Entry.comparingByKey())
           .forEach(e -> expected.append(e.getKey()).append(',').append(e.getValue()).append('\n'));
       Files.writeString(output.resolve("expected-balances.csv"), expected);
       var samples = new long[count];
+      var outcomes = new ClientOutcomes();
       var next = new AtomicInteger();
       var pool = Executors.newFixedThreadPool(writers);
       var peakHeap = new AtomicLong();
@@ -138,16 +206,35 @@ public final class Workload {
                   while ((i = next.getAndIncrement()) < count) {
                     var intent = intents.get(i);
                     long before = System.nanoTime();
-                    var posted = store.post(intent.tenant, intent.key, intent.journal);
-                    if (i % 100 == 0) {
-                      var duplicate = store.post(intent.tenant, intent.key, intent.journal);
-                      if (!posted.equals(duplicate))
-                        throw new AssertionError("DUPLICATE_CHANGED_ID");
+                    try {
+                      var posted =
+                          retryClient(
+                              () -> store.post(intent.tenant, intent.key, intent.journal),
+                              outcomes);
+                      if (i % 100 == 0) {
+                        var duplicate =
+                            retryClient(
+                                () -> store.post(intent.tenant, intent.key, intent.journal),
+                                outcomes);
+                        if (!posted.equals(duplicate))
+                          throw new AssertionError("DUPLICATE_CHANGED_ID");
+                      }
+                      if (intent.reverse) {
+                        retryClient(
+                            () ->
+                                store.reverse(
+                                    intent.tenant,
+                                    posted,
+                                    "reversal-" + intent.key,
+                                    intent.journal.date()),
+                            outcomes);
+                      }
+                      samples[i] = System.nanoTime() - before;
+                      outcomes.completed.incrementAndGet();
+                    } catch (RuntimeException | Error failure) {
+                      outcomes.failed.incrementAndGet();
+                      throw failure;
                     }
-                    if (intent.reverse)
-                      store.reverse(
-                          intent.tenant, posted, "reversal-" + intent.key, intent.journal.date());
-                    samples[i] = System.nanoTime() - before;
                   }
                 }));
       try {
@@ -155,6 +242,14 @@ public final class Workload {
       } finally {
         pool.shutdownNow();
         sampler.shutdownNow();
+        try {
+          if (!pool.awaitTermination(30, TimeUnit.SECONDS))
+            throw new IllegalStateException("WORKLOAD_WORKERS_DID_NOT_STOP");
+        } finally {
+          new ObjectMapper()
+              .writerWithDefaultPrettyPrinter()
+              .writeValue(output.resolve("client-outcomes.json").toFile(), outcomes.snapshot());
+        }
       }
       long elapsed = System.nanoTime() - started;
       var actual = new HashMap<UUID, BigInteger>();
@@ -162,16 +257,10 @@ public final class Workload {
         for (var row : store.balances(id("fixture-tenant-" + t))) {
           var signed =
               new BigInteger(row.get("debits")).subtract(new BigInteger(row.get("credits")));
-          if (signed.signum() != 0 || expectedBalances.containsKey(UUID.fromString(row.get("id"))))
-            actual.put(UUID.fromString(row.get("id")), signed);
+          actual.put(UUID.fromString(row.get("id")), signed);
         }
       if (!expectedBalances.equals(actual)) throw new AssertionError("REFERENCE_BALANCE_MISMATCH");
-      var violations =
-          admin.tx(
-              c ->
-                  LedgerStore.query(
-                      c,
-                      "SELECT journal_id FROM ledger.posting GROUP BY tenant_id,journal_id HAVING count(*)<2 OR sum(CASE side WHEN 'DEBIT' THEN amount ELSE -amount END)<>0"));
+      var violations = SourceAudit.journals(admin);
       if (!violations.isEmpty()) throw new AssertionError("ACCOUNTING_IMBALANCE");
       var projector = new Projector(store);
       long lag = projector.pending();
@@ -202,6 +291,8 @@ public final class Workload {
       result.put("journals", count);
       result.put("tenants", 20);
       result.put("accounts", 10000);
+      result.put("accountsTouched", oracle.balances().size());
+      result.put("tenantsTouched", intents.stream().map(Intent::tenant).distinct().count());
       result.put("writers", writers);
       result.put("timestamp", Instant.now().toString());
       result.put(
@@ -213,6 +304,7 @@ public final class Workload {
       result.put("p95Millis", samples[(int) ((samples.length - 1) * .95)] / 1e6);
       result.put("p99Millis", samples[(int) ((samples.length - 1) * .99)] / 1e6);
       result.put("transactionRetries", store.retryCount());
+      result.putAll(outcomes.snapshot());
       result.put("maxSampledLockWaiters", lockWaits.get());
       result.put("lockWaiterSampleTotal", lockSamples.get());
       result.put("successfulLockSamples", successfulLockSamples.get());
@@ -262,7 +354,7 @@ public final class Workload {
       result.put(
           "limitations",
           List.of(
-              "closed-loop clients: latency includes coordination but not open-loop queue delay",
+              "closed-loop clients: latency includes transaction retries and bounded same-key client backoff, but not open-loop queue delay",
               "database and clients share host",
               "no production claims",
               "peak heap sampled every250ms; not process RSS",

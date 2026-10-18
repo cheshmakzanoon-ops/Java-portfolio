@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "project": "clearledger",
+  "recordedAtUtc": "2026-10-18T01:56:08.032285+00:00",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/01-clearledger/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A01/m2 -B -ntp -pl ledger-domain -am -Pmutation verify",
+  "exitCode": 0,
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "effectiveJUnitVersion": "6.1.3",
+  "domainSourceManifest": {
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Journal.java": "641b5cbbb286d3bfe2410674244b99bae96360f9e4d20e5375d24b87ac0d6f24",
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Money.java": "81a08508031dc202f1c6bfd8542af64decbcadd9d536c8fdca9963155301b3ff",
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/ReferenceLedger.java": "a628d518560a8b0d4fba44dcf134f89b76f7b5a8e610801bdd56b291c6679a12",
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingProperties.java": "aaeefb11248647f02ab311340fb0f346085c5355381774deaa24a5ca780dcef5",
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingTest.java": "f64dad5e086f9152f79d57100740110939dda08b59cf090564928305f4422940",
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/DomainArchitectureTest.java": "e2c27c5ac05ecccc407cc9260d465b2913fbe4fe3526cd9047c6b58e70397b61"
+  },
+  "rawArtifacts": [
+    ".work/A01/mutation-current.log",
+    ".work/A01/pit-current-preserved/mutations.xml",
+    ".work/A01/pit-current-preserved/index.html"
+  ],
+  "mutationCounts": {
+    "KILLED": 30,
+    "SURVIVED": 1
+  },
+  "generated": 31,
+  "killedPercent": 96.7741935483871,
+  "thresholdPercent": 70,
+  "mutatedClassLines": {
+    "covered": 71,
+    "total": 75
+  },
+  "survivors": [
+    {
+      "file": "Money.java",
+      "class": "io.github.cheshmakzanoon.portfolio.clearledger.Money",
+      "method": "parse",
+      "line": "20",
+      "description": "changed conditional boundary"
+    }
+  ],
+  "survivorReview": "Retained length64 conditional boundary is equivalent for accepted canonical decimal values under independent currency scale and minor-unit magnitude checks; all accepted representations are shorter than64characters. No mutant excluded.",
+  "limitations": [
+    "selected original domain scope; no mutation coverage claimed for adapters, SQL or verification drivers",
+    "shared-host correctness run; no performance measurements inferred"
+  ]
+}

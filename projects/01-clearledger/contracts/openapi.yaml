@@ -140,7 +140,7 @@ paths:
           content: {text/csv: {schema: {type: string}}}
   /v1/reports/replay:
     post:
-      description: Requires ledger.admin. Rebuilds a separate generation and promotes only after verified source equality. Never truncates live tables.
+      description: Requires distinct platform scope ledger.system. Rebuilds a separate generation and promotes only after verified source equality. Never truncates live tables.
       responses:
         '200': {description: Promoted generation UUID}
         '422': {description: SHADOW_MISMATCH_RETRY_WITH_NEW_GENERATION; active generation preserved}
@@ -152,7 +152,7 @@ paths:
         '200': {description: Reporting balances and freshness; never silently substitutes for current statements}
   /v1/reports/freshness:
     get:
-      description: Requires ledger.admin. Reports active generation,pendingEvents,authoritative=false.
+      description: Requires ledger.admin. Reports active generation, tenant-scoped pendingEvents,authoritative=false.
       responses:
         '200': {description: Explicit reporting lag}
 components:

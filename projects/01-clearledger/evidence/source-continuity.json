@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "project": "clearledger",
+  "recordedAtUtc": "2026-10-18T02:37:07.592510+00:00",
+  "priorFullIntegrationSource": "working-tree:java-sql-pom-sha256:eebeeb1d9fcc06a1ca914fc2fbafcba37983a4726d5bc0908a07d356d38436c5",
+  "priorFullIntegrationEvidence": "evidence/integration-current.json",
+  "currentOrdinaryManifest": "a8ed0e1af863680687fcb7487a5213ce811925c5f23fa13b3b1634505c6c6be2",
+  "currentFullGitVisibleSource": "working-tree:242052d3bb19765a763f9e0030838bc6e9a1d38fb9a883333c981114db03d79d",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "unchangedPriorManifestFileCount": 29,
+  "unchangedPriorManifestFiles": {
+    "ledger-api/pom.xml": {
+      "previousSha256": "7c2e9d6f0d6b622e969028f45e37437ef986b61417afb54c5a051275071d78f2",
+      "currentSha256": "7c2e9d6f0d6b622e969028f45e37437ef986b61417afb54c5a051275071d78f2"
+    },
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/ClearLedgerApplication.java": {
+      "previousSha256": "d10e01b3cd1e99e9e411e09ad08004d4b9e7d97fcfee789058a755bac432cb66",
+      "currentSha256": "d10e01b3cd1e99e9e411e09ad08004d4b9e7d97fcfee789058a755bac432cb66"
+    },
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/LedgerController.java": {
+      "previousSha256": "56658bef0731bfd2a67875ecbc2ec6c8be50e785872b9da2ea6b73a2271ca47a",
+      "currentSha256": "56658bef0731bfd2a67875ecbc2ec6c8be50e785872b9da2ea6b73a2271ca47a"
+    },
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/RequestBoundsFilter.java": {
+      "previousSha256": "68634a178f2ec1c528fad50c1056df5a131e104bae53e933d00a2d2e3b2ab774",
+      "currentSha256": "68634a178f2ec1c528fad50c1056df5a131e104bae53e933d00a2d2e3b2ab774"
+    },
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/StrictIdentityDecoder.java": {
+      "previousSha256": "e540d582eda762f51216f1e7504c04ac0d25acb8de1fe3fafcee27e5a0e417a6",
+      "currentSha256": "e540d582eda762f51216f1e7504c04ac0d25acb8de1fe3fafcee27e5a0e417a6"
+    },
+    "ledger-api/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/RequestJsonTest.java": {
+      "previousSha256": "f34afabdb090fdfb42b52ea58e7512dc50548ca02cd2cb013a40e4645bbf8d4e",
+      "currentSha256": "f34afabdb090fdfb42b52ea58e7512dc50548ca02cd2cb013a40e4645bbf8d4e"
+    },
+    "ledger-benchmarks/pom.xml": {
+      "previousSha256": "464d506b95fc504a5bacf012f5269cba30322e45e391f7d9d773b9a69b3b87b0",
+      "currentSha256": "464d506b95fc504a5bacf012f5269cba30322e45e391f7d9d773b9a69b3b87b0"
+    },
+    "ledger-benchmarks/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingBenchmark.java": {
+      "previousSha256": "dcd309ede17c900901f89e2303b56304589d8faf6cb39e8762ee85dc55f3b0c3",
+      "currentSha256": "dcd309ede17c900901f89e2303b56304589d8faf6cb39e8762ee85dc55f3b0c3"
+    },
+    "ledger-domain/pom.xml": {
+      "previousSha256": "cc682db8b1150a2dc3ba26ed3341b35c464695f23540c780fea43d114b33aea3",
+      "currentSha256": "cc682db8b1150a2dc3ba26ed3341b35c464695f23540c780fea43d114b33aea3"
+    },
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Journal.java": {
+      "previousSha256": "641b5cbbb286d3bfe2410674244b99bae96360f9e4d20e5375d24b87ac0d6f24",
+      "currentSha256": "641b5cbbb286d3bfe2410674244b99bae96360f9e4d20e5375d24b87ac0d6f24"
+    },
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Money.java": {
+      "previousSha256": "81a08508031dc202f1c6bfd8542af64decbcadd9d536c8fdca9963155301b3ff",
+      "currentSha256": "81a08508031dc202f1c6bfd8542af64decbcadd9d536c8fdca9963155301b3ff"
+    },
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/ReferenceLedger.java": {
+      "previousSha256": "a628d518560a8b0d4fba44dcf134f89b76f7b5a8e610801bdd56b291c6679a12",
+      "currentSha256": "a628d518560a8b0d4fba44dcf134f89b76f7b5a8e610801bdd56b291c6679a12"
+    },
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingProperties.java": {
+      "previousSha256": "aaeefb11248647f02ab311340fb0f346085c5355381774deaa24a5ca780dcef5",
+      "currentSha256": "aaeefb11248647f02ab311340fb0f346085c5355381774deaa24a5ca780dcef5"
+    },
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingTest.java": {
+      "previousSha256": "f64dad5e086f9152f79d57100740110939dda08b59cf090564928305f4422940",
+      "currentSha256": "f64dad5e086f9152f79d57100740110939dda08b59cf090564928305f4422940"
+    },
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/DomainArchitectureTest.java": {
+      "previousSha256": "e2c27c5ac05ecccc407cc9260d465b2913fbe4fe3526cd9047c6b58e70397b61",
+      "currentSha256": "e2c27c5ac05ecccc407cc9260d465b2913fbe4fe3526cd9047c6b58e70397b61"
+    },
+    "ledger-persistence/pom.xml": {
+      "previousSha256": "44f91cc682e55d5a25a71e9a075db5ed131f197226b05f56050ae48a1b68f9c0",
+      "currentSha256": "44f91cc682e55d5a25a71e9a075db5ed131f197226b05f56050ae48a1b68f9c0"
+    },
+    "ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/LedgerStore.java": {
+      "previousSha256": "85763b7e625ec072dd4900a8dec67a5d317370717c9058b8b526011a780699bf",
+      "currentSha256": "85763b7e625ec072dd4900a8dec67a5d317370717c9058b8b526011a780699bf"
+    },
+    "ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Projector.java": {
+      "previousSha256": "bd323c40bfc6d78e3325857b5728c9bf45442a4bee69eb0be0fa65f689855ae3",
+      "currentSha256": "bd323c40bfc6d78e3325857b5728c9bf45442a4bee69eb0be0fa65f689855ae3"
+    },
+    "ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Reconciliation.java": {
+      "previousSha256": "2d392ada5106ead458bd714472221a06876c0bf31df748cb7492a333c33fceb9",
+      "currentSha256": "2d392ada5106ead458bd714472221a06876c0bf31df748cb7492a333c33fceb9"
+    },
+    "ledger-persistence/src/main/resources/db/migration/V1__ledger.sql": {
+      "previousSha256": "598b9824337a111f9f728177496ebde5284a20a5a2a24fca3098797b99038bcb",
+      "currentSha256": "598b9824337a111f9f728177496ebde5284a20a5a2a24fca3098797b99038bcb"
+    },
+    "ledger-persistence/src/main/resources/db/migration/V2__null_safe_posting_and_deferred_audit.sql": {
+      "previousSha256": "78048d1f2b897fe63cdf8789a2a2566c7ec0700e76107038a2b00f50d248eaa5",
+      "currentSha256": "78048d1f2b897fe63cdf8789a2a2566c7ec0700e76107038a2b00f50d248eaa5"
+    },
+    "ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/ReconciliationTest.java": {
+      "previousSha256": "ec5a367b7e14150ed6ea41ecfb77bb298018c73bf173d43708c6cf22710ce6d2",
+      "currentSha256": "ec5a367b7e14150ed6ea41ecfb77bb298018c73bf173d43708c6cf22710ce6d2"
+    },
+    "ledger-verification/pom.xml": {
+      "previousSha256": "3e31024493c683c7a8ba3b83781b31d2730e3e19e20c95d81a3d4378cdfe02e3",
+      "currentSha256": "3e31024493c683c7a8ba3b83781b31d2730e3e19e20c95d81a3d4378cdfe02e3"
+    },
+    "ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/CrashWriter.java": {
+      "previousSha256": "34912528fedae2532e68f340740c81f069a3712ffc0657d7fb51f411ab837fcb",
+      "currentSha256": "34912528fedae2532e68f340740c81f069a3712ffc0657d7fb51f411ab837fcb"
+    },
+    "ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/SourceAudit.java": {
+      "previousSha256": "12fa8537b4ac715209be94d3c1bee48cafb02ea452b3eab60f5022f0216b0872",
+      "currentSha256": "12fa8537b4ac715209be94d3c1bee48cafb02ea452b3eab60f5022f0216b0872"
+    },
+    "ledger-verification/src/main/resources/clearledger/source-audit.sql": {
+      "previousSha256": "20d06488aaf0f086eab922e90bb6cea65ebc4ab30af4314b7d8bc23cb78f6c74",
+      "currentSha256": "20d06488aaf0f086eab922e90bb6cea65ebc4ab30af4314b7d8bc23cb78f6c74"
+    },
+    "ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/LedgerPostgresIT.java": {
+      "previousSha256": "63d44b14cc3710215022813ace556b061fde5f3b9c2ca3d4e671e44239dd395e",
+      "currentSha256": "63d44b14cc3710215022813ace556b061fde5f3b9c2ca3d4e671e44239dd395e"
+    },
+    "ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/LocalIssuer.java": {
+      "previousSha256": "b76fb1a7eb4e33b717bd1068506117b91a9adb5cbb8fda0f121108347b5e03ed",
+      "currentSha256": "b76fb1a7eb4e33b717bd1068506117b91a9adb5cbb8fda0f121108347b5e03ed"
+    },
+    "pom.xml": {
+      "previousSha256": "fa4a3258f9dc31b0c90005765b72ece9fa206c289d7356eb910b0ef4e0d1810b",
+      "currentSha256": "fa4a3258f9dc31b0c90005765b72ece9fa206c289d7356eb910b0ef4e0d1810b"
+    }
+  },
+  "changedPriorManifestFiles": {
+    "ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Workload.java": {
+      "previousSha256": "346865199f0368267222f32f63c3745829b0cc73908cecc6c7a968083df56fd6",
+      "currentSha256": "9b2f16ab914fd9a3a5eca296ffea5c2eeed8b43a598658646b311d46836e8b1f"
+    }
+  },
+  "addedOrdinaryTest": "ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/WorkloadClientRetryTest.java",
+  "scope": "Every prior Java/SQL/POM input except the workload driver is byte-identical. All production API/domain/persistence, SQL migrations, SourceAudit, realPG tests and configuration are unchanged. Driver correction has14ordinary and actual1/8/32smoke evidence; no new15-PG run is invented.",
+  "limitations": [
+    "Launcher scripts/diagnostic helpers are separately identified by full Git-visible source fingerprint and actual script evidence.",
+    "Full quiet measurements and clean checkout remain open."
+  ],
+  "postSmokeReleaseHelperCorrection": "evidence/release-helper-correction.json",
+  "currentFrozenFullGitVisibleSource": "working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5"
+}

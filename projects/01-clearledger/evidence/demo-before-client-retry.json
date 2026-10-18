@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "project": "clearledger",
+  "recordedAtUtc": "2026-10-18T02:21:16.206925+00:00",
+  "status": "PASS_SCOPED_LIVE_DEMO",
+  "sourceCommitObservedAfterRun": "c194243fda57ced56c089c690127d10896369121",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "commandResults": [
+    {
+      "name": "up-current",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "up",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:11:27.974653+00:00"
+    },
+    {
+      "name": "demo-audit-first",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "demo",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:11:36.164452+00:00"
+    },
+    {
+      "name": "reset-current",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "reset-demo",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:11:37.881716+00:00"
+    },
+    {
+      "name": "demo-audit-repeat",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "demo",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:11:42.824462+00:00"
+    },
+    {
+      "name": "system-smoke",
+      "exitCode": 1,
+      "command": [
+        "/workspace/Java-portfolio/projects/01-clearledger/scripts/benchmark.sh",
+        "1000",
+        "1"
+      ],
+      "completedAtUtc": "2026-10-18T02:12:03.604647+00:00"
+    },
+    {
+      "name": "down-coexistence",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "down",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:20:13.641555+00:00"
+    }
+  ],
+  "demoRuns": [
+    {
+      "schemaVersion": 1,
+      "project": "clearledger",
+      "sourceRevision": "working-tree:6694eae36fbc2221c2fc58354b72ca99ef4b98db3eb1d8de2bd0a26fba65ad3a",
+      "workload": "five-minute-demo-v1",
+      "seed": 20261017,
+      "command": "projects/01-clearledger/scripts/demo.sh",
+      "exitCode": 0,
+      "assertions": {
+        "passed": 9,
+        "failed": 0
+      },
+      "observations": [
+        "balanced journal committed",
+        "unbalanced journal rejected",
+        "same key returned original identifier",
+        "killed writer after commit; recovered retained receipt without duplicate",
+        "full reversal preserved source; repeated reversal request returned receipt",
+        "same file preserved results: matched, ambiguous, unmatched, duplicate, invalid",
+        "verified shadow replay promoted with zero pending events",
+        "authoritative statement returned keyset cursor and visibility boundary",
+        "source invariant audit: zero unbalanced or short journals"
+      ],
+      "measurements": {},
+      "limitations": [
+        "local disposable HS256 dev profile; protected RSA/OIDC behavior tested separately in integration suite",
+        "synthetic data only; no payment network",
+        "writer killed at database commit barrier before response headers of an actual HTTP request are emitted"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "project": "clearledger",
+      "sourceRevision": "working-tree:6694eae36fbc2221c2fc58354b72ca99ef4b98db3eb1d8de2bd0a26fba65ad3a",
+      "workload": "five-minute-demo-v1",
+      "seed": 20261017,
+      "command": "projects/01-clearledger/scripts/demo.sh",
+      "exitCode": 0,
+      "assertions": {
+        "passed": 9,
+        "failed": 0
+      },
+      "observations": [
+        "balanced journal committed",
+        "unbalanced journal rejected",
+        "same key returned original identifier",
+        "killed writer after commit; recovered retained receipt without duplicate",
+        "full reversal preserved source; repeated reversal request returned receipt",
+        "same file preserved results: matched, ambiguous, unmatched, duplicate, invalid",
+        "verified shadow replay promoted with zero pending events",
+        "authoritative statement returned keyset cursor and visibility boundary",
+        "source invariant audit: zero unbalanced or short journals"
+      ],
+      "measurements": {},
+      "limitations": [
+        "local disposable HS256 dev profile; protected RSA/OIDC behavior tested separately in integration suite",
+        "synthetic data only; no payment network",
+        "writer killed at database commit barrier before response headers of an actual HTTP request are emitted"
+      ]
+    }
+  ],
+  "coexistenceEvidence": "integration/coexistence/evidence.json",
+  "teardownVerified": {
+    "rootDownExitCode": 0,
+    "apiNoLongerConnects": true,
+    "ownedDatabaseContainerStopped": true
+  },
+  "limitations": [
+    "Demonstrates current working checkout; clean-checkout gate remains separate.",
+    "Benchmark1000 smoke failed at writer8; included nonzero command status must not be interpreted as a workload pass.",
+    "Demo source hash uses historical pre-normalization whole-project traversal; future demos use the explicit Git-visible manifest algorithm also used by workload environment capture.",
+    "Root SHA observed after run may differ from uncommitted project contents; individual demo source fingerprints are retained.",
+    "Driver-only bounded temporary retry change was made afterward and is not certified by these earlier live commands."
+  ]
+}

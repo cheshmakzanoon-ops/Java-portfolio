@@ -216,42 +216,82 @@ class LedgerPostgresIT {
 
   @Test
   void actualProcessTerminationBeforeAndAfterCommit() throws Exception {
-    for (String point : List.of("before", "after")) {
-      var signal = Files.createTempFile("clearledger-crash-", ".ready");
-      Files.delete(signal);
-      var command =
-          List.of(
-              System.getProperty("java.home") + "/bin/java",
-              "-Xmx96m",
-              "-cp",
-              System.getProperty("java.class.path"),
-              CrashWriter.class.getName(),
-              pg.getJdbcUrl(),
-              tenant.toString(),
-              period.toString(),
-              a.toString(),
-              b.toString(),
-              "crash-" + point,
-              point,
-              signal.toString());
-      var process =
-          new ProcessBuilder(command)
-              .redirectErrorStream(true)
-              .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-              .start();
-      try {
-        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20);
-        while (!Files.exists(signal) && process.isAlive() && System.nanoTime() < deadline)
-          Thread.sleep(20);
-        assertTrue(Files.exists(signal), "crash barrier must be reached");
-        process.destroyForcibly().waitFor(10, TimeUnit.SECONDS);
-        assertEquals(point.equals("after") ? 1 : 0, store.receipt(tenant, "crash-" + point).size());
-        var replay = store.post(tenant, "crash-" + point, journal(10, "crash"));
-        assertNotNull(replay);
-        assertEquals(1, store.receipt(tenant, "crash-" + point).size());
-      } finally {
-        process.destroyForcibly();
-        Files.deleteIfExists(signal);
+    try (var client =
+        java.net.http.HttpClient.newBuilder()
+            .connectTimeout(java.time.Duration.ofSeconds(3))
+            .build()) {
+      for (String point : List.of("before", "after")) {
+        var signal = Files.createTempFile("clearledger-http-crash-", ".ready");
+        Files.delete(signal);
+        var portFile = signal.resolveSibling(signal.getFileName() + ".port");
+        var nonce = UUID.randomUUID().toString();
+        var command =
+            List.of(
+                System.getProperty("java.home") + "/bin/java",
+                "-Xmx96m",
+                "-cp",
+                System.getProperty("java.class.path"),
+                CrashWriter.class.getName(),
+                pg.getJdbcUrl(),
+                tenant.toString(),
+                period.toString(),
+                a.toString(),
+                b.toString(),
+                "crash-" + point,
+                point,
+                signal.toString(),
+                portFile.toString(),
+                nonce);
+        var process =
+            new ProcessBuilder(command)
+                .redirectErrorStream(true)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .start();
+        java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<String>> response = null;
+        try {
+          long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20);
+          while (!Files.exists(portFile) && process.isAlive() && System.nanoTime() < deadline)
+            Thread.sleep(20);
+          assertTrue(
+              Files.exists(portFile),
+              "HTTP writer must bind loopback and publish its ephemeral port");
+          int port = Integer.parseInt(Files.readString(portFile));
+          response =
+              client.sendAsync(
+                  java.net.http.HttpRequest.newBuilder(
+                          java.net.URI.create("http://127.0.0.1:" + port + "/post"))
+                      .timeout(java.time.Duration.ofSeconds(40))
+                      .header("Authorization", "Bearer " + nonce)
+                      .POST(java.net.http.HttpRequest.BodyPublishers.noBody())
+                      .build(),
+                  java.net.http.HttpResponse.BodyHandlers.ofString());
+          deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20);
+          while (!Files.exists(signal) && process.isAlive() && System.nanoTime() < deadline)
+            Thread.sleep(20);
+          assertTrue(
+              Files.exists(signal),
+              "HTTP writer must reach named commit barrier before sending response headers");
+          process.destroyForcibly();
+          assertTrue(process.waitFor(10, TimeUnit.SECONDS));
+          var disconnected = response;
+          assertThrows(
+              java.util.concurrent.ExecutionException.class,
+              () -> disconnected.get(10, TimeUnit.SECONDS),
+              "client must observe an interrupted real HTTP exchange");
+          var receipts = store.receipt(tenant, "crash-" + point);
+          assertEquals(point.equals("after") ? 1 : 0, receipts.size());
+          var replay = store.post(tenant, "crash-" + point, journal(10, "crash"));
+          assertNotNull(replay);
+          if (point.equals("after"))
+            assertTrue(receipts.getFirst().get("response").contains(replay.toString()));
+          assertEquals(1, store.receipt(tenant, "crash-" + point).size());
+        } finally {
+          process.destroyForcibly();
+          if (response != null) response.cancel(true);
+          Files.deleteIfExists(signal);
+          Files.deleteIfExists(portFile);
+          Files.deleteIfExists(portFile.resolveSibling(portFile.getFileName() + ".tmp"));
+        }
       }
     }
     assertEquals(2, count("journal"));
@@ -310,7 +350,7 @@ class LedgerPostgresIT {
     assertEquals(false, report.get("authoritative"));
     assertNotNull(report.get("snapshot"));
     assertEquals(0L, report.get("pendingEvents"));
-    assertEquals(replay, projector.freshness().get("generation"));
+    assertEquals(replay, projector.freshness(tenant).get("generation"));
     assertEquals(0, projector.pending());
   }
 
@@ -347,6 +387,106 @@ class LedgerPostgresIT {
     r.resolve(tenant, id, 2, jid, 1, "reviewer", "bank evidence", "statement row 2");
     assertEquals("MATCHED", r.rows(tenant, id).get(1).get("status"));
     assertEquals(1, count("reconciliation_decision"));
+  }
+
+  @Test
+  void sourceAuditFindsAdministratorCorruptionOutsideRuntimePermissions() {
+    var original = store.post(tenant, "audit-original", journal(10, "audit-original"));
+    assertTrue(SourceAudit.journals(admin).isEmpty());
+    assertThrows(
+        LedgerStore.LedgerException.class,
+        () ->
+            store.tx(
+                c ->
+                    LedgerStore.execute(
+                        c,
+                        "INSERT INTO ledger.journal(tenant_id,id,period_id,currency,effective_date,reference) VALUES(?,?,?,'CAD',DATE '2026-01-02','unauthorized')",
+                        tenant,
+                        UUID.randomUUID(),
+                        period)));
+    var corrupt = new LinkedHashMap<String, UUID>();
+    for (String kind :
+        List.of(
+            "EMPTY",
+            "SINGLE",
+            "OVERCOUNT",
+            "UNBALANCED",
+            "CURRENCY",
+            "MAXSUM",
+            "DATE",
+            "WRONG_REVERSAL")) corrupt.put(kind, UUID.randomUUID());
+    try {
+      admin.tx(
+          c -> {
+            // A DBA deliberately bypasses the deferred backstop for this diagnostic fixture only.
+            LedgerStore.execute(c, "ALTER TABLE ledger.journal DISABLE TRIGGER journal_invariants");
+            for (var sample : corrupt.entrySet()) {
+              String kind = sample.getKey();
+              UUID id = sample.getValue();
+              LedgerStore.execute(
+                  c,
+                  "INSERT INTO ledger.journal(tenant_id,id,period_id,currency,effective_date,reference,reverses) VALUES(?,?,?,?,?,?,?)",
+                  tenant,
+                  id,
+                  period,
+                  kind.equals("CURRENCY") ? "USD" : "CAD",
+                  kind.equals("DATE") ? LocalDate.of(2027, 1, 1) : LocalDate.of(2026, 1, 2),
+                  kind,
+                  kind.equals("WRONG_REVERSAL") ? original : null);
+              int count =
+                  kind.equals("EMPTY")
+                      ? 0
+                      : kind.equals("SINGLE")
+                          ? 1
+                          : kind.equals("OVERCOUNT") ? 102 : kind.equals("MAXSUM") ? 4 : 2;
+              for (int line = 0; line < count; line++) {
+                boolean debit = line % 2 == 0;
+                var amount =
+                    kind.equals("MAXSUM")
+                        ? Money.MAX
+                        : BigInteger.valueOf(
+                            kind.equals("WRONG_REVERSAL")
+                                ? 11
+                                : kind.equals("UNBALANCED") && !debit ? 9 : 10);
+                LedgerStore.execute(
+                    c,
+                    "INSERT INTO ledger.posting(tenant_id,journal_id,line_no,account_id,side,amount) VALUES(?,?,?,?,?,?)",
+                    tenant,
+                    id,
+                    line + 1,
+                    debit ? a : b,
+                    debit ? "DEBIT" : "CREDIT",
+                    new BigDecimal(amount));
+              }
+            }
+            LedgerStore.execute(c, "ALTER TABLE ledger.journal ENABLE TRIGGER journal_invariants");
+            return null;
+          });
+      var detected =
+          SourceAudit.journals(admin).stream()
+              .filter(r -> r.get("tenant_id").equals(tenant.toString()))
+              .map(r -> UUID.fromString(r.get("journal_id")))
+              .collect(java.util.stream.Collectors.toSet());
+      assertEquals(
+          new HashSet<>(corrupt.values()),
+          detected,
+          "all eight independently corrupted source cases must be visible");
+    } finally {
+      admin.tx(
+          c -> {
+            LedgerStore.execute(c, "ALTER TABLE ledger.journal ENABLE TRIGGER journal_invariants");
+            LedgerStore.execute(
+                c,
+                "DELETE FROM ledger.posting WHERE tenant_id=? AND journal_id<>?",
+                tenant,
+                original);
+            LedgerStore.execute(
+                c, "DELETE FROM ledger.journal WHERE tenant_id=? AND id<>?", tenant, original);
+            return null;
+          });
+    }
+    assertTrue(SourceAudit.journals(admin).isEmpty());
+    assertEquals(1, count("journal"));
   }
 
   @Test
@@ -391,12 +531,7 @@ class LedgerPostgresIT {
       assertEquals(0, restored.getExitCode(), restored.getStderr());
       var restoredStore = new LedgerStore(clean.getJdbcUrl(), "postgres", "restore-only");
       assertEquals(store.balances(tenant), restoredStore.balances(tenant));
-      var violations =
-          restoredStore.tx(
-              c ->
-                  LedgerStore.query(
-                      c,
-                      "SELECT journal_id FROM ledger.posting GROUP BY tenant_id,journal_id HAVING sum(CASE side WHEN 'DEBIT' THEN amount ELSE -amount END)<>0"));
+      var violations = SourceAudit.journals(restoredStore);
       assertTrue(violations.isEmpty());
       try (var runtimeRestored =
           new LedgerStore(clean.getJdbcUrl(), "clearledger_runtime", "local-only-clearledger")) {
@@ -453,6 +588,20 @@ class LedgerPostgresIT {
         assertThrows(
             org.springframework.security.oauth2.jwt.JwtException.class,
             () -> decoder.decode(invalid));
+      for (Object bad : List.of("", "   ", 42, List.of("actor"))) {
+        assertThrows(
+            org.springframework.security.oauth2.jwt.JwtException.class,
+            () -> decoder.decode(issuer.identityToken(bad, tenant.toString())));
+        assertThrows(
+            org.springframework.security.oauth2.jwt.JwtException.class,
+            () -> decoder.decode(issuer.identityToken("actor", bad)));
+      }
+      assertThrows(
+          org.springframework.security.oauth2.jwt.JwtException.class,
+          () -> decoder.decode(issuer.identityToken(null, tenant.toString())));
+      assertThrows(
+          org.springframework.security.oauth2.jwt.JwtException.class,
+          () -> decoder.decode(issuer.identityToken("actor", null)));
       var app1 = new org.springframework.boot.SpringApplication(ClearLedgerApplication.class);
       var app2 = new org.springframework.boot.SpringApplication(ClearLedgerApplication.class);
       String[] args = {
@@ -482,6 +631,23 @@ class LedgerPostgresIT {
                 + "\",\"side\":\"DEBIT\",\"amount\":\"1.00\"},{\"account\":\""
                 + b
                 + "\",\"side\":\"CREDIT\",\"amount\":\"1.00\"}]}";
+        for (String malformed :
+            List.of(
+                json.replace("\"amount\":\"1.00\"", "\"amount\":1.00"),
+                json.replace("\"side\":\"DEBIT\"", "\"side\":0"))) {
+          var invalid =
+              client.send(
+                  java.net.http.HttpRequest.newBuilder(
+                          java.net.URI.create("http://127.0.0.1:" + port1 + "/v1/journals"))
+                      .header("Authorization", "Bearer " + token)
+                      .header("Content-Type", "application/json")
+                      .header("Idempotency-Key", "coercion-rejected")
+                      .POST(java.net.http.HttpRequest.BodyPublishers.ofString(malformed))
+                      .build(),
+                  java.net.http.HttpResponse.BodyHandlers.ofString());
+          assertEquals(400, invalid.statusCode(), invalid.body());
+          assertEquals(0, count("journal"));
+        }
         var response1 =
             client.send(
                 java.net.http.HttpRequest.newBuilder(
@@ -526,6 +692,34 @@ class LedgerPostgresIT {
                     .build(),
                 java.net.http.HttpResponse.BodyHandlers.ofString());
         assertEquals(403, denied.statusCode());
+
+        var freshness =
+            client.send(
+                java.net.http.HttpRequest.newBuilder(
+                        java.net.URI.create("http://127.0.0.1:" + port1 + "/v1/reports/freshness"))
+                    .header("Authorization", "Bearer " + issuer.token(other, "ledger.admin"))
+                    .GET()
+                    .build(),
+                java.net.http.HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, freshness.statusCode());
+        assertTrue(freshness.body().contains("\"pendingEvents\":0"), freshness.body());
+        var replayUri = java.net.URI.create("http://127.0.0.1:" + port1 + "/v1/reports/replay");
+        var tenantReplay =
+            client.send(
+                java.net.http.HttpRequest.newBuilder(replayUri)
+                    .header("Authorization", "Bearer " + token)
+                    .POST(java.net.http.HttpRequest.BodyPublishers.noBody())
+                    .build(),
+                java.net.http.HttpResponse.BodyHandlers.ofString());
+        assertEquals(403, tenantReplay.statusCode());
+        var systemReplay =
+            client.send(
+                java.net.http.HttpRequest.newBuilder(replayUri)
+                    .header("Authorization", "Bearer " + issuer.token(tenant, "ledger.system"))
+                    .POST(java.net.http.HttpRequest.BodyPublishers.noBody())
+                    .build(),
+                java.net.http.HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, systemReplay.statusCode(), systemReplay.body());
 
         // No Content-Length: BodyPublishers.ofInputStream emits a real chunked body.
         for (String contentType : List.of("text/csv", "application/json")) {
@@ -670,6 +864,73 @@ class LedgerPostgresIT {
     assertEquals(0, count("posting"));
     assertEquals(0, count("idempotency_receipt"));
     assertEquals(0, count("outbox_event"));
+  }
+
+  @Test
+  void sqlNullMalformedShapesAndDeferredBackstopRejectAtomically() {
+    String valid =
+        "[{\"account\":\""
+            + a
+            + "\",\"side\":\"DEBIT\",\"amount\":\"10\"},{\"account\":\""
+            + b
+            + "\",\"side\":\"CREDIT\",\"amount\":\"10\"}]";
+    var invalid =
+        new ArrayList<String>(
+            Arrays.asList(
+                null,
+                "null",
+                "{}",
+                "[]",
+                "[{}]",
+                "[" + String.join(",", Collections.nCopies(101, "{}")) + "]",
+                valid.replace("10", "1.5"),
+                valid.replace("10", "-1"),
+                valid.replace("DEBIT", "INVALID"),
+                valid.replace("\"10\"", "null")));
+    for (int index = 0; index < invalid.size(); index++) {
+      String payload = invalid.get(index), key = "invalid-shape-" + index;
+      assertThrows(
+          LedgerStore.LedgerException.class,
+          () ->
+              store.tx(
+                  c ->
+                      LedgerStore.query(
+                          c,
+                          "SELECT ledger.post_journal(?,?,?,?,?,?,?,?,?::jsonb,?,?)",
+                          tenant,
+                          key,
+                          "0".repeat(64),
+                          UUID.randomUUID(),
+                          period,
+                          LocalDate.of(2026, 1, 2),
+                          "CAD",
+                          "invalid",
+                          payload,
+                          null,
+                          "POST")),
+          key);
+    }
+    assertThrows(
+        LedgerStore.LedgerException.class,
+        () ->
+            admin.tx(
+                c ->
+                    LedgerStore.execute(
+                        c,
+                        "INSERT INTO ledger.journal(tenant_id,id,period_id,currency,effective_date,reference) VALUES(?,?,?,'CAD',DATE '2026-01-02','backstop')",
+                        tenant,
+                        UUID.randomUUID(),
+                        period)));
+    assertEquals(0, count("journal"));
+    assertEquals(0, count("posting"));
+    assertEquals(0, count("idempotency_receipt"));
+    assertEquals(0, count("outbox_event"));
+    assertTrue(
+        store.balances(tenant).stream()
+            .allMatch(
+                r ->
+                    new BigInteger(r.get("debits")).signum() == 0
+                        && new BigInteger(r.get("credits")).signum() == 0));
   }
 
   @Test

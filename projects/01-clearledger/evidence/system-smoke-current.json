@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "project": "clearledger",
+  "recordedAtUtc": "2026-10-18T02:36:14.532477+00:00",
+  "status": "PASS_FUNCTIONAL_SHARED_HOST_SMOKE",
+  "sourceRevision": "working-tree:242052d3bb19765a763f9e0030838bc6e9a1d38fb9a883333c981114db03d79d",
+  "sourceCommit": "dbab3a13f5c2b29ed2d843189ec91c0a51475a31",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "command": [
+    "/workspace/Java-portfolio/projects/01-clearledger/scripts/benchmark.sh",
+    "1000",
+    "1",
+    "--prepared"
+  ],
+  "commandResults": [
+    {
+      "name": "up-retry",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "up",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:34:05.906907+00:00"
+    },
+    {
+      "name": "demo-retry-first",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "demo",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:34:15.132053+00:00"
+    },
+    {
+      "name": "reset-retry",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "reset-demo",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:34:15.965254+00:00"
+    },
+    {
+      "name": "demo-retry-repeat",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "demo",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:34:19.279766+00:00"
+    },
+    {
+      "name": "system-smoke-retry",
+      "exitCode": 0,
+      "command": [
+        "/workspace/Java-portfolio/projects/01-clearledger/scripts/benchmark.sh",
+        "1000",
+        "1",
+        "--prepared"
+      ],
+      "completedAtUtc": "2026-10-18T02:35:26.664357+00:00"
+    },
+    {
+      "name": "down-retry",
+      "exitCode": 0,
+      "command": [
+        "./scripts/portfolio.sh",
+        "down",
+        "clearledger"
+      ],
+      "completedAtUtc": "2026-10-18T02:35:27.660193+00:00"
+    }
+  ],
+  "seed": 20261017,
+  "runs": [
+    {
+      "writers": 1,
+      "inputGroups": 1000,
+      "outcomes": {
+        "clientRetryAttempts": 0,
+        "temporaryClientResults": 0,
+        "clientAttemptBudgetPerOperation": 6,
+        "clientRetryExhaustions": 0,
+        "failedInputGroups": 0,
+        "completedInputGroups": 1000
+      },
+      "transactionRetries": 0,
+      "assertions": {
+        "shadowReplay": "PASS",
+        "duplicateReceipts": "PASS",
+        "journalBalance": "PASS",
+        "referenceBalances": "PASS"
+      },
+      "independentSql": {
+        "journals": 1001,
+        "receipts": 1001,
+        "outboxEvents": 1001,
+        "pendingAfterReplay": 0,
+        "tenantsTouched": 20,
+        "accountsTouched": 1060
+      },
+      "latencySamples": 1000,
+      "processExitCode": 0,
+      "profileEventCounts": {
+        "cpuLoad": 16,
+        "garbageCollection": 4,
+        "heapSummary": 8,
+        "allocationSample": 254
+      },
+      "rawArtifacts": "projects/01-clearledger/target/benchmark/r1-w1"
+    },
+    {
+      "writers": 8,
+      "inputGroups": 1000,
+      "outcomes": {
+        "completedInputGroups": 1000,
+        "clientRetryAttempts": 0,
+        "temporaryClientResults": 0,
+        "clientAttemptBudgetPerOperation": 6,
+        "clientRetryExhaustions": 0,
+        "failedInputGroups": 0
+      },
+      "transactionRetries": 406,
+      "assertions": {
+        "referenceBalances": "PASS",
+        "shadowReplay": "PASS",
+        "duplicateReceipts": "PASS",
+        "journalBalance": "PASS"
+      },
+      "independentSql": {
+        "journals": 1001,
+        "receipts": 1001,
+        "outboxEvents": 1001,
+        "pendingAfterReplay": 0,
+        "tenantsTouched": 20,
+        "accountsTouched": 1060
+      },
+      "latencySamples": 1000,
+      "processExitCode": 0,
+      "profileEventCounts": {
+        "cpuLoad": 14,
+        "garbageCollection": 4,
+        "heapSummary": 8,
+        "allocationSample": 269
+      },
+      "rawArtifacts": "projects/01-clearledger/target/benchmark/r1-w8"
+    },
+    {
+      "writers": 32,
+      "inputGroups": 1000,
+      "outcomes": {
+        "completedInputGroups": 1000,
+        "clientRetryAttempts": 24,
+        "temporaryClientResults": 24,
+        "clientAttemptBudgetPerOperation": 6,
+        "clientRetryExhaustions": 0,
+        "failedInputGroups": 0
+      },
+      "transactionRetries": 1552,
+      "assertions": {
+        "referenceBalances": "PASS",
+        "shadowReplay": "PASS",
+        "duplicateReceipts": "PASS",
+        "journalBalance": "PASS"
+      },
+      "independentSql": {
+        "journals": 1001,
+        "receipts": 1001,
+        "outboxEvents": 1001,
+        "pendingAfterReplay": 0,
+        "tenantsTouched": 20,
+        "accountsTouched": 1060
+      },
+      "latencySamples": 1000,
+      "processExitCode": 0,
+      "profileEventCounts": {
+        "cpuLoad": 20,
+        "garbageCollection": 5,
+        "heapSummary": 10,
+        "allocationSample": 452
+      },
+      "rawArtifacts": "projects/01-clearledger/target/benchmark/r1-w32"
+    }
+  ],
+  "originalFailure": "evidence/system-smoke-first-failed.json",
+  "ordinaryRegressionEvidence": "evidence/client-retry-unit.json",
+  "environment": "projects/01-clearledger/target/benchmark/environment.json",
+  "limitations": [
+    "1000 original inputs, one round, shared active host; does not satisfy the required100000 inputs x3 quiet measurements.",
+    "All10000 accounts are seeded; the bounded smoke touches1060 accounts across20tenants.",
+    "Closed-loop JDBC latency includes all internal transaction retries and same-key outer client backoff, duplicate/reversal work; excludes HTTP and open-loop queueing.",
+    "Production12-attempt transaction budget unchanged; driver permits at most6calls only for temporary responses.",
+    "JFR/profile/process capture executed; no quiet-host performance or production capacity claim."
+  ]
+}

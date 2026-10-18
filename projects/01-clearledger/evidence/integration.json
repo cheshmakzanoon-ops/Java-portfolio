@@ -100,14 +100,15 @@
   },
   "acceptanceMapping": {
     "P01-A1": {
-      "status": "PASS",
+      "status": "IN_PROGRESS",
       "methods": [
         "databaseMatchesIndependentGeneratedModelAndPrivileges",
         "sixtyFourDuplicateRequestsAndRacingReversals",
         "rawRuntimeSqlRejectsGeneratedInvalidJournalsAtomically",
         "balanceOverflowRejectsWholeJournalAndReceipt"
       ],
-      "scope": "bounded generated model/database and runtime-role invariant scenarios, plus domain/property tests"
+      "scope": "bounded generated model/database and runtime-role invariant scenarios, plus domain/property tests",
+      "remaining": "Subsequent review found SQLNULL batch bypass in V1 privileged function; historical13IT did not cover SQLNULL. V2 fix/regressions pending; historical passing scenarios retained, not final acceptance."
     },
     "P01-A2": {
       "status": "IN_PROGRESS",
@@ -140,5 +141,7 @@
       "status": "IN_PROGRESS",
       "remaining": "actual scripted demo,100000journal workload1/8/32writers\u00d73isolated runs, final mutation rerun and independent review"
     }
-  }
+  },
+  "historical": true,
+  "supersededBy": "evidence/integration-current.json"
 }

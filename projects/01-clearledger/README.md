@@ -11,7 +11,10 @@ Requires JDK25, the repository Maven wrapper, Docker Compose and Python3. From t
 ./scripts/portfolio.sh demo clearledger
 ./scripts/portfolio.sh down clearledger
 projects/01-clearledger/scripts/benchmark.sh 100000 3
+projects/01-clearledger/scripts/microbenchmark.sh full
 ```
+
+`benchmark.sh 1000 1` is a functional smoke; the full workload and JMH measurements require an otherwise idle host. See the performance document for raw results, retry counters, profiling and limitations. The optional `-Pbenchmarks` Maven profile adds the isolated CPU benchmark module.
 
 `demo` checks live HTTP results, kills a committed JVM writer, imports the same CSV twice, shows unresolved ambiguity, and verifies shadow reporting. `reset-demo.sh` explicitly resets only the named synthetic tenant; `down` preserves the database volume. The default API is127.0.0.1:18100 and database127.0.0.1:18101. Configure a protected issuer using `--ledger.issuer=...`; only `up.sh` explicitly selects the disposable `dev` JWT profile.
 

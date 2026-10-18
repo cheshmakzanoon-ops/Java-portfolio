@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "project": "clearledger",
+  "recordedAtUtc": "2026-10-18T02:36:14.532477+00:00",
+  "status": "PASS_FUNCTIONAL_PREPARATION_ONLY",
+  "workloadRuntime": {
+    "normalPrepareExitCode": 0,
+    "normalPrepareLog": ".work/A01/client-retry-prepare.log",
+    "subsequentCacheHitExitCode": 0,
+    "cacheHitLog": ".work/A01/client-retry-cache-hit.log",
+    "marker": {
+      "schemaVersion": 1,
+      "sourceSha256": "553410922ae65d24b66eb079ad38969848a6f1f66f787d9c4b8fcf95432fc37b",
+      "artifactSha256": "2f4fb767db688e56a6cb5c0d389dc4ccb4d618d6935227f5bbe93138b09a24ae",
+      "artifactCount": 94
+    },
+    "guardedNormalPrepareExitCode": 0,
+    "guardedNormalPrepareLog": ".work/A01/guarded-runtime-prepare.log",
+    "cliRegressionCount": 6,
+    "cliRegressionStatus": "PASS",
+    "actualHealthyReuseEvidence": "evidence/demo-current.json"
+  },
+  "jmhRuntime": {
+    "normalSmokeExitCode": 0,
+    "normalSmokeLog": ".work/A01/jmh-prepared-smoke.log",
+    "preparedSmokeExitCode": 0,
+    "preparedSmokeLog": ".work/A01/jmh-prepared-cache-hit-smoke.log",
+    "command": "projects/01-clearledger/scripts/microbenchmark.sh smoke --prepared",
+    "forkedCases": 4,
+    "artifactInvalidationProbeExitCodes": [
+      0,
+      1,
+      0
+    ],
+    "marker": {
+      "schemaVersion": 1,
+      "sourceSha256": "74a714c60d9fd4db4cbc4178a1562ed9349ebb8530ff56813e01782095426983",
+      "artifactSha256": "5d092d66db2815934779f9c94576809e35543f2a3a4dacb716f5c5c78eba26af",
+      "artifactCount": 13
+    }
+  },
+  "limitations": [
+    "Prepared runtime reuse is limited to launchers; ordinary and integration verification are never skipped by these caches.",
+    "JMH shared-host smoke has one 100ms iteration and is not full performance evidence.",
+    "Full quiet workloads and full JMH remain open."
+  ]
+}

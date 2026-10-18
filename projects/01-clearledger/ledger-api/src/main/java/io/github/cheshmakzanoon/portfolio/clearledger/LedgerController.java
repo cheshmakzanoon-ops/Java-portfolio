@@ -165,8 +165,8 @@ public class LedgerController {
   }
 
   @GetMapping("/v1/reports/freshness")
-  Map<String, Object> freshness() {
-    return projector.freshness();
+  Map<String, Object> freshness(@AuthenticationPrincipal Jwt p) {
+    return projector.freshness(tenant(p));
   }
 
   @ExceptionHandler({IllegalArgumentException.class, NullPointerException.class})
