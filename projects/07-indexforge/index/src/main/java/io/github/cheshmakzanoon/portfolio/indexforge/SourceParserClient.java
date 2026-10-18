@@ -9,15 +9,31 @@ import java.util.jar.*;
 
 /** One admitted parser process,128MiB heap, bounded frames, watchdog and deterministic bundle. */
 public final class SourceParserClient implements AutoCloseable {
+  private static final Semaphore WORKER_ADMISSION = new Semaphore(1, true);
   private final Path bundle;
   private final ExecutorService reader;
   private Process worker;
   private DataOutputStream input;
   private DataInputStream output;
   private int requests;
+  private final long startupNanos, unitNanos;
+  private long lastPid, maxStartupNanos, maxUnitNanos;
+  private int starts;
+  private boolean ownsPermit;
   private boolean closed;
 
   public SourceParserClient(Path directory) throws IOException {
+    this(directory, TimeUnit.SECONDS.toNanos(5), TimeUnit.SECONDS.toNanos(1));
+  }
+
+  SourceParserClient(Path directory, long startupNanos, long unitNanos) throws IOException {
+    if (startupNanos < 1
+        || startupNanos > TimeUnit.SECONDS.toNanos(5)
+        || unitNanos < 1
+        || unitNanos > TimeUnit.SECONDS.toNanos(1))
+      throw new IllegalArgumentException("parser deadline bounds");
+    this.startupNanos = startupNanos;
+    this.unitNanos = unitNanos;
     if (Runtime.getRuntime().maxMemory() > 1792L * 1024 * 1024)
       throw new IOException(
           "structural ingest parent heap must be <=1792MiB; worker128MiB shares declared2GiB budget");
@@ -70,6 +86,7 @@ public final class SourceParserClient implements AutoCloseable {
     }
     // Input is<=64KiB. A worker stuck reading/executing is also terminated by the same deadline;
     // both write and read happen in the single bounded task, never an unbounded caller write.
+    long unitStarted = System.nanoTime();
     Future<byte[]> pending =
         reader.submit(
             () -> {
@@ -86,7 +103,12 @@ public final class SourceParserClient implements AutoCloseable {
               return response;
             });
     try {
-      var response = pending.get(1, TimeUnit.SECONDS);
+      long remaining = unitNanos - (System.nanoTime() - unitStarted);
+      if (remaining <= 0) throw new TimeoutException("parser unit deadline");
+      var response = pending.get(remaining, TimeUnit.NANOSECONDS);
+      long elapsed = System.nanoTime() - unitStarted;
+      if (elapsed > unitNanos) throw new TimeoutException("parser unit deadline");
+      maxUnitNanos = Math.max(maxUnitNanos, elapsed);
       requests++;
       return response;
     } catch (InterruptedException interrupted) {
@@ -102,6 +124,11 @@ public final class SourceParserClient implements AutoCloseable {
   }
 
   private void startWorker() throws IOException {
+    long started = System.nanoTime();
+    if (!Files.isRegularFile(bundle, LinkOption.NOFOLLOW_LINKS)
+        || Files.isSymbolicLink(bundle)
+        || !Digests.sha256(bundle).equals(identity()))
+      throw new IOException("parser bundle changed before launch");
     Path java = Path.of(System.getProperty("java.home"), "bin", "java");
     if (!Files.isRegularFile(java) || !Files.isExecutable(java))
       throw new IOException("JDK Java executable unavailable");
@@ -118,10 +145,58 @@ public final class SourceParserClient implements AutoCloseable {
     for (String option :
         List.of("JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS", "CLASSPATH"))
       process.environment().remove(option);
-    worker = process.start();
+    if (!WORKER_ADMISSION.tryAcquire()) throw new IOException("parser worker admission limit");
+    ownsPermit = true;
+    try {
+      worker = process.start();
+    } catch (IOException | RuntimeException failure) {
+      releasePermit();
+      throw failure;
+    }
+    lastPid = worker.pid();
+    starts++;
     input = new DataOutputStream(new BufferedOutputStream(worker.getOutputStream()));
     output = new DataInputStream(new BufferedInputStream(worker.getInputStream()));
     requests = 0;
+    Future<?> readiness =
+        reader.submit(
+            () -> {
+              SourceParserWorker.readReady(output);
+              return null;
+            });
+    try {
+      long remaining = startupNanos - (System.nanoTime() - started);
+      if (remaining <= 0) throw new TimeoutException("parser startup deadline");
+      readiness.get(remaining, TimeUnit.NANOSECONDS);
+      long elapsed = System.nanoTime() - started;
+      if (elapsed > startupNanos) throw new TimeoutException("parser startup deadline");
+      maxStartupNanos = Math.max(maxStartupNanos, elapsed);
+    } catch (InterruptedException interrupted) {
+      Thread.currentThread().interrupt();
+      readiness.cancel(true);
+      stopWorker();
+      throw new IOException("parser startup cancelled", interrupted);
+    } catch (ExecutionException | TimeoutException failed) {
+      readiness.cancel(true);
+      stopWorker();
+      throw new IOException("parser startup/readiness failed", failed);
+    }
+  }
+
+  synchronized long lastWorkerPid() {
+    return lastPid;
+  }
+
+  synchronized int workerStarts() {
+    return starts;
+  }
+
+  synchronized long maxStartupNanos() {
+    return maxStartupNanos;
+  }
+
+  synchronized long maxUnitNanos() {
+    return maxUnitNanos;
   }
 
   private void stopWorker() throws IOException {
@@ -146,7 +221,10 @@ public final class SourceParserClient implements AutoCloseable {
         try {
           if (output != null) output.close();
         } finally {
-          worker = null;
+          if (!worker.isAlive()) {
+            worker = null;
+            releasePermit();
+          }
           input = null;
           output = null;
           if (interrupted) Thread.currentThread().interrupt();
@@ -157,12 +235,19 @@ public final class SourceParserClient implements AutoCloseable {
 
   @Override
   public synchronized void close() throws IOException {
-    if (closed) return;
+    if (closed && worker == null) return;
     closed = true;
     try {
       stopWorker();
     } finally {
       reader.shutdownNow();
+    }
+  }
+
+  private void releasePermit() {
+    if (ownsPermit) {
+      ownsPermit = false;
+      WORKER_ADMISSION.release();
     }
   }
 

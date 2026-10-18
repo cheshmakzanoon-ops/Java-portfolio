@@ -13,7 +13,12 @@ public final class SourceCatalogBuilder {
 
   public static SourceApiCatalog prepare(Path workerDirectory) throws IOException {
     Path home = Path.of(System.getProperty("java.home"));
-    Path source = home.resolve("lib/src.zip");
+    return prepareArchive(home.resolve("lib/src.zip"), home.resolve("legal/java.base/LICENSE"), workerDirectory);
+  }
+
+  // Package-local archive boundary for adversarial fixture tests. The public preparation entry
+  // always selects the installed JDK above; no CLI or runtime override can select fixture prose.
+  static SourceApiCatalog prepareArchive(Path source, Path license, Path workerDirectory) throws IOException {
     if (!Files.isRegularFile(source) || Files.size(source) > 134_217_728)
       throw new IOException("installed JDK source ZIP missing/quota");
     String sourceHash = Digests.sha256(source);
@@ -76,7 +81,6 @@ public final class SourceCatalogBuilder {
       }
       workerHash = worker.identity();
     }
-    Path license = home.resolve("legal/java.base/LICENSE");
     byte[] legal;
     try (var input = Files.newInputStream(license)) {
       legal = input.readNBytes(131073);

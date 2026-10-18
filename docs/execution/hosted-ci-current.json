@@ -1,36 +1,37 @@
 {
-  "observedAtUtc": "2026-10-18T07:31:23.460831+00:00",
-  "method": "Public GitHub Actions HTML embedded run data",
+  "observedAtUtc": "2026-10-18T08:54:21.107473+00:00",
+  "method": "Public GitHub Actions HTML embedded run data; only filtered public fields retained",
   "runs": [
     {
-      "name": "Security and SBOM",
-      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39107077080",
-      "status": "WORKFLOW_RUN_STATUS_QUEUED",
-      "conclusion": null,
-      "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff",
-      "createdAtUtc": "2026-10-18T07:16:56Z"
-    },
-    {
       "name": "CI",
-      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39107077040",
+      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39113128618",
       "status": "WORKFLOW_RUN_STATUS_PENDING",
       "conclusion": null,
-      "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff",
-      "createdAtUtc": "2026-10-18T07:16:56Z"
+      "sourceCommit": "49d23dae48eeffb8939730a953cd803314b8dc5a",
+      "createdAtUtc": "2026-10-18T08:52:27Z"
     },
     {
       "name": "Integration",
-      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39107077058",
+      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39113128616",
       "status": "WORKFLOW_RUN_STATUS_QUEUED",
       "conclusion": null,
-      "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff",
-      "createdAtUtc": "2026-10-18T07:16:56Z"
+      "sourceCommit": "49d23dae48eeffb8939730a953cd803314b8dc5a",
+      "createdAtUtc": "2026-10-18T08:52:27Z"
+    },
+    {
+      "name": "Security and SBOM",
+      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39113128606",
+      "status": "WORKFLOW_RUN_STATUS_QUEUED",
+      "conclusion": null,
+      "sourceCommit": "49d23dae48eeffb8939730a953cd803314b8dc5a",
+      "createdAtUtc": "2026-10-18T08:52:27Z"
     }
   ],
   "verifiedPasses": 0,
+  "sourceCommit": "49d23dae48eeffb8939730a953cd803314b8dc5a",
   "limitations": [
-    "No successful hosted result observed. CI detail explicitly waits for CI #30 under workflow concurrency; the reason that older queued run has not progressed is unknown.",
-    "Public HTML data, not an authenticated REST result. Current offline source work is not part of commit 1d789d70aab68b1d08a5a9e758338d97193a6cff."
-  ],
-  "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff"
+    "No successful hosted result observed. Latest CI is pending; integration and security are queued.",
+    "Public HTML data, not an authenticated REST result. Prior CI on78d9e35 is cancelled, not passed.",
+    "Subsequent local implementation is not part of this pushed checkpoint."
+  ]
 }

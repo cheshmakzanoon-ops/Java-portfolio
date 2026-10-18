@@ -98,8 +98,10 @@ public final class SourceWire {
       var limited = new LimitedOutput(raw, SourceFacts.RAW_SUMMARY_BYTES);
       while (!inflater.finished()) {
         int n = inflater.inflate(buffer);
-        if (n == 0)
+        if (n == 0) {
+          if (inflater.finished()) break;
           throw new IOException("source compressed frame truncated or dictionary required");
+        }
         limited.write(buffer, 0, n);
       }
       if (inflater.getRemaining() != 0) throw new IOException("trailing compressed source bytes");
@@ -160,7 +162,8 @@ public final class SourceWire {
                 in.readBoolean(),
                 in.readBoolean(),
                 in.readBoolean(),
-                in.readBoolean(), in.readBoolean()));
+                in.readBoolean(),
+                in.readBoolean()));
       }
       if (in.read() != -1) throw new IOException("trailing source facts");
       return new SourceFacts.Unit(status, pkg, imports, types, members);

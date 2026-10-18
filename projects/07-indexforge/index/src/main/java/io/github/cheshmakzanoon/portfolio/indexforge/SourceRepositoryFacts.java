@@ -106,12 +106,22 @@ public final class SourceRepositoryFacts {
   }
 
   public static final class QueryQuota extends IOException {
-    public QueryQuota(){super("authorized source view decoded query quota");}
+    public QueryQuota() {
+      super("authorized source view decoded query quota");
+    }
   }
 
   public static Snapshot read(Path generation, String tenant, String repository, long remaining)
       throws IOException {
-    if(remaining<0||remaining>DECODED_LIMIT)throw new IllegalArgumentException("source query budget");
+    return read(generation, tenant, repository, remaining, Integer.MAX_VALUE);
+  }
+
+  public static Snapshot read(
+      Path generation, String tenant, String repository, long remaining, int remainingRows)
+      throws IOException {
+    if (remaining < 0 || remaining > DECODED_LIMIT)
+      throw new IllegalArgumentException("source query budget");
+    if (remainingRows < 0) throw new IllegalArgumentException("source query rows");
     Path file = generation.resolve(fileName(tenant, repository));
     if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) || Files.isSymbolicLink(file))
       throw new IOException("source graph regular file required");
@@ -140,6 +150,7 @@ public final class SourceRepositoryFacts {
       List<SourceSymbolGraph.Document> documents = new ArrayList<>();
       String previous = "";
       long decoded = 0;
+      long rows = 0;
       for (int n = 0; n < count; n++) {
         String key = in.readUTF();
         int length = in.readInt();
@@ -154,13 +165,22 @@ public final class SourceRepositoryFacts {
         if (unit.length != length) throw new EOFException("source graph unit truncated");
         decoded += SourceWire.decodedBytes(unit);
         if (decoded > DECODED_LIMIT) throw new IOException("source graph decoded work quota");
-        if(decoded>remaining)throw new QueryQuota();
-        documents.add(new SourceSymbolGraph.Document(key, SourceWire.decode(unit)));
+        if (decoded > remaining) throw new QueryQuota();
+        var facts = SourceWire.decode(unit);
+        rows += rows(facts);
+        if (rows > remainingRows) throw new QueryQuota();
+        documents.add(new SourceSymbolGraph.Document(key, facts));
       }
       if (in.read() != -1) throw new IOException("source graph trailing bytes");
       return new Snapshot(tenant, repository, observed, documents);
     } catch (IllegalArgumentException invalid) {
       throw new IOException("invalid source graph", invalid);
     }
+  }
+
+  public static int rows(SourceFacts.Unit facts) {
+    int rows = 1 + facts.types().size() + facts.members().size();
+    for (var member : facts.members()) rows += member.calls().size();
+    return rows;
   }
 }

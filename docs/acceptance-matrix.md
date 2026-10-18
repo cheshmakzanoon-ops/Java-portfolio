@@ -56,7 +56,7 @@ No acceptance passes are implied by a foundation checkpoint.
 | P10-A2 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and projects/10-routeweaver/docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
 | P10-A3 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and projects/10-routeweaver/docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
 | P10-A4 | A10 | PASS | projects/10-routeweaver/evidence/lifecycle-current/operations.json, demo-result.json and browser-result.json: actual final-source101-assertion breakdown/urgent demo,10 live Chromium checks, compact publication CAS/status; A08 source review closed |
-| P10-A5 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P10-A5 | A10 | PASS | projects/10-routeweaver/evidence/performance-v1/packet.json and docs/execution/performance-reservations/017-routeweaver.json: six JMH rows with three forks and all thirty corpus results, independent validation/nondegradation, explicit feasibility/resource/GC/budget limits, combined 10.8614% gain on declared comparable instance and A03 scoped closure |
 | R-A01 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
 | R-A02 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |
 | R-A03 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |

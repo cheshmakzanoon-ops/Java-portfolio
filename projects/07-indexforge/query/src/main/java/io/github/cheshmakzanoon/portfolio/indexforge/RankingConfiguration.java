@@ -22,6 +22,16 @@ public record RankingConfiguration(
       throw new IllegalArgumentException("strategy/model schema mismatch");
     if (strategy.structural() != (catalog != null))
       throw new IllegalArgumentException("source strategy requires exactly one pinned API catalog");
+    if (catalog != null) {
+      try {
+        if (!catalog.workerHash().equals(SourceParserClient.bundleIdentity())
+            || !catalog.jdk().equals(System.getProperty("java.runtime.version")))
+          throw new IllegalArgumentException(
+              "API catalog parser/JDK identity mismatch; prepare catalog using this artifact");
+      } catch (IOException unavailable) {
+        throw new java.io.UncheckedIOException("parser identity unavailable", unavailable);
+      }
+    }
   }
 
   public static RankingConfiguration classic() {
@@ -71,7 +81,9 @@ public record RankingConfiguration(
                 + "/"
                 + SourceSymbolGraph.SCHEMA
                 + "/"
-                + System.getProperty("java.runtime.version"));
+                + System.getProperty("java.runtime.version")
+                + "/"
+                + SourceRelations.SCHEMA);
   }
 
   public String identity(RankingProfile profile) {

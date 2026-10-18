@@ -1,10 +1,10 @@
 {
-  "observedAtUtc": "2026-10-18T06:40:52.148939+00:00",
+  "observedAtUtc": "2026-10-18T09:42:25.889727+00:00",
   "command": "source scripts/cloud-env.sh\n./mvnw -Dmaven.repo.local=/workspace/Java-portfolio/.work/coordinator/m2 -B -ntp org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom",
   "exitCode": 0,
-  "rawLog": ".work/coordinator/sbom-aggregate-current.log",
-  "rawLogSha256": "bc9b1457ef07afa1438fdab68c4a10a2dca2fadcc203ad95a994605349c1a764",
-  "completedAtUtc": "2026-10-18T06:40:30Z",
+  "rawLog": ".work/coordinator/sbom-aggregate-retry-jitter.log",
+  "rawLogSha256": "ac06be1b5b2bad0fba74293ff9cf34868a29da3cff1393c9c9860814a109ffb0",
+  "completedAtUtc": "2026-10-18T09:41:23Z",
   "schema": {
     "format": "CycloneDX",
     "version": "1.6"
@@ -18,7 +18,7 @@
     "projects/01-clearledger/ledger-api/pom.xml": "7c2e9d6f0d6b622e969028f45e37437ef986b61417afb54c5a051275071d78f2",
     "projects/01-clearledger/ledger-benchmarks/pom.xml": "464d506b95fc504a5bacf012f5269cba30322e45e391f7d9d773b9a69b3b87b0",
     "projects/01-clearledger/ledger-domain/pom.xml": "cc682db8b1150a2dc3ba26ed3341b35c464695f23540c780fea43d114b33aea3",
-    "projects/01-clearledger/ledger-persistence/pom.xml": "44f91cc682e55d5a25a71e9a075db5ed131f197226b05f56050ae48a1b68f9c0",
+    "projects/01-clearledger/ledger-persistence/pom.xml": "a58f8ef48ab64a8189d9d490022552b70a8e1c9b916790169f814704c530ee8d",
     "projects/01-clearledger/ledger-verification/pom.xml": "3e31024493c683c7a8ba3b83781b31d2730e3e19e20c95d81a3d4378cdfe02e3",
     "projects/01-clearledger/pom.xml": "fa4a3258f9dc31b0c90005765b72ece9fa206c289d7356eb910b0ef4e0d1810b",
     "projects/02-durableflow/pom.xml": "98d5b967ba1350d2ea1f1139238b3c903227eeeedbab51d538991ce056ce9e9e",
@@ -92,5 +92,10 @@
     "components": 176,
     "dependencyGraphNodes": 177,
     "limitations": "Executed aggregate is not a vulnerability scan. Test/build-plugin/container scopes remain outside inventory."
-  }
+  },
+  "notes": [
+    "Actual aggregate CycloneDX goal rerun after the ClearLedger selected retry-policy mutation profile changed its module POM.",
+    "The176components/113external published license records remain unchanged; no new external dependency was added.",
+    "Aggregate dependency metadata does not certify source builds or a vulnerability scan; those are separate gates."
+  ]
 }

@@ -43,8 +43,21 @@ public final class SourceUsageRanker {
       List<CandidateRetriever.Candidate> original,
       String query,
       Map<Integer, Inventory> inventories) {
+    return decide(original, query, inventories).candidates();
+  }
+
+  public record Decision(List<CandidateRetriever.Candidate> candidates, String reason) {
+    public Decision {
+      candidates = List.copyOf(candidates);
+    }
+  }
+
+  public Decision decide(
+      List<CandidateRetriever.Candidate> original,
+      String query,
+      Map<Integer, Inventory> inventories) {
     if (original.size() > 500) throw new IllegalArgumentException("usage candidate quota");
-    if (!PlainTextQuery.identifier(query)) return List.copyOf(original);
+    if (!PlainTextQuery.identifier(query)) return new Decision(original, "SYNTAX_BYPASS");
     Set<Integer> seen = new HashSet<>();
     List<Integer> slots = new ArrayList<>();
     Map<Integer, Integer> counts = new HashMap<>();
@@ -56,7 +69,7 @@ public final class SourceUsageRanker {
       // Membership first, for EVERY candidate: saturated evidence in another candidate does
       // not make an unsupported third candidate an incidental mention (A06 review addendum).
       if (inventory == null || !inventory.declarationMembershipKnown())
-        return List.copyOf(original);
+        return new Decision(original, "UNKNOWN_DECLARATION_MEMBERSHIP");
       int max = -1;
       boolean unknown = false;
       for (var member : inventory.members()) {
@@ -64,13 +77,13 @@ public final class SourceUsageRanker {
         if (member.status() == Status.UNKNOWN || member.observedCallers() == 0) unknown = true;
         else max = Math.max(max, member.observedCallers());
       }
-      if (unknown && max != CAP) return List.copyOf(original);
+      if (unknown && max != CAP) return new Decision(original, "UNKNOWN_MATCHED_USAGE");
       if (max >= 0) {
         slots.add(i);
         counts.put(candidate.document(), max);
       }
     }
-    if (slots.size() < 2) return List.copyOf(original);
+    if (slots.size() < 2) return new Decision(original, "FEWER_THAN_TWO_MATCHED_DECLARATIONS");
     List<CandidateRetriever.Candidate> subset = new ArrayList<>();
     for (int i : slots) subset.add(original.get(i));
     // List.sort is stable: equal observed counts retain the exact R0 order, not key order.
@@ -91,6 +104,6 @@ public final class SourceUsageRanker {
                   + counts.get(c.document())
                   + " callerCountCap=32 ordering=observed-indexed-source-usage"));
     }
-    return List.copyOf(result);
+    return new Decision(result, "APPLIED_OBSERVED_LOWER_BOUND");
   }
 }

@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_SOURCE_VERIFICATION_FULL_STUDY_PENDING",
+  "capturedUtc": "2026-10-18T09:42:41.667621+00:00",
+  "cutoffEpoch": 1792316261,
+  "sourceFingerprint": "0bfdcf28e5cf3fb4c174027cf2074d0777bf237380d472d2b9ca4d086ef20f3e",
+  "sourceHashScope": "root/project/module POMs and every module src file; sorted relative path NUL bytes NUL",
+  "sourceFiles": {
+    "pom.xml": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+    "projects/01-clearledger/ledger-api/pom.xml": "7c2e9d6f0d6b622e969028f45e37437ef986b61417afb54c5a051275071d78f2",
+    "projects/01-clearledger/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/ClearLedgerApplication.java": "d10e01b3cd1e99e9e411e09ad08004d4b9e7d97fcfee789058a755bac432cb66",
+    "projects/01-clearledger/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/LedgerController.java": "56658bef0731bfd2a67875ecbc2ec6c8be50e785872b9da2ea6b73a2271ca47a",
+    "projects/01-clearledger/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/RequestBoundsFilter.java": "68634a178f2ec1c528fad50c1056df5a131e104bae53e933d00a2d2e3b2ab774",
+    "projects/01-clearledger/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/StrictIdentityDecoder.java": "e540d582eda762f51216f1e7504c04ac0d25acb8de1fe3fafcee27e5a0e417a6",
+    "projects/01-clearledger/ledger-api/src/main/resources/application.properties": "2d956335b1e72a9c001114547977da24a6eec4e8cffa48cbab9bd62cf0590d7e",
+    "projects/01-clearledger/ledger-api/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/RequestJsonTest.java": "f34afabdb090fdfb42b52ea58e7512dc50548ca02cd2cb013a40e4645bbf8d4e",
+    "projects/01-clearledger/ledger-benchmarks/pom.xml": "464d506b95fc504a5bacf012f5269cba30322e45e391f7d9d773b9a69b3b87b0",
+    "projects/01-clearledger/ledger-benchmarks/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingBenchmark.java": "dcd309ede17c900901f89e2303b56304589d8faf6cb39e8762ee85dc55f3b0c3",
+    "projects/01-clearledger/ledger-domain/pom.xml": "cc682db8b1150a2dc3ba26ed3341b35c464695f23540c780fea43d114b33aea3",
+    "projects/01-clearledger/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Journal.java": "641b5cbbb286d3bfe2410674244b99bae96360f9e4d20e5375d24b87ac0d6f24",
+    "projects/01-clearledger/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Money.java": "81a08508031dc202f1c6bfd8542af64decbcadd9d536c8fdca9963155301b3ff",
+    "projects/01-clearledger/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/ReferenceLedger.java": "a628d518560a8b0d4fba44dcf134f89b76f7b5a8e610801bdd56b291c6679a12",
+    "projects/01-clearledger/ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingProperties.java": "aaeefb11248647f02ab311340fb0f346085c5355381774deaa24a5ca780dcef5",
+    "projects/01-clearledger/ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/AccountingTest.java": "f64dad5e086f9152f79d57100740110939dda08b59cf090564928305f4422940",
+    "projects/01-clearledger/ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/DomainArchitectureTest.java": "e2c27c5ac05ecccc407cc9260d465b2913fbe4fe3526cd9047c6b58e70397b61",
+    "projects/01-clearledger/ledger-persistence/pom.xml": "a58f8ef48ab64a8189d9d490022552b70a8e1c9b916790169f814704c530ee8d",
+    "projects/01-clearledger/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/LedgerStore.java": "4beb41fe2390f680747dde8c6001a3df8512decc51448145c05d2e1bc404f682",
+    "projects/01-clearledger/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Projector.java": "bd323c40bfc6d78e3325857b5728c9bf45442a4bee69eb0be0fa65f689855ae3",
+    "projects/01-clearledger/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Reconciliation.java": "2d392ada5106ead458bd714472221a06876c0bf31df748cb7492a333c33fceb9",
+    "projects/01-clearledger/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/RetryBackoff.java": "28622240b80f812ced185f2523f2564def0bab3c6a487de24226bfb55093fc99",
+    "projects/01-clearledger/ledger-persistence/src/main/resources/db/migration/V1__ledger.sql": "598b9824337a111f9f728177496ebde5284a20a5a2a24fca3098797b99038bcb",
+    "projects/01-clearledger/ledger-persistence/src/main/resources/db/migration/V2__null_safe_posting_and_deferred_audit.sql": "78048d1f2b897fe63cdf8789a2a2566c7ec0700e76107038a2b00f50d248eaa5",
+    "projects/01-clearledger/ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/ReconciliationTest.java": "ec5a367b7e14150ed6ea41ecfb77bb298018c73bf173d43708c6cf22710ce6d2",
+    "projects/01-clearledger/ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/RetryBackoffTest.java": "55f2718f670d4a7dd95720c587a6c6fd114386e69933d572da9cc2a18c27719b",
+    "projects/01-clearledger/ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/TransactionRetryTest.java": "bc4dcf60cdcdfcd0ee08e690ee56f8943edb7a8862cc7aba71e18724f467689d",
+    "projects/01-clearledger/ledger-verification/pom.xml": "3e31024493c683c7a8ba3b83781b31d2730e3e19e20c95d81a3d4378cdfe02e3",
+    "projects/01-clearledger/ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/CrashWriter.java": "34912528fedae2532e68f340740c81f069a3712ffc0657d7fb51f411ab837fcb",
+    "projects/01-clearledger/ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/SourceAudit.java": "12fa8537b4ac715209be94d3c1bee48cafb02ea452b3eab60f5022f0216b0872",
+    "projects/01-clearledger/ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/Workload.java": "9b2f16ab914fd9a3a5eca296ffea5c2eeed8b43a598658646b311d46836e8b1f",
+    "projects/01-clearledger/ledger-verification/src/main/resources/clearledger/source-audit.sql": "20d06488aaf0f086eab922e90bb6cea65ebc4ab30af4314b7d8bc23cb78f6c74",
+    "projects/01-clearledger/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/LedgerPostgresIT.java": "6c96dcc79121ed869323a0370730f2569442a0b80c6165710bee6e168d7b1edb",
+    "projects/01-clearledger/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/LocalIssuer.java": "b76fb1a7eb4e33b717bd1068506117b91a9adb5cbb8fda0f121108347b5e03ed",
+    "projects/01-clearledger/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/WorkloadClientRetryTest.java": "bf6c123bb30c5c382ce3376ade30b3d4df8d6b06b6ce8e9ca919de9ff7e1c9ff",
+    "projects/01-clearledger/pom.xml": "fa4a3258f9dc31b0c90005765b72ece9fa206c289d7356eb910b0ef4e0d1810b"
+  },
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "fullCertification": {
+    "command": "source scripts/cloud-env.sh; export PORTFOLIO_TEST_RUN_STARTED=<actual positive cutoff>; ./mvnw -f projects/01-clearledger/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A01/m2 -B -ntp -Pintegration,mutation verify",
+    "finishedUtc": "2026-10-18T09:39:09Z",
+    "exitCode": 0,
+    "counts": {
+      "tests": 39,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ordinaryMethods": 23,
+    "postgresMethods": 16,
+    "log": ".work/A01/retry-jitter-integration-mutation.log",
+    "logSha256": "2d29b9da2e7226cb8bbb326cf209158bd47b7e0519aa0dc4fbbc53037543097f"
+  },
+  "reportCaptureNote": "Ordinary XML was refreshed by subsequent successful supported prepare/install of unchanged source; full certification log and prior fresh checker independently established the same23ordinary+16PostgreSQL counts. Report mtimes are retained.",
+  "reports": [
+    {
+      "path": "projects/01-clearledger/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.RequestJsonTest.xml",
+      "sha256": "ee48261cc7e867b81aeeb13bd3edb66dabd761ccf708524a08fa12d5d7eca157",
+      "mtime": 1792316439.8991766,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.RequestJsonTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "decimalStringsAndNamedSidesRejectScalarCoercionAndDuplicateKeys"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.AccountingProperties.xml",
+      "sha256": "b7a09bacb8f73466f48697af191524e82ed15d4079084e139d6d24bccf143911",
+      "mtime": 1792316434.9353795,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.AccountingProperties",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "imbalanceAlwaysRejected",
+        "reversalIsAnInvolution"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.AccountingTest.xml",
+      "sha256": "bb106fb5777dfc9b69ed30f168b07d4872990e4b0ac47c702f216f766aebacf5",
+      "mtime": 1792316434.4993975,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.AccountingTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "accumulationAndDigestIncludeEveryEconomicLine",
+        "strictCurrencyAndBounds",
+        "canonicalDigestIgnoresLineOrderButPreservesIntent",
+        "limitsPreserveAtomicReferenceAndReversibleLongReferences"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.DomainArchitectureTest.xml",
+      "sha256": "f50fb60fea136588fe6e2412f531195fad72f9d2d9cd75ebc2304181c97caaa3",
+      "mtime": 1792316434.4513993,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.DomainArchitectureTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "domainHasNoAdapters"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.ReconciliationTest.xml",
+      "sha256": "0ecfe9a2dd332a90bb6fbce495a0e99cadeae54dc8bd88f0543f273551370ced",
+      "mtime": 1792316437.2112865,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.ReconciliationTest",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "csvIsBoundedAndQuoted",
+        "rowBoundaryAndSpreadsheetEscaping"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.RetryBackoffTest.xml",
+      "sha256": "6335b891903a58ad940db660420f053118eda009a8e7bdbad9929cfe2410cb9b",
+      "mtime": 1792316437.1552887,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.RetryBackoffTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "invalidAttemptsOrSamplerResultsNeverReachTheSleeper",
+        "productionSamplerDrawsFreshBoundedDelaysWithoutReplacingThemWithAConstant",
+        "productionSleeperObservesInterruptionWithoutAnElapsedTimeAssertion",
+        "everyAllowedRetryHasPositiveBoundedDelayAndTotalBudgetBelowTwoSeconds",
+        "independentInjectedDrawsDesynchronizeThirtyTwoContenders"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.TransactionRetryTest.xml",
+      "sha256": "b694e97b65d659f1d08fe35d7e37a684e1e66696366266b50eab096142a1f70a",
+      "mtime": 1792316437.2817266,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.TransactionRetryTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "exhaustionStopsAtTwelveWithElevenPausesAndRetainsTypedLastFailure",
+        "interruptedBackoffRetainsInterruptAndCannotStartAnotherTransaction",
+        "permanentPostingFailureDoesNotDrawOrSleepOrStartAnotherTransaction",
+        "finalTwelfthSerializableAttemptCanSucceedAndReleasesConnectionsBeforeEveryPause"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.WorkloadClientRetryTest.xml",
+      "sha256": "086511ab65d952df6aa11100e3da25eca16d96f7d262a0fc0c85d061750e6518",
+      "mtime": 1792316441.9790914,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.WorkloadClientRetryTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "permanentRejectionIsNeverRetried",
+        "exhaustedTemporaryResponsesRemainFailuresAfterSixCalls",
+        "sameCapturedRequestRecoversWithBoundedBackoff",
+        "cancellationInterruptsBackoffAndPreservesThreadInterrupt"
+      ]
+    },
+    {
+      "path": "projects/01-clearledger/ledger-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.LedgerPostgresIT.xml",
+      "sha256": "a0e9cadc6f09e597b9bd9f44ef1ca9320eaee108eec41bce37a7119817d9ce1e",
+      "mtime": 1792316347.9189346,
+      "suite": "io.github.cheshmakzanoon.portfolio.clearledger.LedgerPostgresIT",
+      "counts": {
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "methods": [
+        "projectionHandlesEarlierAllocatedEventCommittedLater",
+        "blankReferencesNeverAutomatchOnAmountAlone",
+        "thirtyTwoWritersRetainAllUniqueAndDuplicateReceiptsUnderBoundedRetries",
+        "devProfileRefusesNonLoopbackBinding",
+        "balanceOverflowRejectsWholeJournalAndReceipt",
+        "closeRacesWritersWithoutPostingIntoClosedPeriod",
+        "statementSnapshotExcludesLaterCommittedJournal",
+        "databaseMatchesIndependentGeneratedModelAndPrivileges",
+        "sixtyFourDuplicateRequestsAndRacingReversals",
+        "backupRestoreReauditsImmutableSource",
+        "protectedOidcAndTwoApiInstances",
+        "actualProcessTerminationBeforeAndAfterCommit",
+        "rawRuntimeSqlRejectsGeneratedInvalidJournalsAtomically",
+        "sqlNullMalformedShapesAndDeferredBackstopRejectAtomically",
+        "sourceAuditFindsAdministratorCorruptionOutsideRuntimePermissions",
+        "reconciliationDistinguishesRowsAndPreservesDuplicateImport"
+      ]
+    }
+  ],
+  "mutation": [
+    {
+      "module": "ledger-domain",
+      "path": "projects/01-clearledger/ledger-domain/target/pit-reports/mutations.xml",
+      "sha256": "ca2e851b2e3d3ebc96d0a873efd984bb2f3ebc48dc548ec1fe56210087ca4ec5",
+      "threshold": 70,
+      "outcomes": {
+        "KILLED": 30,
+        "SURVIVED": 1
+      },
+      "classes": [
+        "io.github.cheshmakzanoon.portfolio.clearledger.Journal",
+        "io.github.cheshmakzanoon.portfolio.clearledger.Journal$Side",
+        "io.github.cheshmakzanoon.portfolio.clearledger.Money",
+        "io.github.cheshmakzanoon.portfolio.clearledger.ReferenceLedger"
+      ],
+      "survivors": [
+        {
+          "class": "io.github.cheshmakzanoon.portfolio.clearledger.Money",
+          "method": "parse",
+          "line": "20",
+          "description": "changed conditional boundary"
+        }
+      ]
+    },
+    {
+      "module": "ledger-persistence",
+      "path": "projects/01-clearledger/ledger-persistence/target/pit-reports/mutations.xml",
+      "sha256": "1d17ef3c8a50efc70cd2c5bcc1ee6461ef9f5ec2a107f43dfd479b6a23238ce2",
+      "threshold": 90,
+      "outcomes": {
+        "KILLED": 12
+      },
+      "classes": [
+        "io.github.cheshmakzanoon.portfolio.clearledger.RetryBackoff"
+      ],
+      "survivors": []
+    }
+  ],
+  "preparedRuntime": {
+    "schemaVersion": 1,
+    "sourceSha256": "33e44dcb3ffccfd6bd1889aff31f491142affab0dee16df21c4a18dd52dac388",
+    "artifactSha256": "4ee8663df07266c162f505bc089bacf2af4180abc6496eb9802d15848c26695b",
+    "artifactCount": 96
+  },
+  "preparedJmh": {
+    "schemaVersion": 1,
+    "sourceSha256": "74a714c60d9fd4db4cbc4178a1562ed9349ebb8530ff56813e01782095426983",
+    "artifactSha256": "5d092d66db2815934779f9c94576809e35543f2a3a4dacb716f5c5c78eba26af",
+    "artifactCount": 13
+  },
+  "preparedLog": ".work/A01/retry-jitter-prepared-runtime.log",
+  "preparedLogSha256": "6d455aea031bbca87bb21dc822344ee2afb7abec1bb22ed3e9399a7fb4e81e20",
+  "retainedReports": ".work/A01/retry-jitter-certification",
+  "limitations": [
+    "32writers/768unique+96duplicate calls is functional contention evidence, not nine-run performance acceptance.",
+    "Quiet16 remains failed; no complete SSI dependency cycle proven.",
+    "A fresh full quiet study and clean-checkout release remain open."
+  ],
+  "fullReferenceSourceFingerprint": "working-tree:3d2df54b5388c226a8be558b8c428d181f5a9526433569ae82be31f014d414b4",
+  "fullReferenceSnapshotPath": ".work/A01/retry-jitter-full-source-snapshot.json"
+}

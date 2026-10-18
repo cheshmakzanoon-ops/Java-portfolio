@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-18T09:17:20.147769+00:00",
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T08:48:21.173261+00:00",
+    "command": [
+      "bash",
+      ".work/A01/run-full-reference.sh",
+      "--execute",
+      "--reservation",
+      "quiet-reference-16-clearledger"
+    ],
+    "sourceRevision": "78d9e35afaeea66a9c22c9254ac69f7c2b0416c3",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T08:48:21.183624+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 7236542464,
+    "exitCode": 1,
+    "completedAtUtc": "2026-10-18T09:13:34.898956+00:00",
+    "elapsedSeconds": 1513.7158389679971,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "FAIL"
+  },
+  "sourceRevision": "working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5",
+  "runnerSha256": "04539a854e9feacebeb2a94e49c1cf4630a0bfcb5cfcc34c7bac6ed5b37dc239",
+  "result": "FAILED_PARTIAL_FULL_WORKLOAD",
+  "measurementComplete": false,
+  "expectedTrials": 9,
+  "validatedTrials": 2,
+  "trials": [
+    {
+      "trial": "r1-w1",
+      "outcomes": {
+        "completedInputGroups": 100000,
+        "failedInputGroups": 0,
+        "clientRetryExhaustions": 0,
+        "clientAttemptBudgetPerOperation": 6,
+        "temporaryClientResults": 0,
+        "clientRetryAttempts": 0
+      },
+      "validated": true,
+      "outcomesSha256": "c537f87f6b2f8c47fbab689c0f8cb0566e014d982b28172dd008a6f6f897d465",
+      "postconditions": {
+        "schemaVersion": 1,
+        "sourceRevision": "working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5",
+        "exitCode": 0,
+        "completedInputGroups": 100000,
+        "failedInputGroups": 0,
+        "latencySamples": 100000,
+        "observedSql": {
+          "journals": 100100,
+          "receipts": 100100,
+          "outboxEvents": 100100,
+          "pendingAfterReplay": 0,
+          "tenantsTouched": 20,
+          "accountsTouched": 10000
+        },
+        "basis": "Every worker future completed; each input has one positive latency sample; committed SQL counts and replay backlog checked independently."
+      },
+      "postingGroupsPerSecond": 207.91935863779835,
+      "p99Millis": 17.398564,
+      "shadowReplaySeconds": 165.974833575
+    },
+    {
+      "trial": "r1-w8",
+      "outcomes": {
+        "failedInputGroups": 0,
+        "clientRetryExhaustions": 0,
+        "clientAttemptBudgetPerOperation": 6,
+        "temporaryClientResults": 34,
+        "clientRetryAttempts": 34,
+        "completedInputGroups": 100000
+      },
+      "validated": true,
+      "outcomesSha256": "1cde301ca0a2f08d478207f6b9e3485ba8194982952f9aca4428b1c2b7eb3ae8",
+      "postconditions": {
+        "schemaVersion": 1,
+        "sourceRevision": "working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5",
+        "exitCode": 0,
+        "completedInputGroups": 100000,
+        "failedInputGroups": 0,
+        "latencySamples": 100000,
+        "observedSql": {
+          "journals": 100100,
+          "receipts": 100100,
+          "outboxEvents": 100100,
+          "pendingAfterReplay": 0,
+          "tenantsTouched": 20,
+          "accountsTouched": 10000
+        },
+        "basis": "Every worker future completed; each input has one positive latency sample; committed SQL counts and replay backlog checked independently."
+      },
+      "postingGroupsPerSecond": 347.1743679484375,
+      "p99Millis": 115.46514,
+      "shadowReplaySeconds": 125.948347727
+    },
+    {
+      "trial": "r1-w32",
+      "outcomes": {
+        "clientRetryAttempts": 2506,
+        "temporaryClientResults": 2508,
+        "clientAttemptBudgetPerOperation": 6,
+        "clientRetryExhaustions": 1,
+        "failedInputGroups": 2,
+        "completedInputGroups": 99998
+      },
+      "validated": false,
+      "outcomesSha256": "9802a481dd4fdab199b0b313bbbf42e221bbe7ecd7b21de3f064efc89a9d08bc"
+    }
+  ],
+  "failure": "StudyError: full-workload failed; raw output retained in /workspace/Java-portfolio/.work/A01/full-reference/20261018T084821Z-d8958190/full-workload.log",
+  "secondaryPreservationError": "Insufficient disk before raw-output-copy; evidence and volumes retained",
+  "originalsRetained": true,
+  "downExitCode": 0,
+  "independentStopped": true,
+  "runRecord": {
+    "path": ".work/A01/full-reference/20261018T084821Z-d8958190/run.json",
+    "sha256": "ee155c0100b26a68700aa4cb4b89313f3e859c764165908ab1392aa7d6431f07"
+  },
+  "recovery": "/tmp/clearledger-quiet16-preservation-20261018T091617Z/preservation.json",
+  "limitation": "The32-writer retry exhaustion is an actual incomplete workload; two passing rows cannot satisfy the nine-run protocol. Recovery preserves failed data, not a measurement pass."
+}

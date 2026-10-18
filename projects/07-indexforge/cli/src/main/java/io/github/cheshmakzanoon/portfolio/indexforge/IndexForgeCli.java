@@ -11,6 +11,22 @@ public final class IndexForgeCli {
       throw new IllegalArgumentException("command data [arguments]; see contracts/cli.md");
     String command = args[0];
     Path data = Path.of(args[1]);
+    if (command.equals("prepare-api-catalog")) {
+      if (args.length != 3)
+        throw new IllegalArgumentException("prepare-api-catalog workerDirectory newCatalogFile");
+      var catalog = SourceCatalogBuilder.prepare(data);
+      catalog.writeNew(Path.of(args[2]));
+      System.out.println(
+          "catalog="
+              + catalog.identity()
+              + " source="
+              + catalog.sourceHash()
+              + " worker="
+              + catalog.workerHash()
+              + " jdk="
+              + catalog.jdk());
+      return;
+    }
     if (command.startsWith("wave2-")) {
       if (args.length != 4)
         throw new IllegalArgumentException("wave2-{audit,fit,validate} data fixtures output");

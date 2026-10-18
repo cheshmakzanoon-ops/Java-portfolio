@@ -36,7 +36,7 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
   private final Set<String> types;
   private final List<Entry> entries;
   private final Map<String, List<Entry>> methods = new HashMap<>();
-  private final Map<String, String> fields = new HashMap<>();
+  private final Map<String, Entry> fields = new HashMap<>();
 
   SourceApiCatalog(
       String sourceHash,
@@ -56,6 +56,11 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
     this.workerHash = workerHash;
     this.jdk = jdk;
     this.license = license;
+    types.forEach(
+        type -> {
+          SourceFacts.text(type);
+          if (type.isEmpty()) throw new IllegalArgumentException("empty API type");
+        });
     this.types = Collections.unmodifiableSet(new TreeSet<>(types));
     this.entries = List.copyOf(entries);
     Set<String> signatures = new HashSet<>();
@@ -74,7 +79,7 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
       if (!signatures.add(signature)) throw new IOException("duplicate API signature");
       if (entry.field()) {
         if (!entry.parameters().isEmpty()
-            || fields.put(entry.owner() + "#" + entry.name(), entry.returns()) != null)
+            || fields.put(entry.owner() + "#" + entry.name(), entry) != null)
           throw new IOException("API field signature");
       } else
         methods
@@ -102,7 +107,13 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
 
   @Override
   public String fieldType(String owner, String field) {
-    return fields.get(owner + "#" + field);
+    var entry = fields.get(owner + "#" + field);
+    return entry == null ? null : entry.returns();
+  }
+
+  /** Exact catalog field only; inherited or spelling-based matches are not fabricated. */
+  public Optional<Entry> field(String owner, String name) {
+    return Optional.ofNullable(fields.get(owner + "#" + name));
   }
 
   /** API semantic evidence requires one exact supported signature, not an overload prose union. */
@@ -153,7 +164,18 @@ public final class SourceApiCatalog implements SourceSymbolGraph.Platform {
         for (var member : type.members()) {
           String returns = resolve(member.returns(), type.name(), unit, types);
           List<String> parameters =
-              member.parameters().stream().map(p -> resolve(p, type.name(), unit, types)).toList();
+              member.parameters().stream()
+                  .map(
+                      p -> {
+                        String resolved = resolve(p, type.name(), unit, types);
+                        // An unresolved formal remains a distinct unsupported signature. Merging
+                        // all
+                        // generics/array element types into "" would falsely collapse overloads.
+                        return resolved.isEmpty()
+                            ? "unsupported-formal:" + Digests.sha256(p)
+                            : resolved;
+                      })
+                  .toList();
           entries.add(
               new Entry(
                   type.name(),

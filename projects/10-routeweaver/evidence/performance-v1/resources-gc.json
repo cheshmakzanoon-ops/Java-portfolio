@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "sourceFingerprint": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+  "sampleCount": 811,
+  "sampledSpanSeconds": 811.36852644,
+  "userCpuSecondsDelta": 963.97,
+  "systemCpuSecondsDelta": 27.55,
+  "totalCpuSecondsDelta": 991.52,
+  "averageCpuCoresOverSampledSpan": 1.2220340914016488,
+  "quotaCores": 4,
+  "rssBytes": {
+    "minimum": 249991168,
+    "maximumSampled": 983470080,
+    "maximumKernelHighWater": 983470080
+  },
+  "threads": {
+    "minimum": 33,
+    "maximum": 36
+  },
+  "gc": {
+    "server-gc.log": {
+      "scope": "entire preserved service log, including startup and JMH-idle period before system resource sampling",
+      "collector": "G1",
+      "pauseCount": 3311,
+      "pauseTypes": {
+        "Young": 2523,
+        "Remark": 394,
+        "Cleanup": 394
+      },
+      "totalPauseMilliseconds": 24580.216,
+      "maximumPauseMilliseconds": 146.635,
+      "fullPauseCount": 0,
+      "rawSha256": "9824c209a92d5b27dd15979f3e92b24e59f00ca8883324f43e19e5623051bb94"
+    },
+    "gc.log": {
+      "scope": "system corpus client only; excludes JMH fork GC profiler",
+      "collector": "G1",
+      "pauseCount": 30,
+      "pauseTypes": {
+        "Young": 30
+      },
+      "totalPauseMilliseconds": 1007.014,
+      "maximumPauseMilliseconds": 100.486,
+      "fullPauseCount": 0,
+      "rawSha256": "59df2f039ae44ca15b51529d1a0c078325ef0cb2f430fd74489ec5cde1ee5e82"
+    }
+  },
+  "limits": [
+    "The sampler covers the service process during the system corpus; PostgreSQL, client and JMH fork memory are excluded.",
+    "Sampled RSS and kernel high-water include native/JIT/thread memory, not only Java heap.",
+    "CPU includes worker/JIT/GC/service tasks and is not attributed solely to solver work.",
+    "Server GC log scope exceeds resource sampling scope; pause fraction of sampled time is not reported.",
+    "No resource or request p95/p99 is inferred from three solver outcomes."
+  ]
+}

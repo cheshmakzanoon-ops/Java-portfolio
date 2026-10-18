@@ -177,6 +177,64 @@ class LedgerPostgresIT {
   }
 
   @Test
+  void thirtyTwoWritersRetainAllUniqueAndDuplicateReceiptsUnderBoundedRetries() throws Exception {
+    // Functional same-period contention, not a substitute for the nine full reference runs.
+    int writers = 32, perWriter = 24;
+    var outcomes = new Workload.ClientOutcomes();
+    var executor = Executors.newFixedThreadPool(writers);
+    var start = new CountDownLatch(1);
+    var ready = new CountDownLatch(writers);
+    var futures = new ArrayList<Future<?>>();
+    try {
+      for (int writer = 0; writer < writers; writer++) {
+        int owner = writer;
+        futures.add(
+            executor.submit(
+                () -> {
+                  ready.countDown();
+                  start.await();
+                  for (int n = 1; n <= perWriter; n++) {
+                    String key = "contention-" + owner + "-" + n;
+                    var intent = journal(n, key);
+                    var receipt =
+                        Workload.retryClient(() -> store.post(tenant, key, intent), outcomes);
+                    if (n % 8 == 0)
+                      assertEquals(
+                          receipt,
+                          Workload.retryClient(() -> store.post(tenant, key, intent), outcomes));
+                  }
+                  return null;
+                }));
+      }
+      assertTrue(ready.await(10, TimeUnit.SECONDS));
+      start.countDown();
+      for (var future : futures) future.get(120, TimeUnit.SECONDS);
+      assertEquals(0, outcomes.exhaustions.get());
+      assertEquals(writers * perWriter, count("journal"));
+      assertEquals(writers * perWriter, count("idempotency_receipt"));
+      assertEquals(writers * perWriter, count("outbox_event"));
+      var balances = store.balances(tenant);
+      assertEquals(2, balances.size());
+      var total = BigInteger.valueOf((long) writers * perWriter * (perWriter + 1) / 2);
+      assertEquals(
+          total,
+          balances.stream()
+              .map(row -> new BigInteger(row.get("debits")))
+              .reduce(BigInteger.ZERO, BigInteger::add));
+      assertEquals(
+          total,
+          balances.stream()
+              .map(row -> new BigInteger(row.get("credits")))
+              .reduce(BigInteger.ZERO, BigInteger::add));
+      assertTrue(SourceAudit.journals(admin).isEmpty());
+    } finally {
+      start.countDown();
+      executor.shutdownNow();
+      assertTrue(executor.awaitTermination(15, TimeUnit.SECONDS));
+    }
+  }
+
+  @Test
   void closeRacesWritersWithoutPostingIntoClosedPeriod() throws Exception {
     var pool = Executors.newFixedThreadPool(8);
     try {

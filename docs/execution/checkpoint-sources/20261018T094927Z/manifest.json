@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-10-18T09:49:27.101574+00:00",
+  "baseCommit": "49d23dae48eeffb8939730a953cd803314b8dc5a",
+  "scope": "Changed/new authored helper and handoff sources since prior snapshots. Generated runtime data stays local; WIP does not imply certification.",
+  "files": [
+    {
+      "originalPath": ".work/A01/FULL_REFERENCE_HANDOFF.md",
+      "snapshotPath": "files/A01/FULL_REFERENCE_HANDOFF.md.txt",
+      "bytes": 9284,
+      "sha256": "90ff21ba1cb623538369b5087be3d51d7abedaa11df843546db65ac5a88f9cc9",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/NEXT_REFERENCE_RESOURCE_PLAN.md",
+      "snapshotPath": "files/A01/NEXT_REFERENCE_RESOURCE_PLAN.md.txt",
+      "bytes": 4800,
+      "sha256": "39ec431b44fcc880a1528e948a21227043d291a081ec33fa591369dcc60caf0c",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/RETRY_REPAIR_RESUME.md",
+      "snapshotPath": "files/A01/RETRY_REPAIR_RESUME.md.txt",
+      "bytes": 5559,
+      "sha256": "c10d665d6695939ccc2c543fd994964fe9f716a558f55d4599b5407c409ed8b1",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A01/preserve-quiet16.py",
+      "snapshotPath": "files/A01/preserve-quiet16.py",
+      "bytes": 6191,
+      "sha256": "ba00f28be952c84fd254c36f093ee0b7c83dbf59fbc6fa8d514cd9d4b79278d2",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A10/analyze-quiet17.py",
+      "snapshotPath": "files/A10/analyze-quiet17.py",
+      "bytes": 15128,
+      "sha256": "99f2ee0d88007370e5ef7402fba6b53d6350dd13ba9703d76159d1f62d2e52d1",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A10/write-quiet17-docs.py",
+      "snapshotPath": "files/A10/write-quiet17-docs.py",
+      "bytes": 9712,
+      "sha256": "c847cefb7da3965dbb3e3a42f116997ed1754b8d39e3c8054def179657ded250",
+      "originalMode": "0o600"
+    }
+  ]
+}

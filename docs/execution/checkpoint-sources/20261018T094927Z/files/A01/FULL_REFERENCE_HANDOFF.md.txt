@@ -1,0 +1,55 @@
+# ClearLedger full reference runner
+
+Prepared for the coordinator. **No full study was executed during this preparation.** Frozen product files and prepared cache receipts were not changed. Only `.work/A01` helpers/handoff files were written. No Java, Maven or Docker command was run; offline checks used filesystem fixtures and short Python children.
+
+**Historical preparation instructions below are superseded for a new launch.** Root's actual quiet16 attempt failed after two full trials and a32-writer exhaustion; its original archive/evidence remain immutable. The subsequent jitter correction passed39-method integration/ordinary verification and42/43 selected mutants, with refreshed prepared runtime. Current source/runtime identities and the required new storage policy are in `.work/A01/RETRY_REPAIR_RESUME.md` and `.work/A01/NEXT_REFERENCE_RESOURCE_PLAN.md`. No new full study has started, and the existing runner still lacks the proposed explicit `/tmp` copy option. Root must review/test that future resource-only change and supply the current expected-source override before another launch; do not execute the historical command unchanged.
+
+The helper has been repaired after review. **Root completed both real descendant-control cases after quiet reservation 9: two tests, zero failures and zero errors.** The runner is prepared for a later explicit quiet reservation; the full study remains unrun. The coordinator must hold all three `.work/build-slots/{0,1,2}.lock` locks externally, keep other Java/apps/containers stopped, and retain those locks until the runner exits. It probes the locks but never acquires a build slot or invokes Maven. The default command prints an inert plan:
+
+```bash
+.work/A01/run-full-reference.sh
+```
+
+During the authorized complete quiet window, from the repository root:
+
+```bash
+.work/A01/run-full-reference.sh --execute --reservation clearledger-full-reference-01
+```
+
+Use the execution tool's asynchronous session support so the coordinator can continue reporting progress. The first output gives the unique archive directory. `run.json` records the active phase, command, timestamps, actual exit status and eventual outcome. Individual phase logs remain beside it. Do not release the three locks until final cleanup and the runner's exit.
+
+Expected baseline is full Git-visible source `working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5` and root POM `3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d`. The coordinator may explicitly supply `--expected-source` and `--expected-root-pom` after a separately reviewed/verified new baseline; stale prepared receipts still fail. The runner never repairs or rewrites caches and never falls back to a build.
+
+Read-only disk guards run before JMH, PostgreSQL startup, prior-output preservation, database preservation, each individual dump (reserve plus observed `pg_database_size` and16MiB metadata allowance), the nine-run workload phase, and final raw copying (reserve plus actual bytes to copy). They never delete prior evidence or volumes, change workload size, or manufacture missing results.
+
+Before starting Java, preflight checks both prepared receipts, frozen source/POM, all three occupied locks, zero Java processes, zero running containers, required tool presence and at least 6 GiB free disk by default. Source files, root POM, receipts and Git commit identity are copied into the study archive. It refuses a second concurrent A01 reference runner.
+
+The execution order is:
+
+1. Move existing `target/benchmark`, `target/microbenchmark/full`, and any previous full JMH/performance summaries into the unique archive's `prior/` directory. `prior-relocations.json` records each move immediately. Existing `.work/A01/system-smoke-first-failed/` and all earlier study archives remain untouched.
+2. Run `microbenchmark.sh full --prepared`: four cases, three forks, three one-second warmups and five one-second measurements, GC profiling. Validate source/cache/environment identity before `summarize-jmh.py` publishes a full JMH summary.
+3. Recheck the quiet boundary, start only ClearLedger PostgreSQL, and dump every existing owned `clearledger_benchmark_r[1-3]_w(1|8|32)` database in custom PostgreSQL format before the workload script replaces it. Dump failure stops before replacement. No unrelated database is dumped or changed.
+4. Run `benchmark.sh 100000 3 --prepared`: nine fresh-database runs, writers 1/8/32 in each of three rounds. Existing driver assertions, raw latencies, independent expected balances, complete source audit, SQL cardinalities, replay, JFR and process capture remain enabled. Production's 12-attempt transaction budget and the bounded same-key client retry policy are unchanged.
+5. Revalidate frozen source/cache/environment identity, then run `summarize-performance.py`. The existing validator requires all nine 100,000-input/20-tenant/10,000-touched-account results and matching independent fixtures/source. Planned logical calls, measured additional client calls and internal transaction retries remain distinct.
+6. In `finally`, execute the existing owned `down.sh`, check that all Java/containers are stopped and all three locks remain held, then copy current raw outputs and summaries into the unique archive with a SHA-256 inventory. Originals remain in their normal locations for existing summary links.
+
+Any failure stops further measurement phases. Available failed benchmark databases are dumped before teardown; failures while dumping are recorded separately and cannot suppress cleanup. A nonzero primary command remains the overall nonzero outcome even if cleanup also fails; cleanup failure prevents a false overall pass. SIGINT/SIGTERM retain the owned PGID/session/leader-start identity independently of launcher exit. Cleanup sends TERM, waits for live group members, and sends KILL to surviving members even if the launcher exited; unresolved member identities remain recorded. A normal launcher exit with live descendants is a failed phase. Then owned stack cleanup runs; repeated signals are deferred during bounded cleanup. Timeouts terminate the process group, retain the actual child return code, and report exit 124. SIGKILL/host loss cannot execute a Python `finally`; the coordinator must recover the owned stack in that case.
+
+Default timeouts are 30 minutes for JMH, six hours for all nine system runs, and two minutes for teardown. These are execution bounds, not performance predictions. Runtime command logs, prior dumps, failed dumps, raw profiles and summary copies can consume material disk; the runner reports initial/final free bytes and fails rather than inventing missing data.
+
+The original helper passed **11 tests** in `.work/A01/full-reference-offline-tests.log`; this is historical evidence for its earlier SHA. After the group-cleanup/disk correction, **20 pure mocked/control tests** passed:10 in `full-reference-mocked-cleanup.log` and10 prior controls in `full-reference-pure-controls.log`, explicitly excluding real child launches. Those checks cover post-launcher KILL, orphan refusal, PID reuse, unresolved identity retention, primary timeout preservation and measured-size disk refusal without evidence deletion. The earlier11 covered: inert plan, success ordering, source checks before publication, preflight refusal without touching services, prior-data preservation, primary failure retention, cleanup failure, interruption, unique archives, external lock requirement, and actual Python-child nonzero/timeout behavior. Shell syntax and Python compilation passed. These are runner-control tests, not Java/PostgreSQL/performance acceptance.
+
+Read-only review updates received after the product write pause:
+
+- A10 closed the driver/cache follow-up with no additional blocking source finding. It acknowledged 14 ordinary methods and the actual 1/8/32 × 1,000 smoke; nine quiet runs, full JMH and clean checkout remain outside that closure.
+- A02's frozen `104e648a...` exact-digest full suite passed at 02:40:51Z: 68 ordinary plus 13 actual PostgreSQL methods, zero failures/errors/skips. JAR/prepared-receipt hashes stayed unchanged. This extends evidence; it does not change the previously closed scoped source review.
+
+P01-A5 remains open until the real study and clean-checkout release checks finish. Root owns all Git writes and final gate decisions.
+
+Real control command executed by root after quiet reservation 9 ended:
+
+```bash
+python3 .work/A01/check-reference-real-descendants.py --execute-after-quiet-release
+```
+
+Its default invocation is inert. Root actually exercised both tiny Python cases: a TERM-exiting launcher with a TERM-resistant grandchild, and a launcher that already exited before cleanup. The fixture uses a private session, short cleanup grace, Linux subreaping and independent SIGKILL recovery to avoid leaving descendants. `.work/A01/full-reference-real-descendants-result.json` records two tests, zero failures, zero errors and runner SHA-256 `8390201610e619535f80111d4dd0f9af80e130bb8391f1546c4085110e64b54b`. Root observed 0.519 seconds and a clean restore. No Java/Docker or workload metrics were involved. This completes the real descendant-control prerequisite only; the full reference study and P01-A5 remain unrun/open.

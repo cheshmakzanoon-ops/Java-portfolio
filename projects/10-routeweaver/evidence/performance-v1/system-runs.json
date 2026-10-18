@@ -1,0 +1,2842 @@
+{
+  "schemaVersion": 1,
+  "sourceFingerprint": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+  "rows": [
+    {
+      "instance": 0,
+      "run": 0,
+      "seed": 4200,
+      "difficulty": "easy",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "d842501183c140b050dac4d67f50d6f08875a7210a030e3fcb927e6a4cb76b87",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 234796,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 180015,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 321640000,
+      "solveNanos": 32418362995,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 234851000,
+      "problemCreateHttpNanos": 1596301116,
+      "durableSolveNanos": 30154032000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 20690512,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.23331317398933543,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:22:25.285082563Z",
+      "traceAudit": {
+        "points": 85,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 321640000,
+        "lastElapsedNanos": 29981939000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:21:56.608Z",
+        "initialBestScore": "0hard/0medium/-230742soft",
+        "localSearchEndAtUtc": "2026-10-18T09:22:25.019Z",
+        "localSearchSteps": 34890,
+        "endedAtUtc": "2026-10-18T09:22:25.024Z",
+        "finalBestScore": "0hard/0medium/-180015soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 0,
+      "run": 1,
+      "seed": 4200,
+      "difficulty": "easy",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "ac42cbc4a779dcfaa94f36f07e3bc79c7d8110a6e02b461fe3ff14fbfefbb28f",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 234796,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 175532,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 88237000,
+      "solveNanos": 30330051235,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 41142000,
+      "problemCreateHttpNanos": 82263693,
+      "durableSolveNanos": 30060482000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 37528056,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.2524063442307365,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:22:55.647045601Z",
+      "traceAudit": {
+        "points": 97,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 88237000,
+        "lastElapsedNanos": 30040358000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:22:25.770Z",
+        "initialBestScore": "0hard/0medium/-230742soft",
+        "localSearchEndAtUtc": "2026-10-18T09:22:55.508Z",
+        "localSearchSteps": 39299,
+        "endedAtUtc": "2026-10-18T09:22:55.509Z",
+        "finalBestScore": "0hard/0medium/-175532soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 0,
+      "run": 2,
+      "seed": 4200,
+      "difficulty": "easy",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "2f7440eef73708acb28d7f5342e31559df4faf75121caae14c6265b667b73212",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 234796,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 191530,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 87191000,
+      "solveNanos": 30232961929,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 35251000,
+      "problemCreateHttpNanos": 46718224,
+      "durableSolveNanos": 30028428000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 199008760,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.1842706008620249,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:23:25.889563691Z",
+      "traceAudit": {
+        "points": 69,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 87191000,
+        "lastElapsedNanos": 29771175000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:22:55.959Z",
+        "initialBestScore": "0hard/0medium/-230742soft",
+        "localSearchEndAtUtc": "2026-10-18T09:23:25.774Z",
+        "localSearchSteps": 24320,
+        "endedAtUtc": "2026-10-18T09:23:25.775Z",
+        "finalBestScore": "0hard/0medium/-191530soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 1,
+      "run": 0,
+      "seed": 4201,
+      "difficulty": "tight",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "81960015db772079e4abeb3101ed9daf42f92e0acf29662ff6c1200c3987153c",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 233939,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 189160,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 47785000,
+      "solveNanos": 30492748625,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 123091000,
+      "problemCreateHttpNanos": 71231756,
+      "durableSolveNanos": 30050596000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 94611024,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.1914131461620337,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:23:56.397738Z",
+      "traceAudit": {
+        "points": 64,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 47785000,
+        "lastElapsedNanos": 29330587000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:23:26.246Z",
+        "initialBestScore": "0hard/0medium/-232018soft",
+        "localSearchEndAtUtc": "2026-10-18T09:23:56.143Z",
+        "localSearchSteps": 26626,
+        "endedAtUtc": "2026-10-18T09:23:56.144Z",
+        "finalBestScore": "0hard/0medium/-189160soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 1,
+      "run": 1,
+      "seed": 4201,
+      "difficulty": "tight",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "10e3ca56a0f0bf85cb06a31580cc640e8fcf7d429141afb277ebb8e8ff39ea0c",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 233939,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 194067,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 69960000,
+      "solveNanos": 30449400967,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 23854000,
+      "problemCreateHttpNanos": 124244685,
+      "durableSolveNanos": 30064067000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 263097144,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.1704375927057908,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:24:26.871977566Z",
+      "traceAudit": {
+        "points": 53,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 69960000,
+        "lastElapsedNanos": 28181948000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:23:56.838Z",
+        "initialBestScore": "0hard/0medium/-232018soft",
+        "localSearchEndAtUtc": "2026-10-18T09:24:26.718Z",
+        "localSearchSteps": 21973,
+        "endedAtUtc": "2026-10-18T09:24:26.721Z",
+        "finalBestScore": "0hard/0medium/-194067soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 1,
+      "run": 2,
+      "seed": 4201,
+      "difficulty": "tight",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "406b8833c8457ae58ba85afdfcc6f64c89eacec56337b615864f66fc5c1d83cc",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 233939,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 191506,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 35365000,
+      "solveNanos": 30364323319,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 40030000,
+      "problemCreateHttpNanos": 75441170,
+      "durableSolveNanos": 30017443000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 125754232,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.1813848909331065,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:24:57.244430369Z",
+      "traceAudit": {
+        "points": 61,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 35365000,
+        "lastElapsedNanos": 29805460000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:24:27.137Z",
+        "initialBestScore": "0hard/0medium/-232018soft",
+        "localSearchEndAtUtc": "2026-10-18T09:24:57.031Z",
+        "localSearchSteps": 24272,
+        "endedAtUtc": "2026-10-18T09:24:57.032Z",
+        "finalBestScore": "0hard/0medium/-191506soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 2,
+      "run": 0,
+      "seed": 4202,
+      "difficulty": "overconstrained",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "85bf2c03221ad7b6acb6d7e6052aaad05bac368934b5d9318abde91c4613a289",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 110,
+        "operatingCost": 155228,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 52,
+      "baselineNanos": 356843000,
+      "solveNanos": 14011170430,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 103350000,
+      "problemCreateHttpNanos": 131182585,
+      "durableSolveNanos": 13633113000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 178183032,
+      "sameAssignedDemand": false,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:25:11.263422241Z",
+      "traceAudit": {
+        "points": 82,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 356843000,
+        "lastElapsedNanos": 5279016000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:24:58.096Z",
+        "initialBestScore": "0hard/-153medium/-180141soft",
+        "localSearchEndAtUtc": "2026-10-18T09:25:11.140Z",
+        "localSearchSteps": 100000,
+        "endedAtUtc": "2026-10-18T09:25:11.142Z",
+        "finalBestScore": "0hard/-110medium/-155228soft"
+      },
+      "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+    },
+    {
+      "instance": 2,
+      "run": 1,
+      "seed": 4202,
+      "difficulty": "overconstrained",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "eceb2d5c181be4e37c926d5e297540c92b10890fa812995f6f47c3103e064183",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 110,
+        "operatingCost": 155228,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 52,
+      "baselineNanos": 135122000,
+      "solveNanos": 11795128922,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 34345000,
+      "problemCreateHttpNanos": 49183959,
+      "durableSolveNanos": 11577263000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 225893240,
+      "sameAssignedDemand": false,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:25:23.067793598Z",
+      "traceAudit": {
+        "points": 82,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 135122000,
+        "lastElapsedNanos": 3058616000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:25:11.603Z",
+        "initialBestScore": "0hard/-153medium/-180141soft",
+        "localSearchEndAtUtc": "2026-10-18T09:25:22.937Z",
+        "localSearchSteps": 100000,
+        "endedAtUtc": "2026-10-18T09:25:22.939Z",
+        "finalBestScore": "0hard/-110medium/-155228soft"
+      },
+      "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+    },
+    {
+      "instance": 2,
+      "run": 2,
+      "seed": 4202,
+      "difficulty": "overconstrained",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "91ba64d919d03c48d7e3d80a0215e9037a2bdc4cf6d066a048cea2638f4f6cfb",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 153,
+        "operatingCost": 180781,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 110,
+        "operatingCost": 155228,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 52,
+      "baselineNanos": 168718000,
+      "solveNanos": 11525717956,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 38844000,
+      "problemCreateHttpNanos": 41424906,
+      "durableSolveNanos": 11287728000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 273079160,
+      "sameAssignedDemand": false,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:25:34.620374082Z",
+      "traceAudit": {
+        "points": 82,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 168718000,
+        "lastElapsedNanos": 3049798000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:25:23.445Z",
+        "initialBestScore": "0hard/-153medium/-180141soft",
+        "localSearchEndAtUtc": "2026-10-18T09:25:34.469Z",
+        "localSearchSteps": 100000,
+        "endedAtUtc": "2026-10-18T09:25:34.470Z",
+        "finalBestScore": "0hard/-110medium/-155228soft"
+      },
+      "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+    },
+    {
+      "instance": 3,
+      "run": 0,
+      "seed": 4203,
+      "difficulty": "easy",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "f8ba9e1221926030897e7a54748639039c1dfe265a67b7c46bcc9bf2625c8dfc",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 532594,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 506404,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 339261000,
+      "solveNanos": 30837379551,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 44219000,
+      "problemCreateHttpNanos": 297272828,
+      "durableSolveNanos": 30136386000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 70179704,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.04917441803700379,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:26:05.471877111Z",
+      "traceAudit": {
+        "points": 31,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 339261000,
+        "lastElapsedNanos": 24937481000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:25:35.685Z",
+        "initialBestScore": "0hard/0medium/-527475soft",
+        "localSearchEndAtUtc": "2026-10-18T09:26:05.118Z",
+        "localSearchSteps": 9010,
+        "endedAtUtc": "2026-10-18T09:26:05.144Z",
+        "finalBestScore": "0hard/0medium/-506404soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 3,
+      "run": 1,
+      "seed": 4203,
+      "difficulty": "easy",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "0b3869ed9cf83d0e56161e383dc4974112866eaae0a5477907d2f88df2b986a5",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 532594,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 506404,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 698900000,
+      "solveNanos": 31535119457,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 166114000,
+      "problemCreateHttpNanos": 527057686,
+      "durableSolveNanos": 30156065000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 160308512,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.04917441803700379,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:26:37.020983154Z",
+      "traceAudit": {
+        "points": 31,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 698900000,
+        "lastElapsedNanos": 28713360000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:26:07.570Z",
+        "initialBestScore": "0hard/0medium/-527475soft",
+        "localSearchEndAtUtc": "2026-10-18T09:26:36.490Z",
+        "localSearchSteps": 7879,
+        "endedAtUtc": "2026-10-18T09:26:36.492Z",
+        "finalBestScore": "0hard/0medium/-506404soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 3,
+      "run": 2,
+      "seed": 4203,
+      "difficulty": "easy",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "d99850218bc4853164aa4c3196106c972117efee0dd45471392936df99ecf3ee",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 532594,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 500637,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 350926000,
+      "solveNanos": 30923562175,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 148783000,
+      "problemCreateHttpNanos": 415705749,
+      "durableSolveNanos": 30111158000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 272554872,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.06000255353984461,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:27:07.957828739Z",
+      "traceAudit": {
+        "points": 36,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 350926000,
+        "lastElapsedNanos": 28604531000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:26:38.479Z",
+        "initialBestScore": "0hard/0medium/-527475soft",
+        "localSearchEndAtUtc": "2026-10-18T09:27:07.702Z",
+        "localSearchSteps": 11557,
+        "endedAtUtc": "2026-10-18T09:27:07.709Z",
+        "finalBestScore": "0hard/0medium/-500637soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 4,
+      "run": 0,
+      "seed": 4204,
+      "difficulty": "tight",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "2390a1f3339a0f25965b43337e9671196c2d45d68b02de21a29cac80127d2af6",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 508067,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 476962,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 468781000,
+      "solveNanos": 30840495380,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 77787000,
+      "problemCreateHttpNanos": 439881833,
+      "durableSolveNanos": 30094844000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 79616888,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.06122224037380897,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:27:38.811170786Z",
+      "traceAudit": {
+        "points": 31,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 468781000,
+        "lastElapsedNanos": 29518898000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:27:09.356Z",
+        "initialBestScore": "0hard/0medium/-504440soft",
+        "localSearchEndAtUtc": "2026-10-18T09:27:38.662Z",
+        "localSearchSteps": 12098,
+        "endedAtUtc": "2026-10-18T09:27:38.663Z",
+        "finalBestScore": "0hard/0medium/-476962soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 4,
+      "run": 1,
+      "seed": 4204,
+      "difficulty": "tight",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "71a3f2201e945e58ba0c88c4b24e593001cd636c99ea05172f5e3e6d76fe5385",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 508067,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 479305,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 309874000,
+      "solveNanos": 30426575701,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 21068000,
+      "problemCreateHttpNanos": 190346646,
+      "durableSolveNanos": 30052307000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 194713184,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.056610643871772816,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:28:09.250203955Z",
+      "traceAudit": {
+        "points": 29,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 309874000,
+        "lastElapsedNanos": 29384635000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:27:39.680Z",
+        "initialBestScore": "0hard/0medium/-504440soft",
+        "localSearchEndAtUtc": "2026-10-18T09:28:09.120Z",
+        "localSearchSteps": 10527,
+        "endedAtUtc": "2026-10-18T09:28:09.122Z",
+        "finalBestScore": "0hard/0medium/-479305soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 4,
+      "run": 2,
+      "seed": 4204,
+      "difficulty": "tight",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "a8e1e1deef2926181ed15f5fad6f0ce1e04a6b9b0c96b1c683a9f7440bfcb842",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 508067,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 477590,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 560796000,
+      "solveNanos": 30773309116,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 207035000,
+      "problemCreateHttpNanos": 256565141,
+      "durableSolveNanos": 30078884000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 300342136,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.059986182924693,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:28:40.038145666Z",
+      "traceAudit": {
+        "points": 30,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 560796000,
+        "lastElapsedNanos": 29592624000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:28:10.679Z",
+        "initialBestScore": "0hard/0medium/-504440soft",
+        "localSearchEndAtUtc": "2026-10-18T09:28:39.877Z",
+        "localSearchSteps": 11222,
+        "endedAtUtc": "2026-10-18T09:28:39.881Z",
+        "finalBestScore": "0hard/0medium/-477590soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 5,
+      "run": 0,
+      "seed": 4205,
+      "difficulty": "overconstrained",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "e2486e2daaccb66e1ab53423dce01bcab2bc92e20e2ed7e663f230ad7b3fe95e",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 448,
+        "operatingCost": 351928,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 327,
+        "operatingCost": 326305,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 152,
+      "baselineNanos": 2684502000,
+      "solveNanos": 31062307440,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 201482000,
+      "problemCreateHttpNanos": 294799430,
+      "durableSolveNanos": 30124870000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 207543160,
+      "sameAssignedDemand": false,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:29:11.113166494Z",
+      "traceAudit": {
+        "points": 180,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 2684502000,
+        "lastElapsedNanos": 30104823000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:28:43.834Z",
+        "initialBestScore": "0hard/-448medium/-341904soft",
+        "localSearchEndAtUtc": "2026-10-18T09:29:10.757Z",
+        "localSearchSteps": 60954,
+        "endedAtUtc": "2026-10-18T09:29:10.758Z",
+        "finalBestScore": "0hard/-327medium/-326305soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 5,
+      "run": 1,
+      "seed": 4205,
+      "difficulty": "overconstrained",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "f2c5a769cfa2a2577c5cc260e2084606cac269181cb2513b2ed1cf0ddf5fc009",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 448,
+        "operatingCost": 351928,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 326,
+        "operatingCost": 326304,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 151,
+      "baselineNanos": 3637808000,
+      "solveNanos": 30695326936,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 85965000,
+      "problemCreateHttpNanos": 225388076,
+      "durableSolveNanos": 30132797000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 106973032,
+      "sameAssignedDemand": false,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:29:41.828413454Z",
+      "traceAudit": {
+        "points": 183,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 3637808000,
+        "lastElapsedNanos": 29913577000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:29:15.828Z",
+        "initialBestScore": "0hard/-448medium/-341904soft",
+        "localSearchEndAtUtc": "2026-10-18T09:29:41.593Z",
+        "localSearchSteps": 64174,
+        "endedAtUtc": "2026-10-18T09:29:41.595Z",
+        "finalBestScore": "0hard/-326medium/-326304soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 5,
+      "run": 2,
+      "seed": 4205,
+      "difficulty": "overconstrained",
+      "jobs": 250,
+      "vehicles": 10,
+      "inputHash": "8ebab67f168e2fd11af81cb93a5211da1e8f8d051788ad05a6e7c87c0b1b8d3a",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 448,
+        "operatingCost": 351928,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 336,
+        "operatingCost": 330339,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 156,
+      "baselineNanos": 3726849000,
+      "solveNanos": 31052269029,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 78897000,
+      "problemCreateHttpNanos": 438034222,
+      "durableSolveNanos": 30101501000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 320882536,
+      "sameAssignedDemand": false,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:30:12.899020303Z",
+      "traceAudit": {
+        "points": 161,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 3726849000,
+        "lastElapsedNanos": 29183837000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:29:46.791Z",
+        "initialBestScore": "0hard/-448medium/-341904soft",
+        "localSearchEndAtUtc": "2026-10-18T09:30:12.498Z",
+        "localSearchSteps": 48589,
+        "endedAtUtc": "2026-10-18T09:30:12.505Z",
+        "finalBestScore": "0hard/-336medium/-330339soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 6,
+      "run": 0,
+      "seed": 4206,
+      "difficulty": "easy",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "9f940e5bd850ee979ed278d88e1f7e6eeb35be659258dc0d343373a1a7d46e7a",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1212454,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1199282,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 8803693000,
+      "solveNanos": 31756668289,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 198277000,
+      "problemCreateHttpNanos": 980632096,
+      "durableSolveNanos": 30161422000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 363494264,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.010863917311502127,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:30:44.686785830Z",
+      "traceAudit": {
+        "points": 14,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 8803693000,
+        "lastElapsedNanos": 24118116000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:30:24.739Z",
+        "initialBestScore": "0hard/0medium/-1209894soft",
+        "localSearchEndAtUtc": "2026-10-18T09:30:44.428Z",
+        "localSearchSteps": 1443,
+        "endedAtUtc": "2026-10-18T09:30:44.430Z",
+        "finalBestScore": "0hard/0medium/-1199282soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 6,
+      "run": 1,
+      "seed": 4206,
+      "difficulty": "easy",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "9e3d996944b6d54661783f95205fe5c27f6a1d054e940a4f663bfcdbc56a97b0",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1212454,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1199282,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 7391571000,
+      "solveNanos": 31221088493,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 25026000,
+      "problemCreateHttpNanos": 730497001,
+      "durableSolveNanos": 30162161000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 116013928,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.010863917311502127,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:31:15.953671844Z",
+      "traceAudit": {
+        "points": 14,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 7391571000,
+        "lastElapsedNanos": 24811390000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:30:54.824Z",
+        "initialBestScore": "0hard/0medium/-1209894soft",
+        "localSearchEndAtUtc": "2026-10-18T09:31:15.752Z",
+        "localSearchSteps": 1461,
+        "endedAtUtc": "2026-10-18T09:31:15.752Z",
+        "finalBestScore": "0hard/0medium/-1199282soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 6,
+      "run": 2,
+      "seed": 4206,
+      "difficulty": "easy",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "d17be66cab91aabcd8f85eab6193cca387ed655fc20dd70a48dd2e07abc467d7",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1212454,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1199282,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 8698748000,
+      "solveNanos": 32167250979,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 163182000,
+      "problemCreateHttpNanos": 1211978647,
+      "durableSolveNanos": 30449174000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 157432680,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.010863917311502127,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:31:48.131034383Z",
+      "traceAudit": {
+        "points": 14,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 8698748000,
+        "lastElapsedNanos": 27380494000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:31:28.211Z",
+        "initialBestScore": "0hard/0medium/-1209894soft",
+        "localSearchEndAtUtc": "2026-10-18T09:31:48.002Z",
+        "localSearchSteps": 1190,
+        "endedAtUtc": "2026-10-18T09:31:48.004Z",
+        "finalBestScore": "0hard/0medium/-1199282soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 7,
+      "run": 0,
+      "seed": 4207,
+      "difficulty": "tight",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "af12055a6ad14e27e7aab1bba6a1bb67f1e0ddd9d5945b7ad9b1d52ff614dd5a",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1206491,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1188390,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 8314859000,
+      "solveNanos": 31295336486,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 99779000,
+      "problemCreateHttpNanos": 645028297,
+      "durableSolveNanos": 30148163000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 207012968,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.01500301286955311,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:32:19.450854431Z",
+      "traceAudit": {
+        "points": 8,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 8314859000,
+        "lastElapsedNanos": 26242248000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:31:58.850Z",
+        "initialBestScore": "0hard/0medium/-1203292soft",
+        "localSearchEndAtUtc": "2026-10-18T09:32:19.221Z",
+        "localSearchSteps": 1715,
+        "endedAtUtc": "2026-10-18T09:32:19.222Z",
+        "finalBestScore": "0hard/0medium/-1188390soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 7,
+      "run": 1,
+      "seed": 4207,
+      "difficulty": "tight",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "3a6f3d7f3a1a51be930d3562c077c31470fa0b1898d4cac30d895afdaba8e0c9",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1206491,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1188390,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 7902322000,
+      "solveNanos": 31616701126,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 191942000,
+      "problemCreateHttpNanos": 957445973,
+      "durableSolveNanos": 30137599000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 289979544,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.01500301286955311,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:32:51.087089977Z",
+      "traceAudit": {
+        "points": 8,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 7902322000,
+        "lastElapsedNanos": 24416533000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:32:30.458Z",
+        "initialBestScore": "0hard/0medium/-1203292soft",
+        "localSearchEndAtUtc": "2026-10-18T09:32:50.892Z",
+        "localSearchSteps": 2020,
+        "endedAtUtc": "2026-10-18T09:32:50.893Z",
+        "finalBestScore": "0hard/0medium/-1188390soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 7,
+      "run": 2,
+      "seed": 4207,
+      "difficulty": "tight",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "2958dec54d0df670e451ebcf1bcb5b2a51f82bf35599cda6188eae7e8bf7c5ba",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1206491,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 1188390,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 8596415000,
+      "solveNanos": 32054766902,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 209568000,
+      "problemCreateHttpNanos": 925065312,
+      "durableSolveNanos": 30201919000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 330571208,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.01500301286955311,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:33:23.154326474Z",
+      "traceAudit": {
+        "points": 8,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 8596415000,
+        "lastElapsedNanos": 24970342000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:33:02.868Z",
+        "initialBestScore": "0hard/0medium/-1203292soft",
+        "localSearchEndAtUtc": "2026-10-18T09:33:22.921Z",
+        "localSearchSteps": 1886,
+        "endedAtUtc": "2026-10-18T09:33:22.923Z",
+        "finalBestScore": "0hard/0medium/-1188390soft"
+      },
+      "observedTermination": "wall budget boundary; cooperative completion"
+    },
+    {
+      "instance": 8,
+      "run": 0,
+      "seed": 4208,
+      "difficulty": "overconstrained",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "6a20a8cee4476fa50e7eb33c1cdd2cb1fc06894efc1c2fa0c7d9fa63eb96f33e",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 900,
+        "operatingCost": 900322,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 900,
+        "operatingCost": 900322,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 375,
+      "baselineNanos": 30281379000,
+      "solveNanos": 31755143722,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 111812000,
+      "problemCreateHttpNanos": 905566759,
+      "durableSolveNanos": 30291621000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 139063544,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.0,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:33:54.930149439Z",
+      "traceAudit": {
+        "points": 1,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 30281379000,
+        "lastElapsedNanos": 30281379000
+      },
+      "observedTermination": "baseline consumed cooperative wall budget; no Timefold session started"
+    },
+    {
+      "instance": 8,
+      "run": 1,
+      "seed": 4208,
+      "difficulty": "overconstrained",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "63d1b01b5d64b6672b297cde2528e682ed1734c008f1376d757ed927c24c345b",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 900,
+        "operatingCost": 900322,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 900,
+        "operatingCost": 900322,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 375,
+      "baselineNanos": 31531879000,
+      "solveNanos": 33613136833,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 170388000,
+      "problemCreateHttpNanos": 958668428,
+      "durableSolveNanos": 31552836000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 313127160,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.0,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:34:28.592930983Z",
+      "traceAudit": {
+        "points": 1,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 31531879000,
+        "lastElapsedNanos": 31531879000
+      },
+      "observedTermination": "baseline consumed cooperative wall budget; no Timefold session started"
+    },
+    {
+      "instance": 8,
+      "run": 2,
+      "seed": 4208,
+      "difficulty": "overconstrained",
+      "jobs": 500,
+      "vehicles": 25,
+      "inputHash": "868f9b4ec8fd1cf30bf0f279df1ad0d8f7fd1ad0f532773df1913183ec378779",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 900,
+        "operatingCost": 900322,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 900,
+        "operatingCost": 900322,
+        "disruption": 0
+      },
+      "feasibility": "PARTIAL_FEASIBLE",
+      "unassigned": 375,
+      "baselineNanos": 30420571000,
+      "solveNanos": 33153916708,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 193714000,
+      "problemCreateHttpNanos": 1967129061,
+      "durableSolveNanos": 30432699000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 487715064,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.0,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:35:01.860749082Z",
+      "traceAudit": {
+        "points": 1,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 30420571000,
+        "lastElapsedNanos": 30420571000
+      },
+      "observedTermination": "baseline consumed cooperative wall budget; no Timefold session started"
+    },
+    {
+      "instance": 9,
+      "run": 0,
+      "seed": 4209,
+      "difficulty": "improvable",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "f5cb36cd0f24a28d9548d9ee7b3db161881024bf8e19e71862480746a6c83d61",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 101101,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 90120,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 32416000,
+      "solveNanos": 8328022193,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 213340000,
+      "problemCreateHttpNanos": 36088077,
+      "durableSolveNanos": 7899798000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 101095176,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.10861415811910861,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:35:10.216929205Z",
+      "traceAudit": {
+        "points": 9,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 32416000,
+        "lastElapsedNanos": 7230705000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:35:02.300Z",
+        "initialBestScore": "0hard/0medium/-96106soft",
+        "localSearchEndAtUtc": "2026-10-18T09:35:10.037Z",
+        "localSearchSteps": 100000,
+        "endedAtUtc": "2026-10-18T09:35:10.039Z",
+        "finalBestScore": "0hard/0medium/-90120soft"
+      },
+      "observedTermination": "Timefold Local Search step cap of 100,000 reached",
+      "pipelineAttribution": {
+        "baselineOperatingScore": 101101,
+        "afterOriginalMovesOperatingScore": 96106,
+        "afterTimefoldOperatingScore": 90120,
+        "interpretation": "Total 10.8614158% gain belongs to the combined pipeline; both original moves and Timefold contribute."
+      }
+    },
+    {
+      "instance": 9,
+      "run": 1,
+      "seed": 4209,
+      "difficulty": "improvable",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "63bee5cfce32820f9e7e93319996331532d8dcad76e9160251e9ed682a311747",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 101101,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 90120,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 23694000,
+      "solveNanos": 5778247916,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 96747000,
+      "problemCreateHttpNanos": 44347298,
+      "durableSolveNanos": 5542598000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 141465352,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.10861415811910861,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:35:16.006965479Z",
+      "traceAudit": {
+        "points": 9,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 23694000,
+        "lastElapsedNanos": 4891578000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:35:10.470Z",
+        "initialBestScore": "0hard/0medium/-96106soft",
+        "localSearchEndAtUtc": "2026-10-18T09:35:15.923Z",
+        "localSearchSteps": 100000,
+        "endedAtUtc": "2026-10-18T09:35:15.924Z",
+        "finalBestScore": "0hard/0medium/-90120soft"
+      },
+      "observedTermination": "Timefold Local Search step cap of 100,000 reached",
+      "pipelineAttribution": {
+        "baselineOperatingScore": 101101,
+        "afterOriginalMovesOperatingScore": 96106,
+        "afterTimefoldOperatingScore": 90120,
+        "interpretation": "Total 10.8614158% gain belongs to the combined pipeline; both original moves and Timefold contribute."
+      }
+    },
+    {
+      "instance": 9,
+      "run": 2,
+      "seed": 4209,
+      "difficulty": "improvable",
+      "jobs": 100,
+      "vehicles": 5,
+      "inputHash": "286ee189d453ef233b18a5dd24912fe7d9ea45c565c2fc9759c0e39aa267956b",
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 101101,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 90120,
+        "disruption": 0
+      },
+      "feasibility": "FULLY_FEASIBLE",
+      "unassigned": 0,
+      "baselineNanos": 22039000,
+      "solveNanos": 7177463676,
+      "baselineBoundary": "worker claim to first durable validated candidate; bounded by solve budget",
+      "validationBenchmarkArtifact": "validation-jmh.json",
+      "systemWarmup": "No excluded system warmup; run0 includes cold/JIT effects, report separately from runs1/2",
+      "measuredBoundary": "live HTTP, durable queue, PostgreSQL and CPU solver",
+      "queueLatencyNanos": 126087000,
+      "problemCreateHttpNanos": 44443624,
+      "durableSolveNanos": 6914697000,
+      "serviceSource": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "clientUsedHeapBytes": 189175560,
+      "sameAssignedDemand": true,
+      "operatingCostImprovementFraction": 0.10861415811910861,
+      "solverSeed": 42,
+      "solverBudgetMillis": 30000,
+      "solverStepLimit": 100000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "stopCondition": "TIME_OR_STEP_BUDGET",
+      "source": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+      "timestamp": "2026-10-18T09:35:23.195819655Z",
+      "traceAudit": {
+        "points": 9,
+        "allHardZero": true,
+        "lexicographicallyNondegrading": true,
+        "elapsedTimesNondecreasing": true,
+        "baselineAndFinalEndpointsMatch": true,
+        "firstElapsedNanos": 22039000,
+        "lastElapsedNanos": 6054764000
+      },
+      "timefoldSession": {
+        "startedAtUtc": "2026-10-18T09:35:16.306Z",
+        "initialBestScore": "0hard/0medium/-96106soft",
+        "localSearchEndAtUtc": "2026-10-18T09:35:23.121Z",
+        "localSearchSteps": 100000,
+        "endedAtUtc": "2026-10-18T09:35:23.122Z",
+        "finalBestScore": "0hard/0medium/-90120soft"
+      },
+      "observedTermination": "Timefold Local Search step cap of 100,000 reached",
+      "pipelineAttribution": {
+        "baselineOperatingScore": 101101,
+        "afterOriginalMovesOperatingScore": 96106,
+        "afterTimefoldOperatingScore": 90120,
+        "interpretation": "Total 10.8614158% gain belongs to the combined pipeline; both original moves and Timefold contribute."
+      }
+    }
+  ],
+  "instances": [
+    {
+      "instance": 0,
+      "difficulty": "easy",
+      "jobs": 100,
+      "vehicles": 5,
+      "seed": 4200,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 234796,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 180015,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.23331317398933543,
+          "durableSolveSeconds": 30.154032,
+          "baselineSeconds": 0.32164,
+          "queueLatencyMilliseconds": 234.851,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 234796,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 175532,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.2524063442307365,
+          "durableSolveSeconds": 30.060482,
+          "baselineSeconds": 0.088237,
+          "queueLatencyMilliseconds": 41.142,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 234796,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 191530,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.1842706008620249,
+          "durableSolveSeconds": 30.028428,
+          "baselineSeconds": 0.087191,
+          "queueLatencyMilliseconds": 35.251,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.028428,
+        "maximum": 30.154032,
+        "mean": 30.08098066666667,
+        "sampleStandardDeviation": 0.06526283556001301,
+        "values": [
+          30.154032,
+          30.060482,
+          30.028428
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.1842706008620249,
+        "maximum": 0.2524063442307365,
+        "mean": 0.22333003969403228,
+        "sampleStandardDeviation": 0.03514778953035702,
+        "values": [
+          0.23331317398933543,
+          0.2524063442307365,
+          0.1842706008620249
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 1,
+      "difficulty": "tight",
+      "jobs": 100,
+      "vehicles": 5,
+      "seed": 4201,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 233939,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 189160,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.1914131461620337,
+          "durableSolveSeconds": 30.050596,
+          "baselineSeconds": 0.047785,
+          "queueLatencyMilliseconds": 123.091,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 233939,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 194067,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.1704375927057908,
+          "durableSolveSeconds": 30.064067,
+          "baselineSeconds": 0.06996,
+          "queueLatencyMilliseconds": 23.854,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 233939,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 191506,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.1813848909331065,
+          "durableSolveSeconds": 30.017443,
+          "baselineSeconds": 0.035365,
+          "queueLatencyMilliseconds": 40.03,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.017443,
+        "maximum": 30.064067,
+        "mean": 30.044035333333333,
+        "sampleStandardDeviation": 0.0239943973529937,
+        "values": [
+          30.050596,
+          30.064067,
+          30.017443
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.1704375927057908,
+        "maximum": 0.1914131461620337,
+        "mean": 0.181078543266977,
+        "sampleStandardDeviation": 0.010491131844006773,
+        "values": [
+          0.1914131461620337,
+          0.1704375927057908,
+          0.1813848909331065
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 2,
+      "difficulty": "overconstrained",
+      "jobs": 100,
+      "vehicles": 5,
+      "seed": 4202,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 153,
+            "operatingCost": 180781,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 110,
+            "operatingCost": 155228,
+            "disruption": 0
+          },
+          "unassigned": 52,
+          "sameAssignedDemand": false,
+          "operatingCostImprovementFraction": null,
+          "durableSolveSeconds": 13.633113,
+          "baselineSeconds": 0.356843,
+          "queueLatencyMilliseconds": 103.35,
+          "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 153,
+            "operatingCost": 180781,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 110,
+            "operatingCost": 155228,
+            "disruption": 0
+          },
+          "unassigned": 52,
+          "sameAssignedDemand": false,
+          "operatingCostImprovementFraction": null,
+          "durableSolveSeconds": 11.577263,
+          "baselineSeconds": 0.135122,
+          "queueLatencyMilliseconds": 34.345,
+          "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 153,
+            "operatingCost": 180781,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 110,
+            "operatingCost": 155228,
+            "disruption": 0
+          },
+          "unassigned": 52,
+          "sameAssignedDemand": false,
+          "operatingCostImprovementFraction": null,
+          "durableSolveSeconds": 11.287728,
+          "baselineSeconds": 0.168718,
+          "queueLatencyMilliseconds": 38.844,
+          "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 11.287728,
+        "maximum": 13.633113,
+        "mean": 12.166034666666667,
+        "sampleStandardDeviation": 1.2787481206861393,
+        "values": [
+          13.633113,
+          11.577263,
+          11.287728
+        ]
+      },
+      "operatingCostImprovementFraction": null,
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 3,
+      "difficulty": "easy",
+      "jobs": 250,
+      "vehicles": 10,
+      "seed": 4203,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 532594,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 506404,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.04917441803700379,
+          "durableSolveSeconds": 30.136386,
+          "baselineSeconds": 0.339261,
+          "queueLatencyMilliseconds": 44.219,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 532594,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 506404,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.04917441803700379,
+          "durableSolveSeconds": 30.156065,
+          "baselineSeconds": 0.6989,
+          "queueLatencyMilliseconds": 166.114,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 532594,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 500637,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.06000255353984461,
+          "durableSolveSeconds": 30.111158,
+          "baselineSeconds": 0.350926,
+          "queueLatencyMilliseconds": 148.783,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.111158,
+        "maximum": 30.156065,
+        "mean": 30.134536333333333,
+        "sampleStandardDeviation": 0.022510566681747057,
+        "values": [
+          30.136386,
+          30.156065,
+          30.111158
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.04917441803700379,
+        "maximum": 0.06000255353984461,
+        "mean": 0.05278379653795073,
+        "sampleStandardDeviation": 0.006251626947386887,
+        "values": [
+          0.04917441803700379,
+          0.04917441803700379,
+          0.06000255353984461
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 4,
+      "difficulty": "tight",
+      "jobs": 250,
+      "vehicles": 10,
+      "seed": 4204,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 508067,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 476962,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.06122224037380897,
+          "durableSolveSeconds": 30.094844,
+          "baselineSeconds": 0.468781,
+          "queueLatencyMilliseconds": 77.787,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 508067,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 479305,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.056610643871772816,
+          "durableSolveSeconds": 30.052307,
+          "baselineSeconds": 0.309874,
+          "queueLatencyMilliseconds": 21.068,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 508067,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 477590,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.059986182924693,
+          "durableSolveSeconds": 30.078884,
+          "baselineSeconds": 0.560796,
+          "queueLatencyMilliseconds": 207.035,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.052307,
+        "maximum": 30.094844,
+        "mean": 30.075345,
+        "sampleStandardDeviation": 0.021488194037656737,
+        "values": [
+          30.094844,
+          30.052307,
+          30.078884
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.056610643871772816,
+        "maximum": 0.06122224037380897,
+        "mean": 0.05927302239009159,
+        "sampleStandardDeviation": 0.0023870806512312774,
+        "values": [
+          0.06122224037380897,
+          0.056610643871772816,
+          0.059986182924693
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 5,
+      "difficulty": "overconstrained",
+      "jobs": 250,
+      "vehicles": 10,
+      "seed": 4205,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 448,
+            "operatingCost": 351928,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 327,
+            "operatingCost": 326305,
+            "disruption": 0
+          },
+          "unassigned": 152,
+          "sameAssignedDemand": false,
+          "operatingCostImprovementFraction": null,
+          "durableSolveSeconds": 30.12487,
+          "baselineSeconds": 2.684502,
+          "queueLatencyMilliseconds": 201.482,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 448,
+            "operatingCost": 351928,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 326,
+            "operatingCost": 326304,
+            "disruption": 0
+          },
+          "unassigned": 151,
+          "sameAssignedDemand": false,
+          "operatingCostImprovementFraction": null,
+          "durableSolveSeconds": 30.132797,
+          "baselineSeconds": 3.637808,
+          "queueLatencyMilliseconds": 85.965,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 448,
+            "operatingCost": 351928,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 336,
+            "operatingCost": 330339,
+            "disruption": 0
+          },
+          "unassigned": 156,
+          "sameAssignedDemand": false,
+          "operatingCostImprovementFraction": null,
+          "durableSolveSeconds": 30.101501,
+          "baselineSeconds": 3.726849,
+          "queueLatencyMilliseconds": 78.897,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.101501,
+        "maximum": 30.132797,
+        "mean": 30.119722666666668,
+        "sampleStandardDeviation": 0.01627056189359667,
+        "values": [
+          30.12487,
+          30.132797,
+          30.101501
+        ]
+      },
+      "operatingCostImprovementFraction": null,
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 6,
+      "difficulty": "easy",
+      "jobs": 500,
+      "vehicles": 25,
+      "seed": 4206,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1212454,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1199282,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.010863917311502127,
+          "durableSolveSeconds": 30.161422,
+          "baselineSeconds": 8.803693,
+          "queueLatencyMilliseconds": 198.277,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1212454,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1199282,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.010863917311502127,
+          "durableSolveSeconds": 30.162161,
+          "baselineSeconds": 7.391571,
+          "queueLatencyMilliseconds": 25.026,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1212454,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1199282,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.010863917311502127,
+          "durableSolveSeconds": 30.449174,
+          "baselineSeconds": 8.698748,
+          "queueLatencyMilliseconds": 163.182,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.161422,
+        "maximum": 30.449174,
+        "mean": 30.257585666666667,
+        "sampleStandardDeviation": 0.16592077516794854,
+        "values": [
+          30.161422,
+          30.162161,
+          30.449174
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.010863917311502127,
+        "maximum": 0.010863917311502127,
+        "mean": 0.010863917311502127,
+        "sampleStandardDeviation": 0.0,
+        "values": [
+          0.010863917311502127,
+          0.010863917311502127,
+          0.010863917311502127
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 7,
+      "difficulty": "tight",
+      "jobs": 500,
+      "vehicles": 25,
+      "seed": 4207,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1206491,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1188390,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.01500301286955311,
+          "durableSolveSeconds": 30.148163,
+          "baselineSeconds": 8.314859,
+          "queueLatencyMilliseconds": 99.779,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1206491,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1188390,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.01500301286955311,
+          "durableSolveSeconds": 30.137599,
+          "baselineSeconds": 7.902322,
+          "queueLatencyMilliseconds": 191.942,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1206491,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 1188390,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.01500301286955311,
+          "durableSolveSeconds": 30.201919,
+          "baselineSeconds": 8.596415,
+          "queueLatencyMilliseconds": 209.568,
+          "observedTermination": "wall budget boundary; cooperative completion"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.137599,
+        "maximum": 30.201919,
+        "mean": 30.162560333333335,
+        "sampleStandardDeviation": 0.03449243403028115,
+        "values": [
+          30.148163,
+          30.137599,
+          30.201919
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.01500301286955311,
+        "maximum": 0.01500301286955311,
+        "mean": 0.01500301286955311,
+        "sampleStandardDeviation": 0.0,
+        "values": [
+          0.01500301286955311,
+          0.01500301286955311,
+          0.01500301286955311
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 8,
+      "difficulty": "overconstrained",
+      "jobs": 500,
+      "vehicles": 25,
+      "seed": 4208,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 900,
+            "operatingCost": 900322,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 900,
+            "operatingCost": 900322,
+            "disruption": 0
+          },
+          "unassigned": 375,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.0,
+          "durableSolveSeconds": 30.291621,
+          "baselineSeconds": 30.281379,
+          "queueLatencyMilliseconds": 111.812,
+          "observedTermination": "baseline consumed cooperative wall budget; no Timefold session started"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 900,
+            "operatingCost": 900322,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 900,
+            "operatingCost": 900322,
+            "disruption": 0
+          },
+          "unassigned": 375,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.0,
+          "durableSolveSeconds": 31.552836,
+          "baselineSeconds": 31.531879,
+          "queueLatencyMilliseconds": 170.388,
+          "observedTermination": "baseline consumed cooperative wall budget; no Timefold session started"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 900,
+            "operatingCost": 900322,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 900,
+            "operatingCost": 900322,
+            "disruption": 0
+          },
+          "unassigned": 375,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.0,
+          "durableSolveSeconds": 30.432699,
+          "baselineSeconds": 30.420571,
+          "queueLatencyMilliseconds": 193.714,
+          "observedTermination": "baseline consumed cooperative wall budget; no Timefold session started"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 30.291621,
+        "maximum": 31.552836,
+        "mean": 30.759052,
+        "sampleStandardDeviation": 0.6910466912683975,
+        "values": [
+          30.291621,
+          31.552836,
+          30.432699
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "sampleStandardDeviation": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    },
+    {
+      "instance": 9,
+      "difficulty": "improvable",
+      "jobs": 100,
+      "vehicles": 5,
+      "seed": 4209,
+      "runs": [
+        {
+          "run": 0,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 101101,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 90120,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.10861415811910861,
+          "durableSolveSeconds": 7.899798,
+          "baselineSeconds": 0.032416,
+          "queueLatencyMilliseconds": 213.34,
+          "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+        },
+        {
+          "run": 1,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 101101,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 90120,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.10861415811910861,
+          "durableSolveSeconds": 5.542598,
+          "baselineSeconds": 0.023694,
+          "queueLatencyMilliseconds": 96.747,
+          "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+        },
+        {
+          "run": 2,
+          "baseline": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 101101,
+            "disruption": 0
+          },
+          "optimized": {
+            "hard": 0,
+            "unassignedPriority": 0,
+            "operatingCost": 90120,
+            "disruption": 0
+          },
+          "unassigned": 0,
+          "sameAssignedDemand": true,
+          "operatingCostImprovementFraction": 0.10861415811910861,
+          "durableSolveSeconds": 6.914697,
+          "baselineSeconds": 0.022039,
+          "queueLatencyMilliseconds": 126.087,
+          "observedTermination": "Timefold Local Search step cap of 100,000 reached"
+        }
+      ],
+      "durableSolveSeconds": {
+        "n": 3,
+        "minimum": 5.542598,
+        "maximum": 7.899798,
+        "mean": 6.785697666666667,
+        "sampleStandardDeviation": 1.1838828409096624,
+        "values": [
+          7.899798,
+          5.542598,
+          6.914697
+        ]
+      },
+      "operatingCostImprovementFraction": {
+        "n": 3,
+        "minimum": 0.10861415811910861,
+        "maximum": 0.10861415811910861,
+        "mean": 0.10861415811910861,
+        "sampleStandardDeviation": 0.0,
+        "values": [
+          0.10861415811910861,
+          0.10861415811910861,
+          0.10861415811910861
+        ]
+      },
+      "variabilityCaveat": "Three outcomes are descriptive run variability, not a tail-latency estimate. Run0 is retained separately; no excluded system warmup."
+    }
+  ],
+  "traceAudit": {
+    "points": 1483,
+    "rows": 30,
+    "nondegradationFailures": 0,
+    "hardViolationPoints": 0,
+    "endpointMismatches": 0,
+    "timeOrderFailures": 0
+  }
+}

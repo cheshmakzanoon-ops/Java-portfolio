@@ -1,0 +1,19 @@
+openjdk version "25.0.4.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)
+Linux x86_64
+model name	: INTEL(R) XEON(R) PLATINUM 8573C
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.6
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+5
+400000 100000
+34359738368
+JVM flags: client-Xms512m-Xmx1536m; server-Xmx768m; system warmup: none excluded, report run0 separately; measurements:3 per instance; concurrency:1; data seeds:4200..4209; solver seed:42; budget:30000ms; step cap:100000; JMH:3 forks/3x1s warmup/3x1s measurement

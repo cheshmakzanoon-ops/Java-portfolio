@@ -174,7 +174,7 @@ public final class SourceJavaParser {
 
   private record TypeVisit(Tree tree, String owner, boolean local) {}
 
-  private record Visit(Tree tree, int block, boolean controlUnknown) {}
+  private record Visit(Tree tree, int block, boolean controlUnknown, boolean directStatement) {}
 
   private static SourceFacts.Member member(
       CompilationUnitTree unit,
@@ -216,7 +216,8 @@ public final class SourceJavaParser {
             result.privateMember(),
             result.staticMember(),
             true,
-            result.controlUnknown(), result.callsComplete());
+            result.controlUnknown(),
+            result.callsComplete());
   }
 
   private static SourceFacts.Member executable(
@@ -239,7 +240,7 @@ public final class SourceJavaParser {
     List<SourceFacts.Returned> returned = new ArrayList<>();
     var pending = new ArrayDeque<Visit>();
     if (body != null)
-      pending.push(new Visit(body, (int) positions.getStartPosition(unit, body), false));
+      pending.push(new Visit(body, (int) positions.getStartPosition(unit, body), false, false));
     int nodes = 0;
     boolean unknown = false, uncertainControl = false, callsComplete = true;
     Tree directFinal =
@@ -279,7 +280,9 @@ public final class SourceJavaParser {
                 false,
                 (int) positions.getStartPosition(unit, t),
                 block);
-        if (locals.containsKey(name) || parameters.stream().anyMatch(p -> p.name().equals(name))) {
+        if (locals.containsKey(name)
+            || fieldNames.contains(name)
+            || parameters.stream().anyMatch(p -> p.name().equals(name))) {
           b =
               new SourceFacts.Binding(
                   name, b.type(), b.initializer(), true, b.position(), b.block());
@@ -298,10 +301,12 @@ public final class SourceJavaParser {
                   name, old.type(), old.initializer(), true, old.position(), old.block()));
       }
       if (t instanceof AssignmentTree a) {
-        boolean localWrite=a.getVariable() instanceof IdentifierTree i
-            &&(locals.containsKey(i.getName().toString())||parameters.stream().anyMatch(p->p.name().contentEquals(i.getName())));
+        boolean localWrite =
+            a.getVariable() instanceof IdentifierTree i
+                && (locals.containsKey(i.getName().toString())
+                    || parameters.stream().anyMatch(p -> p.name().contentEquals(i.getName())));
         // No field/array escape or object-state provenance is modeled by this local flow lane.
-        if(!localWrite)uncertainControl=true;
+        if (!localWrite) uncertainControl = true;
       }
       if (t instanceof CompoundAssignmentTree a && a.getVariable() instanceof IdentifierTree i) {
         String name = i.getName().toString();
@@ -374,7 +379,10 @@ public final class SourceJavaParser {
                 (int) positions.getStartPosition(unit, t),
                 block));
       }
-      if (t instanceof IfTree branch && !controlUnknown && branch.getElseStatement() == null) {
+      if (t instanceof IfTree branch
+          && visit.directStatement()
+          && !controlUnknown
+          && branch.getElseStatement() == null) {
         String terminal = terminal(branch.getThenStatement());
         if (terminal != null)
           guards.add(
@@ -398,7 +406,12 @@ public final class SourceJavaParser {
           continue;
         if (t instanceof NewClassTree n
             && (child == n.getIdentifier() || child == n.getClassBody())) continue;
-        pending.push(new Visit(child, block, controlUnknown));
+        pending.push(
+            new Visit(
+                child,
+                block,
+                controlUnknown,
+                t instanceof BlockTree statements && statements.getStatements().contains(child)));
       }
     }
     // Executable declared-variable references and actual callees are anchors. There is no
@@ -438,7 +451,8 @@ public final class SourceJavaParser {
         privateMember,
         staticMember,
         unknown,
-        uncertainControl, callsComplete);
+        uncertainControl,
+        callsComplete);
   }
 
   private static SourceFacts.Binding binding(VariableTree variable) {
@@ -482,7 +496,7 @@ public final class SourceJavaParser {
         children.add(expression(select.getExpression(), depth + 1));
       } else if (call.getMethodSelect() instanceof IdentifierTree id) {
         name = id.getName().toString();
-        children.add(SourceFacts.Expression.name("this"));
+        children.add(new SourceFacts.Expression("implicit", "this", List.of()));
       } else return SourceFacts.Expression.unknown();
       for (Tree arg : call.getArguments()) children.add(expression(arg, depth + 1));
       return new SourceFacts.Expression("call", name, children);

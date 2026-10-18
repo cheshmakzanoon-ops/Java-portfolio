@@ -99,6 +99,16 @@ class SourceParserTest {
     assertEquals(SourceFacts.Status.OBSERVED, expected.status());
     try (var worker = new SourceParserClient(directory)) {
       for (int i = 0; i < 65; i++) assertEquals(expected, worker.parse(source));
+      assertEquals(2, worker.workerStarts());
+      assertTrue(worker.maxStartupNanos() > 0 && worker.maxStartupNanos() <= 5_000_000_000L);
+      assertTrue(worker.maxUnitNanos() > 0 && worker.maxUnitNanos() <= 1_000_000_000L);
+      System.out.println(
+          "parserControls starts="
+              + worker.workerStarts()
+              + " maxStartupNanos="
+              + worker.maxStartupNanos()
+              + " maxUnitNanos="
+              + worker.maxUnitNanos());
       assertEquals(SourceFacts.Status.SOURCE_QUOTA, worker.parse("x".repeat(65537)).status());
     }
     assertArrayEquals(SourceParserClient.bundle(), SourceParserClient.bundle());
@@ -107,5 +117,84 @@ class SourceParserTest {
       Files.write(bundle, new byte[] {1});
     }
     assertThrows(IOException.class, () -> new SourceParserClient(directory));
+  }
+
+  @Test
+  void startupAndUnitWatchdogsActuallyReapTheirOwnedChild() throws Exception {
+    try (var startup = new SourceParserClient(directory.resolve("startup"), 1, 1_000_000_000L)) {
+      assertTrue(
+          assertThrows(IOException.class, () -> startup.parse("final class Stopped {} "))
+              .getMessage()
+              .contains("startup"));
+      assertEquals(1, startup.workerStarts());
+      assertTrue(startup.lastWorkerPid() > 0);
+      assertFalse(
+          ProcessHandle.of(startup.lastWorkerPid()).map(ProcessHandle::isAlive).orElse(false));
+    }
+    try (var unit = new SourceParserClient(directory.resolve("unit"), 5_000_000_000L, 1)) {
+      assertThrows(IOException.class, () -> unit.parse("final class Stopped {} "));
+      assertEquals(1, unit.workerStarts());
+      assertTrue(unit.maxStartupNanos() > 0);
+      assertFalse(ProcessHandle.of(unit.lastWorkerPid()).map(ProcessHandle::isAlive).orElse(false));
+    }
+    assertThrows(IllegalArgumentException.class, () -> new SourceParserClient(directory, 0, 1));
+    assertThrows(
+        IllegalArgumentException.class, () -> new SourceParserClient(directory, 5_000_000_001L, 1));
+  }
+
+  @Test
+  void readinessRequiresBoundedExactVersionSchemaAndCompleteFrame() throws Exception {
+    byte[] body = SourceParserWorker.ready();
+    byte[] valid = readyFrame(body);
+    SourceParserWorker.readReady(new DataInputStream(new ByteArrayInputStream(valid)));
+    byte[] corrupt = body.clone();
+    corrupt[0] ^= 1;
+    assertThrows(
+        IOException.class,
+        () ->
+            SourceParserWorker.readReady(
+                new DataInputStream(new ByteArrayInputStream(readyFrame(corrupt)))));
+    assertThrows(
+        IOException.class,
+        () ->
+            SourceParserWorker.readReady(
+                new DataInputStream(
+                    new ByteArrayInputStream(Arrays.copyOf(valid, valid.length - 1)))));
+    assertThrows(
+        IOException.class,
+        () ->
+            SourceParserWorker.readReady(
+                new DataInputStream(new ByteArrayInputStream(readyFrame(new byte[257])))));
+    assertThrows(
+        IOException.class,
+        () ->
+            SourceParserWorker.readReady(
+                new DataInputStream(
+                    new ByteArrayInputStream(readyFrame(Arrays.copyOf(body, body.length + 1))))));
+  }
+
+  private static byte[] readyFrame(byte[] body) throws IOException {
+    var bytes = new ByteArrayOutputStream();
+    try (var out = new DataOutputStream(bytes)) {
+      out.writeInt(body.length);
+      out.write(body);
+    }
+    return bytes.toByteArray();
+  }
+
+  @Test
+  void onlyOneActualWorkerCanConsumeTheSharedParentHeapBudget() throws Exception {
+    try (var first = new SourceParserClient(directory.resolve("first"));
+        var second = new SourceParserClient(directory.resolve("second"))) {
+      assertTrue(first.parse("final class First {}").declarationInventoryKnown());
+      assertTrue(
+          assertThrows(IOException.class, () -> second.parse("final class Second {}"))
+              .getMessage()
+              .contains("admission"));
+      assertEquals(0, second.workerStarts());
+      first.close();
+      assertTrue(second.parse("final class Second {}").declarationInventoryKnown());
+      assertEquals(1, second.workerStarts());
+    }
   }
 }

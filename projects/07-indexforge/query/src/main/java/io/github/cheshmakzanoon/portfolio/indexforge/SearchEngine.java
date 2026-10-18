@@ -49,6 +49,7 @@ public final class SearchEngine implements AutoCloseable {
   private final QueryPlanner.Mode defaultMode;
   private final RankingProfile rankingProfile;
   private final RankingConfiguration ranking;
+  private final boolean structuralIndex;
   private final String capturedRankingIdentity;
   private final Path root;
   private final DataDirectoryLock dataLock;
@@ -97,6 +98,8 @@ public final class SearchEngine implements AutoCloseable {
       RankingConfiguration ranking)
       throws IOException {
     this.ranking = Objects.requireNonNull(ranking);
+    structuralIndex =
+        ranking.strategy().structural() || Boolean.getBoolean("indexforge.structural-index");
     this.root = root;
     this.defaultMode = Objects.requireNonNull(defaultMode);
     this.rankingProfile = Objects.requireNonNull(rankingProfile);
@@ -246,8 +249,11 @@ public final class SearchEngine implements AutoCloseable {
       reconcile(publisher);
       if (jobs.completed(job.id())) return job;
       GenerationBuilder builder =
-          new GenerationBuilder(root.resolve("index").resolve(a.tenant()), cas,
-              GenerationBuilder.MAX_SOURCE_BYTES, ranking.strategy().structural());
+          new GenerationBuilder(
+              root.resolve("index").resolve(a.tenant()),
+              cas,
+              GenerationBuilder.MAX_SOURCE_BYTES,
+              structuralIndex);
       var built = builder.build(m, publisher.sources(), fault, cancelled, job.id());
       authorization.require(a, m.tenantId(), m.repositoryId());
       if (cancelled.getAsBoolean() || Thread.currentThread().isInterrupted())
@@ -281,6 +287,8 @@ public final class SearchEngine implements AutoCloseable {
           request.cursor() == null ? null : cursors.decode(request.cursor(), a, digest);
       try (GenerationLease lease =
           generations(a.tenant()).acquire(position == null ? null : position.generation())) {
+        if (ranking.strategy().structural() && mode != QueryPlanner.Mode.BASELINE)
+          SourceFeatureView.requireSchema(lease, ranking.catalog());
         if (mode != QueryPlanner.Mode.BASELINE && mode != QueryPlanner.Mode.NO_SIMILARITY)
           lease
               .searcher()
@@ -316,16 +324,26 @@ public final class SearchEngine implements AutoCloseable {
           var vectors =
               new SearchFeatures()
                   .extract(ranked, lease, request.text(), mode, rankingProfile, authorization, a);
-          if(ranking.strategy().structural()) {
-            var extraction=new SourceSearchFeatures().extract(vectors,lease,request.text(),mode,ranking,authorization,a);
-            if(extraction.usableNewEvidence())ranked=new LearnedRanker().rank(extraction.vectors(),ranking.model());
-          }else ranked = new LearnedRanker().rank(vectors, ranking.model());
+          if (ranking.strategy().structural()) {
+            var extraction =
+                new SourceSearchFeatures()
+                    .extract(vectors, lease, request.text(), mode, ranking, authorization, a);
+            if (extraction.usableNewEvidence())
+              ranked = new LearnedRanker().rank(extraction.vectors(), ranking.model());
+          } else ranked = new LearnedRanker().rank(vectors, ranking.model());
         }
-        if(ranking.strategy()==RankingStrategy.SOURCE_USAGE&&PlainTextQuery.identifier(request.text())
-            &&!Set.of(QueryPlanner.Mode.BASELINE,QueryPlanner.Mode.NO_IDENTIFIERS,
-                QueryPlanner.Mode.NO_CODE_FEATURES,QueryPlanner.Mode.NO_MEMBER_USAGE).contains(mode)) {
-          try(var view=new SourceFeatureView(ranked,lease,ranking.catalog(),authorization,a)) {
-            ranked=new SourceUsageRanker().rank(ranked,request.text(),view.usage(request.text()));
+        if (ranking.strategy() == RankingStrategy.SOURCE_USAGE
+            && PlainTextQuery.identifier(request.text())
+            && !Set.of(
+                    QueryPlanner.Mode.BASELINE,
+                    QueryPlanner.Mode.NO_IDENTIFIERS,
+                    QueryPlanner.Mode.NO_CODE_FEATURES,
+                    QueryPlanner.Mode.NO_MEMBER_USAGE)
+                .contains(mode)) {
+          try (var view =
+              new SourceFeatureView(ranked, lease, ranking.catalog(), authorization, a)) {
+            ranked =
+                new SourceUsageRanker().rank(ranked, request.text(), view.usage(request.text()));
           }
         }
         int start = position == null ? 0 : position.offset(),
@@ -425,12 +443,34 @@ public final class SearchEngine implements AutoCloseable {
   /** Local evaluation seam: actual serving candidate pool, never accepts relevance labels. */
   public CandidateAudit auditCandidates(String principal, Request request, QueryPlanner.Mode mode)
       throws IOException {
+    return auditCandidates(principal, request, mode, false).base();
+  }
+
+  public record SourceAudit(CandidateAudit base, List<String> usageKeys, String usageReason) {
+    public SourceAudit {
+      usageKeys = List.copyOf(usageKeys);
+    }
+  }
+
+  /** Label-blind source-study seam: usage identities/status remain metadata, never features. */
+  public SourceAudit auditSourceCandidates(
+      String principal, Request request, QueryPlanner.Mode mode) throws IOException {
+    if (!ranking.strategy().structural())
+      throw new IllegalArgumentException("source audit requires structural deployment");
+    return auditCandidates(principal, request, mode, true);
+  }
+
+  private SourceAudit auditCandidates(
+      String principal, Request request, QueryPlanner.Mode mode, boolean includeUsage)
+      throws IOException {
     if (request.cursor() != null)
       throw new IllegalArgumentException("audit requires a first candidate pool");
     QueryAst ast = QueryAst.parse(request.text());
     for (int retry = 0; retry < 3; retry++) {
       var access = authorization.current(principal);
       try (var lease = generations(access.tenant()).acquire()) {
+        if (ranking.strategy().structural() && mode != QueryPlanner.Mode.BASELINE)
+          SourceFeatureView.requireSchema(lease, ranking.catalog());
         if (mode != QueryPlanner.Mode.BASELINE && mode != QueryPlanner.Mode.NO_SIMILARITY)
           lease
               .searcher()
@@ -448,8 +488,18 @@ public final class SearchEngine implements AutoCloseable {
         var vectors =
             new SearchFeatures()
                 .extract(base, lease, request.text(), mode, rankingProfile, authorization, access);
-        if(ranking.strategy().structural())vectors=new SourceSearchFeatures().extract(vectors,lease,request.text(),mode,
-            ranking,authorization,access).vectors();
+        if (ranking.strategy().structural())
+          vectors =
+              new SourceSearchFeatures()
+                  .extract(vectors, lease, request.text(), mode, ranking, authorization, access)
+                  .vectors();
+        var usage = new SourceUsageRanker.Decision(base, "SYNTAX_BYPASS");
+        if (includeUsage && PlainTextQuery.identifier(request.text()))
+          try (var view =
+              new SourceFeatureView(base, lease, ranking.catalog(), authorization, access)) {
+            usage =
+                new SourceUsageRanker().decide(base, request.text(), view.usage(request.text()));
+          }
         List<AuditCandidate> rows = new ArrayList<>();
         for (var vector : vectors)
           rows.add(
@@ -462,8 +512,14 @@ public final class SearchEngine implements AutoCloseable {
                       .get("path"),
                   vector.values()));
         if (authorization.current(access))
-          return new CandidateAudit(
-              lease.id(), rankingIdentity(), SearchFeatureSchema.version(ranking.strategy().dimensions()), rows);
+          return new SourceAudit(
+              new CandidateAudit(
+                  lease.id(),
+                  rankingIdentity(),
+                  SearchFeatureSchema.version(ranking.strategy().dimensions()),
+                  rows),
+              usage.candidates().stream().map(CandidateRetriever.Candidate::key).toList(),
+              usage.reason());
       }
     }
     throw new SecurityException("authorization changed; retry");

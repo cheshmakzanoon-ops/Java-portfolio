@@ -10,6 +10,7 @@ import org.flywaydb.core.Flyway;
 
 public final class LedgerStore implements AutoCloseable {
   private final com.zaxxer.hikari.HikariDataSource pool;
+  private final RetryBackoff backoff;
   private final java.util.concurrent.atomic.AtomicLong retries =
       new java.util.concurrent.atomic.AtomicLong();
 
@@ -30,16 +31,12 @@ public final class LedgerStore implements AutoCloseable {
     }
   }
 
-  private final String url, user, password;
-
   public LedgerStore(String url, String user, String password) {
     this(url, user, password, 32);
   }
 
   public LedgerStore(String url, String user, String password, int poolSize) {
-    this.url = url;
-    this.user = user;
-    this.password = password;
+    backoff = new RetryBackoff();
     var config = new com.zaxxer.hikari.HikariConfig();
     config.setJdbcUrl(url);
     config.setUsername(user);
@@ -50,6 +47,11 @@ public final class LedgerStore implements AutoCloseable {
     config.setInitializationFailTimeout(-1);
     config.setPoolName("clearledger-" + UUID.randomUUID());
     pool = new com.zaxxer.hikari.HikariDataSource(config);
+  }
+
+  LedgerStore(com.zaxxer.hikari.HikariDataSource pool, RetryBackoff backoff) {
+    this.pool = Objects.requireNonNull(pool);
+    this.backoff = Objects.requireNonNull(backoff);
   }
 
   public void close() {
@@ -93,8 +95,8 @@ public final class LedgerStore implements AutoCloseable {
                 || "23505".equals(e.getSQLState()))
             && attempt < 11) {
           try {
+            backoff.pause(attempt);
             retries.incrementAndGet();
-            Thread.sleep(Math.min(100, 2L * (attempt + 1)));
           } catch (InterruptedException x) {
             Thread.currentThread().interrupt();
             throw new LedgerException("INTERRUPTED", true, x);

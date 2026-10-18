@@ -210,4 +210,100 @@ class SourceSymbolGraphTest {
     }
     assertEquals(unit.facts(), SourceWire.decode(SourceWire.encode(unit.facts())));
   }
+
+  @Test
+  void laterOrDisjointFieldShadowingNeverFabricatesAnIncomingCall() throws Exception {
+    String types = "final class A { void put(){} } final class B { void put(){} } ";
+    for (String body :
+        List.of(
+            "x.put(); {B x=new B();}",
+            "{B x=new B();} x.put();",
+            "{B x=new B(); x.put();} x.put();")) {
+      var source =
+          document(
+              "Scoped.java", types + "final class X {final A x=new A(); void run(){" + body + "}}");
+      var inventory = graph(source).observe(List.of(source.key()), "put").get(source.key());
+      assertEquals(2, inventory.members().size());
+      assertTrue(
+          inventory.members().stream().allMatch(m -> m.observedCallers() == 0 && !m.usable()),
+          "unsupported field/local shadowing must abstain, never invent a B caller");
+    }
+    var unshadowed =
+        document(
+            "Unshadowed.java",
+            types
+                + "final class X { final A x=new A(); void run(){x.put(); {B different=new B();}} }");
+    var facts = graph(unshadowed).observe(List.of(unshadowed.key()), "put").get(unshadowed.key());
+    assertEquals(
+        List.of(0, 1),
+        facts.members().stream().map(SourceSymbolGraph.Usage::observedCallers).sorted().toList());
+    assertEquals(1, facts.members().stream().filter(SourceSymbolGraph.Usage::usable).count());
+  }
+
+  @Test
+  void omittedLambdaCallsAreUnknownCallInventoryNotACompleteZero() throws Exception {
+    var source =
+        document(
+            "Lambda.java",
+            """
+        final class Lambda {
+          private static int touch(int value){return value;}
+          int known(int value){return touch(value);}
+          void deferred(int value){ Runnable task=()->touch(value); }
+        }
+        """);
+    var usage =
+        graph(source)
+            .observe(List.of(source.key()), "touch")
+            .get(source.key())
+            .members()
+            .getFirst();
+    assertEquals(1, usage.observedCallers());
+    assertFalse(usage.usable());
+    assertTrue(source.facts().declarationInventoryKnown());
+    assertTrue(source.facts().members().stream().anyMatch(m -> !m.callsComplete()));
+    assertEquals(source.facts(), SourceWire.decode(SourceWire.encode(source.facts())));
+  }
+
+  @Test
+  void implicitStaticImportsAndEnclosingCallsNeverBecomeFavorablyCompletePartialCounts()
+      throws Exception {
+    var target =
+        document(
+            "A.java",
+            "package p; final class A {static void put(int n){} static void g(){put(1);}}");
+    var imported =
+        document("B.java", "package p; import static p.A.put; final class B {void f(){put(1);}}");
+    var usage =
+        graph(target, imported)
+            .observe(List.of(target.key()), "put")
+            .get(target.key())
+            .members()
+            .getFirst();
+    assertEquals(1, usage.observedCallers());
+    assertFalse(usage.usable(), "unresolved imported caller cannot be a complete count");
+    var explicit = document("B.java", "package p; final class B {void f(){A.put(1);}}");
+    var resolved =
+        graph(target, explicit)
+            .observe(List.of(target.key()), "put")
+            .get(target.key())
+            .members()
+            .getFirst();
+    assertEquals(2, resolved.observedCallers());
+    assertTrue(resolved.usable());
+    var nested =
+        document(
+            "Nest.java",
+            "final class Nest {private static void put(int n){} static void g(){put(1);} static final class Inner {void f(){put(1);}}}");
+    var inner =
+        graph(nested).observe(List.of(nested.key()), "put").get(nested.key()).members().getFirst();
+    assertEquals(1, inner.observedCallers());
+    assertFalse(inner.usable());
+    var member =
+        nested.facts().members().stream()
+            .filter(m -> m.name().equals("f"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals("implicit", member.calls().getFirst().expression().children().getFirst().kind());
+  }
 }

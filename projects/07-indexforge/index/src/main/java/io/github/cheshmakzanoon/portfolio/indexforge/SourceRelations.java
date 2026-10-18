@@ -7,7 +7,7 @@ import java.util.*;
  * Bounded observed syntax/value interactions. No control-flow or runtime-safety proof is claimed.
  */
 public final class SourceRelations {
-  public static final String SCHEMA = "source-interactions-v1";
+  public static final String SCHEMA = "source-interactions-v2";
   private static final Set<String> PRIMITIVES =
       Set.of("boolean", "byte", "char", "short", "int", "long", "float", "double");
 
@@ -65,8 +65,8 @@ public final class SourceRelations {
     double[] result = new double[6];
     for (var member : unit.members()) {
       work.step();
-      if (options.identifiers())
-        result[0] = Math.max(result[0], coverage(SourceAnchors.terms(member.identifiers())));
+      Set<String> executableTerms = new TreeSet<>();
+      if (options.identifiers()) add(executableTerms, SourceAnchors.terms(member.identifiers()));
       var context = new Context(member, Map.of(), 0);
       Map<SourceFacts.Invocation, Set<String>> apiEndpoints = new LinkedHashMap<>();
       Set<String> apiTerms = new TreeSet<>();
@@ -78,6 +78,15 @@ public final class SourceRelations {
           if (options.apiDocumentation()) add(apiTerms, api.get().terms());
           apiEndpoints.put(call, endpoint(context, call.expression(), api.get()));
         }
+      if (!member.bindingUnknown()) {
+        var expressions = new ArrayList<SourceFacts.Expression>();
+        member.locals().forEach(binding -> expressions.add(binding.initializer()));
+        member.calls().forEach(call -> expressions.add(call.expression()));
+        member.guards().forEach(guard -> expressions.add(guard.condition()));
+        member.returned().forEach(returned -> expressions.add(returned.expression()));
+        for (var expression : expressions) fieldAnchors(context, expression, executableTerms, apiTerms);
+      }
+      result[0] = Math.max(result[0], coverage(executableTerms));
       result[1] = Math.max(result[1], coverage(apiTerms));
       if (!options.relations() || member.bindingUnknown() || member.controlUnknown()) continue;
       for (var consumer : apiEndpoints.entrySet()) {
@@ -116,18 +125,11 @@ public final class SourceRelations {
         for (var guard : member.guards()) {
           work.step();
           if (guard.block() != call.block()
-              || guard.end() >= call.position()
+              || guard.end() > call.position()
               || !noUnsupportedBetween(context, guard.end(), call.position(), call.block()))
             continue;
           var observed =
-              origins(
-                  context,
-                  guard.condition(),
-                  guard.end(),
-                  guard.block(),
-                  false,
-                  0,
-                  new HashSet<>());
+              conditionOrigins(context, guard.condition(), guard.end(), guard.block(), 0);
           if (Collections.disjoint(consumed.keySet(), observed.keySet())) continue;
           Set<String> guardAnchors = expressionAnchors(context, guard.condition());
           double value = interaction(guardAnchors, consumer.getValue());
@@ -229,19 +231,23 @@ public final class SourceRelations {
           depth + 1,
           seen);
     }
-    if (expression.kind().equals("compare")
-        || expression.kind().equals("not")
-        || expression.kind().equals("sum")) {
-      Map<String, Origin> result = new LinkedHashMap<>();
-      for (var child : expression.children())
-        merge(
-            result,
-            origins(context, child, position, block, embedded, depth + 1, new HashSet<>(seen)));
-      return result;
-    }
     // Fields, casts, array accesses, unresolved object state and literal payloads do not acquire
     // parameter provenance. A declared primitive type in an unused signature is never an edge.
     return Map.of();
+  }
+
+  private Map<String, Origin> conditionOrigins(
+      Context context, SourceFacts.Expression expression, int position, int block, int depth)
+      throws IOException {
+    work.step();
+    if (depth >= 8) return Map.of();
+    if (Set.of("compare", "not").contains(expression.kind())) {
+      var result = new LinkedHashMap<String, Origin>();
+      for (var child : expression.children())
+        merge(result, conditionOrigins(context, child, position, block, depth + 1));
+      return result;
+    }
+    return origins(context, expression, position, block, false, depth, new HashSet<>());
   }
 
   private String receiver(
@@ -288,6 +294,7 @@ public final class SourceRelations {
     Set<String> out = new TreeSet<>();
     if (options.identifiers()) add(out, expressionIdentifiers(context.member(), expression));
     if (options.apiDocumentation()) add(out, api.terms());
+    fieldAnchors(context, expression, out, out);
     return Collections.unmodifiableSet(out);
   }
 
@@ -295,6 +302,7 @@ public final class SourceRelations {
       throws IOException {
     Set<String> out = new TreeSet<>();
     if (options.identifiers()) add(out, expressionIdentifiers(context.member(), expression));
+    fieldAnchors(context, expression, out, out);
     if (options.apiDocumentation()) {
       var pending = new ArrayDeque<SourceFacts.Expression>();
       pending.push(expression);
@@ -313,6 +321,24 @@ public final class SourceRelations {
       }
     }
     return out;
+  }
+
+  private void fieldAnchors(Context context, SourceFacts.Expression expression,
+      Set<String> identifiers, Set<String> documentation) throws IOException {
+    var pending = new ArrayDeque<SourceFacts.Expression>();
+    pending.push(expression);
+    while (!pending.isEmpty()) {
+      work.step();
+      var next = pending.pop();
+      if (next.kind().equals("select")) {
+        var field = graph.field(key, context.member(), next, work);
+        if (field.isPresent()) {
+          if (options.identifiers()) add(identifiers, SourceAnchors.terms(List.of(field.get().name())));
+          if (options.apiDocumentation()) add(documentation, field.get().terms());
+        }
+      }
+      next.children().forEach(pending::push);
+    }
   }
 
   private Set<String> expressionIdentifiers(

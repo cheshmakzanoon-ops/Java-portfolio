@@ -24,13 +24,35 @@ public final class SourceFacts {
   public record Expression(String kind, String text, List<Expression> children) {
     public Expression {
       if (kind == null
-          || !Set.of("name", "select", "call", "new", "literal", "sum", "compare", "not", "unknown")
+          || !Set.of(
+                  "name",
+                  "implicit",
+                  "select",
+                  "call",
+                  "new",
+                  "literal",
+                  "sum",
+                  "compare",
+                  "not",
+                  "unknown")
               .contains(kind)
           || text == null
           || text.length() > 256
           || children == null
           || children.size() > 65) throw new IllegalArgumentException("source expression quota");
       children = List.copyOf(children);
+      int count = children.size();
+      boolean shape =
+          switch (kind) {
+            case "name", "implicit", "literal", "unknown" -> count == 0;
+            case "select", "not" -> count == 1;
+            case "call" -> count >= 1;
+            case "new" -> count <= 64;
+            case "sum", "compare" -> count == 2;
+            default -> false;
+          };
+      if (!shape || !kind.equals("unknown") && !kind.equals("not") && text.isEmpty())
+        throw new IllegalArgumentException("source expression shape");
     }
 
     public static Expression unknown() {
@@ -122,12 +144,37 @@ public final class SourceFacts {
       returned = bounded(returned, OPERATIONS);
     }
 
-    public Member(String owner, String name, String returnType, List<Binding> parameters,
-        List<Binding> locals, Set<String> identifiers, List<Invocation> calls, List<Guard> guards,
-        List<Returned> returned, int position, boolean privateMember, boolean staticMember,
-        boolean bindingUnknown, boolean controlUnknown) {
-      this(owner, name, returnType, parameters, locals, identifiers, calls, guards, returned,
-          position, privateMember, staticMember, bindingUnknown, controlUnknown, true);
+    public Member(
+        String owner,
+        String name,
+        String returnType,
+        List<Binding> parameters,
+        List<Binding> locals,
+        Set<String> identifiers,
+        List<Invocation> calls,
+        List<Guard> guards,
+        List<Returned> returned,
+        int position,
+        boolean privateMember,
+        boolean staticMember,
+        boolean bindingUnknown,
+        boolean controlUnknown) {
+      this(
+          owner,
+          name,
+          returnType,
+          parameters,
+          locals,
+          identifiers,
+          calls,
+          guards,
+          returned,
+          position,
+          privateMember,
+          staticMember,
+          bindingUnknown,
+          controlUnknown,
+          true);
     }
 
     public Member(

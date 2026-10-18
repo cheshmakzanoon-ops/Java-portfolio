@@ -6,6 +6,7 @@ import java.util.zip.*;
 
 /** Catalog worker frames:<=256KiB compressed and<=2MiB decoded, no object deserialization. */
 public final class SourceCatalogWire {
+  public static final String SCHEMA = "jdk-api-source-v1";
   public static final int FRAME_LIMIT = 262_144, RAW_LIMIT = 2_097_152;
 
   private SourceCatalogWire() {}
@@ -13,7 +14,7 @@ public final class SourceCatalogWire {
   public static byte[] encode(SourceCatalogFacts.Unit unit) throws IOException {
     var raw = new ByteArrayOutputStream();
     try (var out = new DataOutputStream(raw)) {
-      out.writeUTF("jdk-api-source-v1");
+      out.writeUTF(SCHEMA);
       out.writeUTF(unit.packageName());
       strings(out, unit.imports());
       out.writeInt(unit.types().size());
@@ -43,12 +44,30 @@ public final class SourceCatalogWire {
   public static SourceCatalogFacts.Unit decode(byte[] bytes) throws IOException {
     if (bytes.length > FRAME_LIMIT) throw new IOException("API frame quota");
     byte[] raw;
-    try (var zip = new InflaterInputStream(new ByteArrayInputStream(bytes))) {
-      raw = zip.readNBytes(RAW_LIMIT + 1);
+    var inflater = new Inflater();
+    var expanded = new ByteArrayOutputStream();
+    try {
+      inflater.setInput(bytes);
+      byte[] buffer = new byte[4096];
+      while (!inflater.finished()) {
+        int count = inflater.inflate(buffer);
+        if (count == 0) {
+          if (inflater.finished()) break;
+          throw new IOException("truncated/dictionary API frame");
+        }
+        if (expanded.size() > RAW_LIMIT - count) throw new IOException("API expanded frame quota");
+        expanded.write(buffer, 0, count);
+      }
+      if (inflater.getRemaining() != 0)
+        throw new IOException("trailing compressed API frame bytes");
+      raw = expanded.toByteArray();
+    } catch (DataFormatException invalid) {
+      throw new IOException("invalid compressed API frame", invalid);
+    } finally {
+      inflater.end();
     }
-    if (raw.length > RAW_LIMIT) throw new IOException("API expanded frame quota");
     try (var in = new DataInputStream(new ByteArrayInputStream(raw))) {
-      if (!in.readUTF().equals("jdk-api-source-v1")) throw new IOException("API worker schema");
+      if (!in.readUTF().equals(SCHEMA)) throw new IOException("API worker schema");
       String pkg = in.readUTF();
       var imports = strings(in, 256);
       List<SourceCatalogFacts.Type> types = new ArrayList<>();

@@ -100,7 +100,7 @@ public final class SourceSymbolGraph {
         if (types.size() > 65_536) throw new IOException("graph type quota");
       }
       for (var member : document.facts().members()) {
-        if(!member.callsComplete())incompleteCallDocuments.add(document.key());
+        if (!member.callsComplete()) incompleteCallDocuments.add(document.key());
         if (++memberCount > 65_536) throw new IOException("graph member quota");
         var ref = new MemberRef(document, member);
         methods
@@ -140,7 +140,9 @@ public final class SourceSymbolGraph {
       // wave has no type-reference count: such a match preserves the whole original order.
       for (var type : document.facts().types())
         if (simple(type.name()).equalsIgnoreCase(query))
-          usage.add(new Usage(key + "/type/" + type.name(), simple(type.name()), 0, false));
+          usage.add(
+              new Usage(
+                  Digests.sha256(key + "/type/" + type.name()), simple(type.name()), 0, false));
       for (var member : document.facts().members())
         if (member.name().equalsIgnoreCase(query))
           usage.add(observe(new MemberRef(document, member), work));
@@ -171,6 +173,21 @@ public final class SourceSymbolGraph {
     return catalog.unique(receiver.name(), expression.text(), args);
   }
 
+  /** Actual selected catalog field; the same source/shadow rules as API receivers apply. */
+  public Optional<SourceApiCatalog.Entry> field(
+      String sourceKey, SourceFacts.Member member, SourceFacts.Expression expression, Work work) {
+    Document document = documents.get(sourceKey);
+    if (document == null || !document.facts().members().contains(member))
+      throw new IllegalArgumentException("field source identity");
+    if (!(platform instanceof SourceApiCatalog catalog) || member.bindingUnknown()
+        || !expression.kind().equals("select")) return Optional.empty();
+    Bound receiver = typeOf(expression.children().getFirst(), new MemberRef(document, member),
+        work, 0, new HashSet<>());
+    if (receiver.source() != null || !catalog.types().contains(receiver.name()))
+      return Optional.empty();
+    return catalog.field(receiver.name(), expression.text());
+  }
+
   /** A single supported source helper in this compilation unit; never external attribution. */
   public Optional<SourceFacts.Member> localHelper(
       String sourceKey, SourceFacts.Member caller, SourceFacts.Invocation call, Work work) {
@@ -185,7 +202,8 @@ public final class SourceSymbolGraph {
     var target = resolved.target().member();
     if (target.signature().equals(caller.signature())
         || target.bindingUnknown()
-        || target.controlUnknown() || !target.callsComplete()
+        || target.controlUnknown()
+        || !target.callsComplete()
         || target.returned().size() != 1
         || !target.returned().getFirst().directFinal()) return Optional.empty();
     if (!target.privateMember() && !target.staticMember()) return Optional.empty();
@@ -204,8 +222,10 @@ public final class SourceSymbolGraph {
         owner == null
             || owner.type().unknownSupertype()
             || member.bindingUnknown()
-        || (!member.privateMember() && !sourceInventoryObserved)
-        || (member.privateMember()?incompleteCallDocuments.contains(target.document().key()):!incompleteCallDocuments.isEmpty());
+            || (!member.privateMember() && !sourceInventoryObserved)
+            || (member.privateMember()
+                ? incompleteCallDocuments.contains(target.document().key())
+                : !incompleteCallDocuments.isEmpty());
     for (var call : calls.getOrDefault(member.name(), List.of())) {
       work.step();
       if (call.caller().key().equals(target.key())) continue;
@@ -217,15 +237,20 @@ public final class SourceSymbolGraph {
         if (!call.caller().key().equals(target.key())) callers.add(call.caller().key());
       } else if (bound.unresolved() && potential(call, target, work)) unknown = true;
       if (callers.size() == CALLER_CAP)
-        return new Usage(target.key(), member.name(), CALLER_CAP, true);
+        return new Usage(Digests.sha256(target.key()), member.name(), CALLER_CAP, true);
     }
-    return new Usage(target.key(), member.name(), callers.size(), !unknown && !callers.isEmpty());
+    return new Usage(
+        Digests.sha256(target.key()),
+        member.name(),
+        callers.size(),
+        !unknown && !callers.isEmpty());
   }
 
   private boolean potential(CallRef call, MemberRef target, Work work) {
     var e = call.call().expression();
     boolean reference = isReference(e);
     if (!reference && e.children().size() - 1 != target.member().parameters().size()) return false;
+    if (implicitContextUnknown(call)) return true;
     Bound receiver = typeOf(e.children().getFirst(), call.caller(), work, 0, new HashSet<>());
     if (receiver.source() != null
         && receiver.source().type().closed()
@@ -254,6 +279,7 @@ public final class SourceSymbolGraph {
     if (depth > 8) return new Resolution(null, true);
     var expression = call.call().expression();
     if (isReference(expression)) return new Resolution(null, true);
+    if (implicitContextUnknown(call)) return new Resolution(null, true);
     Bound receiver = typeOf(expression.children().getFirst(), call.caller(), work, depth + 1, seen);
     if (receiver.source() == null) return new Resolution(null, true);
     var owner = receiver.source();
@@ -314,6 +340,8 @@ public final class SourceSymbolGraph {
     work.step();
     if (depth > 8) return Bound.unknown();
     switch (expression.kind()) {
+      case "implicit":
+        return new Bound(context.member().owner(), unique(context.member().owner()));
       case "literal":
         return new Bound(
             expression.text().startsWith("zero:")
@@ -486,6 +514,19 @@ public final class SourceSymbolGraph {
   private TypeRef unique(String name) {
     var values = types.get(name);
     return values != null && values.size() == 1 ? values.getFirst() : null;
+  }
+
+  private boolean implicitContextUnknown(CallRef call) {
+    if (!call.call().expression().children().getFirst().kind().equals("implicit")) return false;
+    String owner = call.caller().member().owner();
+    for (String imported : call.caller().document().facts().imports())
+      if (imported.startsWith("static ")) return true;
+    // A declared same-owner method group establishes the innermost lookup scope. Ordinary
+    // overload/type checks still decide uniqueness; this does not guess an enclosing target.
+    if (methods.containsKey(owner + "#" + call.call().expression().text())) return false;
+    for (var type : call.caller().document().facts().types())
+      if (!owner.equals(type.name()) && owner.startsWith(type.name() + ".")) return true;
+    return false;
   }
 
   private static boolean shadowedRoot(String qualified, MemberRef context) {
