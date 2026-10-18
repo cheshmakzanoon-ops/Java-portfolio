@@ -1,0 +1,56 @@
+{
+  "sourceRevision": "working-tree:9def7ecf9345245cbe65d47303ffa6a72981dcf140cf2974d98f2a1e390ad2eb",
+  "repetitions": 2,
+  "commands": [
+    "./scripts/portfolio.sh up quorumkv",
+    "./scripts/portfolio.sh down quorumkv",
+    "./scripts/portfolio.sh reset-demo quorumkv",
+    "./scripts/portfolio.sh demo quorumkv"
+  ],
+  "exitCode": 0,
+  "runs": [
+    {
+      "round": 1,
+      "actual": {
+        "schemaVersion": 1,
+        "project": "quorumkv",
+        "processes": 3,
+        "tls": "TLSv1.3",
+        "oldLeader": 2,
+        "replacementLeader": 0,
+        "isolatedRead": "UNAVAILABLE",
+        "isolatedMutation": "UNKNOWN_OUTCOME",
+        "history": "PASS",
+        "historyOperations": 5,
+        "recoveryWriteMs": 2492,
+        "snapshotWaitMs": 137,
+        "restartRead": "OK",
+        "dedupRestart": "OK",
+        "digest": "eae17e56a1534ed963fd2edcf6cfb4ce539126d2adb2c134ad5bc4c1bb9cebc5"
+      },
+      "rawArtifact": ".work/coordinator/quorumkv-fixed-lifecycle-1.log"
+    },
+    {
+      "round": 2,
+      "actual": {
+        "schemaVersion": 1,
+        "project": "quorumkv",
+        "processes": 3,
+        "tls": "TLSv1.3",
+        "oldLeader": 1,
+        "replacementLeader": 0,
+        "isolatedRead": "UNAVAILABLE",
+        "isolatedMutation": "UNKNOWN_OUTCOME",
+        "history": "PASS",
+        "historyOperations": 5,
+        "recoveryWriteMs": 2573,
+        "snapshotWaitMs": 48,
+        "restartRead": "OK",
+        "dedupRestart": "OK",
+        "digest": "eae17e56a1534ed963fd2edcf6cfb4ce539126d2adb2c134ad5bc4c1bb9cebc5"
+      },
+      "rawArtifact": ".work/coordinator/quorumkv-fixed-lifecycle-2.log"
+    }
+  ],
+  "limitation": "Current-instance correctness runs on a shared host. Recovery/snapshot timings are diagnostic and not a quiet performance baseline; clean-checkout repetition remains pending."
+}

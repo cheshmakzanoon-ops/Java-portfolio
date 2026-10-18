@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "project": "quorumkv",
+  "sourceRevision": "working-tree:java-pom-sha256:043398381d8bfd1cadcc8be0c3f982c27da16032e5532ed843a885e52ac322df",
+  "sourceHashScope": "sorted project-relative Java/POM path+NUL+bytes+NUL excludingtarget",
+  "rootPomSha256": "1d94d54f92155e0168aea2f827831f856617d6c94706a9a0aeafbd36bb9d79b7",
+  "observedAtUtc": "2026-10-18T00:59:49Z",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/03-quorumkv/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A03/m2 -B -ntp -Pextended,integration com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply verify",
+  "exitCode": 0,
+  "assertions": {
+    "testMethods": 41,
+    "failures": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.MutationIdentityTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.CodecTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.RaftTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.RegistersPropertyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.JournalTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.BinaryTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.ProcessFaultIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.BoundaryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.HistoryCheckerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "simulation": {
+    "seeds": "0..999",
+    "faultActionsPerSeed": 180,
+    "checks": "invariants after every event",
+    "seedArtifact": "raft-core/target/simulation-seeds.txt"
+  },
+  "propertyCases": 200,
+  "coreCoverage": {
+    "BRANCH": {
+      "covered": 446,
+      "missed": 82
+    },
+    "LINE": {
+      "covered": 758,
+      "missed": 21
+    }
+  },
+  "rawArtifact": ".work/coordinator/quorumkv-integration.log",
+  "limitations": [
+    "Bounded non-Byzantine three-member schedules on one shared Linux host.",
+    "Mutation, source-stamped standalone script packaging, prescribed100koperation quiet workloads and final independent review remain open.",
+    "Fresh clean-checkout/repository/CI validation remains pending."
+  ],
+  "historicalCountClarification": {
+    "originalReportedMethods": 41,
+    "consoleExecutedMethods": 39,
+    "note": "Historical collection included an obsolete verification SimulationTest XML report under target. Use verification-current.json for strict fresh counts on the final baseline."
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "project": "quorumkv",
+  "observedAtUtc": "2026-10-18T01:48:25Z",
+  "sourceRevision": "working-tree:9def7ecf9345245cbe65d47303ffa6a72981dcf140cf2974d98f2a1e390ad2eb",
+  "sourceIdentityMethod": "scripts/source-fingerprint.py hashes executable source and build inputs; docs, evidence and runtime outputs are excluded.",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "effectiveJUnit": "6.1.3",
+  "exitCodes": {
+    "maven": 0,
+    "testReportGate": 0
+  },
+  "totals": {
+    "tests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.MutationIdentityTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/kv-client/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.MutationIdentityTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.CodecTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.CodecTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.RaftTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.RaftTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.RegistersPropertyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.RegistersPropertyTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.JournalTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-storage/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.JournalTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.BinaryTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-transport/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.BinaryTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.ProcessFaultIT",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.ProcessFaultIT.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.BoundaryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.BoundaryTest.xml"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.quorumkv.HistoryCheckerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.HistoryCheckerTest.xml"
+    }
+  ],
+  "coverage": {
+    "BRANCH": {
+      "covered": 446,
+      "missed": 82
+    },
+    "LINE": {
+      "covered": 758,
+      "missed": 21
+    }
+  },
+  "mutations": {
+    "targetScope": "Raft and Registers",
+    "selectedCoreJavaSha256": "fccf414b8ce09496d88d550be0c2edb22a2608b069a8758f0f65455618b058c7",
+    "outcomes": {
+      "KILLED": 262,
+      "SURVIVED": 80,
+      "TIMED_OUT": 4,
+      "NO_COVERAGE": 8
+    },
+    "strictKilledPercent": 74.01129943502825,
+    "thresholdPercent": 70,
+    "reports": [
+      "projects/03-quorumkv/raft-core/target/pit-reports/mutations.xml",
+      "projects/03-quorumkv/raft-core/target/pit-reports/index.html"
+    ],
+    "rawArtifact": ".work/coordinator/quorumkv-junit613-final.log",
+    "observedAtUtc": "2026-10-18T01:42:49Z",
+    "scopeNote": "Selected core source stayed unchanged during the later ProcessCluster/ProcessFaultIT lifecycle repair; the entire later integration run passed separately. Timeouts and uncovered mutants are penalized in the strict denominator.",
+    "strictEvidenceCheckExitCode": 0
+  },
+  "command": "./mvnw -f projects/03-quorumkv/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A03/m2 -B -ntp -Pextended,integration com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply verify",
+  "rawArtifact": ".work/coordinator/quorumkv-detached-lifecycle-integration.log",
+  "simulation": {
+    "seeds": 1000,
+    "faultActionsPerSeed": 180
+  },
+  "propertyCases": 200,
+  "limitations": [
+    "Shared Linux host; no measured performance claim follows from verification.",
+    "Full prescribed isolated 100k-operation measurements, clean-checkout and CI verification remain open."
+  ]
+}
