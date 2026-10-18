@@ -20,5 +20,14 @@
   "limitations": [
     "Temporary foundation fixture only; not project acceptance.",
     "Final coverage report: both branches plus default constructor exercised."
-  ]
+  ],
+  "mutationProbe": {
+    "command": "./mvnw -f .work/foundation/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/coordinator/m2 -Pmutation -B -ntp verify",
+    "exitCode": 0,
+    "generated": 4,
+    "killed": 3,
+    "killPercent": 75,
+    "log": ".work/coordinator/foundation-mutation.log",
+    "limitation": "Temporary harness fixture only; not a project mutation result."
+  }
 }

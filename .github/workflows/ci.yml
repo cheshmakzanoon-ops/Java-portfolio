@@ -1,0 +1,42 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  projects:
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        project: [clearledger, durableflow, quorumkv, pulsestream, tenantshield, matchcore, indexforge, threadlens, byteguard, routeweaver]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '25.0.4.1+1'
+          cache: maven
+      - run: ./scripts/portfolio.sh verify "${{ matrix.project }}"
+      - run: python3 scripts/check-architecture.py
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        if: always()
+        with:
+          name: tests-${{ matrix.project }}
+          path: |
+            projects/**/target/surefire-reports/
+            projects/**/target/site/jacoco/
+  required:
+    if: always()
+    needs: projects
+    runs-on: ubuntu-24.04
+    steps:
+      - run: test '${{ needs.projects.result }}' = success

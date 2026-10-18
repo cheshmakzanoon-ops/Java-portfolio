@@ -23,13 +23,16 @@ case "$command" in
     echo 'ThreadLens and ByteGuard are CLI tools; up does not start a web server.'
     ;;
   verify|integration)
+    export PORTFOLIO_TEST_RUN_STARTED=$(date +%s)
     args=(); [[ $command != integration ]] || args+=(-Pintegration)
     mkdir -p "$root/.work/coordinator"
     if [[ $slug == all ]]; then
       "$root/mvnw" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+      for selected in "${slugs[@]}"; do python3 "$root/scripts/check-tests.py" "$(resolve "$selected")" "$command"; done
     else
       path=$(resolve "$slug")
       "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+      python3 "$root/scripts/check-tests.py" "$path" "$command"
     fi
     ;;
   up|demo|down|reset-demo)

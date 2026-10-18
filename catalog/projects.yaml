@@ -18,7 +18,7 @@
         18108,
         18109
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up clearledger",
       "verify": "./scripts/portfolio.sh verify clearledger",
       "demo": "./scripts/portfolio.sh demo clearledger",
@@ -42,7 +42,7 @@
         18208,
         18209
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up durableflow",
       "verify": "./scripts/portfolio.sh verify durableflow",
       "demo": "./scripts/portfolio.sh demo durableflow",
@@ -66,7 +66,7 @@
         18308,
         18309
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up quorumkv",
       "verify": "./scripts/portfolio.sh verify quorumkv",
       "demo": "./scripts/portfolio.sh demo quorumkv",
@@ -90,7 +90,7 @@
         18408,
         18409
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up pulsestream",
       "verify": "./scripts/portfolio.sh verify pulsestream",
       "demo": "./scripts/portfolio.sh demo pulsestream",
@@ -114,7 +114,7 @@
         18508,
         18509
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up tenantshield",
       "verify": "./scripts/portfolio.sh verify tenantshield",
       "demo": "./scripts/portfolio.sh demo tenantshield",
@@ -138,7 +138,7 @@
         18608,
         18609
       ],
-      "maturity": "NOT_STARTED",
+      "maturity": "IN_PROGRESS",
       "launch": "./scripts/portfolio.sh up matchcore",
       "verify": "./scripts/portfolio.sh verify matchcore",
       "demo": "./scripts/portfolio.sh demo matchcore",
