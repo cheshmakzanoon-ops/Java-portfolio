@@ -1,0 +1,104 @@
+{
+  "phase": "actual-final-source-script-demonstrations",
+  "certifiedBuild": 24,
+  "sourceFingerprint": "a94bed568597a6746b3d01bee127e3157a2f2c34255b3d6d867a321ee765f0de",
+  "cliJarSha256": "6c2ae0c414013a55e8d83bcfd9e65707ccfb984fa684054bf83910f08c4d564d",
+  "testedSourceMarkerProvenance": "Written only after full strict24 verification and current source/target artifact identity assertions; verify.sh itself was not rerun.",
+  "rankingMode": "SOURCE_AWARE",
+  "rankingProfile": "CODE_HIGH",
+  "javaToolOptions": "-Dindexforge.ranking-mode=SOURCE_AWARE -Dindexforge.ranking-profile=CODE_HIGH",
+  "startedUtc": "2026-10-18T04:13:08.903995+00:00",
+  "steps": [
+    {
+      "step": "reset-before",
+      "command": [
+        "bash",
+        "/workspace/Java-portfolio/projects/07-indexforge/scripts/reset-demo.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.1151037780000479,
+      "rawLog": ".work/A07/final24-reset-before.log",
+      "rawLogSha256": "8d09a42e9990a1098a51d31d0a5a3d1bc183d2b1ff64cc393b2b52ee393dd381"
+    },
+    {
+      "step": "up",
+      "command": [
+        "bash",
+        "/workspace/Java-portfolio/projects/07-indexforge/scripts/up.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 9.591865917998803,
+      "rawLog": ".work/A07/final24-up.log",
+      "rawLogSha256": "3be2aeb6335e7f8cdd5e139d60c8208debe13dcd5227363c8f94f8741904b593"
+    },
+    {
+      "step": "demo2000",
+      "command": [
+        "bash",
+        "/workspace/Java-portfolio/projects/07-indexforge/scripts/demo.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 18.479258340998058,
+      "rawLog": ".work/A07/final24-demo2000.log",
+      "rawLogSha256": "e5e97db870a0c1d28a72cc17427a06bdab08f6f5c0565cf2ba050e2e72eb1aed",
+      "result": {
+        "scenario": "indexforge-transactional-demo-v1",
+        "seed": 7007,
+        "documents": 2000,
+        "sourceBytes": 439546,
+        "tenants": 3,
+        "assertions": "passed"
+      }
+    },
+    {
+      "step": "demo20000",
+      "command": [
+        "bash",
+        "/workspace/Java-portfolio/projects/07-indexforge/scripts/demo.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 67.70408700899861,
+      "rawLog": ".work/A07/final24-demo20000.log",
+      "rawLogSha256": "0b88edcb1ab7bb830eca2a01b1451b0de0666a2b3d82a888440d83a0ee3fcce0",
+      "result": {
+        "scenario": "indexforge-transactional-demo-v1",
+        "seed": 7007,
+        "documents": 20000,
+        "sourceBytes": 4435559,
+        "tenants": 3,
+        "assertions": "passed"
+      }
+    },
+    {
+      "step": "down",
+      "command": [
+        "bash",
+        "/workspace/Java-portfolio/projects/07-indexforge/scripts/down.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.11699937699813745,
+      "rawLog": ".work/A07/final24-down.log",
+      "rawLogSha256": "11b9a1e14f779a09877aec72d709fb03283ba8a3b19a2705aeec4f262852100f"
+    },
+    {
+      "step": "reset-after",
+      "command": [
+        "bash",
+        "/workspace/Java-portfolio/projects/07-indexforge/scripts/reset-demo.sh"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.5171460299970931,
+      "rawLog": ".work/A07/final24-reset-after.log",
+      "rawLogSha256": "8d09a42e9990a1098a51d31d0a5a3d1bc183d2b1ff64cc393b2b52ee393dd381"
+    }
+  ],
+  "scriptsSha256": {
+    "common.sh": "64f1b88e313702f3daec5eafea76129229157ddc33d54748bfbd45dd41445785",
+    "up.sh": "b89513ec38edb7735a8728f8ff41d6221e7e61eb980f611b17c43936c89444db",
+    "demo.sh": "24d6a679833bef6e20c3632f181f17960bb6835af6778ffc16c7ab8a3e03e7ba",
+    "down.sh": "dcc8183c7924a4a6c7ef559510f017d878428641dffaabcf72a5617d0581b505",
+    "reset-demo.sh": "600a00b549bf8bc74d38c6101e7f86ee77f1f50c348e6ebf84a3d3b6d75d7267"
+  },
+  "preparedPerformancePointersUnchanged": true,
+  "heldOutTuningPerformed": false
+}

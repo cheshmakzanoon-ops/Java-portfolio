@@ -32,6 +32,88 @@ class SearchSecurityTest {
   }
 
   @Test
+  void collidingFilterDisplayStringsNeverShareCacheOrCursorContext() throws Exception {
+    var auth = new AuthorizationFilter();
+    var admin = auth.update("admin", "t", Set.of("r", "hidden"), true);
+    auth.update("reader", "t", Set.of("r"), false);
+    Map<String, String> separate = Map.of("kind", "source", "language", "java");
+    Map<String, String> embedded = Map.of("kind", "source, language=java");
+    assertEquals(
+        new TreeMap<>(separate).toString(),
+        new TreeMap<>(embedded).toString(),
+        "fixture must reproduce the ambiguous display serialization");
+    var ordinary = new SearchEngine.Request("shared", 1, null, separate);
+    var literal = new SearchEngine.Request("shared", 1, null, embedded);
+    String cursor;
+    try (var engine =
+        new SearchEngine(root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.CODE_HIGH)) {
+      engine.ingest(
+          admin,
+          "visible",
+          manifest(engine, "t", "r", 3, "visible"),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      engine.ingest(
+          admin,
+          "denied",
+          manifest(engine, "t", "hidden", 2, "denied"),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      var warmed = engine.search("reader", ordinary);
+      assertEquals(3, warmed.totalHits());
+      assertEquals(Map.of("r", 3), warmed.facets());
+      assertEquals("source-v7-code-heuristics-CODE_HIGH", warmed.scoringVersion());
+      cursor = warmed.cursor();
+      assertNotNull(cursor);
+      long hits = engine.cacheHits();
+      assertEquals(warmed, engine.search("reader", ordinary));
+      assertEquals(hits + 1, engine.cacheHits());
+      var absent = engine.search("reader", literal);
+      assertEquals(0, absent.totalHits(), "literal kind must not reuse warmed two-filter results");
+      assertTrue(absent.results().isEmpty());
+      assertTrue(absent.facets().isEmpty());
+      assertNull(absent.cursor());
+      assertEquals(hits + 1, engine.cacheHits(), "a different filter context must miss cache");
+      assertEquals(absent, engine.search("reader", literal));
+      assertEquals(hits + 2, engine.cacheHits());
+      assertEquals(
+          warmed,
+          engine.search("reader", ordinary),
+          "the empty result must not poison the original filter cache");
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> engine.search("reader", new SearchEngine.Request("shared", 1, cursor, embedded)));
+      var reordered = new LinkedHashMap<String, String>();
+      reordered.put("language", "java");
+      reordered.put("kind", "source");
+      var next = engine.search("reader", new SearchEngine.Request("shared", 1, cursor, reordered));
+      assertEquals(3, next.totalHits());
+      assertEquals(1, next.results().size());
+      assertNotEquals(warmed.results().getFirst().key(), next.results().getFirst().key());
+      assertEquals("r", next.results().getFirst().repository());
+    }
+    try (var restarted =
+        new SearchEngine(root, auth, QueryPlanner.Mode.SOURCE_AWARE, RankingProfile.CODE_HIGH)) {
+      assertEquals(
+          1,
+          restarted
+              .search("reader", new SearchEngine.Request("shared", 1, cursor, separate))
+              .results()
+              .size());
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              restarted.search("reader", new SearchEngine.Request("shared", 1, cursor, embedded)));
+      auth.update("reader", "t", Set.of(), false);
+      assertEquals(0, restarted.search("reader", ordinary).totalHits());
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              restarted.search("reader", new SearchEngine.Request("shared", 1, cursor, separate)));
+    }
+  }
+
+  @Test
   void codeHintsRequireTwoTopicsIgnoreDecoysAndPreserveExplicitSyntaxAndAuthorization()
       throws Exception {
     var auth = new AuthorizationFilter();
