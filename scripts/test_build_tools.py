@@ -30,6 +30,19 @@ class ArchitectureGateTest(unittest.TestCase):
             root = self.make_root(temp, 'import org.springframework.stereotype.Service;')
             self.assertIn('domain framework', architecture.inspect(root)[0])
 
+    def test_pure_domain_cannot_import_jdbc(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'import java.sql.Connection;')
+            self.assertIn('domain framework', architecture.inspect(root)[0])
+
+    def test_byteguard_analysis_core_cannot_import_frameworks(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / 'projects/09-byteguard/analysis-core/src/main/java/example/Analyzer.java'
+            source.parent.mkdir(parents=True)
+            source.write_text('import org.springframework.stereotype.Service;')
+            self.assertIn('domain framework', architecture.inspect(root)[0])
+
     def test_own_project_and_jdk_are_allowed(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'import java.math.BigInteger;\nimport io.github.cheshmakzanoon.portfolio.clearledger.Money;')

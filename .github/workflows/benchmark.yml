@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   measured-run:
-    timeout-minutes: 120
+    timeout-minutes: 300
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
@@ -27,7 +27,34 @@ jobs:
           path=$(python3 -c 'import json,os; print(next(x["path"] for x in json.load(open("catalog/projects.yaml"))["projects"] if x["slug"]==os.environ["PROJECT"]))')
           ./scripts/portfolio.sh verify "$PROJECT"
           test -f "$path/scripts/benchmark.sh"
-          timeout 6600 bash "$path/scripts/benchmark.sh"
+          trap './scripts/portfolio.sh down "$PROJECT"' EXIT
+          case "$PROJECT" in
+            durableflow|tenantshield|routeweaver)
+              ./scripts/portfolio.sh up "$PROJECT"
+              ;;
+          esac
+          case "$PROJECT" in
+            clearledger)
+              bash "$path/scripts/microbenchmark.sh"
+              bash "$path/scripts/benchmark.sh"
+              ;;
+            durableflow|pulsestream|indexforge)
+              if [[ "$PROJECT" == pulsestream ]]; then bash "$path/scripts/benchmark-engine.sh"; fi
+              for round in 1 2 3; do
+                bash "$path/scripts/benchmark.sh"
+                mkdir -p ".work/benchmark-raw/$PROJECT/run-$round"
+                cp -a "$path/evidence" ".work/benchmark-raw/$PROJECT/run-$round/"
+              done
+              ;;
+            matchcore)
+              bash "$path/scripts/jmh.sh"
+              for round in 1 2 3; do
+                bash "$path/scripts/benchmark.sh" core
+                bash "$path/scripts/benchmark.sh" durable
+              done
+              ;;
+            *) bash "$path/scripts/benchmark.sh" ;;
+          esac
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         if: always()
         with:
@@ -36,3 +63,8 @@ jobs:
             projects/**/evidence/
             projects/**/target/benchmark*/
             .work/benchmark*/
+            .work/A*/benchmark*/
+            .work/A*/runtime/durable-*.json
+            projects/**/target/performance/
+            projects/**/.runtime/benchmark*/
+            projects/**/.runtime/jmh.*/

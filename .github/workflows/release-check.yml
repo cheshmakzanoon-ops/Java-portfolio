@@ -21,7 +21,16 @@ jobs:
         run: |
           set -euo pipefail
           for project in clearledger durableflow quorumkv pulsestream tenantshield matchcore indexforge threadlens byteguard routeweaver; do
+            trap './scripts/portfolio.sh down "$project"' EXIT
+            ./scripts/portfolio.sh up "$project"
+            # QuorumKV's demo starts its own three processes on the catalog ports.
+            if [[ "$project" == quorumkv ]]; then
+              ./scripts/portfolio.sh down "$project"
+            fi
             ./scripts/portfolio.sh demo "$project"
+            ./scripts/portfolio.sh reset-demo "$project"
+            ./scripts/portfolio.sh down "$project"
+            trap - EXIT
           done
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         if: always()

@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 NS = {'m': 'http://maven.apache.org/POM/4.0.0'}
 PURE = {'ledger-domain', 'workflow-model', 'workflow-engine', 'raft-core', 'matching-core',
-        'policy-core', 'routeweaver-domain', 'analysis', 'engine'}
+        'policy-core', 'routeweaver-domain', 'analysis', 'analysis-core', 'engine'}
 
 
 def inspect(root):
@@ -25,7 +25,7 @@ def inspect(root):
                 if imported.startswith('io.github.cheshmakzanoon.portfolio.') and not imported.startswith(prefix):
                     errors.append(f'{source.relative_to(root)}: cross-project import {imported}')
                 module = source.relative_to(project).parts[0]
-                if module in PURE and imported.startswith(('org.springframework.', 'jakarta.persistence.', 'org.hibernate.')):
+                if module in PURE and imported.startswith(('org.springframework.', 'jakarta.persistence.', 'org.hibernate.', 'java.sql.', 'javax.sql.')):
                     errors.append(f'{source.relative_to(root)}: domain framework import {imported}')
         for pom in project.glob('**/pom.xml'):
             if 'target' in pom.parts:
