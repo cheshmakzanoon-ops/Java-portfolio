@@ -1,0 +1,193 @@
+package io.github.cheshmakzanoon.portfolio.clearledger;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.math.*;
+import java.time.*;
+import java.util.*;
+import net.jqwik.api.*;
+import org.junit.jupiter.api.*;
+
+class AccountingProperties {
+  static final UUID A = UUID.fromString("00000000-0000-0000-0000-000000000011"),
+      B = UUID.fromString("00000000-0000-0000-0000-000000000012"),
+      P = UUID.fromString("00000000-0000-0000-0000-000000000013");
+
+  @Property(tries = 300, seed = "20261017")
+  void reversalIsAnInvolution(
+      @ForAll @net.jqwik.api.constraints.IntRange(min = 1, max = 1000000) int amount,
+      @ForAll boolean creditNormal) {
+    var n = BigInteger.valueOf(amount);
+    var j =
+        new Journal(
+            P,
+            LocalDate.of(2026, 1, 1),
+            "CAD",
+            "r",
+            List.of(
+                new Journal.Line(A, Journal.Side.DEBIT, n),
+                new Journal.Line(B, Journal.Side.CREDIT, n)));
+    var ref = new ReferenceLedger();
+    ref.apply(j);
+    assertEquals(n, ref.balances().get(A));
+    assertEquals(
+        creditNormal ? n.negate() : n,
+        ref.displayed(A, creditNormal ? Journal.Side.CREDIT : Journal.Side.DEBIT));
+    ref.apply(j.reversed(j.date()));
+    assertTrue(ref.balances().values().stream().allMatch(BigInteger.ZERO::equals));
+    assertEquals(j.lines(), j.reversed(j.date()).reversed(j.date()).lines());
+  }
+
+  @Property(tries = 200, seed = "20261018")
+  void imbalanceAlwaysRejected(
+      @ForAll @net.jqwik.api.constraints.IntRange(min = 1, max = 1000000) int amount) {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new Journal(
+                P,
+                LocalDate.now(),
+                "USD",
+                "r",
+                List.of(
+                    new Journal.Line(A, Journal.Side.DEBIT, BigInteger.valueOf(amount)),
+                    new Journal.Line(B, Journal.Side.CREDIT, BigInteger.valueOf(amount + 1)))));
+  }
+
+  @Test
+  void strictCurrencyAndBounds() {
+    assertEquals("1.20", Money.parse("CAD", "1.20").decimal());
+    assertEquals("12.34", Money.parse("CAD", "12.34").decimal());
+    assertEquals("0.00", Money.parse("CAD", "-0.00").decimal());
+    assertThrows(IllegalArgumentException.class, () -> Money.parse("CAD", "1".repeat(100000)));
+    assertEquals("5", Money.parse("JPY", "5").decimal());
+    for (String s : List.of("1.001", "1e2", "01.00", "NaN", " 1.00", "1.", "+1"))
+      assertThrows(IllegalArgumentException.class, () -> Money.parse("CAD", s));
+    assertThrows(IllegalArgumentException.class, () -> Money.parse("JPY", "1.0"));
+    assertThrows(IllegalArgumentException.class, () -> Money.parse("EUR", "1"));
+    assertThrows(
+        IllegalArgumentException.class, () -> new Money("CAD", Money.MAX.add(BigInteger.ONE)));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Journal.Line(A, Journal.Side.DEBIT, BigInteger.ZERO));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Journal(P, LocalDate.now(), "CAD", "x", List.of()));
+  }
+
+  @Test
+  void canonicalDigestIgnoresLineOrderButPreservesIntent() {
+    var lines =
+        List.of(
+            new Journal.Line(A, Journal.Side.DEBIT, BigInteger.TEN),
+            new Journal.Line(B, Journal.Side.CREDIT, BigInteger.TEN));
+    var j = new Journal(P, LocalDate.now(), "CAD", "x", lines);
+    var rev = new ArrayList<>(lines);
+    Collections.reverse(rev);
+    assertEquals(j.digest(), new Journal(P, j.date(), "CAD", "x", rev).digest());
+    assertNotEquals(j.digest(), new Journal(P, j.date(), "CAD", "y", rev).digest());
+    var ref = new ReferenceLedger();
+    var max =
+        new Journal(
+            P,
+            j.date(),
+            "CAD",
+            "max",
+            List.of(
+                new Journal.Line(A, Journal.Side.DEBIT, Money.MAX),
+                new Journal.Line(B, Journal.Side.CREDIT, Money.MAX)));
+    ref.apply(max);
+    assertThrows(IllegalArgumentException.class, () -> ref.apply(j));
+    assertEquals(Money.MAX, ref.balances().get(A));
+  }
+
+  @Test
+  void limitsPreserveAtomicReferenceAndReversibleLongReferences() {
+    assertEquals("-12.34", Money.parse("CAD", "-12.34").decimal());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Journal.Line(A, Journal.Side.DEBIT, Money.MAX.add(BigInteger.ONE)));
+    assertThrows(IllegalArgumentException.class, () -> new Money("CAD", null));
+    assertThrows(IllegalArgumentException.class, () -> Money.parse(null, "1"));
+    var lines =
+        List.of(
+            new Journal.Line(A, Journal.Side.DEBIT, BigInteger.ONE),
+            new Journal.Line(B, Journal.Side.CREDIT, BigInteger.ONE));
+    var j = new Journal(P, LocalDate.of(2026, 1, 1), "CAD", "r".repeat(120), lines);
+    assertEquals(Journal.Side.CREDIT, j.reversed(j.date()).lines().getFirst().side());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Journal(P, j.date(), "CAD", "r".repeat(121), lines));
+    assertThrows(IllegalArgumentException.class, () -> new Journal(P, j.date(), "EUR", "r", lines));
+    var hundred = new ArrayList<Journal.Line>();
+    for (int i = 0; i < 50; i++) hundred.addAll(lines);
+    assertEquals(100, new Journal(P, j.date(), "CAD", "many", hundred).lines().size());
+    hundred.add(lines.getFirst());
+    assertThrows(
+        IllegalArgumentException.class, () -> new Journal(P, j.date(), "CAD", "many", hundred));
+    var overflow =
+        List.of(
+            new Journal.Line(A, Journal.Side.DEBIT, Money.MAX),
+            new Journal.Line(A, Journal.Side.DEBIT, BigInteger.ONE),
+            new Journal.Line(B, Journal.Side.CREDIT, Money.MAX),
+            new Journal.Line(B, Journal.Side.CREDIT, BigInteger.ONE));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Journal(P, j.date(), "CAD", "overflow", overflow));
+  }
+
+  @Test
+  void accumulationAndDigestIncludeEveryEconomicLine() {
+    var date = LocalDate.of(2026, 1, 1);
+    var j10 =
+        new Journal(
+            P,
+            date,
+            "CAD",
+            "same",
+            List.of(
+                new Journal.Line(A, Journal.Side.DEBIT, BigInteger.TEN),
+                new Journal.Line(B, Journal.Side.CREDIT, BigInteger.TEN)));
+    var j20 =
+        new Journal(
+            P,
+            date,
+            "CAD",
+            "same",
+            List.of(
+                new Journal.Line(A, Journal.Side.DEBIT, BigInteger.valueOf(20)),
+                new Journal.Line(B, Journal.Side.CREDIT, BigInteger.valueOf(20))));
+    assertNotEquals(j10.digest(), j20.digest());
+    assertNotEquals(
+        j10.digest(),
+        new Journal(
+                P,
+                date,
+                "CAD",
+                "same",
+                List.of(
+                    new Journal.Line(A, Journal.Side.CREDIT, BigInteger.TEN),
+                    new Journal.Line(B, Journal.Side.DEBIT, BigInteger.TEN)))
+            .digest());
+    var c = UUID.fromString("00000000-0000-0000-0000-000000000014");
+    assertNotEquals(
+        j10.digest(),
+        new Journal(
+                P,
+                date,
+                "CAD",
+                "same",
+                List.of(
+                    new Journal.Line(c, Journal.Side.DEBIT, BigInteger.TEN),
+                    new Journal.Line(B, Journal.Side.CREDIT, BigInteger.TEN)))
+            .digest());
+    var ref = new ReferenceLedger();
+    ref.apply(j10);
+    ref.apply(j20);
+    assertEquals(BigInteger.valueOf(30), ref.balances().get(A));
+    assertEquals(BigInteger.valueOf(-30), ref.balances().get(B));
+    ref.apply(j10.reversed(date));
+    assertEquals(BigInteger.valueOf(20), ref.balances().get(A));
+    assertEquals(BigInteger.valueOf(-20), ref.balances().get(B));
+  }
+}
