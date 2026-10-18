@@ -1,0 +1,20 @@
+{
+  "finalWorkingTreeFingerprint": "ad35aee1cc5395e36b1cde9ddac88db635ac78be26a1c51f963b834153fbb351",
+  "changedRuntimeClassEntries": [
+    "io/github/cheshmakzanoon/portfolio/threadlens/report/ReportDocument.class"
+  ],
+  "changedArchivedSourceInputs": [
+    "pom.xml",
+    "projects/08-threadlens/jfr/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/jfr/CollectionTest.java",
+    "projects/08-threadlens/report/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/report/ReportDocument.java"
+  ],
+  "changeScopes": [
+    "Root test-library BOM precedence only",
+    "Remove a redundant constant assertion from an already meaningful budget test",
+    "Clarify one report timing-unit label; no data schema, algorithms or limits changed"
+  ],
+  "agentWholeJarByteIdentical": true,
+  "collectorProbeTransformerAggregationSettingsUnchanged": true,
+  "observerRawArtifact": ".work/A08/final-observer-stress-6",
+  "finalCertification": "evidence/verification.json"
+}

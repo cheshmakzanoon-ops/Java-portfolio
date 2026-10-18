@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "validatedReports": 9,
+  "reportPaths": [
+    "projects/08-threadlens/target/demo/allocation-baseline/report/report.json",
+    "projects/08-threadlens/target/demo/allocation-regressed/report/report.json",
+    "projects/08-threadlens/target/demo/contention-baseline/report/report.json",
+    "projects/08-threadlens/target/demo/contention-regressed/report/report.json",
+    "projects/08-threadlens/target/demo/cpu-baseline/report/report.json",
+    "projects/08-threadlens/target/demo/cpu-regressed/report/report.json",
+    "projects/08-threadlens/target/demo/virtual-baseline/report/report.json",
+    "projects/08-threadlens/target/demo/virtual-regressed/report/report.json",
+    ".work/A08/diagnostic-alloc-3/report/report.json"
+  ],
+  "schemaSha256": "87732144c8955cebebd667c5c94ecc16ca2c2de9137d6c3de997838609617449",
+  "validator": "python jsonschema4.26.0 Draft202012Validator",
+  "allPassed": true,
+  "scope": "Actual checkpoint4 demo and instrumented diagnostic reports; final source is being recertified"
+}

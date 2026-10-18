@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "project": "threadlens",
+  "sourceRevision": "49116867098a5ac17986c4ccc49361c0d49f8303",
+  "workingTreeFingerprint": "d2be728dc86dd6ed6cc3f1f60bb773f294b0c570582a360332ddc9c5fcdc441d",
+  "workload": "allocation post-HDR bounded-output diagnostic",
+  "environment": "Same shared Linux HotSpot25 build host; Xms/Xmx256m; ActiveProcessorCount4",
+  "exitCode": 0,
+  "measurements": {
+    "kind": "allocation",
+    "regressed": false,
+    "mode": "instrumented",
+    "started": "2026-10-18T01:14:22.135471955Z",
+    "warmupSeconds": 3,
+    "requestedMeasurementSeconds": 42,
+    "actualMeasurementSeconds": 42.019882499,
+    "workers": 1,
+    "operations": 3609692,
+    "throughputOpsPerSecond": 85904.38110068263,
+    "latencyP50Nanos": 3043,
+    "latencyP95Nanos": 3883,
+    "latencyP99Nanos": 31167,
+    "gcCollections": 94,
+    "gcMillis": 860,
+    "rssPeakKiB": 229304,
+    "coordinatedOmission": "closed-loop workers; no arrival-queue delay measured",
+    "recordingIncludesWarmup": true
+  },
+  "observerStatus": {
+    "collectionHealthy": "true",
+    "queueDrops": "0",
+    "shutdownDiscarded": "0",
+    "incomplete": "false",
+    "probeFailures": "0",
+    "methodOverflow": "0",
+    "timingHistogramOverflow": "0",
+    "durationClipped": "0",
+    "observedTimingEvents": "7779166",
+    "rawTimingRowsOmitted": "7769166",
+    "activeMethodIdLimit": "3",
+    "activeQueueCapacity": "65536",
+    "skips": "{constructorOrInitializer=5, outsideAllowlist=12, outsideMethodSelection=17, toolOrJdk=11, unsupportedLoader=707}"
+  },
+  "outputFiles": {
+    "methods.tsv": {
+      "bytes": 330,
+      "sha256": "80ac72ec08fc30c33eb85c41c822a01797d804a2408bd14d092484dfe8e93a4c"
+    },
+    "observer-status.txt": {
+      "bytes": 376,
+      "sha256": "1189edf0fff502abca558a76425d0d6f6b8e76d8147b2b08eaa464f10c96faf1"
+    },
+    "timing-histograms.hlog": {
+      "bytes": 5825,
+      "sha256": "4ac9e6d9448f8331057bec84261e2e4137fac8f147e3df447db8e60d06d1839d"
+    },
+    "timing-summary.tsv": {
+      "bytes": 148,
+      "sha256": "3802144f8fe143b6bf189824ad924ae2960ca983ef838596c63393aa232efb76"
+    },
+    "timings.tsv": {
+      "bytes": 268084,
+      "sha256": "4637fac6c30b7c9628ba59e6199200066277de7e1e689a999baf622d55dc167c"
+    }
+  },
+  "outputBytes": 274763,
+  "agentJarSha256": "cc744738edaa9946a579f3a9f0c1ec82056d91ca04527980f57442b5ecaa83c6",
+  "rawArtifact": ".work/A08/diagnostic-alloc-3",
+  "limitations": [
+    "Shared-host contention; not overhead acceptance or throughput before/after evidence.",
+    "Earlier checkpoint4 source; final functional/stress/reference gates are tracked separately.",
+    "Raw prefix omission is intentional retention, not missing histogram observations.",
+    "Exact original shell/classpath invocation was not persisted for this supporting diagnostic; reproduction arguments identify the preserved binary and parameters. Mandatory reference runs record complete command vectors."
+  ],
+  "reproductionArguments": [
+    "java",
+    "-Xms256m",
+    "-Xmx256m",
+    "-XX:ActiveProcessorCount=4",
+    "-javaagent:.work/A08/diagnostic-alloc-3/agent-after.jar=config=.work/A08/diagnostic-alloc-3/threadlens.yaml",
+    "-cp",
+    "runtime classpath in preserved source and build metadata",
+    "io.github.cheshmakzanoon.portfolio.threadlens.workloads.WorkloadMain",
+    "allocation",
+    "false",
+    "3",
+    "42",
+    "instrumented",
+    ".work/A08/diagnostic-alloc-3/measurement.json",
+    ".work/A08/diagnostic-alloc-3/recording.jfr"
+  ],
+  "exactOriginalCommandRecorded": false
+}

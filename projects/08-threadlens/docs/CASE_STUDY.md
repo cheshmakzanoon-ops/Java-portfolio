@@ -1,0 +1,13 @@
+# Case study
+
+ThreadLens addresses a diagnostic ambiguity: a workload can slow down because it executes more instructions, allocates more, or waits for a lock. Those mechanisms require different evidence, and a safe observer must make missing information visible.
+
+The central implementation is a bounded stack-prefix trie and event-time accumulator rather than a wrapper around an existing profiler. JFR decoding and ASM rewriting are mature mechanisms; interpretation, limits, identity, transformation scope, reporting and comparison belong to this project.
+
+Independent review identified an actual shutdown defect during development: the original timing consumer stopped as soon as its running flag cleared, abandoning already accepted ring entries without counting them as loss. The fix stops new probes, drains the queue with a bounded deadline, and reports any discarded tail explicitly. The real-agent saturation test checks that accepted invocation events equal exported rows after shutdown; timing-report import preserves incomplete/unknown status. This was a code-review finding during development, not a production incident. A defensive recursive-cardinality guard was also added; no observed crash is claimed for that unreachable-under-current-limits concern.
+
+The rejected alternative was an unbounded concurrent event queue. It looks nonblocking but turns slow analysis into unbounded retention. Primitive slots plus a short CAS loop instead make probe cost and memory explicit, at the price of counted loss. A stopped/drained JFR stream permits exact live/offline aggregate comparison under no loss; overloaded windows are labelled incomplete.
+
+The report never interprets sampling as exact invocation counts, never claims a native CPU sampler, and does not pretend to attribute every virtual-thread relationship. Full Java25 HotSpot/Linux evidence, other-platform status, measured overhead and remaining gates are stated in STATUS/PERFORMANCE without invented certification.
+
+A pre-overhead diagnostic found a concrete operational mismatch in the first consumer:42seconds of measured allocation workload plus3seconds warmup reached the256-MiB per-invocation TSV budget. The observer shut down safely and the host completed, but this would invalidate a90-second instrumented study. The original JAR, raw run and source fingerprint were preserved in the diagnosis evidence. The consumer now keeps bounded HDR distributions for up to128retained subjects, explicit overflow/incomplete counters, and a10,000-row diagnostic prefix; post-change verification and long-gate outcomes are recorded in STATUS, rather than assuming the optimization passed.

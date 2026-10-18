@@ -1,0 +1,2 @@
+# CLI-only project. No database, broker, web server, or Docker engine is required.
+services: {}

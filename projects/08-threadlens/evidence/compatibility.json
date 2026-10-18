@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "platforms": [
+    {
+      "jdk": "25 HotSpot",
+      "vendor": "Eclipse Adoptium",
+      "fullBuild": "25.0.4.1+1-LTS",
+      "os": "Linux",
+      "architecture": "x86-64",
+      "status": "TESTED",
+      "evidence": [
+        "evidence/verification.json",
+        ".work/A08/final-junit613-certification-7.log",
+        "evidence/benchmark-smoke.json"
+      ],
+      "testedScope": [
+        "Packaged startup agent under -Xverify:all",
+        "Actual supported48-case transformation verification and exception identity",
+        "Live JFR collection and offline analysis equality",
+        "Actual four-workload mode smoke"
+      ],
+      "releaseAcceptanceNote": "Platform functional tests passed; final1200-second stress and full overhead gates tracked separately in STATUS."
+    },
+    {
+      "jdk": "25 HotSpot",
+      "os": "Windows",
+      "architecture": "x86-64",
+      "status": "UNTESTED",
+      "reason": "No Windows runner used"
+    },
+    {
+      "jdk": "25 HotSpot",
+      "os": "macOS",
+      "architecture": "arm64",
+      "status": "UNTESTED",
+      "reason": "No macOS runner used"
+    }
+  ],
+  "outsideVerifiedSupport": [
+    "Other JDK versions",
+    "Other JVM implementations",
+    "Native images",
+    "Dynamic attachment"
+  ]
+}
