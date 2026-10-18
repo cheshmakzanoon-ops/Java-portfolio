@@ -1,0 +1,80 @@
+# DurableFlow quiet18: bounded independent postmortem
+
+Scope: the two completed old-source runs only. Source fingerprint is `sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187`. This is diagnostic evidence, not acceptance of a three-run study, the gzip capture change, or release certification. The third run never started. No threshold, workload, product, or original artifact was changed.
+
+## Provenance and bounded processing
+
+The root independently restored and compared all 44 archived files / 3,912,701,887 original bytes in `.work/coordinator/durableflow-quiet18-archive-recovery.json`. This review independently checked both archive and manifest SHA256 values against that receipt, validated all tar member names/types/sizes against those manifests, and extracted **only** 2 existing worker-1 JFR recordings plus 26 existing GC logs into this directory. Each extracted file's length and SHA256 matched its manifest. The two approximately 1.9 GB allocation JSON files were streamed past and never restored, parsed, or materialized.
+
+- Run 1 archive SHA: `2890dc149177f59cfc6bd049b76b60db10c7e871b56f1e30baf03c5864a2240d`.
+- Run 2 archive SHA: `37a99f19534748febc7efbc56e9174fe67dd6f0a8827f251fc89efde75468b13`.
+- Extracted run 1 JFR SHA: `30d72f67321fab7444bb7d8d26e82ebea5f6e9c40bf9662c4861af0c62e67fb2`.
+- Extracted run 2 JFR SHA: `2dc2731ab5a9cd683f3e053581a9ee48a86db8609bab4cb4b696d4d1084999b4`.
+
+`extraction.json` contains all 28 extracted-file identities. The original archives, manifests, provider logs and owner run copies remain unchanged. Owner inputs are `.work/A02/full-reference-20261018T095104-746011/run-{1,2}`.
+
+All parsing was sequential. One official `jfr help view` command completed with exit 0. Then 18 official JFR summary/view commands completed with exit 0, no output/deadline termination, totaling 48.733 command seconds. A final JDK `RecordingFile` streaming parser completed with exit 0 in 8.101 seconds. Heap was capped at 256 MiB; processor count at 1. The view batch and streaming parser additionally inherited affinity to one CPU and held one ordinary build slot. No Maven, service, Docker, workload or stress process was launched. All parser JVMs terminated and were reaped. No further parsing is pending.
+
+Exact commands, outputs, exit status, timestamps and hashes are preserved in `official-parser-commands.json`, `stream-profile-command.json`, `*.stdout` and `*.stderr`. The authored parser sources are `official-jfr-views.py`, `ProfileCounters.java` and `stream-profile.py`. `extract-reviewed.py` and `compare-resources.py` preserve the extraction and resource/GC calculation logic. The small help invocation was:
+
+```sh
+bash scripts/with-build-slot.sh /workspace/.tools/jdk-25/bin/jfr -J-Xmx256m -J-XX:ActiveProcessorCount=1 help view
+```
+
+## Observations
+
+Both runs report 10,000 completed executions, 80,000 completed activities, 5,000 business timers, 10,000 accepted unique signals, 16,000 expected first-attempt rejections, 96,000 independently recorded provider calls, 80,000 unique provider effects, no additional idempotent dispatch, no lease expiration, and no final queue. Existing independent provider audit receipts support those counts; this review did not repeat their full 206 MB provider-log audit.
+
+| Measurement | Run 1 | Run 2 |
+| --- | ---: | ---: |
+| Driver elapsed seconds | 962.372049 | 1,611.414379 |
+| Executions per second | 10.390992 | 6.205728 |
+| Sampled Java CPU delta seconds, 13 roles | 1,385.75 | 1,934.23 |
+| First-to-last complete resource sample span seconds | 973.988942 | 1,623.444011 |
+| Average sampled Java cores over that span | 1.422757 | 1.191436 |
+| Maximum sampled aggregate Java RSS bytes | 3,172,741,120 | 3,222,634,496 |
+| Sum of measured-window JVM GC pauses, milliseconds | 21,076.859 | 37,565.831 |
+| Worker-1 estimated allocated bytes, whole recording | 5,119,341,264 | 5,263,999,920 |
+| First final-poll-loop timeline point, elapsed seconds | 957.866476 | 1,608.274899 |
+
+Run 2 takes 67.4419% longer (649.042330 seconds). The 13-role CPU sampling excludes PostgreSQL and includes driver startup/metric collection around the timed workload. GC totals sum pauses in independent JVMs, which can overlap; they are not process-wide wall time or CPU time. There is one full GC in the run-2 provider, lasting 68.907 ms. No OOM or to-space failure marker appears in these logs. Direct stop-the-world pause durations alone are much too small to explain the elapsed difference. This does not rule out allocation/GC scheduling effects elsewhere.
+
+The raw JFR boundaries are 978 / 1,626 seconds and cover **only worker 1**, starting before the timed driver work and ending afterward. Official hot-method views show JDBC, virtual-thread/pool machinery, maps and JSON/reflection work in both recordings, without a single dominant sampled Java method. Allocation sites include regex compilation, reflective method copies and JSON type inspection in both. These are sampled allocation/stack descriptions, not an identified cause of the between-run slowdown or a complete profile of the driver, database, provider or other seven workers.
+
+### Recorded database waits
+
+The streaming parser filters socket events whose start time lies inside the workload's UTC interval, and groups remote address/port. Port 18202 is the configured PostgreSQL endpoint.
+
+| Worker-1 PostgreSQL SocketRead observation | Run 1 | Run 2 |
+| --- | ---: | ---: |
+| Recorded events | 173,291 | 219,401 |
+| Mean recorded duration, ms | 6.135751 | 9.730842 |
+| Nearest-rank p95 recorded duration, ms | 19.539273 | 32.025966 |
+| Nearest-rank p99 recorded duration, ms | 76.831588 | 139.539355 |
+| Total recorded concurrent duration, seconds | 1,063.270471 | 2,134.956356 |
+
+These are recorded socket events, not SQL statement counts, independent queries, complete request latencies or additive wall time. Multiple threads overlap. Reads at provider port 18201 are sparse (69 / 79); the asynchronous HTTP implementation means their scarcity does **not** prove that provider/network service was cheap or unchanged.
+
+The driver synchronously submits each start and its two signal calls before entering the final completion-poll loop. More than 99.5% of measured elapsed time precedes that loop in both runs. Thus the total throughput boundary is sensitive to submission and database round-trip progress. The published `peakSampledQueueDepth` values 23 / 18 sample only this final loop, not the entire submission phase. The slower DB socket observations support a concrete symptom and an investigation direction; they do not distinguish PostgreSQL lock/query/commit work, storage/WAL/checkpoint behavior, network scheduling or host contention.
+
+### Cgroup counter boundaries
+
+The standard `container-cpu-throttling` view displays **cumulative lifetime counters** (roughly two hours of throttled time here). Those values must not be labeled run-specific delay. The streaming parser retained the first and last actual events and computed differences:
+
+| Counter delta and sampling span | Run 1 | Run 2 |
+| --- | ---: | ---: |
+| CPU observation span, seconds | 941.965835 | 1,592.442065 |
+| Total cgroup CPU, seconds | 3,135.031832 | 5,067.683352 |
+| Average cgroup cores over that span | 3.328 | 3.182 |
+| Throttled-time delta, seconds | 25.085454 | 49.503019 |
+| Throttled / elapsed CPU slices | 868 / 9,420 | 1,314 / 15,924 |
+| I/O data-transferred delta, bytes | 5,756,125,184 | 7,526,694,912 |
+| I/O request-count delta | 1,234,765 | 1,280,493 |
+
+These sampling windows begin about 23–24 seconds after driver start and end a few seconds after it finishes. They are not exactly aligned to the resource or workload windows. Cgroup usage includes PostgreSQL and other work charged to this environment; the recording does not attribute it to a particular process/device/statement or supply disk-latency histograms. The counters show real CPU throttling and additional I/O, but establish neither as the primary 649-second cause.
+
+## Actionable limits and hypotheses
+
+The strongest supported next investigation is a separate, explicitly identified functional diagnosis of driver start/signal phase durations and PostgreSQL query/lock/commit/I/O waits, with cgroup/pressure/checkpoint observations. Current data has no per-statement latency or server wait samples, so an exact root cause remains unknown. Driver profiling is absent; the retained worker-1 profile cannot substitute for it. Repeated mapper creation and regex compilation are visible in source/profile and could be investigated separately, but this review does not attribute the slowdown to them or authorize changing engine behavior.
+
+Keep the gzip-only capture repair and any later engine investigation distinct. The existing runs are diagnostic old-source observations, not a three-round PASS. All three future repetitions must use one frozen source/runtime/protocol and the unchanged CV ≤10% rule. No averaging, threshold relaxation, held-out-data access, resampling or new performance claim was performed here.

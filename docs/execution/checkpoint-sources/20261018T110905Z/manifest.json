@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-10-18T11:09:05.952376+00:00",
+  "baseCommit": "747448d027340d9d91c2d65e2096bb7a53f1cc64",
+  "scope": "Changed authored helper/handoff byte snapshots. Uncompiled or unfinished work is not certified. Generated runtime data remains local.",
+  "files": [
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/REPORT.md",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/REPORT.md.txt",
+      "bytes": 9049,
+      "sha256": "252ce8071439d947722c91c3c85da5e0d09fcb0dfbb0cff44e2dd278f2c5a059",
+      "originalMode": "0o600"
+    },
+    {
+      "originalPath": ".work/A03/durableflow-quiet18-postmortem/HANDOFF.json",
+      "snapshotPath": "files/A03/durableflow-quiet18-postmortem/HANDOFF.json",
+      "bytes": 12396,
+      "sha256": "27f8ce751225c4182372772deeae70d3845e6c20eb4fbc57e3d8f4d93e8271f3",
+      "originalMode": "0o600"
+    }
+  ]
+}
