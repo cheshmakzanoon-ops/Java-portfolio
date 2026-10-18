@@ -1,6 +1,6 @@
 # Independent engineering review
 
-A05 reviewed the matching engine, journal, gateway, HTTP boundary and failure tests. Its latest scoped closure inspected production-Java SHA-256 `095e636739cbef837fb7a9783d15601cc625489ee96225a4f8349d5252ad7fb5`. The subsequent coordinator validation on the corrected JUnit 6.1.3 baseline passed 19 methods and the targeted mutation gate; see [current evidence](../evidence/verification-current.json). Performance and final clean-checkout release approval remain pending.
+A05 reviewed the matching engine, journal, gateway, HTTP boundary and failure tests. Its earlier scoped closure inspected production-Java SHA-256 `095e636739cbef837fb7a9783d15601cc625489ee96225a4f8349d5252ad7fb5`. Subsequent coordinator validation on the corrected JUnit 6.1.3 baseline passed 19 methods and the targeted mutation gate; see [historical evidence](../evidence/verification-current.json). The later measured-artifact closure is recorded below. Final clean-checkout/global release approval remains pending.
 
 | Finding | Correction and observed regression |
 | --- | --- |
@@ -21,4 +21,12 @@ After the positive-consumption invariant and meaningful reduction/depth assertio
 
 The survivors include result-code distinctions, held-resource/risk paths and the finite-run boundary that the selected core tests do not fully distinguish. The zero-quantity guard boundary is defensive for a healthy book. Do not describe all survivors as equivalent: the simulator's broader oracle checks do not automatically exercise a mutated core-module JVM. Additional evidence is needed for any individual equivalence claim.
 
-Remaining review covers the final workload generator/result distribution, measured resource behavior, operational artifacts and clean-checkout/remote validation. No full-release approval is implied by these scoped closures.
+## Final measured-artifact review
+
+A05 closed the final read-only measurement review with **no blocking finding**. It independently recomputed the reviewed ten-file packet identity `7f6e9002ce30dc765d3b1081aa9f470c0c6760b1382ca908d62f8a62dcbc1a48` (138,424 bytes), confirmed executable/build-input fingerprint `62fc0b0351864486ffa736bd64f444393e3dda894f93677c7ca95448dab1ce83`, checked all 83 raw-file hashes/sizes and all 67 actual runtime-artifact hashes against the copied receipt, and verified the six exact result objects, counts, business histograms and common digest.
+
+The review also independently verified summary medians/coefficient-of-variation values, all six JFR event counts/top frames/allocation weights and GC maxima, and JMH's three forks by three measurement iterations, raw means, confidence intervals, allocation and GC results. Published claims agree with [the measurement envelope](../evidence/reference-20261018/measurement-envelope.json) and [PERFORMANCE.md](PERFORMANCE.md).
+
+The approved scope includes the disclosed 27-order peak versus the configured 100,000 cap; fixed seed, no excluded system-driver warmup and closed-loop sampling; per-run percentile summaries; whole-process profiling versus partial live-thread allocation counters; warm-process/hot-cache recovery; setup-visible JMH allocation; and force counts inferred from successful admissions through the one-force journal path. The reviewer performed no owned writes or Java/build/runtime starts.
+
+This closes measured-artifact lineage and claim review only. Clean-checkout, repository-wide validation, hosted CI and release publication remain coordinator gates. The two closure-only documentation edits do not change the reviewed measurements, evidence files or executable source; their updated small-packet hashes are recorded in the coordinator handoff.
