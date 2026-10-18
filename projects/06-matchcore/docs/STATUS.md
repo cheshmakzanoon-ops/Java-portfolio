@@ -27,7 +27,7 @@ source scripts/cloud-env.sh
   com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify
 ```
 
-A05's scoped correctness/security review is recorded in [REVIEW.md](REVIEW.md). Its subsequent artifact-cache finding was fixed by the coordinator and exercised through the 17 actual probes above. **Final measured-artifact review is closed with no blocking finding.** A05 independently confirmed the reviewed ten-file packet fingerprint `7f6e9002ce30dc765d3b1081aa9f470c0c6760b1382ca908d62f8a62dcbc1a48`, all 83 raw-file hashes/sizes, 67 actual runtime-artifact hashes, exact results and complete JFR/GC/JMH summaries. Its approval covers measurement lineage, numbers and stated limits; clean/global CI/release gates remain separate. Only this status and the review closure prose changed after that packet was reviewed.
+A05's scoped correctness/security review is recorded in [REVIEW.md](REVIEW.md). Its subsequent artifact-cache finding was fixed by the coordinator and exercised through the 17 actual probes above. **Final measured-artifact review is closed with no blocking finding.** A05 independently confirmed the reviewed ten-file packet fingerprint `7f6e9002ce30dc765d3b1081aa9f470c0c6760b1382ca908d62f8a62dcbc1a48`, all 83 raw-file hashes/sizes, 67 actual runtime-artifact hashes, exact results and complete JFR/GC/JMH summaries. Its approval covers measurement lineage, numbers and stated limits; clean/global CI/release gates remain separate. Subsequent changes are closure prose and documented CRLF-to-LF serialization of the derivative CSV; [both CSV identities](../evidence/reference-20261018/README.md) are retained, with all values and raw measurements unchanged.
 
 ## Demonstration and full study
 

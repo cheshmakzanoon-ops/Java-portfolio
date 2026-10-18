@@ -2355,5 +2355,23 @@
     "count": 67,
     "sha256": "4d0e66236cb60c0ffb322acad4d025108fad32315f9cef1418686e01fe61bf57",
     "checkAtAnalysis": "Actual current cache check passed; source/artifacts unchanged from prepared measured launch. Trusted local receipt, not a signed remote attestation."
+  },
+  "derivedSerializations": {
+    "system-runs.csv": {
+      "role": "Derived human-readable table; not one of the83 indexed raw files.",
+      "reviewedOriginal": {
+        "bytes": 1575,
+        "sha256": "f8d764e67c8c284f519330a2ad6262b51c6cbef6db3dae7f52daee12096a26e4",
+        "lineEndings": "CRLF",
+        "reviewedPacketFingerprint": "7f6e9002ce30dc765d3b1081aa9f470c0c6760b1382ca908d62f8a62dcbc1a48"
+      },
+      "published": {
+        "bytes": 1568,
+        "sha256": "9d135d845c69c1244179e0559c04d299495ddebcbc56b18843e1ef7089f244da",
+        "lineEndings": "LF"
+      },
+      "conversion": "Git text=auto normalized the derivative CSV; working derivative now explicitly usesLF too. All seven parsed rows/header and values are unchanged. The reviewedCRLF bytes can be reconstructed by replacing eachLF withCRLF.",
+      "rawMeasurementFilesChanged": false
+    }
   }
 }

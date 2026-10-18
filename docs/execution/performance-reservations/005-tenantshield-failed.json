@@ -1,0 +1,28 @@
+{
+  "requestedAtUtc": "2026-10-18T03:43:42.395996+00:00",
+  "command": [
+    "env",
+    "TENANTSHIELD_QUIET_GRANTED=1",
+    "bash",
+    ".work/A05/run-reference-window.sh"
+  ],
+  "sourceRevision": "badaaffb09ba9b0f631242cefdc8a64b98d49d26",
+  "lockPaths": [
+    "/workspace/Java-portfolio/.work/build-slots/0.lock",
+    "/workspace/Java-portfolio/.work/build-slots/1.lock",
+    "/workspace/Java-portfolio/.work/build-slots/2.lock"
+  ],
+  "startedAtUtc": "2026-10-18T03:43:42.398771+00:00",
+  "otherJavaProcessesAtReservation": [],
+  "otherApplicationContainersAtReservation": [],
+  "cpuQuota": "400000 100000",
+  "memoryLimit": "34359738368",
+  "filesystemType": "overlayfs",
+  "freeDiskBytes": 8250171392,
+  "exitCode": 1,
+  "completedAtUtc": "2026-10-18T03:44:40.831906+00:00",
+  "elapsedSeconds": 58.43357066200042,
+  "remainingJavaProcesses": [],
+  "remainingApplicationContainers": [],
+  "result": "FAIL"
+}

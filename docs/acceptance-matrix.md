@@ -9,20 +9,20 @@ No acceptance passes are implied by a foundation checkpoint.
 | P01-A3 | A01 | PASS | projects/01-clearledger/evidence/integration-current.json: 25 fresh methods including 15 PostgreSQL tests, shared source-derived audit and corruption diagnostics; A10 scoped review closed |
 | P01-A4 | A01 | PASS | projects/01-clearledger/evidence/integration-current.json: 25 fresh methods including 15 PostgreSQL tests, shared source-derived audit and corruption diagnostics; A10 scoped review closed |
 | P01-A5 | A01 | IN_PROGRESS | projects/01-clearledger/docs/STATUS.md; full gate evidence pending |
-| P02-A1 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
-| P02-A2 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
-| P02-A3 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
-| P02-A4 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 80 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A1 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 81 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A2 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 81 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A3 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 81 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
+| P02-A4 | A02 | PASS | projects/02-durableflow/evidence/verification.json: 81 fresh methods including 13 real PostgreSQL tests, semantics 1/2/3 replay, 41 selected mutants killed; A01 expanded scoped review closed |
 | P02-A5 | A02 | IN_PROGRESS | projects/02-durableflow/docs/STATUS.md; full gate evidence pending |
 | P03-A1 | A03 | PASS | projects/03-quorumkv/evidence/verification-current.json and demo-current.json: 41 fresh methods, three process IT, two lifecycle rounds; scoped review recorded |
 | P03-A2 | A03 | PASS | projects/03-quorumkv/evidence/verification-current.json and demo-current.json: 41 fresh methods, three process IT, two lifecycle rounds; scoped review recorded |
 | P03-A3 | A03 | PASS | projects/03-quorumkv/evidence/verification-current.json and demo-current.json: 41 fresh methods, three process IT, two lifecycle rounds; scoped review recorded |
 | P03-A4 | A03 | PASS | projects/03-quorumkv/evidence/verification-current.json and demo-current.json: 41 fresh methods, three process IT, two lifecycle rounds; scoped review recorded |
 | P03-A5 | A03 | IN_PROGRESS | projects/03-quorumkv/docs/STATUS.md; full gate evidence pending |
-| P04-A1 | A04 | PASS | projects/04-pulsestream/evidence/coordinator-unit-verify.json: independent tumbling/sliding oracle properties and boundary tests, source fingerprint recorded |
-| P04-A2 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
-| P04-A3 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
-| P04-A4 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
+| P04-A1 | A04 | PASS | projects/04-pulsestream/evidence/integration-current-eight.json, container-recreation.json and mutation-current.json:23 methods,8 real PG/Kafka tests,131/133 strict kills, persisted recreation digest; A03 review closed |
+| P04-A2 | A04 | PASS | projects/04-pulsestream/evidence/integration-current-eight.json, container-recreation.json and mutation-current.json:23 methods,8 real PG/Kafka tests,131/133 strict kills, persisted recreation digest; A03 review closed |
+| P04-A3 | A04 | PASS | projects/04-pulsestream/evidence/integration-current-eight.json, container-recreation.json and mutation-current.json:23 methods,8 real PG/Kafka tests,131/133 strict kills, persisted recreation digest; A03 review closed |
+| P04-A4 | A04 | PASS | projects/04-pulsestream/evidence/integration-current-eight.json, container-recreation.json and mutation-current.json:23 methods,8 real PG/Kafka tests,131/133 strict kills, persisted recreation digest; A03 review closed |
 | P04-A5 | A04 | IN_PROGRESS | projects/04-pulsestream/docs/STATUS.md; full gate evidence pending |
 | P05-A1 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
 | P05-A2 | A05 | PASS | projects/05-tenantshield/evidence/correctness.json and docs/REVIEW.md: 27 methods including 9 real PostgreSQL/Keycloak tests on JUnit 6.1.3; A04 scoped closure |
@@ -33,7 +33,7 @@ No acceptance passes are implied by a foundation checkpoint.
 | P06-A2 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
 | P06-A3 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
 | P06-A4 | A06 | PASS | projects/06-matchcore/evidence/verification-current.json: 19 methods, real SIGKILL/recovery, JUnit 6.1.3; scoped review in docs/REVIEW.md |
-| P06-A5 | A06 | IN_PROGRESS | projects/06-matchcore/docs/STATUS.md; full gate evidence pending |
+| P06-A5 | A06 | PASS | projects/06-matchcore/evidence/reference-20261018/measurement-envelope.json and docs/REVIEW.md: six genuine million-command core/durable runs, matching replay digest,3-fork JMH; A05 actual-artifact review closed |
 | P07-A1 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
 | P07-A2 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
 | P07-A3 | A07 | IN_PROGRESS | projects/07-indexforge/docs/STATUS.md; implementation and complete gate evidence pending |
@@ -46,15 +46,15 @@ No acceptance passes are implied by a foundation checkpoint.
 | P08-A4 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
 | P08-A5 | A08 | IN_PROGRESS | projects/08-threadlens/docs/STATUS.md; implementation and complete gate evidence pending |
 | P08-A6 | A08 | PASS | projects/08-threadlens/evidence/verification.json, planted-cause-trials.json and observer-stress.json:100 methods, 21 paired causes, full 1204.97-second stress; A07 scoped closure |
-| P09-A1 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
-| P09-A2 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
-| P09-A3 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
-| P09-A4 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
-| P09-A5 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
-| P09-A6 | A09 | IN_PROGRESS | projects/09-byteguard/docs/STATUS.md; original analyzer/corpus implemented, reviewed alias/lambda fixes under validation; final evidence pending |
-| P10-A1 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
-| P10-A2 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
-| P10-A3 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
+| P09-A1 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
+| P09-A2 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
+| P09-A3 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
+| P09-A4 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
+| P09-A5 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
+| P09-A6 | A09 | PASS | projects/09-byteguard/evidence/verification.json, corpus-results.json, demo.json and benchmark-envelope.json:65 methods,164/177 strict kills,60TP/60TN,three full10k scans3.9325/4.0275/4.3934s; A08 review closed |
+| P10-A1 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
+| P10-A2 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
+| P10-A3 | A10 | PASS | projects/10-routeweaver/evidence/integration.json and docs/REVIEW.md:54 methods including14 real PostgreSQL,95,901 exact-oracle leaves,82/82 selected mutants, source-provenance fencing; A08 review closed |
 | P10-A4 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
 | P10-A5 | A10 | IN_PROGRESS | projects/10-routeweaver/docs/STATUS.md; implementation and complete gate evidence pending |
 | R-A01 | Coordinator | IN_PROGRESS | docs/execution/checkpoint.md; final release evidence pending |

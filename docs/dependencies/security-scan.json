@@ -8,7 +8,7 @@
   "observedFailures": [
     "UpdateException / ForbiddenException: CISA known-exploited-vulnerability JSON feed HTTP403",
     "NoDataException: No documents exist",
-    "Separate NVD API preflight failed with proxy CONNECT403; direct GitHubAPI preflight had DNS failure"
+    "Separate NVD API preflight failed with proxy CONNECT403."
   ],
   "vulnerabilityConclusion": null,
   "nextAction": "Run the unchanged OWASP aggregate command where CISA and NVD feeds are reachable, retain reports and address any actual findings. Do not disable data feeds or suppress missing data to claim a pass."
