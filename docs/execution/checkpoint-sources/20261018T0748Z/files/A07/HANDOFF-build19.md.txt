@@ -1,0 +1,83 @@
+# A07 all-owned-path handoff after bounded BM25 round
+
+Resource checkpoint, not completion. All A07 Java/Maven processes exited; all Java/POM/scripts unchanged after certification19. This worker returns inactive with all projects/07-indexforge/** and .work/A07/** writes paused until explicit coordinator resume. Root's actual quiet-start/end are separately scheduled; this records only A07 readiness. No Git/root/cross-project writes performed. Full historical handoff is preserved as HANDOFF-build18.md.
+
+## Exact current certification
+
+Build19 FULL PASS2026-10-18T02:46:50Z, effectiveJUnit6.1.3,58tests0failures/errors/skips; selectedPIT95/95KILLED(CAS11/analyzer21/cursor24/metrics39). Core line/branch: ingest95.73/82.21,index91.42/78.48,query96.82/85.93. NewEvaluationSeal10/10lines8/8branches. Envelope projects/07-indexforge/evidence/certification-build19.json, raw .work/A07/verify-nineteenth.log. Source fingerprint35a2fa042be7990b2c0139ae7f17d3be11f04ab914dd1e4b23558aa1c011c550. CopiedCLI .work/A07/artifacts/build19-cli.jar SHA b64594bc1b55c7c2e8c2d718810cb5047145e821906421fb1c85a5b4eab3fb9b; adjacent source/JAR SHA/verification files. RootPOM/AGENTS included in source identity; docs/evidence excluded. Source certificate captured before any ranking run. Only Markdown/evidence changed afterward.
+
+Exact verification:
+
+```
+source scripts/cloud-env.sh
+./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify
+```
+
+Source freezes immediately upon queue submission. Automatic wrapper FIFO3slots; no bypass. No manual slot grant needed. All root/pins/Git stay coordinator-owned.
+
+Build19 adds conventional BM25 presets at previous selected field weights andcoverage0, NO_SIMILARITY ablation, one cached IndexSearcher per lease for consistent similarity, exact short/long equal-TF/default-ablation/baseline/warm-cache controls, and actual HTTP nondefault mode/profile Environment parity. Boot andCLI share actual configuration capabilities; default runtime remainsBASELINE/CURRENT pending final choice. ModelFingerprint now includes GenerationLease. Shared fixture-level EvaluationSeal prevents changed-model heldout reuse through new output/data directories; output-local seal retained. Its tests use synthetic identities and never search heldout. No actual fixtures/HELDOUT-OPENED.txt has been written.
+
+## Fixed BM25 grid COMPLETE
+
+Prespecified fixtures/BM25-v1.md andSHA before measurements; baseline default k1=1.2,b=.75 always unchanged. Field weights content1/identifier2/symbol6/path1/declaration32/prose2/concept2/coverage0 in every new preset. Exact profile order:
+
+1.BM25_DEFAULT(1.2,.75)
+2.BM25_NO_LENGTH(1.2,0)
+3.BM25_LOW_LENGTH(1.2,.25)
+4.BM25_FULL_LENGTH(1.2,1)
+5.BM25_LOW_SATURATION(.6,.75)
+6.BM25_HIGH_SATURATION(2,.75)
+7.BM25_BOOLEAN(0,.75)
+
+All8modes perprofile: BASELINE,SOURCE_AWARE,NO_IDENTIFIERS,NO_PATH,NO_PROSE,NO_CONCEPTS,NO_COVERAGE,NO_SIMILARITY. Unchanged selection rule: validationnDCG+identifierMRR must each>=baseline; maximize min(nDCG/.75,identifierMRR/.90); baseline wins equalobjective, fixedenum/profileorder breaks remainingties. No label/project/document prior. Baseline metrics exactly invariant across seven profiles.
+
+Executed:
+
+```
+source scripts/cloud-env.sh
+python .work/A07/run-bm25-grid.py 19 > .work/A07/bm25-grid-build19-attempt1.log 2>&1
+```
+
+Runner invokes java --enable-native-access=ALL-UNNAMED -Xms128m -Xmx2g -Dindexforge.ranking-profile=PROFILE -jar .work/A07/artifacts/build19-cli.jar evaluate .work/A07/bm25-build19-profile projects/07-indexforge/fixtures projects/07-indexforge/evidence/relevance/bm25-build19/profile/attempt-1 development. Exact argv, rawlogSHA,CSV/selectionSHA andcertifiedsource/JAR/rules identity are in each completed-record.json and aggregategrid-selection.json. Runner honors .work/A07/PAUSE-JAVA before starting each profile; if resumed, cached evidence must match all identity/hash checks. No failed/partial attempt is overwritten. All7profiles completed with0runnererror; active session61570 exited0.
+
+| Profile | Prespecified selected mode | DevnDCG | ValnDCG | ValidentifierMRR |
+| --- | --- | ---: | ---: | ---: |
+| DEFAULT | SOURCE_AWARE | .653163 | .541740 | .766667 |
+| NO_LENGTH | NO_SIMILARITY | .653163 | .541740 | .766667 |
+| LOW_LENGTH | NO_SIMILARITY | .653163 | .541740 | .766667 |
+| FULL_LENGTH | SOURCE_AWARE | .638860 | .5526776463441891 | .85 |
+| LOW_SATURATION | NO_SIMILARITY | .653163 | .541740 | .766667 |
+| HIGH_SATURATION | NO_PATH | .6566743194277713 | .5532469484631737 | .7833333333333333 |
+| BOOLEAN | NO_SIMILARITY | .653163 | .541740 | .766667 |
+
+SelectedBM25_HIGH_SATURATION/NO_PATH, compiledmodelb57ee6f93b7c70058105af1ee22a191c5b14d8ef4de2de6aedf744980e763edd; frozenfixturemodel0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20. Selection file:
+projects/07-indexforge/evidence/relevance/bm25-build19/bm25_high_saturation/attempt-1/selection.txt. Exact decision:
+
+```
+Pre-held-out selection from development/validation only: NO_PATH
+Ranking profile: BM25_HIGH_SATURATION
+Objective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression
+Model SHA256: b57ee6f93b7c70058105af1ee22a191c5b14d8ef4de2de6aedf744980e763edd
+Frozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20
+
+```
+
+HIGH_SATURATION wins by prespecified weaker-target objective, although FULL_LENGTH has strongeridentifierMRR with nearlysame nDCG. Both tradeoffs remain published; no retroactive criterion change. Mandatory .75heldoutnDCG/.90identifierMRR remain unmet. HELDOUT HAS NEVER BEEN SEARCHED/MEASURED. Do not open it until final general-feature/settings selection is frozen. All previous rounds/failures/ablations/labels preserved.
+
+## Mandatory next resumed batch
+
+A pagination-continuity issue found during self-review is staged ONLY in .work/A07/cursor-context-next.py, not applied:
+
+- SearchEngine querydigest currently omits scoringVersion/profile. An old signedcursor can survive a restart with another rankingpreset and use an offset under a changed order. Bind scoringVersion/profile in thedigest; same-profile restart must continue, changedprofile mustreject.
+- SearchCursor binds principal/version butnot actualrepositoryscope; version sequence restarts could collide afterpermissionconfigchanges. Hash canonical UTF16principal+sortedrepositories+adminrole in payload, retaining explicittenant/version, toreject same-version changedscope and support opaque newlineprincipalstrings. CurrentstrictACL filtering still prevents unauthorizedresultcontent; this fixescontext/paginationcontinuity rather than claiming an observedcontentleak.
+- Script stages direct sameprofile/changedprofile restart andsame-version changedscope/newlineprincipal regressions. Read it before executing after rootresume. It changes SearchEngine/Cursor/test source, so nextcertification20/modelidentity is required. Source19 metrics remain historical evidence. Preserveallmutationfailures if newly added cursor branches create survivors.
+
+Next possible GENERAL quality idea, not implemented: conservative JDK/Lucene code-feature pattern hints for semanticprose retrieval wherepurecode lacksuserwording (UTF_8.newDecoder+CodingErrorAction.REPORT; DirectoryReader+AutoCloseable/AtomicBoolean; realBooleanoperatorlexerpatterns), with comment/stringdecoy negatives, no customclass/document/project lookup, fixedpreregistration andNO_CODE_FEATURES ablation. Root has been informed; need choose actual safe design before anynewmetrics. Existing commoncontext-freeidentifiers remain ambiguous. Do not invent working behavior from textpattern mentions. ConventionalBM25 rounds alone have not met targets.
+
+## Remaining acceptance
+
+No100k prep orperformance measurement hasrun. Rootpermits exactfinalartifact/generator/indexsettings preparation outside quiet aftersource/qualitysettle, then separate quiet3×30sec30RPS reference with2GiBmaxheap, errors/GC/CPU/rawlatency/env/source/config identity. PreparePerformance.java is unrun. Benchmarkboundary excludesHTTP; do not claimHTTP end-to-endlatency. Benchmarkscript assertions are real; synthetic benchmark-gate-unit-fixtures are notperformanceevidence.
+
+Finalsource2k/20k scripts have notrerun; historical actual build8-2k andcertified12-20k passed, exactevidence retained. No final tested-source cachecertificate minted for19. Scripts require verifiedmatchingfingerprint. A06 exact17 independent correctnessclosure remains; later18/19 rankingdelta has no newindependentreview claim. All required documentation exists; STATUS records currentcertification/grid/gaps. Rootclarified REVIEWstalesentence; preservethat edit.
+
+All owned paths now write-paused until explicitrootresume. No backgroundJava/Maven/tool sessions remain.

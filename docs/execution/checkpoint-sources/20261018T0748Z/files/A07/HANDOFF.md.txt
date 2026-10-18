@@ -1,0 +1,24 @@
+# Frozen25 / finite VAL / prepared final handoff
+
+All inference source/CLI and all24 operator context bindings, classes, context and fixtures are frozen. Root completed the approved once-only final. A07 must not launch another final or inspect held-out per-query results. No A07 Java remains active. Unbound docs/handoff only may change pending root terminal result.
+
+Strict25 source c0ab80c6a5e14d5836b9e69813f18d16acda382a97686df2d020c45622a2e8d2; CLI e2d947c97a6b5b5a5fc6d6696d1ca56241eed11f9cfbb772b0d1880a6217dbc7.88/0/0/0 tests;524/628 strict kills83.43949%,100survived,1timeout,3nocoverage,0runner/memory/unknown. All declared85/75 coverage +70 mutation gates pass. Raw .work/A07/verify-wave2-build25.log, certification evidence and build25-reports preserved.
+
+Actual frozen commands audit→DEVfit→VAL completed; see .work/A07/ranking-wave2-build25-attempt1 and copied evidence/relevance/ranking-wave2-build25/attempt-1.2160 per-query/72 aggregate rows, C0exact540 replay, all-family60row baseline invariance and independent metrics2160 within2.22e-16. Tampered feature/protocol/model copied-context refusals passed before training/data creation. Original attempt unchanged.
+
+C1 SYNTAX_GATED/SOURCE_AWARE/CODE_HIGH/modelNONE selected, actualevalFPf938b3fea0324fdbeac8bb781b42bec7f38f99af4f86cda5db8a30495bc98399. BaselineFP75a5f85ef95c35c0a1f77d1cc4a35b3cca8fe1a90eef9ad8664cb85656316c0f. C1 DEV .7066751871/.925; VAL .6585820908/.7833333333. C2 DEV .7333543986/.925; VAL .6727222173/.7833333333. Both VAL objectives capped atsame IDMRR/.9, so fixed order picksC1; no override from higherC2nDCG. D1=C1metrics. C0 DEV .6802153485/.925,VAL .5804173420/.7833333333; contentbaseline DEV .4974954616/.6754761905,VAL .4369789084/.75.
+
+DEV L2 .01 failed100iteration bound; .1 OOF .7143448006/.925;1 OOF .7311403168/.925 selected/refit once. All model/scaler/fold/failure/path artifacts remain. C2 diagnostic payloadSHAbaea0f3c949fe2b8a0c6f7e66a6e8bda7fb74482cd72b910312a5a04ef629d43/fileSHA940fe8f3387fb97cebab6eb7c9483944702b504cb7af651afdbdb9e5846be4bc; not selected for deployment/final.
+
+External operator under evidence/relevance/ranking-wave2-build25/operator: JavaSHAe06aabe3151011fdc1687ebe27e12dd9f68189ee8bec6b2a7a846296484b9e75; launcher6bbc15be953678d6c10eab1c7cf8172dad6a4cc3d9dc887dd545e907e99b852b; protocol0a447addfa23a68cd711a6202a212220ea0d32fe3cb66fcb206b629c435b8bda. Actual prepare --attempt1 --grant root-pre-pulse10-preparation PASS, javacclean,19synthetic assertions, actualC1/baseline identitycheckPASS, no corpus/judgment/data/seals opened. Context .work/A07/final-operator-build25-C1/prepare-1/context.properties SHA9ffea68f5ec220eee3a6665e474a73d001255c3c92cddab1320fb6884e9ac5ee; binarybundlebc1711be47cce6ef920ab7be236e8e483f6c47d2ba278fdc7bc9ec544ce35ab5. Root reviewed these and directly executes final with root-authored approval. Do not change any binding file or issue another execute.
+
+Original24 history/first-final global/local seals/labels unchanged. New global is fixtures/ranking-wave2/FINAL-ONCE-build25-C1.properties; output evidence/relevance/ranking-wave2-build25/final-attempt-1. Root owns terminalresult; no worker-heldout inspection. No new model tuning/relabel/default change is permitted. NewC1performance/clean-release remain pending; historical24benchmark applies only to frozen24BASELINE.
+
+
+# Terminal final packet / quiet10 pause
+
+Root exact final COMPLETED2026-10-18T06:53:47.012781673Z,exit0,9620ms,180rows. QualityFAIL: unchangedBASELINE nDCG.6012721858/identifierMRR.8833333333, fixedC1 .6594266978/.8; all9 diagnostic target flagsfalse. Frozen guard retains ORIGINAL_BASELINE; defaults unchanged. No held-out-driven reselection or source edit. Worker read only aggregate/completion metadata, not held-out per-query output.
+
+Small exact approval/context/preplogs/seals/completion/aggregate copies and packet.json now at evidence/relevance/ranking-wave2-build25/execution-evidence/, outside24 bound files. Source final per-query output remains untouched with root-completionSHA96db19ecb434f2059cbb358a79a422e81fdb61df3d97a82c8de611e5a2a59f0e; summarySHA2e58b7ebe7d3c35a905a444ba9b9276adddaa41fb2fbcd0c599897e36a2d14cd. Do not hash/read per-query output during quiet/future design. First-global/local and new versioned seals/raw/selection/24 bindings immutable forever.
+
+Quiet10 is ACTIVE: no Java/Maven/Docker/JFR parse/training/evaluation/new metrics/heavy hashing. All source/POM/scripts, operator/context/classes and metric/fixture artifacts remain frozen. All A07-owned writes PAUSE after this small docs/handoff packet for root commit/review. Mandatory quality is still unmet; parent will explicitly authorize a separate DEV/VAL-only representation audit/preregistration after committing this immutable failed wave. No additional inference work is currently authorized. No Git writes by worker.

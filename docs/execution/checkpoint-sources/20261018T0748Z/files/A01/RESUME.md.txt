@@ -1,0 +1,30 @@
+A01 FINAL CORRECTNESS/SOURCE FREEZE CHECKPOINT — 2026-10-18
+
+ALL owned paths (projects/01-clearledger/** and .work/A01/**) are now WRITE-PAUSED for coordinator review/Git. Do not edit anything until root releases. No Java, Maven, API or Docker stack active. Root only does Git writes.
+
+Frozen full Git-visible source: working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5
+Root POM:3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d.
+Latest passing live/demo/smoke source:working-tree:242052d3bb19765a763f9e0030838bc6e9a1d38fb9a883333c981114db03d79d.
+Only later executable delta: summarize-performance.py truthful plannedLogicalCallsPerRun101100, derives actual client calls from measured clientRetryAttempts and rejects source mismatch. No full study output. Python compile and real1000-input refusal check pass. evidence/release-helper-correction.json captures exact source map and real smoke-derived1011/1011/1035 client-call attempts.
+
+Verified gates:
+- Full15actualPG+10ordinary=25methods/500propertycases PASS6.1.3 at01:59:30Z .work/A01/audit-integration.log, evidence/integration-current.json production manifest eebeeb1d... . Core76/79line96.20%,51/56branch91.07%.
+- Selected domain PIT30/31KILLED,1equivalentlength survivor,0otherstatus; immutable reports .work/A01/pit-current-preserved; evidence/mutation-current.json.
+- Driver-only corrected ordinary14methods/4newretryregressions PASS02:21:57Z, manifest a8ed0e1af863680687fcb7487a5213ce811925c5f23fa13b3b1634505c6c6be2, raw client-retry-unit-final.log. All29otherpriorJava/SQL/POMpaths byte-identical, source-continuity.json. Do not invent new15PG run.
+- Guarded launcher normalprepare completed02:33:25Z, six independent CLI guard tests + real14-method Maven install/dependencycopy + before/after source&idle stamp. .work/A01/guarded-runtime-prepare.log.
+- Actual rootup/demo9/reset/repeatdemo9/benchmark1000writers1,8,32/down ALLexit0. End02:35:27Z. target/live-retry-command-statuses.jsonl, evidence/demo-current.json/system-smoke-current.json. SQL1001journals/receipts/outboxeach,pending0,20tenants1060touchedaccounts10000seeded. Transaction retries0/406/1552; tempclient0/0/24,additional0/0/24,exhaust0/0/0. Latency outside all same-key retries/backoff. Actual JFR/CPU/RSS and profiles present. Functional shared-host smoke only.
+- Original writer8failure preserved .work/A01/system-smoke-first-failed including exact recovered Workload.java SHA346865199f0368267222f32f63c3745829b0cc73908cecc6c7a968083df56fd6. Prior12internal budget unchanged, driver6calls temporaryonly.
+- JMH4forkedcases1fork100mssmoke and exact prepared mode + artifact alteration[0,1,0] passed. No fullJMH.
+
+Prepared artifact caches currently return0 for both runtime-cache.py check and jmh-cache.py check. Both exclude the changed summary script by explicit compiled-input scope; no new receipt/build claimed. CLI helpers require same source/root captured before real builds and artifact equality; runtime prepare refuses any live owned Java /proc argv (including lost PID), stamp repeatsidle. upchecksownedhealthyPID/cache, rejectsunknownport/unhealthyprocess; projector alwayscheckedcache. Run down before source/artifact rebuild. No suppression of ordinary/integration gates. benchmark and microbenchmark --prepared do not start Maven, fail stale state.
+
+REMAINING P01-A5:
+1. Wait root release/source commit and explicit quiet reservation. No stack grant now; A02/A04 own next slots. Full workloads/JMH have never been run.
+2. On quiet host run source/artifact checks. Run scripts/microbenchmark.sh full --prepared > .work/A01/full-jmh.log (3fork,3x1swarmup,5x1smeasure,GCprofiler). Then scripts/benchmark.sh1000003--prepared > .work/A01/full-workload.log (actual syntax with spaces). Keep rawtarget outputs/source/env/latencies/independentexpected/JFR/CPU/RSS/SQL, three rounds1/8/32. Only ownPG stack. All other builds/services/stress off.
+3. After real success run summarize-jmh.py and summarize-performance.py; verify9runs100k20tenant10000touchedaccount/seed/expectedfilehash/source/time/positive100krawsamples/SQLcounts/replay0/actualprofiles. Preserve variationmean/sampleSD/range and limitations. No fake capacity or full gate untilactual.
+4. Clean checkout demo/workload reproduction after coordinator Git commit; final docs/performance/walkthrough/evidence and root global checks.
+5. A10 latest driver/cache followup pending (requested exact242052... plus unit14/real smoke); original production eebe review closed. Notifyroot of any response while write-paused, do not edit untilrelease.
+
+Peer review A01->A02 fully scoped CLOSED: initialsemantics3a8a4692a source67ordinary13PG/41PIT; latest cache104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187/root3743 with68ordinary+nineCLIcases, all19src/mainfiles byte-identical. .work/A01/A02_FINAL_REVIEW.md contains exactfinding/closure. No A02 writes. FullA02release separate.
+
+Parent controlsallGit/max2Docker/fullquiet windows. Normalmvnw autoFIFOmax3builds; neverbypass/buildslotenv. OwnershiponlyA01paths. No task completion claim while A5open.

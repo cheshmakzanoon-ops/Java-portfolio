@@ -1,0 +1,60 @@
+# A07 all-owned-path handoff after frozen code-topic round22
+
+Resource pause, not completion. No A07 Java/Maven/evaluation/background processes remain. No Java/POM/scripts changed after build22 queue submission. All projects/07-indexforge/** and .work/A07/** writes pause after this handoff until explicit coordinator resume. Parent owns Git/root/shared files. Build18 milestone fbe9630 is pushed; later A07 changes remain parent-owned uncommitted work. Historical handoffs HANDOFF-build18.md and HANDOFF-build19.md remain.
+
+## Exact current evidence
+
+Build22 finished2026-10-18T03:43:26Z, functional verify PASS64 tests0 failures/errors/skips, JUnit6.1.3. Strict mutation certification is NOT complete:98 total,96 KILLED,1 MEMORY_ERROR (CodeIdentifierAnalyzer$1.incrementToken EOF false→true),1 SURVIVED (SearchCursor.decode length>2048 boundary). Maven configured threshold passed but no-MEMORY_ERROR project convention does not. Do not claim98killed/full certification. Latest strict complete certificate remains19 (58tests95/95KILLED). Core ingest/index/query line/branch:95.73/82.21,92.16/81.72,96.77/86.79. Current exact envelope projects/07-indexforge/evidence/certification-build22.json includes strictMutationCertificationPassed:false and XML statuses; raw .work/A07/verify-twentysecond.log. Failures20/21 preserve two incorrect new synthetic query oracles, not graded label changes.
+
+Source SHA69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041. Copied CLI .work/A07/artifacts/build22-cli.jar SHA02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d. Adjacent build22-source.sha256,build22-cli.sha256,build22-verification.json preserved. Source hash includes project Java/XML/TSV/JSONL/shell excludingtarget/runtime/evidence plusrootpom/AGENTS; Markdown/sha metadata excluded. Freeze metadata fixtures/CODE-FEATURES-v1.sha256 written before any hint metrics.
+
+Exact verification invocation (DO NOT rerun until coordinator release):
+
+```
+source scripts/cloud-env.sh
+./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify
+```
+
+Queueing freezes all Java/POM/scripts immediately; automatic FIFO three-slot wrapper. No bypass or manual pin overrides. Never run saved generator patches again: cursor-context-next.py/code-features.py/code-feature-tests.py were already applied, then corrected.
+
+## Production delta since19
+
+Cursor now binds scoringVersion/profile and canonical UTF16 principal plus sorted actual repository scope/admin role, while preserving tenant/version/query/generation/offset/time. Same-profile restart continues; changed profile, same-version changed scope/admin and principal aliases reject. Existing ACL filters already prevented denied result content; this is pagination-context continuity. Direct restart/newline/repository-order/code-unit collision tests pass.
+
+Generic code-topic hints reuse bounded lexer (<=1MiB/100k tokens), ignoring comments/string/char/textblocks; local shadow API names cause abstention. Ten fixed JDK/Lucene token families contribute heuristic topic fields only for Java. No fixture/project/custom class/document lookup or claim that lexical source proves working behavior/security/durability. Query plain multiword only,512chars, two distinct normalized fixed terms; Boolean/phrase/field/single-identifier inputs disable hints. BASELINE and NO_CODE_FEATURES disable channel. Four presets use prior HIGH_SATURATION fields/coverage0/k1=2,b=.75 and weights0/1/4/12. Real pattern gains score while comment/string decoys keep previous scores; denied repository/cache/facet/revocation controls pass. Model fingerprint includes indexing/scanner helpers and entire packaged shaded CLI artifact/dependencies plus profile, preventing a changed indexer/library from reusing heldout model identity. Actual HTTP remains Boot4/OIDC; final runtime default BASELINE/CURRENT until a final accepted candidate is frozen.
+
+A06 prior review closed exact17 publication/job-receipt/path/explanation fixes; no blanket later approval. Sent A06 exact22 fingerprint/delta for a bounded read-only final review when coordinator schedules it. No independent runtime probe requested. Residual BM25 tenant-reader score/order statistical coupling remains documented, not full ACL statistical noninterference.
+
+## Frozen code-topic grid COMPLETE
+
+Rules fixtures/CODE-FEATURES-v1.md were frozen before scores. Profile order CODE_NONE,CODE_LOW,CODE_MEDIUM,CODE_HIGH. All nine modes per profile: BASELINE,SOURCE_AWARE,NO_IDENTIFIERS,NO_PATH,NO_PROSE,NO_CONCEPTS,NO_COVERAGE,NO_SIMILARITY,NO_CODE_FEATURES. Unchanged criterion: validation nDCG and identifierMRR each>=baseline, maximize min(nDCG/.75,identifierMRR/.90), baseline wins equalobjective, fixed enum/profile order resolves remaining ties. No retrospective change/relabeling.
+
+Executed from certified functional artifact22:
+
+```
+source scripts/cloud-env.sh
+python .work/A07/run-code-grid.py 22 > .work/A07/code-grid-build22-attempt1.log 2>&1
+```
+
+Runner uses java --enable-native-access=ALL-UNNAMED -Xms128m -Xmx2g -Dindexforge.ranking-profile=PROFILE -jar .work/A07/artifacts/build22-cli.jar evaluate .work/A07/code-build22-profile projects/07-indexforge/fixtures projects/07-indexforge/evidence/relevance/code-build22/profile/attempt-N development. Each completed-record.json records exact argv/hash identity/log/CSV/decision; outputs never overwrite failed attempts. Resume validates every bound hash and respects .work/A07/PAUSE-JAVA before each profile. Process22570 exited0, all four complete; baseline metrics invariant.
+
+| Profile | Selected mode | Dev nDCG | Val nDCG | Val identifierMRR |
+| --- | --- | ---: | ---: | ---: |
+| NONE | NO_PATH | .6566743194277713 | .5532469484631737 | .7833333333333333 |
+| LOW | SOURCE_AWARE | .6620066524181045 | .5534573992198107 | .7833333333333333 |
+| MEDIUM | SOURCE_AWARE | .6714854428535193 | .562965192093163 | .7833333333333333 |
+| HIGH | SOURCE_AWARE | .680215348485826 | .5804173420415929 | .7833333333333333 |
+
+Selected CODE_HIGH/SOURCE_AWARE model fbc21e64ec9d14736cc35be9484ddbbe1906c0774f7f745a0d7515024cfb9e4e. Frozen fixturemodel0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20. Full data evidence/relevance/code-build22/grid-selection.json, profile/attempt-1/development-per-query.csv/selection.txt. NO_CODE_FEATURES val.5523154629166995/ID.783333; hint affects only6prosequeries (devq12+.235101,q38+.049970,q40+.457108;valq44+.265464,q46-.013997,q48+.310570). Identifier ambiguity unchanged. All failures/ablations/rankings retained. Prior fullgrid19 remains historical, chosenHighSat/NO_PATH .553247/.783333; fullLength separate .552678/.85tradeoff preserved.
+
+HARD TARGETS STILL FAIL (.75heldoutnDCG/.90identifierMRR). HELDOUT NEVER SEARCHED/MEASURED and nofixtures/HELDOUT-OPENED.txt exists. Do not open until final general source/config selection and strict certification. Candidate not adopted runtime yet. No label/query/corpus changes allowed based on outcomes.
+
+## Next bounded work after explicit coordinator release
+
+First meaningful mutation fixes, not applied: analyzer legacy tests contain unbounded while(incrementToken) list growth. Mutant false→true at EOF causes infinite downstream consumption and MEMORY_ERROR; add direct finite token sequence+repeatedEOF assertions and bound every legacy consumer so failure is deterministic rather than heap exhaustion. No mutant/target exclusion; rerun selected PIT/full verification. Cursor survivor is length>2048→>=2048, NOT expiry (exact300s already covered). Oldtest variesprincipal but canonical hash makes token lengths constant, silently never reaching2048. Replace loop with explicitly constructed signed2047/2048/2049 tokens by digest length and ASSERT case lengths; accept<=2048/reject2049. Re-certify newsource/JAR after changes and preserve22exactstatus. Codefeature metrics remain22historical; newartifact identity must be frozen before anyfutureheldout ormeasurement.
+
+No next quality experiment is selected; current general hint improves prose but identifier ranks remain ambiguous. Future change must address general retrieval, not fixture/project/identifier-answer priors. Keep prereg objective and labels. Consider development per-query diagnostics only after release; heldout untouched.
+
+Current-source2k/20k script demonstrations NOT_RUN; historical build8-2k and12-20k retained. No final tested-source marker minted for22. 100k preparation NOT_RUN; PreparePerformance.java unrun. Must use exact final copied artifact/generator/indexsettings,seed7007,3tenants,maxheap2GiB; preserveprepidentity/measuredRuns0. Performance needs separate explicit quiet grant for3x30sec30RPS, p95<200ms/errors/CPU/GC/rawlatency/source/environment proof; shared application harness excludesHTTP transport. No final performance claim. Benchmark gate synthetic fixtures are notperformanceevidence. Parent acquiring locks/reference windows; do not startJava/build/eval/prep/demo until explicit release.
+
+All owned paths now write-paused. Resource pause is not task completion.

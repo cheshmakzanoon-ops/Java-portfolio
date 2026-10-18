@@ -1,0 +1,36 @@
+{
+  "observedAtUtc": "2026-10-18T07:31:23.460831+00:00",
+  "method": "Public GitHub Actions HTML embedded run data",
+  "runs": [
+    {
+      "name": "Security and SBOM",
+      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39107077080",
+      "status": "WORKFLOW_RUN_STATUS_QUEUED",
+      "conclusion": null,
+      "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff",
+      "createdAtUtc": "2026-10-18T07:16:56Z"
+    },
+    {
+      "name": "CI",
+      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39107077040",
+      "status": "WORKFLOW_RUN_STATUS_PENDING",
+      "conclusion": null,
+      "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff",
+      "createdAtUtc": "2026-10-18T07:16:56Z"
+    },
+    {
+      "name": "Integration",
+      "runUrl": "https://github.com/cheshmakzanoon-ops/Java-portfolio/actions/runs/39107077058",
+      "status": "WORKFLOW_RUN_STATUS_QUEUED",
+      "conclusion": null,
+      "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff",
+      "createdAtUtc": "2026-10-18T07:16:56Z"
+    }
+  ],
+  "verifiedPasses": 0,
+  "limitations": [
+    "No successful hosted result observed. CI detail explicitly waits for CI #30 under workflow concurrency; the reason that older queued run has not progressed is unknown.",
+    "Public HTML data, not an authenticated REST result. Current offline source work is not part of commit 1d789d70aab68b1d08a5a9e758338d97193a6cff."
+  ],
+  "sourceCommit": "1d789d70aab68b1d08a5a9e758338d97193a6cff"
+}

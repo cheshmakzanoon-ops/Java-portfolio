@@ -1,0 +1,4 @@
+Pending until frozen Maven invocation3 finishes:
+- Catch recoverable LinkageError as well as Exception in timing consumer; guarantee fatal VM errors remain outside scope.
+- BenchmarkRunner must validate actual instrumentation evidence (nonempty method registry + nonzero canonical histogram exits + hlog exists), not just healthy status, before accepting a trial. Current source/tests make instrumentation occur, but gate should detect future policy regressions.
+- Revalidate whole invocation after source fixes; no edits during queued/running certifying builds.

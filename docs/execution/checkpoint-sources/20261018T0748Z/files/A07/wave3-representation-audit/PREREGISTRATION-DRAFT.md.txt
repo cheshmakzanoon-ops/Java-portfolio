@@ -1,0 +1,116 @@
+# Wave 3 — finite source-representation protocol (DRAFT)
+
+This is a proposal for review, not an executable study or a frozen preregistration. Root must approve implementation, then freeze an exact final version and all feature/schema/catalog/quota identities before any new DEV scoring, training or VAL access. Changes after that boundary require an explicit new version and preserved failed evidence. No new heldout evaluation is authorized.
+
+## Hypothesis and scope
+
+Shared query/document relations within executable member bodies can distinguish implementation evidence from mentions, API occurrences on another receiver, or guards that occur after an effect. The hypothesis is limited: parse-only Java syntax can show explicit local relationships, not arbitrary program correctness, dynamic dispatch, external helper behavior or unstated bare-identifier intent. All query/document interactions are shared dimensions, never query-ID/doc-ID/filename/path/project/role categorical weights. No new hand-written synonym catalog is added.
+
+Keep build25 CODE_HIGH, SOURCE_AWARE, actual syntax gates, base candidate retrieval and top500 pool. Only actual plain unfielded multiword queries may use a new reranker. Single identifiers, explicit Boolean/phrase/field syntax, BASELINE, counts, facets, snippets, suggestions and explanation authorization keep their existing semantics. No model inserts a missing judged document into its pool. No model uses grades to extract source features or identify a query type.
+
+## Extractor: bounded JDK25 parse-only trees
+
+Use `JavacTask.parse()` and public `com.sun.source.tree` APIs, with no `analyze`, `generate`, user compilation, annotation processing, reflection on source classes, class loading of source artifacts, subprocess commands supplied by source, dependency downloading or network access. Input is one in-memory `.java` unit under a synthetic opaque URI, with a deny-all external JavaFileManager; empty class/source/processor/module lookup paths and `-proc:none`. Parsing syntax is not type attribution.
+
+Before parsing, a finite state lexer validates UTF8/source length, counts tokens/delimiters, and handles comments, character/string/text-block literals and Java Unicode-escape preprocessing. It must match Java's eligibility rules for Unicode escapes; if that support is not correct and tested, abstain on any eligible escape rather than parse a different program. Comments and literal bodies never create anchor terms. Literal constants influence an operation only in a resolved API argument position (e.g. the enum REPORT or ATOMIC_MOVE); arbitrary text like `"Files.move(...ATOMIC_MOVE)"` is never an API event. Numeric comparisons retain expression identity, not the literal number as a learned feature.
+
+Run the compiler parser in one bounded reusable worker process per ingest, with a fixed operator-supplied Java executable/arguments, not in the query/HTTP process. The worker only parses the supplied bytes. Parent and worker heaps sum to at most the declared2GiB: proposed ingest parent1792MiB, parser128MiB; query-only reference stays2GiB with no parser. Record actual process/RSS overhead separately; a heap sum is not a total-RSS claim. No containers or worker execution occur until execution is granted.
+
+Hard bounds, checked before unbounded traversal/materialization:
+
+| Resource | Proposed fixed maximum / action |
+| --- | --- |
+| Source considered for structure | 65,536 UTF8 bytes/unit; larger valid sources remain searchable with deterministic UNKNOWN structural state |
+| Lexer | 8,192 tokens, delimiter nesting32, token length256; overflow => UNKNOWN, no truncated “complete” unit |
+| Parse | 1 unit/request,128MiB heap,256KiB response,1second wall watchdog; max1worker and1queued request |
+| Tree traversal | Iterative;16,384nodes,128members/unit,512nodes/member,64locals/member,128operations/member,128relations/member |
+| Local dependence | 8expression edges; one unambiguous helper hop in same compilation unit; no recursive summaries |
+| Document output | 16KiB checksummed typed summary, max128stemmed anchor terms/member; overflow => whole-unit UNKNOWN rather than first-file/member bias |
+| Search | existing500 authorized candidates,64normalized query terms; at most8MiB source-summary materialization/request and4 new relation features; all loops bounded |
+| Worker lifecycle | replace after64units; hard deadline/exit/protocol corruption aborts generation construction, leaving old generation visible |
+
+Expected unsupported syntax, missing compiler module, oversize source, type ambiguity, reassignment or unresolved calls have explicit reason codes. Missing compiler module is startup/configuration error for a configured structural deployment, not an automatic scoring fallback. Deterministic source/quota unsupported cases yield UNKNOWN; they do not change ingestion acceptance of otherwise valid source. Infrastructure failures/timeouts abort the job instead of publishing hardware-load-dependent feature omissions. No silent catch of Throwable with success. Watchdog termination must reap the child, bound stderr/stdout, and preserve cancellation/old-generation safety. Resource policy is tested adversarially before the index/relevance phase.
+
+### Semantic boundary
+
+Collect named member declarations and executable identifier components, invocation receiver/arguments/result bindings, new-object operations, arithmetic comparisons, returns/throws, and structured if/else/try/loop scopes. Exclude package/import text, annotations' text, type/owner role names, comments, string payloads and unrelated members from executable overlap. Keep names only as transient query-overlap text and symbol-resolution keys; no name is a trained coordinate.
+
+Resolve a JDK type only from an explicit fully qualified spelling, unambiguous import plus local declared type, or a known return type from a supported resolved API signature. Declared source types, locals, fields/type parameters, static imports and inherited/unknown names can shadow spellings; ambiguous wildcard/import/inherited resolution means UNKNOWN for the affected API relation. A receiver with an explicit local binding must be the same receiver, not merely have the same terminal method name. Do not assume `var` return types or dynamic dispatch without an explicit supported signature.
+
+Local single-assignment value edges track parameters and locals with block scope. Shadowed bindings get distinct IDs. Writes, ambiguous aliases, field escape, polymorphic calls and captures invalidate the affected provenance instead of joining unrelated values. One restricted loop form may retain an explicit accumulator edge: a local initialized before the loop, with exactly one `+=` of the same loop-local read result, and no other writes/aliases. This is an observed accumulator dependency, not a proof of nonnegative/range-safe arithmetic; other loop-carried mutations are unknown. Return/throw branches and normal structured statement order support only syntactic guard-before-effect claims. Exception/finally edges, nested/break/continue loop control and unsupported short-circuit constructs conservatively prevent a dominance claim unless modeled explicitly. A syntactically recognized call is an observation; it is not a proof that I/O succeeds or a guard enforces a security property.
+
+One-hop summaries may compose only a uniquely bound non-overridable helper in the same compilation unit, with no further calls requiring a custom summary. Private/static resolution and argument substitution are internal analysis operations, not ranking preferences. No cross-file, cross-repository, cross-tenant or unresolved custom-class summary is composed. This deliberately abstains on portions of the audited object-reuse chain. A later broader call graph is a separate experiment with its own authorization/dependency invalidation design.
+
+## API documentation control: real source, no new synonym list
+
+Create a deterministic catalog from the pinned JDK25 `lib/src.zip`: public/protected API declarations in exported java.base packages under `java.io`, `java.lang`, `java.nio`, `java.security`, and `java.util` (including their exported subpackages). Exclude `jdk.*`, `sun.*`, non-exported internals, example snippets, arbitrary implementation comments, `@see` lists and links' target identifiers. For each signature, retain its own first descriptive paragraph and parameter/return prose plus the declaring type's first descriptive paragraph; strip markup and normalize with the existing prose analyzer. Retain at most128unique normalized terms/API entry, with an explicit deterministic document-order rule. Catalog cap32MiB; exceeding the total cap fails catalog preparation rather than silently supporting an arbitrary prefix. The supported signature/type table is generated from the same source, not a manually selected set of fixture APIs. Trusted JDK catalog preparation is a separate offline step: max2MiB/source entry, fixed32MiB catalog output and128MiB worker heap; the64KiB untrusted-document policy must not silently truncate JDK Files.java. Catalog source/entry overflow fails preparation before measurements.
+
+Bind the exact JDK source archive, catalog bytes, generation tool/source, normalizer, parser JDK build, summary schema and feature definitions. No web scraping or unstated external lexicon. The JDK copyright/license notice accompanies any distributed derived catalog. Review generated token provenance before training; no human adds “missing words” based on relevance scores.
+
+Resolved API calls contribute their real API prose to their own member's anchors. API arguments such as REPORT/REPLACE/IGNORE must remain distinguishable as syntax; documentation overlap by itself is not behavioral evidence. R1 is explicitly the control for extra vocabulary. The audit already found a competing source that genuinely hashes bytes, so API prose may amplify a wrong judged answer and is not assumed beneficial.
+
+## Six new shared dimensions and finite families
+
+Use shared-v1's ten features unchanged as prefix, with a new exact schema ID. Let Q be the existing normalized query-term set. Each coverage is a bounded ratio using Q's full size, with zero for empty Q. No learned word ID, literal value, member count, file length, filename or role flag enters the model. A member/relation's anchors are executable identifier components and, in the API-enabled variant, the precisely resolved API documentation described above.
+
+| New index | Definition |
+| --- | --- |
+|10| max over members of `|Q intersect executable_identifier_terms(member)| / |Q|`; excludes comments/string/import/class-owner text |
+|11| max over members of `|Q intersect resolved_API_documentation_terms(member)| / |Q|`; no file-wide union across unrelated members |
+|12| max coverage over a same-value producer→consumer relation's endpoint-anchor union; both endpoints must each match at least one Q term and union must match at least2distinct Q terms |
+|13| same bounded endpoint coverage restricted to one proven same receiver chain |
+|14| same bounded endpoint coverage for a modeled guard that dominates an effect on the same value/provenance; the guard/effect scopes must be in the same member after at most one supported local summary |
+|15| same bounded endpoint coverage for mutually exclusive early-return/throw and alternate effect paths concerning the same provenance |
+
+Unknown, unsupported or unanchored relations contribute zero structural evidence; they are not negative proof. No model learns an UNKNOWN/status bit or parser-success/type-shadow flag, which could act as a file-style prior. If the entire authorized query candidate set has no positive new usable evidence, bypass the new reranker and preserve exact C1 scores/order. When any candidate has usable evidence, score the whole pool on the same learned scale with zero new coordinates for unsupported candidates; never mix raw C1 scores with learned scores per document. This does not promise that an unknown candidate's rank stays unchanged: a zero coordinate is missing evidence, not verified bad behavior, and a learned model can still be wrong. Guard relations do not manufacture additional natural-language tokens such as “idempotent” or “secure.” Query mismatch remains mismatch; this may leave q14 unresolved. Relations link actual values and scopes even when numeric features happen to match for unrelated semantics.
+
+Three fixed families, with no further hybrid or weight grid:
+
+- R0: exact unchanged build25 C1, CODE_HIGH/SOURCE_AWARE, modelNONE. This is a diagnostic comparator, not the deployment default adopted from the failed final.
+- R1: a new pairwise challenger using shared-v1 + features10/11 (12dimensions), with the actual build25 D1 behavior for single identifiers. New reranking only on actual plain multiword inputs with positive usable new evidence.
+- R2: identical to R1 with all six new dimensions (16dimensions).
+
+Original build25 BASELINE is the adoption safety comparator. Neither C1 nor C2 is promoted as a deployment winner merely because it is a study comparator. R1/R2 retain identical C1 base pool and path tie order for equal finite float scores. Exact C1 single/explicit behavior is an assertion, not an MRR-based preference. No new identifier family is justified by this DEV audit.
+
+## Counterfactuals and engineering gates before measurements
+
+Synthetic counterfactuals are correctness fixtures, not relevance judgments or training queries. They use names/content unrelated to the authored relevance corpus and never modify frozen labels.
+
+1. Real resolved MessageDigest receiver→digest(input) chain versus API text only in a comment/string/text block; fake local MessageDigest; another receiver; separate methods; nested/lambda/local-type scopes. Only the actual supported receiver/value evidence is present.
+2. Real decoder REPORT→decode on the same receiver versus REPORT on another receiver, IGNORE/REPLACE, unknown reassignment, same words in comments and strings, shadowed StandardCharsets/CodingErrorAction, Unicode escapes. Structural facts differ as declared; source prose may remain identical.
+3. Read→counter→over-limit throw BEFORE buffer write versus after write, unrelated counter, wrong buffer, caught-and-continued exception, `finally` effect, guard bypass, reversed comparison, overflow-prone unsupported expression. Unknown cases do not claim a safe bound.
+4. Temp-write/force→move with corresponding path versus different channel/file, move before force, non-atomic option, unresolved helper. Preserve the distinction between an observed atomic argument and a crash-safety proof.
+5. Guarded early return versus unconditional effect; read/verify in an unrelated member; one supported local helper versus recursion/overload/virtual or cross-file helper. The cross-file case stays unknown, even when it resembles a DEV target.
+6. Variable/member alpha-renaming, formatting/comments, source declaration reordering and repository/path/tenant renaming leave graph facts and interaction vectors unchanged when queries are renamed consistently. Duplicate matching mentions or extra unrelated members cannot inflate a max-member feature.
+7. Both genuine exact bare declarations remain in original order; body/signature, public/static/test/main/helper/call count/path are not global preferences. Explicit field/phrase/Boolean syntax bypasses new inference exactly.
+8. Malformed/truncated source, huge tokens, Unicode escapes, nesting, many tiny members, compiler-unavailable/worker crash/timeout/protocol flood, cancellation and disk-full: exact bounded outcome, reaped worker, no partial generation publication. Test successful repeated parse byte determinism separately from diagnosed process failures.
+9. Authenticated HTTP/CLI serving uses the exact selected schema/catalog/model. Denied repository/tenant source cannot contribute candidates, summaries, feature counts, training packets, explanation fields or warmed caches. Include actual denied-document controls and revocation during feature extraction with final version recheck. Only authorized numeric feature names/scores are exposed; no raw AST/catalog collection statistics.
+10. Same-profile changed catalog/parser/config/relation/model bytes produce a new production scoringVersion; old cached paths/cursors are rejected after restart. Unsupported/missing schema/index version fails explicitly. Corrupt summaries/model/catalog fail integrity checks. Fresh/reopened ingestion rebuilds features from content fingerprints, never stamps a new identity over old semantics.
+
+Keep strict full integration,85%line/75%branch selected original-core coverage and70%strict mutation gates. New extractor/interaction branches belong in targeted mutation coverage; do not exclude unsupported/unknown/hard branches. Meaningful mutations must cover guard ordering, receiver binding, value identity, shadowing, scope reset, unknown fallback, masking and quota prechecks. MEMORY_ERROR or unknown statuses invalidate certification rather than disappear from the denominator. Prove packaged Boot parsing module/worker startup and actual HTTP configuration, not just test-classpath loading. Existing88-test/PIT history remains immutable historical evidence.
+
+## Finite fitting/selection protocol — after source certification and freeze
+
+No training now. Proposed eventual order: certify exact new source and packaged artifacts; freeze them and the final protocol/catalog/schema; export label-blind40DEV packets; audit structural counterfactual/identity invariance; perform grouped DEV fitting; freeze selected per-family model; open20VAL once for family selection; pause for independent review. No heldout read/operator is part of this draft.
+
+Reuse the exact existing40DEV/20VAL assignments and17whole-judgment-vector groups/fivefolds/seed7007. No new labels. Feature fitting/scaling is train-fold-only equal-query weighting; missing positives remain missing from the actual candidate set and stay in ideal metric denominators. No resampling/second fold seed after seeing results. Fit only the two new R1/R2 families. The old failures and fixed C1 comparator are retained, not retrained into a preferred result.
+
+Finite L2 grid `{0.1,1.0}` per family. `.01` is intentionally omitted before new scores because its existing DEV optimizer failure is known; no replacement value or increased iteration/time budget is introduced. Reuse the certified pairwise logistic objective, per-query normalization,512deterministic pairs/query, no intercept, train-only mean/scale,1e-6scale floor,[-8,8]clip,100iterations,20Armijo halvings, gradientInf1e-6/relative improvement1e-9,30seconds/fit. Maximum20fold fits +2refits, total900seconds; failed/nonconverged fold invalidates that L2 family trial. No optimizer rescue, extra seeds, nonlinear model, hand weights or validation-guided fitting.
+
+For each family choose L2 using all40OOF DEV rows only: both nDCG@10 and identifier MRR@10 must be no worse than R0 and original BASELINE; maximize `min(nDCG/.75,identifierMRR/.90)`, then largerL2. If no L2 is eligible, that family is explicitly ineligible, with no retrial. Refit the chosen eligible L2 once on allDEV. Preserve every fold model/vector/path/metric/failure and the exact selection calculation.
+
+Freeze R0, eligible R1/R2 and their model identities before VAL. VAL uses all20queries and the same two-metric nonregression guards against BOTH R0 and original BASELINE; objective is the same max-min normalized target. Equal objective chooses original BASELINE first, then R0, then R1, then R2 (less added machinery). No heldout-based tie choice; no ablation may replace a family winner. This tie rule can retain R0 when prose improves but identifier quality is the limiting term. That is declared now rather than adjusted after VAL.
+
+Diagnostics are the exact nine existing modes plus three new fixed masks: NO_MEMBER_SCOPE zeroes all six new features (keeps the old code-topic channel); NO_API_DOCS removes feature11 and recomputes endpoint anchors without API prose for12–15; NO_RELATIONS zeroes12–15. Existing NO_CODE_FEATURES zeroes old API-topic feature5 and all six new source features. NO_PROSE and NO_COVERAGE also mask new lexical coverage10/11 and relation endpoint overlap12–15; NO_IDENTIFIERS masks executable identifier anchors while allowing precisely resolved API prose anchors. BASELINE bypasses all learned/new features. These definitions, masks and feature-scaler behavior must be finalized/tested BEFORE the final preregistration freeze, not inferred after scores. All12modes are recorded on DEV/VAL for each already fixed family, but only SOURCE_AWARE participates in selection. No diagnostic winner substitution.
+
+Report authored-corpus-only scope, group/candidate dependence, full failure results, repeated VAL use, previous two heldout exposures and development-informed feature design. This is not a fresh independent benchmark. A later final evaluation, if separately authorized, gets a new versioned once-only seal and preserves all prior results; its aggregate target remains .75nDCG/.90identifierMRR. Passing DEV/VAL or finishing this wave is not project acceptance.
+
+## Identity, deployment and runtime follow-through
+
+Full inference artifact/code identity includes parser worker, all nested/anonymous classes, numeric profiles, catalog, summary schema and model/scaler. The original source SHA/content and all dependency identities are recorded in each new generation/phase, with checksummed source-feature caches. Do not reuse a build24/25 index as a structurally enriched generation or reuse the old latency evidence as a new performance claim. Unknown summaries record their reason in an offline manifest, not an unbound file next to the index.
+
+The default/explicit service and CLI selection must agree with the final frozen adoption guard. If no challenger qualifies, keep originalBASELINE. No evaluation-only winning configuration, paper-only environment switch or silent fallback. Required new performance/heap measurements need a later coordinator quiet reservation and exact deployed artifact/index/model identity; the reference process must not run the parser at query time. Do not prepare100k or start a worker during a quiet hold.
+
+## Exact next authorization boundary
+
+Coordinator reviews this DRAFT, especially the catalog provenance, parser isolation/unknown policy, whether the deliberately local analysis is useful enough, and the finite six-feature/family/mask definitions. If approved: authorize offline source/tests/protocol implementation only; freeze the final protocol after implementation review, before executing any feature export or score. Execution requires a separate resource grant. Until then only this `.work/A07/wave3-representation-audit` packet may change, and it will be write-paused for review.

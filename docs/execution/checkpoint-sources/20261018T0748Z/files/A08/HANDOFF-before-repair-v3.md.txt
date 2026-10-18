@@ -1,0 +1,21 @@
+# A08 paused handoff
+
+ALL writes to `projects/08-threadlens/**` and `.work/A08/**` are paused after this handoff. No A08 Java/Maven/stress/demo process remains running. Root may review/stage/commit; A08 made no Git mutations. Resume only after coordinator reactivation.
+
+Final functional checkpoint8: exit0 at2026-10-18T01:51:06Z; 100 tests, zero failures/errors/skips; actual Jupiter6.1.3; analysis100%line/95.65%branch, probe96.43%line/97.06%branch; selected instrumentation classes EACH pass85%/75%; PIT163/165killed(98.79%), two investigated algebraic survivors, zero uncovered. Fingerprint ad35aee1cc5395e36b1cde9ddac88db635ac78be26a1c51f963b834153fbb351. Exact command/counters/source identity: project evidence/verification.json; log .work/A08/final-certification-8.log.
+
+P08-A1–A4 and A6 PASS. Cause identification CPU7/7, allocation7/7, contention7/7 over42fresh JVMs. True full observer stress1204.969420742seconds: heap200043080B, queue29225528B, directory32222726B; method/window ceilings10000/900;46361673drops and all windows incomplete; all host workers progressed;174659healthy timings exactly monitor workers87210+87449 with zero timing loss/failures. All four live/replayed JSON+HTML exports exclude fixture secret. Independent A07 review verifies current test totals/rawhash/agent identity and timing equality. Exact component proof shows final collection/probe/transformer/aggregation/settings unchanged; only report timing-label wording differs. Final8demo passes eight workload JVMs/four differentials; strict schema validates52actualreports. Twelve-JVM benchmark smoke is explicitly ineligible.
+
+P08-A5 remains NOT_RUN and MUST finish. No shorter or mixed-only substitute. Immutable inputs ALREADY PREPARED at `.work/A08/reference-study-8-inputs/manifest.json`:10copied runtime JARs, agent, full sourcearchive, functional certificate, all hashes, exact command and required84-JVM/7block/3mode/4workload/30+60second protocol. Product full benchmark also remains `projects/08-threadlens/scripts/benchmark.sh`.
+
+Once root reserves the quiet host (other builds/stress/performance/services stopped):
+
+```bash
+THREADLENS_REFERENCE_RESERVATION='actual coordinator reservation and host conditions' python3 .work/A08/execute-prepared-reference-8.py
+```
+
+Executor checks immutable hashes/JDK, rejects active Maven/reused output, updates execution metadata, runs the actual full protocol and asserts84completedprocesses and all8throughput/p99 gates. Fixed observation126minutes, plus startup. Do not run early or overwrite any failed attempt. Monitor `.work/A08/reference-study-8/run-order.json` (completed84entries), input `launcher.log`, `environment.json`, `summary.json` and input `manifest.json`. Reservation-absent guard was actually tested: nonzeroexit, unchanged manifest, no outputcreated. The study has NOT started. Root may reactivate A08 to execute/monitor and produce final committed-size envelope after quiet reservation; root may also run the saved command directly. If a gate fails, preserve all raw trials, improve, rerun correctness and full reference with fresh input/output names.
+
+Other platforms: Windows25x86-64/macOS25arm64 UNTESTED (no runners used); LinuxHotSpot25 actual smoke/collection/analysis tested. Full release/remote CI/publication status belongs to root. All raw recordings/builds are ignored artifacts; small evidence is under project/evidence.
+
+A08→A09 review: initial R1–R6 source corrections observed; R7unknownvoid, R8fieldaliases, R9returnaliases and R10passedobjectfieldhavoc VERIFIED RESOLVED in latest actual BoundaryTest20tests/0failures/errors/skips. Lambda forward/reverse/native regressions also pass. Full A09 reactor/corpus/integration still finishing when A08 paused. Reused-helper cross-call object-insensitive heap false positive is preserved and explicitly documented, not hidden. Root has exact findings/messages; final A09 release proof remains separate.

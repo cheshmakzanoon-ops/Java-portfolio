@@ -1,0 +1,21 @@
+# Study9 helper repair, pending executed tests
+
+Only scratch helpers changed. Current product source/runtime, certification checkpoint, validation driver, completed cause study and original failed study8 remain frozen. No preparation, executor, Java, child-process test or measurement ran during this repair; Python AST syntax checks only.
+
+A01 identified two blockers and one additional validation gap before preparation/execution:
+
+1. Unbounded launcher wait and no owned descendant cleanup. `reference_owned_process.py` now starts a fresh session, becomes a Linux child subreaper, tracks PID/start-time/session and parent/adoption closure, uses pidfd identity-checked signals, and performs bounded TERM/KILL plus child reaping in finally. Total launcher lifetime is bounded10800s with up to6s cleanup. Catchable INT/TERM/HUP set cancellation without interrupting fork/registration. Launch identity is durably recorded; exit, timeout, cancellation, validation and cleanup failures become explicit final manifest outcomes through atomic fsync'd replacement.
+2. Copies could differ from certified originals after initial checks. Preparation now captures byte snapshots with the pinned certificate identity, validates source/runtime/agent against that certificate, writes and rereads exactly those snapshots, verifies every archive member's certified identity and exact entry set, and compares certificate/proof copies to their initially captured bytes. It revalidates all originals and helper identities before publishing a ready manifest. Inputs that change during preparation leave a partial directory with no ready manifest, rather than silently adopting changed bytes.
+3. A positive timing count alone was weak per-trial coverage evidence. Executor now verifies exact selected-method configuration/registry and active subjects, complete version2 status, summary/accepted conservation, and warmup-inclusive accepted+drop counts at least the measured selected-call count (allocation2×operations; other workloads1×). Counts explicitly remain a lower bound, not exact measured-interval equality. The final1200s observer run separately requires exact host-operation conservation.
+
+The helper requires Linux `/proc`, child-subreaper support and Python pidfd signaling; it fails closed instead of falling back to raw PID signaling. The executor is a dedicated process with one launched tree, so subreaper-adopted direct children belong to that tree. Uncatchable SIGKILL/kernel death cannot run Python finally or write durable completion; root's external owned reservation/cleanup remains required. No whole-host quietness is inferred by these helpers. The monitoring loop applies uniformly to all modes; actual benchmark gates remain to be measured.
+
+Pending finite functional-window command, **do not run during quiet12**:
+
+```bash
+python3 .work/A08/test_reference_helpers.py -v
+```
+
+The definitions include actual Python children for success, nested escaped session plus TERM-ignoring child under timeout, early successful leader with live orphan, actual TERM of helper with nested child, launch failure and durable nonzero executor completion. Snapshot race definitions cover agent/source/proof/certificate changes; selection/count definitions cover warmup bounds, tiny positive counts, explicit true drops, wrong method identities and missing complete-status fields. Runtime tests are not yet observed. A01's renewed read-only review is pending.
+
+After tests/review close, root still must schedule current1200s observer stress. Only successful same-source cause+stress proofs allow study9 preparation. Full overhead remains84 fresh JVMs, four workloads, seven randomized paired blocks, three modes, 30s warmup+60s measurement. Original study8 failure is preserved. No performance conclusion is drawn from these lifecycle repairs.

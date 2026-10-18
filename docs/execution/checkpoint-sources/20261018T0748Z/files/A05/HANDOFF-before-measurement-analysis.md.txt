@@ -1,0 +1,28 @@
+# TenantShield corrected runtime handoff
+
+ALL owned paths WRITE-PAUSED until explicit resume. No active Maven, application service or container. Retained full seeded volume remains `java-portfolio-tenantshield_tenantshield-data`, local, CreatedAt2026-10-18T01:34:48Z; do not delete/reset it.
+
+Prepared source: `working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11`. Runtime manifest `.work/A05/runtime/build-manifest.json` matches this source and all three executable JAR hashes. Exact runner hashes `.work/A05/frozen-runner-sha256.txt`. Prior maintenance handoff preserved `HANDOFF-before-jmh-fix.md`.
+
+## Actual fix verification
+
+- Default18-method verify PASS03:46:35UTC; no Java/POM changes. Raw `.work/A05/jmh-fix-prepare.log`; evidence/jmh-fix-verification.json.
+- JMH annotation processing already worked. Failure was extraction dropping Boot archive-root META-INF/BenchmarkList and CompilerHints. V3 maps/hashes these resources into extracted classes/META-INF, leaving old cache untouched.
+- Actual final runtime `java -Xmx128m -cp <verified-v3-classes>:<verified-v3-lib> org.openjdk.jmh.Main -l` exited0 and listed exactly BOTH `PolicyBenchmark.coldCompilation` and `PolicyBenchmark.warmIndexedEvaluation`. Both metadata bytes equal packaged originals. Exact command/stdout/artifact hashes in evidence/jmh-discovery.json and txt. Prepare now asserts this every time, before Docker.
+- Eight actual stale/tamper/restoration probes rerunPASS; evidence/cache-preparation.json; raw .work/A05/jmh-fix-cache-probes.log and canonicalcache-probes.log. Only listing/verification JVMs ran, no measurements/applicationservices/containers.
+
+## Failed attempt preserved
+
+Rootquietattempt5 exited1 after58.4336s; no JMH measurements completed and no HTTP measurement started. Owned teardown finished. Exact failure/metadata/logs/reservation/environment/manifests preserved evidence/reference-attempt-5-failed.json and .work/A05/failed-reference-5/. Prior cache evidence kept cache-preparation-before-jmh-fix.json. Do not treat this as a performance pass.
+
+## Exact prepared retry
+
+After explicit coordinator quiet reservation, from repository root:
+
+```bash
+TENANTSHIELD_QUIET_GRANTED=1 .work/A05/run-reference-window.sh
+```
+
+Reference-source.txt is updated to832dfc3… . Runner retains no-Maven mode, source/artifact integrity, no other live JVM atentry, actualenvironment, fullJMH+THREE100000authenticatedHTTPprocesses with1000excludedwarmup/16clients/pool8, expected20000denials/0errors perrun, and always-owneddown. Both JMHmethods use3forks/3x1secondwarmup/3x1secondmeasurement+realGCprofiling. No smoke substitution. Seed mode validates the retained full50tenant/10000revision/1Mrole/990kedge/50000resource dataset; it does not recreate it. Full measured results remain pending.
+
+Previous correctness27methods/A04scope and selected58mutants retain their historical sources; productionJava unchanged. Final actual metrics/variation/limits, measured-artifact review and clean/global/remote release gates remain open. No Git/shared writes.

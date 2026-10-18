@@ -1,0 +1,52 @@
+# A05 TenantShield write-paused handoff
+
+All owned paths (`projects/05-tenantshield/**` and `.work/A05/**`) are now WRITE-PAUSED until the coordinator explicitly resumes work. No active A05 Maven, services or containers. Docker reservation released. No Git/shared/external writes were made.
+
+Executable fingerprint: `working-tree-sha256:4bd439735ed2a4399ba8c0f9d7abfa3d28dcbec9bec81130d6472dfa27ea124d`.
+Production Java ordered path + NUL + bytes + NUL SHA256: `f6319acff465bf9ec68033ee10d6726769f5710c3f9426270d50f7e8dd7195fc`.
+All Java/tests and scripts frozen; docs/evidence do not alter executable fingerprint.
+
+## Actual completed evidence
+
+- Current `-Pintegration verify`: BUILD SUCCESS2026-10-18T02:02:23Z,18unit+9realIT=27PASS,0failure/error/skip; EACH test XML classpath confirms JUnit6.1.3. Source above. `.work/A05/integration-5.log`, `evidence/correctness.json`+methods. Held old RR snapshot,30fresh postrevokeDENY,160concurrent version-specific readers and100pooled alternations unchanged PASS.
+- Historical full27PASS JUnit6.0.3 remains `correctness-junit603.json`, `correctness-methods-junit603.json`; raw integration4 and exact old root POM retained.
+- Core343/348lines98.56%,267/291branches91.75%, enforced85/75. Selected ORIGINAL TOPLEVEL PolicyEngine PIT58/58kill100%,0survivor/errors/noCoverage; parser/adapters NOT selected. Historical effectiveJUnit6.0.3, unchanged core/test inputs; not rerun in final default integration5.
+- Real full seed direct SQL counts:50tenants,10000policy revisions,1000000roles,990000edges,50000resources,50activepointers. Demo21PASS -> resetdemo removesONLYharbor/orchard and preserves EXACT workload counts -> up -> demo21PASS -> down all exit0. `evidence/preparation.json`, demo output/envelope, `.work/A05/preparation.sh/log`.
+- Earlier real protected DB outage403->503->403 passed (Java unchanged), evidence/protected-outage.json; reproducible operator command in docs/OPERATIONS.md.
+
+## Exact retained fixture
+
+Docker named volume `java-portfolio-tenantshield_tenantshield-data`, driver`local`, CreatedAt`2026-10-18T01:34:48Z`, Composeproject`java-portfolio-tenantshield`, Composelogicalvolume`tenantshield-data`. Exact inspect snapshot `.work/A05/seeded-volume-inspect.json`. Own containers/network removed. Do NOT delete/reset workload before measurements.
+
+Load tenants load-0..load-49 have active immutable version200,100roles/revision,200active rules,1000resources. Alice/admin membership present in each. Every fifth resource mismatches department, so measured decisions MUST include20000DENY/100000,0errors. Harbor/Orchard were recreated; final demo leaves Harbor Alice revoked as intended. Keycloak is ephemeral and up imports exact realm fixture afresh.
+
+## Immutable quiet-run commands
+
+Coordinator must grant a quiet reference window first, with other Maven/stress/application stacks stopped or paused. Preparation has NO performance claims. From `/workspace/Java-portfolio`, use unchanged commands below:
+
+```bash
+source scripts/cloud-env.sh
+sha256sum -c .work/A05/frozen-runner-sha256.txt
+projects/05-tenantshield/scripts/up.sh > .work/A05/performance-up.log 2>&1
+projects/05-tenantshield/scripts/benchmark.sh > .work/A05/performance.log 2>&1
+projects/05-tenantshield/scripts/down.sh > .work/A05/performance-down.log 2>&1
+```
+
+On any measurement failure ensure own down runs, preserve raw failure, repair only after explicit resume; never reduce workload/counts/forks/assertions. Up should reuse verified4bd artifacts unless shared executable contract changed. If fingerprint changes, up's ordinary FIFO Maven verify rebuild is mandatory and provenance must reflect actual input. Seedreuse verifies digest/counts. JMH runs both coldcompilation and warmindexedevaluation, each3forks with3x1second warmup and3x1second measurements+realGC profiler. HTTP runs THREE separate100000decision processes with1000excludedwarmup,16closed-loop clients, pool8; fresh realJWT perrun, verification and committed mandatoryaudit perrequest.15min absolute deadline per measured HTTP process; no smoke substitution. Existing source-fingerprint/health guards must remain.
+
+Frozen runner SHA256:
+```
+6e6bb8679f7d804d49f9c7fd8d21fef42e46a949757e69e69402fa3fff294c65  projects/05-tenantshield/scripts/benchmark.sh
+f7444164dd543c94772ca89aa1942def12e227ad37e5af374772566b1b320c6a  projects/05-tenantshield/scripts/up.sh
+db7acc39ead5bfe5f7bf1d7d78d6b9177d38d09b9a6def43906d145882ab85d4  projects/05-tenantshield/scripts/down.sh
+```
+
+Generated actual results: evidence/jmh.json+jmh-envelope.json, http-1..3.json, http-server-1..3.json, rawJFR under.work/A05/runtime/http-1..3.jfr and http-server-1..3.jfr. Parse actual throughput/p50/95/99/querycounts/cache/denials/errors/maxinflight, compare3runs and variability; document host/pool/CPUquota, closed-loop coordinatedomission and JFRsampling limits. No performance result currently exists.
+
+## Remaining gates
+
+1. Explicit quiet-window full JMH+three100kHTTP runs and honest metrics/environment/variance/limitations docs.
+2. Final independent A04->A05 read-only correctness/security review of source above, tested closures and actual evidence. A04 prior audience/subject/atomicrollback findings all fixed/tested; final approval still pending.
+3. Any actual review/performance defects repaired, required revalidation and finalroot-controlledhandoff. Full M1-M5 is NOT complete until these finish.
+
+A05->A06 review already delivered scoped closure for originalJSONidentityguard, strictpositivefillinvariant and meaningfulFIFO/reduction/depth regressions. That does not approve A06 outstandingperformance/demo/fullrelease. No A06 writes.

@@ -1,0 +1,19 @@
+# Offline checkpoint for root review
+
+Only `.work/A07/wave3-representation-audit/**` was written. No project source, POM, script, public docs/evidence, build25 binding, model, corpus, label, sealed final output or Git state was changed by this task. No Java, javac, Maven, Docker, training, feature extraction or metric evaluation was launched; no build was queued. Pulse quiet12 remains respected.
+
+Read `AUDIT.md` for actual DEV provenance and limitations, then `PREREGISTRATION-DRAFT.md` for the proposed finite wave. `dev-inputs.json` is a filtered copy of existing DEV observations, not a new feature packet. `dev-source-pairs.json` contains selected frozen source bodies for audit only. `PROVENANCE.json` binds these small scratch inputs and records the immutable reference identities; it is not a release certificate.
+
+Three concrete representation gaps are proposed: (1) executable same-member overlap versus file-wide mentions, (2) receiver/value links, (3) guard/terminal-branch ordering. R1's actual-JDK-documentation overlap controls extra vocabulary; R2 adds bounded syntactic relations. The catalog is generated from pinned API prose, not manually authored query synonyms. Cross-file helper proof and unstated bare-identifier intent remain outside scope. The audit shows no generic extra information that honestly disambiguates DEV `bytes`/`put`/`bounded`; this wave makes no claim to close the full joint acceptance target.
+
+The finite study is R0=C1, R1=12dimensions and R2=16dimensions, same candidate pool/gates and exact old source-aware profile. Two L2values `{.1,1}`, same17groups/5folds and fixed optimizer budget: at most20fold fits plus2refits, no optimizer rescue. Freeze a complete final protocol/source/catalog/schema before any new DEV metrics. VAL is only the once-per-wave family-selection boundary. All failures and repeated-exposure limits remain disclosed. No final/heldout operator is authorized or prepared.
+
+Pending steps require separate root grants:
+
+1. Static design review and bounded corrections to this draft.
+2. Offline implementation in owned project paths, including meaningful counterfactual/resource/auth/identity tests and a final preregistration freeze. No new dependency is proposed; JDK25 compiler-module availability must be verified later.
+3. Supported full formatter/integration/mutation build under ordinary shared wrapper, with positive PORTFOLIO_TEST_RUN_STARTED, exact source fingerprint and copied packaged artifacts. No command has run for wave3. Strict85/75coverage and70mutation gates still apply.
+4. Only after certification, an exact new versioned CLI operator/protocol for label-blind DEV export → grouped DEV fit → frozen-model VAL selection. Such CLI subcommands do not exist yet; this packet intentionally does not present speculative commands as executable.
+5. Independent review and a write pause after VAL. Any heldout evaluation, performance reference, index prep, model adoption or default change needs subsequent authorization and preserved earlier evidence.
+
+All wave3 source tests, compilation, packaged worker startup, catalog generation, extraction/training/replay/quality/runtime gates are NOT_RUN. The worker is now write-paused on this scratch packet for root review; there is no automatic execution continuation.

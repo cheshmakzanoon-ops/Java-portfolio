@@ -1,0 +1,56 @@
+# A07 offline wave2 static-review handoff
+
+All owned writes pause after this handoff, pending root review/staging/reactivation. No Java/Maven/Docker/training/evaluation/preparation or queued invocation occurred during this implementation. Root quiet9 is still active; do not execute or queue the commands below until explicit release. `.work/A07/PAUSE-JAVA` remains. No Git/shared/cross-project writes.
+
+Current **UNVERIFIED** source fingerprint `119e4725314417f3328b3b1d67cc5515ed170da5355bd97595aacd4a2aba3fb8` (same inclusion algorithm as scripts/common.sh, pruned traversal). `.work/A07/offline-wave2-checkpoint.json` contains source manifest and static checks. Formatting/compilation/tests/coverage/PIT/new metrics are ALL NOT_RUN. Frozen24's certification/artifact/source/first final/seals remain historical, not current-tree certification. Root committed that snapshot/evidence e9ec63f; prior full handoff preserved at `.work/A07/HANDOFF-build24-before-wave2.md`.
+
+## Frozen finite protocol
+
+`projects/07-indexforge/fixtures/ranking-wave2/PREREGISTRATION.md` amendment4 SHA `316daf8ae569ac201bc8442a64f09eb8ca7f3a44900fd5150e06987ced2cfe7a`; manifest SHA `a88599266347e1a9680294480d2727c66b71d3e4aa1c80ae1a209fd8a9ef2465`. Earlier pre-execution amendments1–3 preserved. Five folds keep17 complete DEV judgment-vector groups/40 IDs intact. Comparator copies only540 filtered DEV/VAL C0 rows, never heldout. No original label/source fixture changed.
+
+Families fixed: originalBASELINE,C0 CLASSIC,C1 SYNTAX_GATED,D1 DECLARATION_TIER,C2 PAIRWISE conditional on frozen candidate-audit eligibility. Actual runtime syntax, not fixture type/ID, controls gating. D1 only exact real declaration vs mention; equally real names retain base order. No global role/body/test/main/project prior. C2's shared10 indexed features operate on actual authorized top500; missing judged positives are not inserted and remain in ideal metric denominators.
+
+Grouped DEV folds only: DEV-only equal-query scaler, fixedL2 .01/.1/1, deterministic seed7007/reservoir512, bounded100-step Armijo/30s-fit/600s-total, no intercept or ID dimensions. Select L2 by out-of-fold full40 DEV nDCG/identifierMRR, no D1 regression, fixed objective/larger-L2 tie. Freeze all-DEV fit before parsing VAL. VAL selects only finite family SOURCE_AWARE, guarded against both originalBASELINE andC0; all9 ablations diagnostic. No wave2 heldout phase exists at this checkpoint: later reviewed versioned operator/authorization required, never reset first-final seals.
+
+## Reviewable source delta
+
+Query: PlainTextQuery/RankingStrategy/RankingConfiguration/RankingCodeIdentity; checksummed immutable LinearRankingModel; SearchFeatureSchema/SearchFeatures/LearnedRanker; QueryPlanner syntax gate+bounded indexed feature lanes; Ranker Boolean declaration tier with full-precision within-tier order; SearchEngine shared explicit config, model/code/profile scoring identity, label-blind authorized audit seam and serving inference.
+
+Evaluation: PairwiseData/DevelopmentScaler/GroupedFolds/PairwiseTrainer/PairwiseSelection; Wave2Inputs/FeaturePacket/Wave2Study implement real audit→DEV-fit→VAL commands, full-label metric denominators, every fold/trial/failure/model/path output, phase identity refusal and strict C0 reference replay. Legacy first-final evaluator/seals untouched. RelevanceEvaluator fingerprint includes current new original classes/artifact/config.
+
+Adapters: CLI dispatch for3 explicit phases; Boot passes same mode/profile/strategy/immutable-model config.20 authored tests cover real Lucene multi-leaf/sparse scorer/vector extraction, explicit/single/base bypass, model checksum/schema/bounds/immutability, Boot/CLI parity, ACL/cursor/cache/restart, deterministic DEV-only training/scaling/grouping and failure/full-judgment/export guards. Query/evaluation PIT targets expanded; new selection/scaler/fold/trainer class coverage gates retained85/75. No tests executed; survivors/coverage unknown.
+
+Docs: STATUS now distinguishes offline WIP from certified24, records actual root-run frozen24 performance, CLI contract describes pending phases/config, ADR004 documents finite wave/limits. No runtime data/pointers/envelopes were modified.
+
+## Exact pending commands — AFTER explicit root release only
+
+Run from `/workspace/Java-portfolio`, all Java/POM/scripts frozen at queue submission. Root hardened report checks require actual positive cutoff:
+
+```bash
+source scripts/cloud-env.sh
+export PORTFOLIO_TEST_RUN_STARTED=$(date +%s)
+./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify > .work/A07/verify-wave2-build25.log 2>&1
+```
+
+No copied artifact until full strict pass (including no MEMORY_ERROR/unfinished/unknown status,85/75 coverage,70 mutation). Preserve every failure. After successful certification, recompute source/root-POM fingerprint and copy exact CLI; do not overwrite build24:
+
+```bash
+cp projects/07-indexforge/cli/target/indexforge-cli-1.0.0-SNAPSHOT.jar .work/A07/artifacts/wave2-build25-cli.jar
+sha256sum .work/A07/artifacts/wave2-build25-cli.jar
+```
+
+The following are separate finite processes; pause between them if root schedules another quiet. OUT must be a fresh attempt, no existing audit/fit/validation stage. No application stack or Docker is needed:
+
+```bash
+/workspace/.tools/jdk-25/bin/java --enable-native-access=ALL-UNNAMED -Xms128m -Xmx2g -jar .work/A07/artifacts/wave2-build25-cli.jar wave2-audit projects/07-indexforge/.runtime/ranking-wave2-build25 projects/07-indexforge/fixtures .work/A07/ranking-wave2-build25-attempt1
+/workspace/.tools/jdk-25/bin/java --enable-native-access=ALL-UNNAMED -Xms128m -Xmx2g -jar .work/A07/artifacts/wave2-build25-cli.jar wave2-fit projects/07-indexforge/.runtime/ranking-wave2-build25 projects/07-indexforge/fixtures .work/A07/ranking-wave2-build25-attempt1
+/workspace/.tools/jdk-25/bin/java --enable-native-access=ALL-UNNAMED -Xms128m -Xmx2g -jar .work/A07/artifacts/wave2-build25-cli.jar wave2-validate projects/07-indexforge/.runtime/ranking-wave2-build25 projects/07-indexforge/fixtures .work/A07/ranking-wave2-build25-attempt1
+```
+
+Audit freezes label-blind features/artifact/protocol first. Fit is the actual five-grouped-DEV-fold/3-L2 phase; its report preserves candidate eligibility, missing-grade3/pooled recall/oracle diagnostics, every fold model/path/failure and final selected all-DEV model. A failed/missing C2 is not replaced with another feature or optimizer. Validation writes PRE-VALIDATION identity before reading VAL, then every family/all9 modes/40DEV+20VAL; checks540 C0 rows and baseline invariance before selection. If replay differs, stop/diagnose, preserve rows, no heldout.
+
+## Pending limitations
+
+This is source review only: Java syntax/API compatibility, formatter, assertions, optimizer convergence/time, actual feature activation, coverage/mutation, C0 replay, finite selection and all new quality/performance remain unverified. No parameter/feature rescue after VAL; preserve failed candidates. Any later selected serving model must use exact exported profile/strategy/mode/model, independently reviewed before a versioned final; model-dependent performance requires a new quiet run. First-final quality remains FAIL.
+
+Root frozen24 performance now observed PASS:3×900requests,30offeredRPS,0errors,p95 4.727653/6.977346/2.607306ms,2GiB,100k docs; warm bounded-cache shared application boundary excluding HTTP. This does not certify any new wave2 artifact/model.

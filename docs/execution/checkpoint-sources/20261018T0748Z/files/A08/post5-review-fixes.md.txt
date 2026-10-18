@@ -1,0 +1,5 @@
+Stage until frozen invocation5 completes:
+- Add source working-tree fingerprint and GitHEAD + actual agent-JAR SHA256 to BenchmarkRunner environment envelope; pass fingerprint via own CLI launcher properties. Required126-minute study must tie exact source/artifacts to raw trials.
+- Live RecordingController.profile should expose already tracked normalizer unsupported/truncated/clipped counters and queue/consumer/callback losses, rather than retaining them only internally. Offline importer already exports these separately. Pure deterministic aggregate semantics stay unchanged.
+- Strengthen generated fixture finalizer-effect assertions alongside preserved thrown identity (direct original/transformed static finallyCalls, child expected8 after48cases).
+- Apply any actual class-specific coverage failure diagnosis only after invocation5 result. No source edits during certifying build.

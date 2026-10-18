@@ -1,0 +1,56 @@
+# Wave 3 representation audit — DEV only, offline
+
+Status: design checkpoint; no implementation or execution authorized here. Build25 is committed as `8de23c7`. Its original code, copied JAR, labels, first and second final results, seals, 24 context bindings and public evidence remain unchanged. This directory is a separate working proposal, not release evidence.
+
+## Inputs and limits
+
+The audit filtered `.work/A06/ranking-devval-only.json` to `split=development` before inspecting query text/grades. `dev-inputs.json` contains those 40 existing DEV queries, the already exported label-blind build25 candidate vectors, and 120 already recorded SOURCE_AWARE rows for C1/D1/C2, filtered to DEV. `dev-source-pairs.json` decodes frozen corpus bodies only for DEV targets or their recorded competing candidates. Paths and query IDs in this note provide provenance; they are prohibited inference/training features.
+
+This is source inspection and extraction of existing facts, not a new ranking evaluation, optimizer run, metric computation or corpus relabeling. The source bodies are the frozen authored evaluation corpus, not current production implementations. In particular, the corpus SafeSourceReader still contains the historical materializing walk that was fixed in production before build17. Its presence does not describe build25 runtime behavior. Unknown judgments remain unjudged under the declared pooled-gain policy.
+
+The permitted existing DEV inputs are:
+
+- `ranking-wave2-build25-attempt1/audit/features.tsv` (40 DEV queries; current ten-dimensional shared-v1 features; original rank is C1/D1 candidate order).
+- `ranking-wave2-build25-attempt1/fit/report.txt` and `l2-1.0-fold-*-paths.tsv` (already fitted grouped-DEV diagnostics). Fold path files contain returned prefixes; absence there does not mean absence from the full 500-candidate pool.
+- The DEV-filtered SOURCE_AWARE C1/D1/C2 rows from `validation/per-query.tsv`. C2 all-DEV fitted results are in-sample and are not used as generalization proof.
+- Source bodies selected from the immutable `fixtures/corpus.tsv`, using only DEV target/competitor paths.
+- Existing extractor implementations SearchFeatures, SearchFeatureSchema, CodeFeatures and DeclarationScanner.
+- Four actual source entries from the pinned JDK25 `lib/src.zip`, inspected as documentation provenance: MessageDigest, Files, FileChannel and CharsetDecoder. No documentation catalog was generated or executed.
+
+No heldout per-query output was read for this audit. VAL examples, VAL diagnostics and either final experiment's ablation results are not design inputs. Prior aggregate final outcomes remain historical disclosures, not a model-selection signal. This separation cannot undo prior repeated test exposure, which must remain disclosed.
+
+## What the existing vectors cannot express
+
+shared-v1 is primarily lexical: transformed candidate/content/prose/identifier/path/topic scores, global document prose overlap/density/phrase, and exact declaration equality. CodeFeatures detects bounded lexical JDK/Lucene patterns across the whole file. It removes comments and strings and abstains on some type shadows, but does not establish receiver identity, a shared value, membership in the same method, or guard ordering. Pairwise lane reweighting cannot recover a relation missing from all ten inputs.
+
+Existing stored grouped-DEV results support trying a new representation rather than extending the optimizer. L2=1 won the fixed DEV objective with stored OOF nDCG .7311403168018562 and identifier MRR .925, versus D1's stored .7066751871276543/.925. L2=.01 failed its bounded optimizer in fold2; this failure stays preserved. This proposal does not extend that optimizer or recompute those scores.
+
+| DEV example | Existing packet fact | Source inspection and missing relation |
+| --- | --- | --- |
+| q02 path escape | Grade3 SnapshotManifest is C1 rank42 with zero lexical/coverage/phrase/declaration components except candidate score. OOF returned prefix omits it. | normalize explicitly rejects absolute/noncanonical names and `..`/`.` components. SafeSourceReader is also relevant and ranked first. A generic structural representation could expose path-iteration plus rejecting branch; it must not invent that another valid caller is irrelevant. |
+| q06 corrupt allocation count | Grade3 manifest is C1 rank2. | read obtains a count through a local bounded helper before iterating allocations. The helper throws for negative/over-limit values. Lexical words do not establish that the checked value controls the later collection loop. This is a possible same-compilation-unit, one-hop value relation. |
+| q08 cryptographic identity | Grade3 Digests is present at C1 rank16; existing L2=1 OOF places it second. | Digests hashes its byte-array parameter directly. The competing Quorum Model really also hashes bytes, through Codec.command(this). A MessageDigest-presence flag or API documentation alone cannot prove the fixture's intended utility. A shared input-to-result relation may describe the difference; it must not become a global preference for short/public/helper methods. |
+| q10/q12 atomic metadata/durability | Grade3 DurableFiles is C1 rank6/rank5; OOF grade3 positions2/5. | atomicWrite writes a temp channel, forces that channel, then atomically moves that same temp path and syncs the parent. The reader operation in syncDirectory calls force on its own channel. File-wide force/move presence cannot establish same resource or ordering. GenerationPublisher is a genuinely relevant caller, not an invalid distractor. |
+| q14 repeated object | Grade3 ContentAddressedStore is present at C1 rank45; its OOF returned prefix omits it. | put computes a digest, resolves its object path, reads/verifies an existing object then returns, otherwise writes it. Digest, verification and write are cross-class helper calls. A method-local JDK-only analysis must report unresolved evidence here. Existing C2's top SourceDocument merely constructs a logical key: lane weighting can promote a short lexical coincidence without modeling reuse. |
+| q16 strict decoding | Grade3 store is C1 rank2. | UTF8.newDecoder().onMalformedInput(REPORT).decode(...) is one receiver chain. REPORT in a different method, on a different decoder, or a string literal is not evidence. |
+| q24 unknown-length reads | Grade3 SafeSourceReader is present at C1 rank18; OOF prefix omits it. | bounded increments a counter using read length, rejects excess before buffer.write. AdmissionFilter also really bounds an HTTP read using readNBytes(65537), so it is not fabricated behavior. Distinguish the actual stream/buffer/counter relation, without preferring ingest code or a filename. |
+| q28 progress corruption | Grade3 CheckpointStore is C1 rank4; OOF position6. | save hashes the payload it writes and read checks a hash before parsing the accepted payload. A generic journal can also be durable and checksummed. Source-aware evidence can describe these operations, not infer an unstated preference for one project's checkpoint class. |
+| q30 retry conflict | Grade3 IngestionJob is C1 rank7; OOF position2. | A prior manifest is read under an existing key; a digest inequality throws before any replacement write. A digest somewhere in the file is weaker than this guard/dataflow relationship. Helper summaries outside the compilation unit remain unknown in the proposed first version. |
+| q32 identifier splitting | Grade3 analyzer is C1 rank10; OOF position15. | Pattern/Matcher token splitting and offset arithmetic implement the behavior. A running HTTP server can match query words better. The illustrative name HTTPServer is absent from the implementation: static syntax cannot infer an arbitrary example-output specification without additional semantic knowledge. No example-to-file lookup is permitted. |
+| q34/q40 existing successes | Existing OOF puts the graded analyzer/checksum implementation first. | New representation must retain working lexical ordering when structural evidence is absent/equal, and guard against unnecessarily moving genuine matches below other API users. |
+
+These observations do not establish that a structural feature will improve ranking. q08 has competing genuinely matching behavior; q14 requires context beyond the proposed local proof scope; q32 needs semantic interpretation. A feature extractor must expose its limits rather than turn desired labels into “verified” operations.
+
+## Bare identifiers: no defensible hidden-intent fix
+
+The remaining DEV single-name mistakes are `bytes`, `put` and `bounded`. Both the first result and grade3 target contain genuine implemented exact-name declarations, and both have declarationMatch=1 and full single-token coverage in the current vectors. In the frozen source, Model.bytes clones a byte array, SnapshotManifest.bytes serializes a snapshot; DecisionController.put inserts a non-null map field, ContentAddressedStore.put stores source bytes; SnapshotManifest.bounded guards a metadata integer, SafeSourceReader.bounded limits an input stream. All are real declarations.
+
+Exact AST declarations can correct false declaration detection, but do not distinguish these equally exact meanings. The query provides no parameter type, owner, domain or action. No global main/test/helper/public/static/body-length/project/role preference is warranted. This draft therefore preserves build25 single-identifier and explicit-query behavior. It is an experiment on prose representation, not a claim to solve the complete joint quality goal. A future identifier experiment needs independently justified query evidence, not the knowledge of which frozen grade3 file is desired.
+
+## Candidate design decision
+
+Try one finite representation wave: (R0) unchanged C1; (R1) max member-local executable overlap plus actual JDK API documentation overlap; (R2) R1 plus four generic, query-anchored value/receiver/control-flow features. R1 controls whether any effect comes merely from extra API prose. R2 must beat that control on grouped DEV and pass the frozen joint selection guards. The draft below restricts helpers to one unambiguous call within the same compilation unit; q14's cross-file verification chain is intentionally outside the first proof boundary. There is no arbitrary custom-class summary table or new query-to-topic synonym list.
+
+No source edits, models, new feature outputs or new metrics have been produced. The detailed preregistration remains DRAFT until coordinator review and an explicit implementation/execution grant.
+
+The conservative binding policy also limits expected API coverage: many frozen targets use wildcard imports, and parse-only trees cannot establish arbitrary external or same-package types. An unresolved wildcard receiver must abstain rather than be called a resolved JDK API. Member-local lexical coverage can still exist, but no proposed structural/API advantage is assumed for these cases. Whether that conservative first version has enough useful evidence is a design-review question, not a reason to loosen resolution after seeing scores.
