@@ -69,4 +69,37 @@ class EventCodecTest {
         "INVALID_PROGRESS",
         EventCodec.decode(p, 0, 1, e.key(), EventCodec.encode(progress), 8).malformedReason());
   }
+
+  @Test
+  void byteBoundaryAndUnknownFieldsArePartOfTheWireContract() {
+    var event = new Engine.Event(1, "run", "one", "t", "a", 0, 7, false);
+    var raw = EventCodec.encode(event);
+    var exact = new byte[16384];
+    java.util.Arrays.fill(exact, (byte) ' ');
+    System.arraycopy(raw, 0, exact, 0, raw.length);
+    assertEquals(event, EventCodec.decode(0, 0, 1, event.key(), exact, 1).event());
+    assertNull(EventCodec.decode(0, 0, 1, event.key(), exact, 1).malformedReason());
+    var text = new String(raw, StandardCharsets.UTF_8);
+    for (String invalid :
+        List.of(
+            text.replace("\"schemaVersion\":1", "\"schemaVersion\":1,\"extra\":0"),
+            text.replace("\"schemaVersion\":1", "\"schemaVersion\":2147483648"),
+            text.replace("\"valueMilliUnits\":7", "\"valueMilliUnits\":7.0"),
+            text.replace("\"valueMilliUnits\":7", "\"valueMilliUnits\":9223372036854775808"),
+            text.replace("\"tenantId\":\"t\"", "\"tenantId\":true"),
+            "[]",
+            "null"))
+      assertEquals(
+          "MALFORMED_JSON",
+          EventCodec.decode(0, 0, 1, event.key(), invalid.getBytes(StandardCharsets.UTF_8), 1)
+              .malformedReason(),
+          invalid);
+    assertEquals("RECORD_SIZE", EventCodec.decode(0, 0, 1, event.key(), null, 1).malformedReason());
+  }
+
+  @Test
+  void partitioningMatchesFixedKafkaMurmur2Vectors() {
+    assertEquals(5, EventCodec.partition("hello", 8));
+    assertEquals(4, EventCodec.partition("kafka", 8));
+  }
 }

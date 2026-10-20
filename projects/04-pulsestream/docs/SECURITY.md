@@ -20,10 +20,18 @@ The query API accepts no request bodies, including chunked bodies. Pages contain
 
 Crash hooks require explicit local process configuration and are disabled in protected mode. HTTP exposes no administrative mutation, archive, or destructive operation. Run archival requires local database access.
 
-PostgreSQL, Kafka topic/routing administration, deployment configuration, and the local snapshot filesystem are trusted. GZIP-compressed snapshots use a Java object-class filter and are produced internally; HTTP and Kafka never supply serialized snapshots. Restore currently requires the same application version. Application error responses exclude JDBC messages and stack traces.
+PostgreSQL, Kafka topic/routing administration, deployment configuration, and the local snapshot filesystem are trusted. GZIP-compressed snapshots admit only the concrete engine state/result graph and required collections/scalars. Depth, references, array lengths, and decompressed bytes are bounded, including bytes skipped by deserialization. A root of the wrong type or an unrelated Java class is rejected. The V1 encoding is produced internally; HTTP and Kafka never supply serialized snapshots. Restore currently requires the same application version. Application error responses exclude JDBC messages and stack traces. Commit cleanup cannot replay a known decision; rollback diagnostics remain secondary to the primary failure. Shutdown waits for owner termination before releasing its resources and lease.
+
+## Local process authority
+
+Lifecycle operations require Linux kernel process identity. Records bind boot ID, process start time, and the exact `-jar` argument to the selected artifact; current-runtime reuse also checks its launch hash and verified source fingerprint. A mismatched live PID is never signalled. Stop uses a PID file descriptor when available and retains the record if termination cannot be established. Startup rollback preserves preexisting running services and named volumes and removes only acquired resources. A bounded command retains its unreaped group leader until all group signals are complete, so exit does not authorize targeting a reused process-group ID.
 
 ## Limits and reporting
 
 The local stack uses plaintext transport and public fixture credentials. Production Kafka SASL/TLS and external secret provisioning are not configured by the demo. An authorized Kafka writer can consume a finite run's durable quotas. This is a bounded single-processor implementation, not a certified or distributed execution service.
 
 Report vulnerabilities according to the repository's [security policy](../../../SECURITY.md), using synthetic input and no credentials.
+
+The current official Kafka 4.2.2 image retains seven reported HIGH upstream findings (libexpat, internal LZ4, and internal Jackson). PostgreSQL 18.6 removes the earlier image OS HIGH/CRITICAL findings, while its upstream `gosu` binary retains separately reported Go-standard-library advisories. Digest pinning preserves identity; it does not resolve those upstream findings. Application dependency scan results have their own boundary.
+
+Executable identity is mandatory when publishing a new process record. If a managed procfs later denies only executable dereference with `EACCES`/`EPERM`, boot/start identity and the hash of every exact command argument remain mandatory; a readable executable must still match. Other read failures refuse ownership. Two kernel-stat reads bracket the argument/executable observation, and a changed kernel start identity refuses control. Argument hashes avoid retaining command configuration or secrets in the record.

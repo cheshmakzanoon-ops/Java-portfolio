@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "sourceRevision": "working-tree-sha256:82fef5535a3380097068b5e6479e3d1bc2d96045fb11a7d36c961d2d86307189",
+  "startedAt": "2026-10-20T09:32:18.768949+00:00",
+  "finishedAt": "2026-10-20T09:38:57.159308+00:00",
+  "scope": "Working-checkout current-image local lifecycle and documented query example; not clean-checkout/performance certification",
+  "commands": [
+    {
+      "command": "./scripts/portfolio.sh up pulsestream",
+      "exitCode": 0
+    },
+    {
+      "command": "./scripts/portfolio.sh demo pulsestream",
+      "exitCode": 0,
+      "barriers": 7
+    },
+    {
+      "command": "Documented windows/status/quarantine GET examples",
+      "exitCode": 0,
+      "checks": 3
+    },
+    {
+      "command": "./scripts/portfolio.sh down pulsestream",
+      "exitCode": 0
+    }
+  ],
+  "images": {
+    "postgres": "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873",
+    "kafka": "apache/kafka:4.2.2@sha256:1213eb3943d551e5ed1fca7a4e109001cee35770b66a02a0c37a8964efe09b69"
+  },
+  "upHealth": {
+    "healthy": true,
+    "failure": "",
+    "sourceLag": 0,
+    "queueDepth": 0,
+    "maximumQueueDepth": 1,
+    "queueUtilization": 0.0,
+    "watermark": -9223372036854775808,
+    "watermarkLagMillis": -1,
+    "lastCheckpointMillis": 97.329005,
+    "outboxDeliveryFailures": 0,
+    "storeAvailable": true
+  },
+  "ownership": {
+    "launchExecutableVerified": true,
+    "kernelBootAndStartVerified": true,
+    "completeArgumentsHashVerified": true,
+    "artifactSha256": "156d8d4b760e1c84d9a6de03f47800ade916fa2843b4bb498e1caf0957f74325",
+    "postLaunchExecutable": {
+      "readable": false,
+      "errno": 13
+    },
+    "pidFileRemovedAfterConfirmedExit": true
+  },
+  "queryExample": {
+    "run": "demo_1792488837234406",
+    "assertions": {
+      "passed": 3,
+      "failed": 0
+    },
+    "responses": {
+      "windows": [
+        {
+          "tenant": "t",
+          "sensor": "a",
+          "type": "TUMBLING",
+          "start": 0,
+          "end": 60000,
+          "count": 3,
+          "sum": 35,
+          "minimum": 5,
+          "maximum": 20,
+          "revision": 3,
+          "finalized": true
+        }
+      ],
+      "status": {
+        "watermark": 395000,
+        "partitions": {
+          "0": {
+            "maxTimestamp": 105000,
+            "lastActivity": 400000,
+            "idle": false
+          },
+          "1": {
+            "maxTimestamp": 400000,
+            "lastActivity": 400000,
+            "idle": false
+          }
+        },
+        "checkpoint": {
+          "0": 2,
+          "1": 7
+        },
+        "checkpointAgeMillis": 84431.215,
+        "duplicateCount": 1,
+        "openPanes": 0,
+        "activePartitions": 2,
+        "idlePartitions": 0,
+        "lateContributionsTruncated": false,
+        "lateContributions": {
+          "t:a:SLIDING:-240000": 1,
+          "t:a:TUMBLING:0": 1
+        }
+      },
+      "quarantine": []
+    }
+  },
+  "teardown": {
+    "ownedProcessAlive": false,
+    "runningProjectContainers": 0,
+    "retainedNamedVolumes": [
+      "java-portfolio-pulsestream_pulse-kafka",
+      "java-portfolio-pulsestream_pulse-pg"
+    ],
+    "ownedJvmCommandsAlive": 0
+  },
+  "logs": {
+    "up.log": "fcea1be54bc5f3b22ee6bced5d238c5fbe31b28b04b1f2ce254ffaad07abadfa",
+    "demo.log": "73f26c0d7277b8991fcd2a99d858d68fdbac4a1791d39b010004927ca0ac0e81",
+    "down.log": "efce00193c63d1e7aa017658bba2a997e66c67375302fb664b95c3d2e38c2c34",
+    "kafka.log": "98a1e6eb03eee91e0235f31d39fbbdab93d5513876e63ed177804f5251d7e08a",
+    "postgres.log": "1831230016f858be76eee399a68e59de405dc69f2bd384431505c515ada01123"
+  },
+  "historicalDemoEvidencePreserved": {
+    "demo.json": "638a7c92436c6c9826626d5c3341523820c71fae8d46faf618890560e1cb7197",
+    "demo-output.txt": "862877de94f9a18f26c1e38c2cf6d9e52fb593b055691154982f1836c02aa866"
+  },
+  "limitations": [
+    "Trusted loopback tenant header; protected signed-token access is separately covered by real integration.",
+    "This run began with no preexisting project containers and new named volumes. Controlled lifecycle tests cover preservation of preexisting resource states.",
+    "Orderly stop with retained volumes does not establish physical power-loss durability.",
+    "Current application integration, targeted mutation and process-control results have separately stated scopes."
+  ]
+}

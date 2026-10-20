@@ -27,8 +27,12 @@ public final class DurableSession implements AutoCloseable {
     owner = store.acquire(run, lease);
     try {
       committed = store.restore(run, topicId, limits, now);
-    } catch (SQLException | RuntimeException e) {
-      store.release(owner);
+    } catch (SQLException | RuntimeException | Error e) {
+      try {
+        store.release(owner);
+      } catch (SQLException releaseFailure) {
+        e.addSuppressed(releaseFailure);
+      }
       throw e;
     }
   }
@@ -39,7 +43,7 @@ public final class DurableSession implements AutoCloseable {
         Engine.transition(committed, batch.inputs(), batch.observations(), batch.now());
     try {
       store.commit(owner, topicId, committed, candidate);
-    } catch (SQLException | RuntimeException e) {
+    } catch (SQLException | RuntimeException | Error e) {
       failed = true;
       throw e;
     }

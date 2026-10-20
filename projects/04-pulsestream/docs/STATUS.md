@@ -2,21 +2,44 @@
 
 PulseStream implements bounded event-time processing, atomic SQL recovery, fenced run ownership, tenant-authorized queries, and at-least-once output delivery. Historical measurements passed within their recorded scope. Final clean-checkout and repository release validation remain incomplete.
 
-## Current maintenance verification
+## Current verification, 2026-10-20
 
-On 2026-10-20, formatting and full project integration verification passed **26 methods: 17 ordinary and 9 real Kafka/PostgreSQL integration, with zero failures, errors, or skips**. The wire decoder now rejects an explicitly supplied `recordType` unless it is a recognized string. Two regressions cover malformed types, checkpoint/quarantine behavior without aggregation, and compatibility with legacy records that omit the field.
+Project integration verification passed at **08:59:08 UTC** with **48 methods: 37 ordinary and 11 real Kafka/PostgreSQL integration, zero failures, errors, or skips**. The property suites also generated 120 event-time histories and 80 independent progress/control histories. [Current application evidence](../evidence/engineering-verification-2026-10-20.json) records source/POM hashes, individual methods, image identities, and execution limits.
+
+The current suite adds explicit transaction-outcome, compatible filtered snapshot, bounded owner-thread termination, poll-admission accounting, SQL-readiness, partial output publication, and interrupted in-flight shutdown regressions. The backpressure fixture now commits the dequeued batch through SQL before acknowledging it. Its recovered checkpoint is independently checked at 20 and its tumbling aggregate at count 10, sum 145, minimum 10, maximum 19. Output rollback/retry preserves stable revision identities; interrupted shutdown retains the acknowledged checkpoint and releases ownership only after engine termination.
 
 ```bash
 source scripts/cloud-env.sh
+export PORTFOLIO_TEST_RUN_STARTED="$(date +%s)"
 ./mvnw -f projects/04-pulsestream/pom.xml \
-  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp \
-  com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply verify
-./mvnw -f projects/04-pulsestream/pom.xml \
-  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp \
-  -Pintegration verify
+  -Dmaven.repo.local="$PWD/.work/A04/m2" -B -ntp \
+  -Pintegration,mutation verify
+python3 scripts/check-tests.py projects/04-pulsestream integration
+python3 scripts/check-mutations.py projects/04-pulsestream
+python3 projects/04-pulsestream/scripts/test-lifecycle.py
 ```
 
-The new Kafka/PostgreSQL regression passed: three malformed records were durably quarantined, a valid retry retained its event identity, and source checkpoint/aggregate state survived a fresh session restore. The suite completed at 07:40:45 UTC and its containers were cleaned up. Mutation analysis and performance studies were not rerun; their historical results below retain their recorded source identities.
+The actual successful functional command used `-Pintegration verify`; mutation passed earlier against identical selected module source/POM inputs. These are separate observations. [Targeted mutation evidence](../evidence/engineering-mutation-2026-10-20.json) retains every non-killed outcome and the original overall-command failure boundary.
+
+| Current mutation scope | Strict killed count | Other outcomes | Required kill rate |
+| --- | --- | --- | --- |
+| Engine | 131/133, 98.50% | One boundary survivor and one arithmetic timeout | 70% |
+| Event decoder and owner-thread termination | 32/34, 94.12% | One deadline-boundary survivor and one removed-join timeout | 70% |
+| SQL transactions and snapshot codec | 46/52, 88.46% | Four survivors and two skip-loop timeouts | 70% |
+
+All outcomes remain in the denominator; no timeout is presented as killed. No uncovered mutants, runner errors, or memory errors remained in these targets. Storage survivors remove a flush/cleanup warning or change inclusive byte/skip boundaries. The analysis does not cover every production class. Existing engine coverage gates remain 85% line and 75% branch; existing mutation thresholds were retained. An earlier expanded-target attempt exposed weak transaction/filter/termination boundaries and a termination-test fixture that assumed one JVM thread state; the final targets passed after deterministic regressions and a fixture accepting both blocked waiting states.
+
+## Functional failures and execution boundary
+
+The preceding combined integration/mutation command ended at **08:50:50 UTC** with mutation gates passing but integration reporting nine passes, one failure, and one error. The new one-in-flight guard exposed the old dequeue-without-acknowledgement fixture. Separately, the broker logged a controller-heartbeat RPC timeout at 08:50:13.248 and removal of partition fetchers at 08:50:16.947 before a crash-seed child's unchanged 15-second metadata deadline expired. [Failure evidence](../evidence/engineering-failed-integration-2026-10-20.json) retains the timeline and limits. The fixture now exports broker logs before teardown.
+
+The later passing run paused other project Maven jobs and retained every existing budget. This isolates a functional observation; it neither proves host contention caused the earlier broker failure nor establishes sustainable load capacity. PostgreSQL 18.6-alpine and Kafka 4.2.2 are pinned by digest in current fixtures. Seven upstream Kafka image HIGH findings and PostgreSQL's separately reported `gosu` Go advisories remain distinct from the clean application-library scan boundary. No performance study was rerun for the current code/dependencies/images.
+
+## Local lifecycle ownership, 2026-10-20
+
+Twenty-three process/control-adapter regressions passed in 86.347 seconds. [Scoped evidence](../evidence/lifecycle-ownership-2026-10-20.json) binds the lifecycle scripts and tests. Actual child processes cover exact kernel/artifact/complete-argument identity, restricted procfs observations, resistant termination, interruption, stale-source/artifact reuse, and retained group identity through the last cleanup signal. Controlled Compose/readiness adapters cover resource rollback, preexisting running/stopped states, retained volume markers, and preserved primary failures. These tests do not replace real Kafka/PostgreSQL recovery or a live stack lifecycle.
+
+The current-image working-checkout lifecycle passed startup, the seven-barrier [recovery demo](../evidence/engineering-demo-2026-10-20.json), three documented query checks, and shutdown. The first tumbling result was independently checked at count 3, sum 35, minimum 5, maximum 20, and finality; status retained one duplicate and quarantine was empty. Recovery and oracle digests matched. [Lifecycle evidence](../evidence/engineering-lifecycle-2026-10-20.json) records pinned image identities, exact current-runtime ownership checks, verified process exit, zero running project containers, and retained named volumes. Historical `demo.json` and `demo-output.txt` were preserved byte for byte. The current ordinary preparation repeated 37 methods successfully at 09:30:44 UTC; those repeats are not additional unique tests.
 
 ## Historical correctness evidence
 

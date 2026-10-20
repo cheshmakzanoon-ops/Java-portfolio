@@ -15,12 +15,14 @@ import org.apache.kafka.common.serialization.*;
 public final class KafkaPump implements AutoCloseable {
   public record Batch(List<Engine.Input> inputs, List<Engine.Observation> observations, long now) {}
 
-  private final KafkaConsumer<String, byte[]> consumer;
+  private final org.apache.kafka.clients.consumer.Consumer<String, byte[]> consumer;
   private final String topic;
   private final int partitions;
   private final BlockingQueue<Batch> queue;
   private final int queueBatches;
   private final AtomicInteger inFlight = new AtomicInteger();
+  private final AtomicInteger outstanding = new AtomicInteger();
+  private final Object lifecycle = new Object();
   private final Consumer<Throwable> failures;
   private final AtomicReference<Map<Integer, Long>> mirror = new AtomicReference<>();
   private volatile boolean running = true;
@@ -49,8 +51,11 @@ public final class KafkaPump implements AutoCloseable {
       int queueBatches,
       int maxPollRecords,
       Consumer<Throwable> failures) {
-    if (queueBatches < 2 || queueBatches > 64 || maxPollRecords < 1 || maxPollRecords > 1000)
-      throw new IllegalArgumentException("bounds");
+    if (partitions < 1
+        || queueBatches < 2
+        || queueBatches > 64
+        || maxPollRecords < 1
+        || maxPollRecords > 1000) throw new IllegalArgumentException("bounds");
     this.queueBatches = queueBatches;
     this.topic = topic;
     this.partitions = partitions;
@@ -70,6 +75,22 @@ public final class KafkaPump implements AutoCloseable {
     p.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, 10_000);
     p.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
     consumer = new KafkaConsumer<>(p);
+  }
+
+  KafkaPump(
+      org.apache.kafka.clients.consumer.Consumer<String, byte[]> consumer,
+      String topic,
+      int partitions,
+      int queueBatches,
+      Consumer<Throwable> failures) {
+    if (partitions < 1 || queueBatches < 2 || queueBatches > 64)
+      throw new IllegalArgumentException("bounds");
+    this.consumer = Objects.requireNonNull(consumer);
+    this.topic = Objects.requireNonNull(topic);
+    this.partitions = partitions;
+    this.queueBatches = queueBatches;
+    this.queue = new ArrayBlockingQueue<>(queueBatches);
+    this.failures = Objects.requireNonNull(failures);
   }
 
   public static String topicIdentity(String bootstrap, String topic, int partitions)
@@ -92,8 +113,12 @@ public final class KafkaPump implements AutoCloseable {
   }
 
   public void start(Map<Integer, Long> checkpoints) {
-    if (poller != null) throw new IllegalStateException("already started");
-    poller = Thread.ofPlatform().name("pulsestream-poll").start(() -> poll(checkpoints));
+    var retained = Map.copyOf(checkpoints);
+    synchronized (lifecycle) {
+      if (closed.get()) throw new IllegalStateException("PUMP_CLOSED");
+      if (poller != null) throw new IllegalStateException("already started");
+      poller = Thread.ofPlatform().name("pulsestream-poll").start(() -> poll(retained));
+    }
   }
 
   private void poll(Map<Integer, Long> checkpoints) {
@@ -152,10 +177,13 @@ public final class KafkaPump implements AutoCloseable {
                     tp.partition(),
                     backpressure,
                     lag,
-                    queue.size() + inFlight.get() + (!inputs.isEmpty() ? 1 : 0)));
+                    outstanding.get() + (!inputs.isEmpty() ? 1 : 0)));
           }
-          if (!queue.offer(new Batch(List.copyOf(inputs), observations, now)))
+          outstanding.incrementAndGet();
+          if (!queue.offer(new Batch(List.copyOf(inputs), List.copyOf(observations), now))) {
+            outstanding.decrementAndGet();
             throw new IllegalStateException("BOUNDED_QUEUE_INVARIANT");
+          }
           maxQueue = Math.max(maxQueue, queue.size());
           lastObservation = now;
         }
@@ -166,11 +194,17 @@ public final class KafkaPump implements AutoCloseable {
       ready.completeExceptionally(t);
       failures.accept(t);
     } finally {
-      consumer.close(Duration.ofSeconds(5));
+      ready.completeExceptionally(new IllegalStateException("PUMP_CLOSED"));
+      try {
+        consumer.close(Duration.ofSeconds(5));
+      } catch (Throwable cleanupFailure) {
+        failures.accept(cleanupFailure);
+      }
     }
   }
 
   public Batch take(Duration timeout) throws InterruptedException {
+    if (inFlight.get() != 0) throw new IllegalStateException("BATCH_NOT_COMMITTED");
     Batch batch = queue.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
     if (batch != null) inFlight.set(1);
     return batch;
@@ -178,7 +212,7 @@ public final class KafkaPump implements AutoCloseable {
 
   public void committed(Map<Integer, Long> offsets) {
     mirror.set(Map.copyOf(offsets));
-    inFlight.set(0);
+    if (inFlight.getAndSet(0) != 0) outstanding.decrementAndGet();
   }
 
   public int capacity() {
@@ -199,18 +233,19 @@ public final class KafkaPump implements AutoCloseable {
 
   @Override
   public void close() {
-    if (!closed.compareAndSet(false, true)) return;
-    running = false;
-    if (poller == null) {
-      consumer.close(Duration.ofSeconds(5));
-      return;
-    }
-    consumer.wakeup();
-    if (poller != null)
-      try {
-        poller.join(15_000);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
+    Thread owner;
+    synchronized (lifecycle) {
+      owner = poller;
+      if (closed.compareAndSet(false, true)) {
+        running = false;
+        ready.completeExceptionally(new IllegalStateException("PUMP_CLOSED"));
+        if (owner == null) {
+          consumer.close(Duration.ofSeconds(5));
+          return;
+        }
+        consumer.wakeup();
       }
+    }
+    if (owner != null) ThreadTermination.await(owner, Duration.ofSeconds(15));
   }
 }

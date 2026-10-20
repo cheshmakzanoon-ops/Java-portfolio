@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 source "$(dirname -- "${BASH_SOURCE[0]}")/common.sh"
+exec 9>"$PULSE_RUNTIME/lifecycle.lock"
+flock -x 9
 # Compile, verify and resolve the reactor classpath once, before the quiet reservation.
 PULSE_EXPECTED=$(fingerprint)
 if [[ ! -f "$PULSE_PROJECT/verification/target/runtime-classpath.txt" || ! -f "$PULSE_RUNTIME/classpath.fingerprint" || "$(cat "$PULSE_RUNTIME/classpath.fingerprint")" != "$PULSE_EXPECTED" ]] || ! require_current_build; then
+  python3 "$PULSE_PROCESS_HELPER" validate "$PULSE_PROCESS_RECORD" "$PULSE_SERVICE_JAR"
+  if owned_service_running; then echo 'Stop the owned service before replacing benchmark artifacts' >&2; exit 1; fi
   (cd "$PULSE_ROOT"; ./mvnw -f "$PULSE_PROJECT/pom.xml" -Dmaven.repo.local="$PULSE_WORK/m2" -B -ntp -Pbenchmarks verify org.apache.maven.plugins:maven-dependency-plugin:build-classpath -Dmdep.outputFile=target/runtime-classpath.txt)
   [[ "$PULSE_EXPECTED" == "$(fingerprint)" ]] || { echo 'Inputs changed during benchmark preparation; repeat stable verification' >&2; exit 1; }
   printf '%s\n' "$PULSE_EXPECTED" > "$PULSE_RUNTIME/classpath.fingerprint"
@@ -17,4 +21,4 @@ fi
 [[ -s "$PULSE_PROJECT/verification/target/classes/META-INF/BenchmarkList" ]] || { echo 'JMH annotation processor produced no benchmark metadata' >&2; exit 1; }
 grep -q 'EngineBenchmark' "$PULSE_PROJECT/verification/target/classes/META-INF/BenchmarkList" || { echo 'Engine benchmark absent from generated metadata' >&2; exit 1; }
 python3 "$PULSE_PROJECT/scripts/capture-environment.py" "$PULSE_RUNTIME/environment.json"
-echo 'Verified runtime and benchmark classpath prepared; measurements require the coordinator quiet grant.'
+echo 'Verified runtime and benchmark classpath prepared; measurements require an otherwise idle host.'

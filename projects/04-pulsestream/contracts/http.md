@@ -1,7 +1,7 @@
 # Query contract v1
 All application endpoints are GET and accept no body (including chunked bodies). Limits: headers 16 KiB, identifiers 1–64 ASCII alphanumeric/underscore/hyphen, page 1–1000 rows; SQL statement budget 15 seconds. Database unavailability returns 503 `{ "code": "STORE_UNAVAILABLE" }`; invalid filters/pages return 400. Error responses never contain stack traces.
 
-`GET /health`: operational readiness and current queue/source/checkpoint metrics, 200 or 503. No input payloads or secret values.
+`GET /health`: operational readiness and current queue/source/checkpoint metrics, 200 or 503. SQL availability is checked even when source consumption is disabled, and is reported as `storeAvailable`. No input payloads or secret values.
 
 `GET /v1/runs/{run}/windows?tenant=t&sensor=a&type=TUMBLING&after=-9223372036854775808&limit=100`: ascending start-time keyset pagination. Type is TUMBLING or SLIDING. Each row has tenant, sensor, type, start, end (epoch milliseconds), count, sum (milliunits), minimum, maximum, revision, finalized.
 

@@ -1,12 +1,9 @@
 package io.github.cheshmakzanoon.portfolio.pulsestream;
 
-import java.io.*;
 import java.sql.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 import org.flywaydb.core.Flyway;
 
 /** PostgreSQL is the recovery authority. All batch-visible effects share one fenced transaction. */
@@ -36,6 +33,7 @@ public final class PostgresStore {
 
   private final String url, user, password;
   private final Consumer<Barrier> barrier;
+  private final SqlTransactions transactions = new SqlTransactions(this::connection);
   private java.util.function.BiConsumer<Barrier, Engine.State> stateBarrier = (b, s) -> {};
 
   public PostgresStore withStateBarrier(java.util.function.BiConsumer<Barrier, Engine.State> hook) {
@@ -75,34 +73,33 @@ public final class PostgresStore {
   public Owner acquire(String run, Duration lease) throws SQLException {
     if (!Engine.identifier(run) || lease.toMillis() < 100)
       throw new IllegalArgumentException("owner");
-    try (Connection c = connection()) {
-      c.setAutoCommit(false);
-      execute(c, "INSERT INTO run_owner VALUES (?,0,'-infinity') ON CONFLICT DO NOTHING", run);
-      try (PreparedStatement p =
-          c.prepareStatement(
-              "SELECT epoch,lease_until<=clock_timestamp() FROM run_owner WHERE run_id=? FOR UPDATE")) {
-        p.setString(1, run);
-        try (ResultSet rs = p.executeQuery()) {
-          if (!rs.next() || !rs.getBoolean(2)) throw new SQLException("RUN_OWNED");
-          long epoch = Math.addExact(rs.getLong(1), 1);
-          execute(
-              c,
-              "UPDATE run_owner SET epoch=?,lease_until=clock_timestamp()+(? * interval '1 millisecond') WHERE run_id=?",
-              epoch,
-              lease.toMillis(),
-              run);
-          c.commit();
-          return new Owner(run, epoch, lease);
-        }
-      }
-    }
+    return transactions.run(
+        c -> {
+          execute(c, "INSERT INTO run_owner VALUES (?,0,'-infinity') ON CONFLICT DO NOTHING", run);
+          try (PreparedStatement p =
+              c.prepareStatement(
+                  "SELECT epoch,lease_until<=clock_timestamp() FROM run_owner WHERE run_id=? FOR UPDATE")) {
+            bind(p, run);
+            try (ResultSet rs = p.executeQuery()) {
+              if (!rs.next() || !rs.getBoolean(2)) throw new SQLException("RUN_OWNED");
+              long epoch = Math.addExact(rs.getLong(1), 1);
+              execute(
+                  c,
+                  "UPDATE run_owner SET epoch=?,lease_until=clock_timestamp()+(? * interval '1 millisecond') WHERE run_id=?",
+                  epoch,
+                  lease.toMillis(),
+                  run);
+              return new Owner(run, epoch, lease);
+            }
+          }
+        });
   }
 
   private void fence(Connection c, Owner owner) throws SQLException {
     try (PreparedStatement p =
         c.prepareStatement(
             "SELECT epoch,lease_until>clock_timestamp() FROM run_owner WHERE run_id=? FOR UPDATE")) {
-      p.setString(1, owner.run);
+      bind(p, owner.run);
       try (ResultSet rs = p.executeQuery()) {
         if (!rs.next() || rs.getLong(1) != owner.epoch || !rs.getBoolean(2))
           throw new SQLException("FENCED_OWNER");
@@ -137,16 +134,16 @@ public final class PostgresStore {
     try (Connection c = connection();
         PreparedStatement p =
             c.prepareStatement("SELECT topic_id,snapshot FROM run_state WHERE run_id=?")) {
-      p.setString(1, run);
+      bind(p, run);
       try (ResultSet rs = p.executeQuery()) {
         if (!rs.next()) return new Engine.State(run, limits, now);
         if (!topicId.equals(rs.getString(1))) throw new SQLException("TOPIC_ID_CHANGED");
-        Engine.State state = decode(rs.getBytes(2), Engine.State.class);
+        Engine.State state = SnapshotCodec.decode(rs.getBytes(2), Engine.State.class);
         if (!limits.equals(state.limits)) throw new SQLException("RUN_LIMITS_CHANGED");
         try (PreparedStatement seen =
             c.prepareStatement(
                 "SELECT tenant_id,event_id,payload_hash FROM seen_event WHERE run_id=?")) {
-          seen.setString(1, run);
+          bind(seen, run);
           try (ResultSet rows = seen.executeQuery()) {
             while (rows.next())
               state.seen.put(rows.getString(1) + ":" + rows.getString(2), rows.getString(3));
@@ -160,134 +157,130 @@ public final class PostgresStore {
   public void commit(Owner owner, String topicId, Engine.State previous, Engine.State next)
       throws SQLException {
     if (!owner.run.equals(next.runId)) throw new IllegalArgumentException("run");
-    try (Connection c = connection()) {
-      c.setAutoCommit(false);
-      try {
-        fence(c, owner);
-        long addedDiagnostics = (long) next.quarantine.size() + next.late.size();
-        execute(
-            c,
-            "INSERT INTO run_usage(run_id,diagnostics) VALUES (?,?) ON CONFLICT(run_id) DO UPDATE SET diagnostics=run_usage.diagnostics+EXCLUDED.diagnostics",
-            owner.run,
-            addedDiagnostics);
-        try (PreparedStatement usage =
-            c.prepareStatement("SELECT diagnostics FROM run_usage WHERE run_id=?")) {
-          bind(usage, owner.run);
-          try (ResultSet count = usage.executeQuery()) {
-            count.next();
-            if (count.getLong(1) > 6L * next.limits.events())
-              throw new SQLException("DIAGNOSTIC_QUOTA_EXHAUSTED");
-          }
-        }
-
-        try (PreparedStatement p =
-            c.prepareStatement("SELECT topic_id FROM run_state WHERE run_id=?")) {
-          p.setString(1, owner.run);
-          try (ResultSet rs = p.executeQuery()) {
-            if (rs.next() && !topicId.equals(rs.getString(1)))
-              throw new SQLException("TOPIC_ID_CHANGED");
-          }
-        }
-        // Snapshot excludes dedup and per-batch delivery deltas; normalized rows own those
-        // histories.
-        Engine.State snapshot = new Engine.State(next.runId, next.limits, 0);
-        snapshot.watermark = next.watermark;
-        snapshot.duplicates = next.duplicates;
-        snapshot.panes.putAll(next.panes);
-        snapshot.results.putAll(next.results);
-        snapshot.pending.addAll(next.pending);
-        snapshot.admitted.addAll(next.admitted);
-        snapshot.offsets.putAll(next.offsets);
-        snapshot.partitions.putAll(next.partitions);
-        execute(
-            c,
-            "INSERT INTO run_state VALUES (?,?,?,clock_timestamp()) ON CONFLICT(run_id) DO UPDATE SET snapshot=EXCLUDED.snapshot,committed_at=EXCLUDED.committed_at",
-            owner.run,
-            topicId,
-            encode(snapshot));
-        for (var e : next.offsets.entrySet())
+    transactions.run(
+        c -> {
+          fence(c, owner);
+          long addedDiagnostics = (long) next.quarantine.size() + next.late.size();
           execute(
               c,
-              "INSERT INTO checkpoint VALUES (?,?,?,?) ON CONFLICT(run_id,partition_id) DO UPDATE SET next_offset=EXCLUDED.next_offset",
+              "INSERT INTO run_usage(run_id,diagnostics) VALUES (?,?) ON CONFLICT(run_id) DO UPDATE SET diagnostics=run_usage.diagnostics+EXCLUDED.diagnostics",
+              owner.run,
+              addedDiagnostics);
+          try (PreparedStatement usage =
+              c.prepareStatement("SELECT diagnostics FROM run_usage WHERE run_id=?")) {
+            bind(usage, owner.run);
+            try (ResultSet count = usage.executeQuery()) {
+              count.next();
+              if (count.getLong(1) > 6L * next.limits.events())
+                throw new SQLException("DIAGNOSTIC_QUOTA_EXHAUSTED");
+            }
+          }
+
+          try (PreparedStatement p =
+              c.prepareStatement("SELECT topic_id FROM run_state WHERE run_id=?")) {
+            bind(p, owner.run);
+            try (ResultSet rs = p.executeQuery()) {
+              if (rs.next() && !topicId.equals(rs.getString(1)))
+                throw new SQLException("TOPIC_ID_CHANGED");
+            }
+          }
+          // Snapshot excludes dedup and per-batch delivery deltas; normalized rows own those
+          // histories.
+          Engine.State snapshot = new Engine.State(next.runId, next.limits, 0);
+          snapshot.watermark = next.watermark;
+          snapshot.duplicates = next.duplicates;
+          snapshot.panes.putAll(next.panes);
+          snapshot.results.putAll(next.results);
+          snapshot.pending.addAll(next.pending);
+          snapshot.admitted.addAll(next.admitted);
+          snapshot.offsets.putAll(next.offsets);
+          snapshot.partitions.putAll(next.partitions);
+          execute(
+              c,
+              "INSERT INTO run_state VALUES (?,?,?,clock_timestamp()) ON CONFLICT(run_id) DO UPDATE SET snapshot=EXCLUDED.snapshot,committed_at=EXCLUDED.committed_at",
               owner.run,
               topicId,
-              e.getKey(),
-              e.getValue());
-        for (var e : next.partitions.entrySet())
-          execute(
-              c,
-              "INSERT INTO partition_progress VALUES (?,?,?,?,?) ON CONFLICT(run_id,partition_id) DO UPDATE SET max_timestamp=EXCLUDED.max_timestamp,last_activity=EXCLUDED.last_activity,idle=EXCLUDED.idle",
-              owner.run,
-              e.getKey(),
-              e.getValue().maxTimestamp(),
-              e.getValue().lastActivity(),
-              e.getValue().idle());
-        execute(c, "DELETE FROM pane_state WHERE run_id=?", owner.run);
-        try (PreparedStatement p =
-            c.prepareStatement("INSERT INTO pane_state VALUES (?,?,?,?,?,?,?,?)")) {
-          for (var e : next.panes.entrySet()) {
-            bind(
-                p,
+              SnapshotCodec.encode(snapshot));
+          for (var e : next.offsets.entrySet())
+            execute(
+                c,
+                "INSERT INTO checkpoint VALUES (?,?,?,?) ON CONFLICT(run_id,partition_id) DO UPDATE SET next_offset=EXCLUDED.next_offset",
                 owner.run,
-                e.getKey().key().tenant(),
-                e.getKey().key().sensor(),
-                e.getKey().start(),
-                e.getValue().count(),
-                e.getValue().sum(),
-                e.getValue().minimum(),
-                e.getValue().maximum());
-            p.addBatch();
-          }
-          p.executeBatch();
-        }
-        try (PreparedStatement p = c.prepareStatement("INSERT INTO seen_event VALUES (?,?,?,?)")) {
-          for (var e : next.seen.entrySet())
-            if (!previous.seen.containsKey(e.getKey())) {
-              String[] id = e.getKey().split(":", 2);
-              bind(p, owner.run, id[0], id[1], e.getValue());
+                topicId,
+                e.getKey(),
+                e.getValue());
+          for (var e : next.partitions.entrySet())
+            execute(
+                c,
+                "INSERT INTO partition_progress VALUES (?,?,?,?,?) ON CONFLICT(run_id,partition_id) DO UPDATE SET max_timestamp=EXCLUDED.max_timestamp,last_activity=EXCLUDED.last_activity,idle=EXCLUDED.idle",
+                owner.run,
+                e.getKey(),
+                e.getValue().maxTimestamp(),
+                e.getValue().lastActivity(),
+                e.getValue().idle());
+          execute(c, "DELETE FROM pane_state WHERE run_id=?", owner.run);
+          try (PreparedStatement p =
+              c.prepareStatement("INSERT INTO pane_state VALUES (?,?,?,?,?,?,?,?)")) {
+            for (var e : next.panes.entrySet()) {
+              bind(
+                  p,
+                  owner.run,
+                  e.getKey().key().tenant(),
+                  e.getKey().key().sensor(),
+                  e.getKey().start(),
+                  e.getValue().count(),
+                  e.getValue().sum(),
+                  e.getValue().minimum(),
+                  e.getValue().maximum());
               p.addBatch();
             }
-          p.executeBatch();
-        }
-        for (var r : next.outbox) {
-          var w = r.window();
-          var a = r.aggregate();
-          execute(
-              c,
-              "INSERT INTO window_result VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(run_id,tenant_id,sensor_id,type,start_time) DO UPDATE SET count=EXCLUDED.count,sum=EXCLUDED.sum,minimum=EXCLUDED.minimum,maximum=EXCLUDED.maximum,revision=EXCLUDED.revision,final=EXCLUDED.final WHERE NOT window_result.final",
-              owner.run,
-              w.key().tenant(),
-              w.key().sensor(),
-              w.type(),
-              w.start(),
-              w.end(),
-              a.count(),
-              a.sum(),
-              a.minimum(),
-              a.maximum(),
-              r.revision(),
-              r.finalized());
-          execute(
-              c,
-              "INSERT INTO outbox(run_id,window_id,revision,payload) VALUES (?,?,?,?) ON CONFLICT DO NOTHING",
-              owner.run,
-              w.id(),
-              r.revision(),
-              encode(r));
-        }
-        insertRejections(c, "quarantine", owner.run, next.quarantine);
-        insertRejections(c, "late_record", owner.run, next.late);
-        stateBarrier.accept(Barrier.BEFORE_COMMIT, next);
-        barrier.accept(Barrier.BEFORE_COMMIT);
-        renewLocked(c, owner);
-        c.commit();
-        stateBarrier.accept(Barrier.AFTER_COMMIT, next);
-        barrier.accept(Barrier.AFTER_COMMIT);
-      } catch (SQLException | RuntimeException e) {
-        c.rollback();
-        throw e;
-      }
-    }
+            p.executeBatch();
+          }
+          try (PreparedStatement p =
+              c.prepareStatement("INSERT INTO seen_event VALUES (?,?,?,?)")) {
+            for (var e : next.seen.entrySet())
+              if (!previous.seen.containsKey(e.getKey())) {
+                String[] id = e.getKey().split(":", 2);
+                bind(p, owner.run, id[0], id[1], e.getValue());
+                p.addBatch();
+              }
+            p.executeBatch();
+          }
+          for (var r : next.outbox) {
+            var w = r.window();
+            var a = r.aggregate();
+            execute(
+                c,
+                "INSERT INTO window_result VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(run_id,tenant_id,sensor_id,type,start_time) DO UPDATE SET count=EXCLUDED.count,sum=EXCLUDED.sum,minimum=EXCLUDED.minimum,maximum=EXCLUDED.maximum,revision=EXCLUDED.revision,final=EXCLUDED.final WHERE NOT window_result.final",
+                owner.run,
+                w.key().tenant(),
+                w.key().sensor(),
+                w.type(),
+                w.start(),
+                w.end(),
+                a.count(),
+                a.sum(),
+                a.minimum(),
+                a.maximum(),
+                r.revision(),
+                r.finalized());
+            execute(
+                c,
+                "INSERT INTO outbox(run_id,window_id,revision,payload) VALUES (?,?,?,?) ON CONFLICT DO NOTHING",
+                owner.run,
+                w.id(),
+                r.revision(),
+                SnapshotCodec.encode(r));
+          }
+          insertRejections(c, "quarantine", owner.run, next.quarantine);
+          insertRejections(c, "late_record", owner.run, next.late);
+          stateBarrier.accept(Barrier.BEFORE_COMMIT, next);
+          barrier.accept(Barrier.BEFORE_COMMIT);
+          renewLocked(c, owner);
+          return null;
+        });
+    stateBarrier.accept(Barrier.AFTER_COMMIT, next);
+    barrier.accept(Barrier.AFTER_COMMIT);
   }
 
   private static void insertRejections(
@@ -309,32 +302,31 @@ public final class PostgresStore {
   public int deliverOutbox(Owner owner, Consumer<Engine.Result> publish, int limit)
       throws SQLException {
     if (limit < 1 || limit > 1000) throw new IllegalArgumentException("limit");
-    try (Connection c = connection()) {
-      c.setAutoCommit(false);
-      fence(c, owner);
-      int delivered = 0;
-      try (PreparedStatement p =
-          c.prepareStatement(
-              "SELECT window_id,revision,payload FROM outbox WHERE run_id=? AND NOT delivered ORDER BY window_id,revision LIMIT ? FOR UPDATE SKIP LOCKED")) {
-        bind(p, owner.run, limit);
-        try (ResultSet rs = p.executeQuery()) {
-          while (rs.next()) {
-            publish.accept(decode(rs.getBytes(3), Engine.Result.class));
-            barrier.accept(Barrier.DURING_OUTBOX);
-            execute(
-                c,
-                "UPDATE outbox SET delivered=true WHERE run_id=? AND window_id=? AND revision=?",
-                owner.run,
-                rs.getString(1),
-                rs.getLong(2));
-            delivered++;
+    return transactions.run(
+        c -> {
+          fence(c, owner);
+          int delivered = 0;
+          try (PreparedStatement p =
+              c.prepareStatement(
+                  "SELECT window_id,revision,payload FROM outbox WHERE run_id=? AND NOT delivered ORDER BY window_id,revision LIMIT ? FOR UPDATE SKIP LOCKED")) {
+            bind(p, owner.run, limit);
+            try (ResultSet rs = p.executeQuery()) {
+              while (rs.next()) {
+                publish.accept(SnapshotCodec.decode(rs.getBytes(3), Engine.Result.class));
+                barrier.accept(Barrier.DURING_OUTBOX);
+                execute(
+                    c,
+                    "UPDATE outbox SET delivered=true WHERE run_id=? AND window_id=? AND revision=?",
+                    owner.run,
+                    rs.getString(1),
+                    rs.getLong(2));
+                delivered++;
+              }
+            }
           }
-        }
-      }
-      renewLocked(c, owner);
-      c.commit();
-      return delivered;
-    }
+          renewLocked(c, owner);
+          return delivered;
+        });
   }
 
   public List<WindowRow> windows(
@@ -392,7 +384,7 @@ public final class PostgresStore {
       bind(p, run);
       try (ResultSet r = p.executeQuery()) {
         if (!r.next()) return Map.of("state", "NOT_STARTED");
-        var s = decode(r.getBytes(1), Engine.State.class);
+        var s = SnapshotCodec.decode(r.getBytes(1), Engine.State.class);
         Map<String, Object> status = new LinkedHashMap<>();
         status.put("watermark", s.watermark);
         status.put("partitions", s.partitions);
@@ -442,29 +434,5 @@ public final class PostgresStore {
   private static void bind(PreparedStatement p, Object... args) throws SQLException {
     p.setQueryTimeout(15);
     for (int i = 0; i < args.length; i++) p.setObject(i + 1, args[i]);
-  }
-
-  private static byte[] encode(Serializable object) throws SQLException {
-    try (var bytes = new ByteArrayOutputStream();
-        var gzip = new GZIPOutputStream(bytes);
-        var out = new ObjectOutputStream(gzip)) {
-      out.writeObject(object);
-      out.flush();
-      gzip.finish();
-      return bytes.toByteArray();
-    } catch (IOException e) {
-      throw new SQLException("STATE_ENCODING", e);
-    }
-  }
-
-  private static <T> T decode(byte[] data, Class<T> type) throws SQLException {
-    try (var in = new ObjectInputStream(new GZIPInputStream(new ByteArrayInputStream(data)))) {
-      in.setObjectInputFilter(
-          ObjectInputFilter.Config.createFilter(
-              "maxdepth=40;maxrefs=10000000;maxbytes=536870912;io.github.cheshmakzanoon.portfolio.pulsestream.*;java.base/*;!*"));
-      return type.cast(in.readObject());
-    } catch (IOException | ClassNotFoundException | ClassCastException e) {
-      throw new SQLException("STATE_DECODING", e);
-    }
   }
 }

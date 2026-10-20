@@ -6,6 +6,8 @@ PULSE_ROOT=$(cd -- "$PULSE_PROJECT/../.." && pwd)
 PULSE_WORK="$PULSE_ROOT/.work/A04"
 PULSE_RUNTIME="$PULSE_WORK/runtime"
 PULSE_SERVICE_JAR="$PULSE_PROJECT/service/target/pulsestream-service-1.0.0-SNAPSHOT-exec.jar"
+PULSE_PROCESS_HELPER="$PULSE_PROJECT/scripts/runtime-process.py"
+PULSE_PROCESS_RECORD="$PULSE_RUNTIME/service.pid"
 PULSE_VERIFY_JAR="$PULSE_PROJECT/verification/target/pulsestream-verification-1.0.0-SNAPSHOT.jar"
 mkdir -p "$PULSE_RUNTIME"
 if [[ -x /workspace/.tools/jdk-25/bin/java ]]; then source "$PULSE_ROOT/scripts/cloud-env.sh"; fi
@@ -24,6 +26,8 @@ PY
 }
 build() {
   local expected
+  python3 "$PULSE_PROCESS_HELPER" validate "$PULSE_PROCESS_RECORD" "$PULSE_SERVICE_JAR"
+  if owned_service_running; then echo "Stop the owned service before replacing its verified artifacts" >&2; return 1; fi
   expected=$(fingerprint)
   (cd "$PULSE_ROOT"; ./mvnw -f "$PULSE_PROJECT/pom.xml" -Dmaven.repo.local="$PULSE_WORK/m2" -B -ntp verify)
   [[ "$expected" == "$(fingerprint)" ]] || { echo 'Executable inputs changed during verification; rerun once stable' >&2; return 1; }
@@ -41,25 +45,19 @@ require_current_build() {
   [[ -f "$PULSE_RUNTIME/build.fingerprint" ]] && [[ "$(cat "$PULSE_RUNTIME/build.fingerprint")" == "$(fingerprint)" ]] && artifacts_valid || { echo 'Current sources/artifacts have no matching verified build; run scripts/up.sh or scripts/prepare-benchmark.sh' >&2; return 1; }
 }
 owned_service_running() {
-  local pid state
-  [[ -f "$PULSE_RUNTIME/service.pid" ]] || return 1
-  pid=$(cat "$PULSE_RUNTIME/service.pid")
-  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
-  state=$(ps -p "$pid" -o stat=) || return 1
-  [[ "$state" != *Z* ]] && ps -p "$pid" -o args= | grep -Fq -- "$PULSE_SERVICE_JAR"
+  python3 "$PULSE_PROCESS_HELPER" alive "$PULSE_PROCESS_RECORD" "$PULSE_SERVICE_JAR"
+}
+current_service_running() {
+  python3 "$PULSE_PROCESS_HELPER" current "$PULSE_PROCESS_RECORD" "$PULSE_SERVICE_JAR"
 }
 stop_service() {
-  local pid
-  if owned_service_running; then
-    pid=$(cat "$PULSE_RUNTIME/service.pid"); kill "$pid"
-    for ((i=0;i<30;i++)); do if ! owned_service_running; then break; fi; sleep 1; done
-    if owned_service_running; then kill -KILL "$pid"; fi
-  fi
-  rm -f "$PULSE_RUNTIME/service.pid" "$PULSE_RUNTIME/services.fingerprint"
+  python3 "$PULSE_PROCESS_HELPER" stop "$PULSE_PROCESS_RECORD" "$PULSE_SERVICE_JAR" || return $?
+  rm -f "$PULSE_RUNTIME/services.fingerprint"
 }
 wait_for_service() {
   for ((i=0;i<90;i++)); do
-    if owned_service_running && curl --max-time 2 --fail --silent "http://127.0.0.1:${PULSE_HTTP_PORT:-18400}/health" >/dev/null; then return 0; fi
+    if ! owned_service_running; then echo "Owned PulseStream service exited before readiness; inspect $PULSE_RUNTIME/service.log" >&2; return 1; fi
+    if curl --max-time 2 --fail --silent "http://127.0.0.1:${PULSE_HTTP_PORT:-18400}/health" >/dev/null; then return 0; fi
     sleep 1
   done
   echo "Owned PulseStream service failed health; inspect $PULSE_RUNTIME/service.log" >&2
@@ -67,7 +65,7 @@ wait_for_service() {
 }
 require_running_build() {
   require_current_build
-  [[ -f "$PULSE_RUNTIME/services.fingerprint" ]] && [[ "$(cat "$PULSE_RUNTIME/services.fingerprint")" == "$(fingerprint)" ]] && owned_service_running || { echo 'Running service is absent or stale; run scripts/up.sh' >&2; return 1; }
+  [[ -f "$PULSE_RUNTIME/services.fingerprint" ]] && [[ "$(cat "$PULSE_RUNTIME/services.fingerprint")" == "$(fingerprint)" ]] && current_service_running || { echo 'Running service is absent or stale; run scripts/up.sh' >&2; return 1; }
   wait_for_service
 }
 java_worker() {

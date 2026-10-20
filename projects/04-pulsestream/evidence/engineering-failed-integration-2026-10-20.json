@@ -1,0 +1,35 @@
+{
+  "status": "FAILED_ATTEMPT_PRESERVED",
+  "applicationLog": "build.log",
+  "childLog": "crash-seed.log",
+  "integrationReport": "integration.xml",
+  "brokerImage": "apache/kafka:4.2.2@sha256:1213eb3943d551e5ed1fca7a4e109001cee35770b66a02a0c37a8964efe09b69",
+  "observations": [
+    {
+      "timestamp": "2026-10-20T08:49:52Z",
+      "fact": "Broker log showed creation/loading of both late_before source and result partitions."
+    },
+    {
+      "timestamp": "2026-10-20T08:50:13.248Z",
+      "fact": "BrokerLifecycleManager: Unable to send a heartbeat because the RPC got timed out before it could be sent."
+    },
+    {
+      "timestamp": "2026-10-20T08:50:16.947Z",
+      "fact": "ReplicaFetcherManager removed fetchers for all source/result test partitions."
+    },
+    {
+      "timestamp": "2026-10-20T08:50:17Z",
+      "fact": "Crash seed child timed out its15s topic metadata call; original process and statement budgets retained."
+    }
+  ],
+  "brokerLogCapture": "Observed via docker logs during failure; original test teardown removed container before full export. Fixture now writes broker logs before teardown.",
+  "interpretation": "Controller/broker availability failed during this attempt. A later exclusive Maven functional run passed unchanged broker/process/statement budgets. This does not establish the cause, host-wide load capacity, or production capacity.",
+  "fixtureFailure": "The new one-in-flight guard also rejected a test that dequeued without SQL acknowledgement. The fixture now commits through DurableSession before acknowledging; the production contract was retained.",
+  "counts": {
+    "tests": 11,
+    "passed": 9,
+    "failures": 1,
+    "errors": 1,
+    "skipped": 0
+  }
+}

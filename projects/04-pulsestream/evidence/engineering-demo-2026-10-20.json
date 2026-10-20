@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "project": "pulsestream",
+  "sourceRevision": "working-tree-sha256:82fef5535a3380097068b5e6479e3d1bc2d96045fb11a7d36c961d2d86307189",
+  "timestamp": "2026-10-20T09:36:13.193872+00:00",
+  "command": "projects/04-pulsestream/scripts/demo.sh",
+  "exitCode": 0,
+  "run": "demo_1792488837234406",
+  "assertions": {
+    "passed": 7,
+    "failed": 0
+  },
+  "assertionBoundary": "Seven shell/API barriers; additional live worker invariants and digest equality are executed but not counted as separate methods.",
+  "recoveryDigest": "0050e36db52d262196924b3b278eb13e549e8cfd6cacca8b3d8e96d6d423eff6",
+  "oracleDigest": "0050e36db52d262196924b3b278eb13e549e8cfd6cacca8b3d8e96d6d423eff6",
+  "rawArtifact": ".work/A04/runtime/demo-transcript.log",
+  "transcriptSha256": "79a1e3f89251ed8cc3477e74f61cbf36f3f164ac31d4fb3ee949ecc0cc0000f7",
+  "limitations": [
+    "Disposable trusted loopback profile; real protected JWT validation is a separate integration suite."
+  ]
+}

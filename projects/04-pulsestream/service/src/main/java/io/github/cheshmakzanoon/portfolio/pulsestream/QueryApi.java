@@ -48,6 +48,14 @@ public class QueryApi {
   @GetMapping("/health")
   public ResponseEntity<Map<String, Object>> health() {
     var m = processor.metrics();
+    boolean available;
+    try (var connection = store.connection()) {
+      available = connection.isValid(2);
+    } catch (SQLException unavailable) {
+      available = false;
+    }
+    m.put("storeAvailable", available);
+    m.put("healthy", available && Boolean.TRUE.equals(m.get("healthy")));
     return ResponseEntity.status(Boolean.TRUE.equals(m.get("healthy")) ? 200 : 503).body(m);
   }
 

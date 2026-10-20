@@ -6,7 +6,7 @@ The supported execution model is one active processor per finite run. It provide
 
 ## Build and run
 
-Requirements: JDK 25, the repository Maven wrapper, Docker with Compose, Bash, and Python 3. From the repository root:
+Requirements: JDK 25, the repository Maven wrapper, Docker with Compose, Bash, Python 3, and Linux with `/proc` and `flock`. From the repository root:
 
 ```bash
 ./scripts/portfolio.sh verify pulsestream
@@ -24,7 +24,7 @@ The query API listens on `127.0.0.1:18400`. The local profile trusts the explici
 
 The deterministic replay uses an injected clock, real Kafka/PostgreSQL, and process termination. It asserts a final first tumbling window with count **3** and sum **35**, a logical duplicate, a rejected late tumbling contribution, separate sliding-window totals, and recovery equality against an independent oracle.
 
-The unit and property tests exercise half-open boundaries, checked aggregate arithmetic, monotonic watermarks, source-idle eligibility, finality, and finite quotas. The integration suite tests SQL/checkpoint atomicity, obsolete-owner fencing, outbox retries, source retention gaps, topic identity, database outages, and protected HTTP identities.
+The unit and property tests exercise half-open boundaries, checked aggregate arithmetic, monotonic watermarks, source-idle eligibility, finality, and finite quotas. The integration suite tests SQL/checkpoint atomicity, obsolete-owner fencing, partial outbox publication and retries, source retention gaps, topic identity, database outages, interrupted shutdown, and protected HTTP identities. Transaction and snapshot responsibilities have separate ordinary regressions and mutation targets.
 
 ## Design map
 

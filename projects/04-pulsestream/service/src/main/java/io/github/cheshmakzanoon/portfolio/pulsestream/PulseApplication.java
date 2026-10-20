@@ -62,6 +62,7 @@ public class PulseApplication {
    * restart.
    */
   public static final class Processor implements AutoCloseable {
+    private static final System.Logger LOG = System.getLogger(Processor.class.getName());
     private final PostgresStore store;
     private final AtomicReference<Throwable> failure = new AtomicReference<>();
     private final AtomicLong outboxFailures = new AtomicLong();
@@ -97,7 +98,7 @@ public class PulseApplication {
                 limits.partitions(),
                 queueBatches,
                 batch,
-                failure::set);
+                t -> failure.compareAndSet(null, t));
         publisher = new KafkaResultPublisher(bootstrap, topic + "-results", run);
         session =
             new DurableSession(
@@ -106,9 +107,11 @@ public class PulseApplication {
         pump.awaitReady(Duration.ofSeconds(20));
         thread = Thread.ofPlatform().name("pulsestream-engine").start(this::process);
       } catch (Exception e) {
-        if (pump != null) pump.close();
-        if (publisher != null) publisher.close();
-        if (session != null) session.close();
+        try {
+          close();
+        } catch (RuntimeException cleanupFailure) {
+          e.addSuppressed(cleanupFailure);
+        }
         throw e;
       }
     }
@@ -130,9 +133,11 @@ public class PulseApplication {
           }
         }
       } catch (InterruptedException e) {
+        if (running)
+          failure.compareAndSet(null, new IllegalStateException("PROCESSOR_INTERRUPTED", e));
         Thread.currentThread().interrupt();
       } catch (Throwable t) {
-        failure.set(t);
+        failure.compareAndSet(null, t);
       }
     }
 
@@ -156,22 +161,31 @@ public class PulseApplication {
     @Override
     public void close() {
       running = false;
-      if (pump != null) pump.close();
-      if (thread != null) {
-        thread.interrupt();
-        try {
-          thread.join(20_000);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
+      boolean interrupted = Thread.interrupted();
+      try {
+        // Cancel delivery/waits first. Do not release ownership or close its publisher
+        // until the engine owner has actually stopped using them.
+        if (thread != null) {
+          thread.interrupt();
+          ThreadTermination.await(thread, Duration.ofSeconds(20));
         }
+        interrupted |= Thread.interrupted();
+        if (pump != null) pump.close();
+        interrupted |= Thread.interrupted();
+        if (publisher != null) publisher.close();
+        interrupted |= Thread.interrupted();
+        if (session != null)
+          try {
+            session.close();
+          } catch (SQLException releaseFailure) {
+            LOG.log(
+                System.Logger.Level.WARNING,
+                "Owner release failed; database-time lease will expire; SQL state {0}",
+                releaseFailure.getSQLState());
+          }
+      } finally {
+        if (interrupted) Thread.currentThread().interrupt();
       }
-      if (publisher != null) publisher.close();
-      if (session != null)
-        try {
-          session.close();
-        } catch (SQLException ignored) {
-          /* database-time lease expires */
-        }
     }
   }
 }

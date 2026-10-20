@@ -27,7 +27,7 @@ class DurabilityIT {
     postgres =
         new PostgreSQLContainer(
                 DockerImageName.parse(
-                        "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7")
+                        "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
                     .asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("pulse")
             .withUsername("pulse")
@@ -35,7 +35,7 @@ class DurabilityIT {
     kafka =
         new KafkaContainer(
                 DockerImageName.parse(
-                        "apache/kafka:4.2.1@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0")
+                        "apache/kafka:4.2.2@sha256:1213eb3943d551e5ed1fca7a4e109001cee35770b66a02a0c37a8964efe09b69")
                     .asCompatibleSubstituteFor("apache/kafka"))
             .withEnv("KAFKA_HEAP_OPTS", "-Xms256m -Xmx512m");
     postgres.start();
@@ -46,9 +46,19 @@ class DurabilityIT {
   }
 
   @AfterAll
-  static void stop() {
-    if (kafka != null) kafka.stop();
-    if (postgres != null) postgres.stop();
+  static void stop() throws Exception {
+    try {
+      if (kafka != null) {
+        try {
+          Files.createDirectories(Path.of("target", "container-logs"));
+          Files.writeString(Path.of("target", "container-logs", "kafka.log"), kafka.getLogs());
+        } finally {
+          kafka.stop();
+        }
+      }
+    } finally {
+      if (postgres != null) postgres.stop();
+    }
   }
 
   @Test
@@ -309,11 +319,25 @@ class DurabilityIT {
       assertTrue(failure.get().getMessage().contains("SOURCE_POSITION_UNAVAILABLE"));
     }
     AtomicReference<Throwable> queueFailure = new AtomicReference<>();
+    var limits = new Engine.Limits(1, 10, 100, 100, 1000);
+    String topicId = KafkaPump.topicIdentity(kafka.getBootstrapServers(), topic, 1);
     try (var pump =
-        new KafkaPump(
-            kafka.getBootstrapServers(), topic, "backpressure-test", 1, 2, 1, queueFailure::set)) {
+            new KafkaPump(
+                kafka.getBootstrapServers(),
+                topic,
+                "backpressure-test",
+                1,
+                2,
+                1,
+                queueFailure::set);
+        var session =
+            new DurableSession(store, "retention", topicId, limits, 0, Duration.ofSeconds(30))) {
       pump.start(Map.of(0, 10L));
-      Thread.sleep(1500);
+      pump.awaitReady(Duration.ofSeconds(10));
+      long admissionDeadline = System.nanoTime() + Duration.ofSeconds(5).toNanos();
+      while (pump.depth() == 0
+          && queueFailure.get() == null
+          && System.nanoTime() < admissionDeadline) Thread.sleep(10);
       assertTrue(pump.depth() <= 2);
       assertTrue(pump.depth() > 0);
       assertNull(queueFailure.get());
@@ -321,10 +345,18 @@ class DurabilityIT {
       long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
       while (read < 10 && System.nanoTime() < deadline) {
         var b = pump.take(Duration.ofMillis(100));
-        if (b != null) read += b.inputs().size();
+        if (b != null) {
+          session.apply(new KafkaPump.Batch(b.inputs(), b.observations(), 0));
+          pump.committed(session.checkpoint());
+          read += b.inputs().size();
+        }
       }
       assertEquals(10, read);
       assertNull(queueFailure.get());
+      var recovered = store.restore("retention", topicId, limits, 0);
+      assertEquals(20, recovered.offsets.get(0));
+      assertEquals(
+          new Engine.Aggregate(10, 145, 10, 19), recovered.panes.values().iterator().next());
     }
   }
 
@@ -478,6 +510,134 @@ class DurabilityIT {
               .send(bodyRequest, java.net.http.HttpResponse.BodyHandlers.ofString())
               .statusCode());
       assertEquals(200, get(client, base + "/health", null));
+    }
+  }
+
+  @Test
+  void failedOutboxPublicationRollsBackAllDeliveryMarksAndRetriesStableRevisionIdentities()
+      throws Exception {
+    String run = "outbox_failure";
+    var limits = new Engine.Limits(1, 10, 100, 100, 100000);
+    var owner = store.acquire(run, Duration.ofSeconds(30));
+    try {
+      var initial = store.restore(run, "outbox-failure-topic", limits, 0);
+      var next =
+          Engine.transition(
+              initial,
+              List.of(
+                  Engine.Input.of(0, 0, ReplayWorker.event(run, "one", "a", 0, 7, false)),
+                  Engine.Input.of(0, 1, ReplayWorker.event(run, "progress", "a", 100000, 0, true))),
+              List.of(),
+              100000);
+      store.commit(owner, "outbox-failure-topic", initial, next);
+      var published = new ArrayList<String>();
+      var primary = new IllegalStateException("PUBLISH_FAILED");
+      assertSame(
+          primary,
+          assertThrows(
+              IllegalStateException.class,
+              () ->
+                  store.deliverOutbox(
+                      owner,
+                      result -> {
+                        published.add(result.window().id() + ":" + result.revision());
+                        if (published.size() == 2) throw primary;
+                      },
+                      100)));
+      assertEquals(2, published.size());
+      try (var connection = store.connection();
+          var query =
+              connection.prepareStatement(
+                  "SELECT count(*) FROM outbox WHERE run_id=? AND delivered")) {
+        query.setString(1, run);
+        try (var rows = query.executeQuery()) {
+          assertTrue(rows.next());
+          assertEquals(0, rows.getInt(1));
+        }
+      }
+      var retried = new ArrayList<String>();
+      assertTrue(
+          store.deliverOutbox(
+                  owner, result -> retried.add(result.window().id() + ":" + result.revision()), 100)
+              >= 2);
+      assertEquals(published, retried.subList(0, 2));
+      assertEquals(0, store.deliverOutbox(owner, result -> fail("already delivered"), 100));
+      var result = store.windows(run, "t", "a", "TUMBLING", 100, Long.MIN_VALUE).getFirst();
+      assertEquals(1, result.count());
+      assertEquals(7, result.sum());
+      assertTrue(result.finalized());
+    } finally {
+      store.release(owner);
+    }
+  }
+
+  @Test
+  void interruptedShutdownWaitsForInFlightCommitThenReleasesOwnershipForRecovery()
+      throws Exception {
+    String run = "shutdown_commit", topic = "pulse-shutdown-commit";
+    createTopic(topic, 1);
+    createTopic(topic + "-results", 1);
+    var entered = new CountDownLatch(1);
+    var release = new CountDownLatch(1);
+    var intercepted = new java.util.concurrent.atomic.AtomicBoolean();
+    var controlled =
+        new PostgresStore(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
+            .withStateBarrier(
+                (barrier, state) -> {
+                  if (barrier == PostgresStore.Barrier.BEFORE_COMMIT
+                      && state.seen.containsKey("t:one")
+                      && intercepted.compareAndSet(false, true)) {
+                    entered.countDown();
+                    boolean interrupted = false;
+                    for (; ; ) {
+                      try {
+                        if (!release.await(10, TimeUnit.SECONDS))
+                          throw new AssertionError("shutdown release barrier");
+                        break;
+                      } catch (InterruptedException cancellation) {
+                        interrupted = true;
+                      }
+                    }
+                    if (interrupted) Thread.currentThread().interrupt();
+                  }
+                });
+    var limits = new Engine.Limits(1, 10, 100, 100, 100000);
+    var processor =
+        new PulseApplication.Processor(
+            controlled, run, kafka.getBootstrapServers(), topic, limits, 3, 10);
+    try (var closer = Executors.newSingleThreadExecutor();
+        var producer = ReplayWorker.producer(kafka.getBootstrapServers())) {
+      ReplayWorker.send(producer, topic, ReplayWorker.event(run, "one", "a", 0, 7, false));
+      assertTrue(entered.await(10, TimeUnit.SECONDS));
+      var closing = new CountDownLatch(1);
+      var stopped =
+          closer.submit(
+              () -> {
+                Thread.currentThread().interrupt();
+                closing.countDown();
+                processor.close();
+                return Thread.currentThread().isInterrupted();
+              });
+      assertTrue(closing.await(3, TimeUnit.SECONDS));
+      assertThrows(TimeoutException.class, () -> stopped.get(100, TimeUnit.MILLISECONDS));
+      release.countDown();
+      assertTrue(stopped.get(20, TimeUnit.SECONDS));
+      try (var recovered =
+          new DurableSession(
+              store,
+              run,
+              KafkaPump.topicIdentity(kafka.getBootstrapServers(), topic, 1),
+              limits,
+              System.currentTimeMillis(),
+              Duration.ofSeconds(30))) {
+        assertEquals(1, recovered.checkpoint().get(0));
+        assertTrue(recovered.state().seen.containsKey("t:one"));
+        assertEquals(
+            new Engine.Aggregate(1, 7, 7, 7), recovered.state().panes.values().iterator().next());
+      }
+    } finally {
+      release.countDown();
+      processor.close();
     }
   }
 

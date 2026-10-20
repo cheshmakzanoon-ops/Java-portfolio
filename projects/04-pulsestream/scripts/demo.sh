@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 source "$(dirname -- "${BASH_SOURCE[0]}")/common.sh"
-ensure_build
 if ! require_running_build >/dev/null 2>&1; then "$PULSE_PROJECT/scripts/up.sh"; fi
 require_running_build
 PULSE_DEMO_FINGERPRINT=$(fingerprint)
