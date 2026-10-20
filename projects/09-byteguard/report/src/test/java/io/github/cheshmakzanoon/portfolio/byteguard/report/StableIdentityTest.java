@@ -59,6 +59,10 @@ class StableIdentityTest {
     assertNotEquals(
         StableIdentity.method("C.read\uDC00()V"), StableIdentity.method("C.read\uD800()V"));
     assertNotEquals(StableIdentity.method("\uD800"), StableIdentity.method("\uD801"));
+    assertNotEquals(
+        StableIdentity.method("C.read\uDC00()V"),
+        StableIdentity.method("C.read\uDC01()V"),
+        "distinct unpaired low surrogates must not share lossy UTF-8 identity");
     String first = "C.read\uD800()V", second = "C.read\uD801()V";
     assertArrayEquals(
         first.getBytes(StandardCharsets.UTF_8),
