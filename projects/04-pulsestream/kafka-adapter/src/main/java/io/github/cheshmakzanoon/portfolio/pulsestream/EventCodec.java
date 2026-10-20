@@ -46,6 +46,8 @@ public final class EventCodec {
       for (String field : ListFields.NUMBER)
         if (!n.path(field).isIntegralNumber() || !n.path(field).canConvertToLong())
           throw new IllegalArgumentException();
+      if (n.has("recordType") && !n.path("recordType").isTextual())
+        throw new IllegalArgumentException();
       String kind = n.path("recordType").asText("MEASUREMENT");
       if (!Set.of("MEASUREMENT", "PROGRESS").contains(kind)
           || !n.path("schemaVersion").canConvertToInt()) throw new IllegalArgumentException();

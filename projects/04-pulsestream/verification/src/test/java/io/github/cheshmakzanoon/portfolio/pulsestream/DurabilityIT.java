@@ -232,6 +232,57 @@ class DurabilityIT {
   }
 
   @Test
+  void malformedRecordTypesAreDurablyQuarantinedWithoutConsumingEventIdentity() throws Exception {
+    String run = "wire_type", topic = "pulse-wire-type";
+    createTopic(topic, 1);
+    var event = ReplayWorker.event(run, "one", "a", 0, 7, false);
+    var json = new String(EventCodec.encode(event), java.nio.charset.StandardCharsets.UTF_8);
+    try (var producer = ReplayWorker.producer(kafka.getBootstrapServers())) {
+      for (String invalid : List.of("null", "{}", "[]")) {
+        var payload =
+            json.replace("\"recordType\":\"MEASUREMENT\"", "\"recordType\":" + invalid)
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        producer
+            .send(
+                new org.apache.kafka.clients.producer.ProducerRecord<>(topic, event.key(), payload))
+            .get(20, TimeUnit.SECONDS);
+      }
+      ReplayWorker.send(producer, topic, event);
+    }
+    var limits = new Engine.Limits(1, 10, 100, 100, 0);
+    var failure = new AtomicReference<Throwable>();
+    String topicId = KafkaPump.topicIdentity(kafka.getBootstrapServers(), topic, 1);
+    try (var session = new DurableSession(store, run, topicId, limits, 0, Duration.ofSeconds(30));
+        var pump =
+            new KafkaPump(
+                kafka.getBootstrapServers(), topic, "wire-type-test", 1, 2, 10, failure::set)) {
+      pump.start(session.checkpoint());
+      pump.awaitReady(Duration.ofSeconds(15));
+      long deadline = System.nanoTime() + Duration.ofSeconds(20).toNanos();
+      while (session.checkpoint().getOrDefault(0, 0L) < 4 && System.nanoTime() < deadline) {
+        var batch = pump.take(Duration.ofMillis(100));
+        if (batch != null) {
+          session.apply(batch);
+          pump.committed(session.checkpoint());
+        }
+      }
+      assertNull(failure.get());
+      assertEquals(4, session.checkpoint().get(0));
+      assertEquals(1, session.state().seen.size());
+      assertEquals(7, session.state().panes.values().iterator().next().sum());
+    }
+    var quarantine = store.quarantine(run, "!unattributed", 0, 100);
+    assertEquals(3, quarantine.size());
+    assertTrue(quarantine.stream().allMatch(row -> row.reason().equals("MALFORMED_JSON")));
+    try (var recovered =
+        new DurableSession(store, run, topicId, limits, 0, Duration.ofSeconds(30))) {
+      assertEquals(4, recovered.checkpoint().get(0));
+      assertEquals(1, recovered.state().seen.size());
+      assertEquals(7, recovered.state().panes.values().iterator().next().sum());
+    }
+  }
+
+  @Test
   void brokerRetentionGapIsVisibleAndBoundedQueueSurvivesDatabasePause() throws Exception {
     String topic = "pulse-retention";
     createTopic(topic, 1);
