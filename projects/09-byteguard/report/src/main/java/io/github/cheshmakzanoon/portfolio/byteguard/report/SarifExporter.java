@@ -133,7 +133,19 @@ public final class SarifExporter {
   public void write(Path path, Object value) throws IOException {
     Path parent = path.toAbsolutePath().getParent();
     Files.createDirectories(parent);
-    mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), value);
+    if (Files.isSymbolicLink(path)) throw new IOException("symbolic report output rejected");
+    Path temporary = Files.createTempFile(parent, ".byteguard-report-", ".tmp");
+    try {
+      mapper.writerWithDefaultPrettyPrinter().writeValue(temporary.toFile(), value);
+      try {
+        Files.move(
+            temporary, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+      } catch (AtomicMoveNotSupportedException unavailable) {
+        Files.move(temporary, path, StandardCopyOption.REPLACE_EXISTING);
+      }
+    } finally {
+      Files.deleteIfExists(temporary);
+    }
   }
 
   public Set<String> baseline(Path path) throws IOException {

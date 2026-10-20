@@ -30,6 +30,59 @@ class BoundaryTest implements Opcodes {
   }
 
   @Test
+  void legalDelimiterCharactersInMethodNamesRetainTheirFindingIdentity() throws Exception {
+    ClassWriter writer = new ClassWriter(0);
+    writer.visit(V25, ACC_PUBLIC, "Delimited", null, "java/lang/Object", null);
+    String name = "read|source@17:label";
+    MethodVisitor method =
+        writer.visitMethod(ACC_STATIC, name, "(Ljava/sql/Statement;)V", null, null);
+    method.visitCode();
+    method.visitVarInsn(ALOAD, 0);
+    method.visitLdcInsn("INPUT");
+    method.visitMethodInsn(
+        INVOKESTATIC,
+        "java/lang/System",
+        "getenv",
+        "(Ljava/lang/String;)Ljava/lang/String;",
+        false);
+    method.visitMethodInsn(
+        INVOKEINTERFACE, "java/sql/Statement", "execute", "(Ljava/lang/String;)Z", true);
+    method.visitInsn(POP);
+    method.visitInsn(RETURN);
+    method.visitMaxs(2, 1);
+    method.visitEnd();
+    writer.visitEnd();
+    Path file = temp.resolve("Delimited.class");
+    Files.write(file, writer.toByteArray());
+    var result = scan(file, AnalysisBudget.defaults());
+    List<Finding> findings = new FindingReporter().findings(result);
+    assertFalse(result.analysis().partial());
+    assertEquals(1, findings.size());
+    assertEquals(
+        "Delimited." + name + "(Ljava/sql/Statement;)V", findings.getFirst().source().method());
+    assertEquals(
+        "java/lang/System.getenv(Ljava/lang/String;)Ljava/lang/String;",
+        findings.getFirst().sourceDescriptor());
+    assertEquals(2, findings.getFirst().source().ordinal());
+    assertDoesNotThrow(() -> new SarifExporter().report(result, findings, Set.of()));
+  }
+
+  @Test
+  void explicitClassFilesShareTheEntryBudgetWithClasspathFiles() throws Exception {
+    Path first = compile("First", "public class First {}");
+    Path second = compile("Second", "public class Second {}");
+    var limits = new InputLimits(1, 1024 * 1024, 1024 * 1024, 100, 120000);
+    assertEquals(
+        1, new BoundedJarReader(limits, 25).read(List.of(first), List.of()).classes().size());
+    assertThrows(
+        InputFailure.class,
+        () -> new BoundedJarReader(limits, 25).read(List.of(first, second), List.of()));
+    assertThrows(
+        InputFailure.class,
+        () -> new BoundedJarReader(limits, 25).read(List.of(first), List.of(second)));
+  }
+
+  @Test
   void helperArrayAndCollectionWritesReachCaller() throws Exception {
     Path clazz =
         compile(

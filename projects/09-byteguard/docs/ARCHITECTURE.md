@@ -25,3 +25,9 @@ Field keys include declaring class, field name, and descriptor, so fields are se
 Parameter-symbolic method summaries are instantiated at caller instruction sites. Return, sink, and argument-element dependencies compose without executing a callee; recursive components reach a monotone fixed point under global limits. Control-dependent implicit flows, reflection effects, native internals, arbitrary bootstrap methods, arbitrary heap graphs, and class initialization order are outside the declared model. Unsupported bootstrap sites produce explicit partial coverage; unresolved calls produce explicit conservative uncertainty.
 
 The core does not certify JVM verification of arbitrary hostile classes: it rejects inconsistent reachable frame shapes and category operations in its supported instruction model, and tests real javac-generated control flow including wide slots and exceptional entries. See the unsupported inventory for remaining verifier/model boundaries.
+
+## Identity and output boundaries
+
+Source labels encode method-name length explicitly, followed by the instruction ordinal and exact source descriptor. Display punctuation is not a parsing delimiter: valid JVM names containing `|`, `@`, or `:` retain their original identity. Finding fingerprints retain their established external representation for existing ordinary names.
+
+The CLI validates report and explanation destinations before input processing. It rejects output inside scanned directories and aliases of explicit inputs, classpath files, rules, or baselines. Validation failures cannot write an error report over the protected input. SARIF serialization writes a sibling temporary file and replaces the report only after successful serialization; atomic replacement is used where supported.

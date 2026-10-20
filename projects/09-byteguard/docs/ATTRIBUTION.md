@@ -1,7 +1,17 @@
-# Attribution
+# Dependencies and attribution
 
-The CFG, stack/local interpreter, lattice, worklists, summaries, witnesses, fixture labels and benchmark generator are project implementation code developed with OpenAI Codex assistance under repository-owner direction. Project agents performed independent read-only review and the owner reviewed corpus semantics before evaluation. Fixtures are synthetic owned sources; no production code or confidential data was scanned.
+ByteGuard maintains its control-flow graph, frame interpreter, taint lattice, fixed-point worklists, summaries, witnesses, and synthetic evaluation fixtures within this project. Fixture sources contain no customer code or confidential production data. Labels are frozen before evaluation; their methodology and limits are described in the [corpus documentation](../corpus/README.md).
 
-Supporting libraries (versions are pinned in the repository parent): ASM9.9.1 supplies structural classfile visitors/tree nodes; Jackson2.21.5 serializes reports; picocli4.7.7 parses CLI arguments. Networknt JSON Schema Validator1.5.9 validates the committed OASIS schema during tests. JUnit6.1.3, jqwik1.9.3, JaCoCo0.8.14, PIT1.22.0 and Spotless3.0.0 support verification. Supporting tools do not implement the analyzer algorithm.
+Supporting dependencies are pinned in the repository parent:
 
-The unmodified SARIF2.1.0 schema is from the OASIS SARIF specification repository. See [schema provenance and hash](../contracts/SARIF-SCHEMA.md) and [upstream repository license terms](../contracts/OASIS-LICENSE.md). Refer to dependency-distributed notices for each library's licensing; this document does not replace those notices.
+| Dependency | Role |
+| --- | --- |
+| ASM | Structural classfile visitors and tree nodes |
+| Jackson | JSON report serialization and configuration parsing |
+| picocli | Command-line parsing |
+| networknt JSON Schema Validator | Test validation against the retained SARIF schema |
+| JUnit, jqwik, JaCoCo, PIT, Spotless | Tests, property checks, coverage, mutation analysis, and formatting |
+
+The [repository dependency inventory](../../../docs/dependencies/LICENSES.md) records versions and published license metadata. Distributed dependency notices continue to apply; this document does not replace them.
+
+The unmodified SARIF 2.1.0 schema comes from the OASIS SARIF specification repository. Its [provenance and hash](../contracts/SARIF-SCHEMA.md) and [upstream license terms](../contracts/OASIS-LICENSE.md) are retained under `contracts/`.

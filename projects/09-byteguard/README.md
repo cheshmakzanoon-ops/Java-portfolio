@@ -1,22 +1,46 @@
 # ByteGuard
 
-ByteGuard inspects explicitly selected local Java classfiles and JARs without loading their classes. Its original bytecode interpreter traces modeled external inputs to SQL text, shell `-c` command construction, and filesystem access paths. Findings explain a bounded model; they are neither proof of exploitability nor a security certification.
+ByteGuard is an offline Java bytecode analyzer. It reads explicitly selected classfiles and archives without loading their classes, then traces modeled external inputs into SQL command text, shell `-c` commands, and filesystem paths. Each finding includes a source, sink, bytecode identity, and bounded witness.
 
-Requires JDK 25, Python 3, and the repository Maven wrapper. No Docker, network resolution of target dependencies, service process, or target execution is required.
+The analyzer implements its own control-flow graph, frame interpreter, taint lattice, fixed-point worklists, and interprocedural summaries. ASM supplies structural classfile parsing. Findings describe the declared model; they do not prove exploitability or establish that a program is secure.
+
+## Build and run
+
+Requirements: JDK 25, Python 3, and the repository Maven wrapper. No Docker, service process, network dependency resolution, or execution of target code is required. Run from the repository root; in the managed cloud workspace, first source `scripts/cloud-env.sh`.
 
 ```bash
-./mvnw -f projects/09-byteguard/pom.xml -B -ntp verify
+./mvnw -f projects/09-byteguard/pom.xml -B -ntp -Pintegration verify
 ./projects/09-byteguard/scripts/up.sh
 ./projects/09-byteguard/scripts/demo.sh
 java -Xmx2g -jar projects/09-byteguard/cli/target/byteguard-cli-1.0.0-SNAPSHOT.jar scan \
-  --input fixture.jar --classpath corpus/stubs --target-release 25 \
+  --input fixture.jar --classpath local-stubs --target-release 25 \
   --rules projects/09-byteguard/rules/core.yaml --format sarif --out report.sarif
 ```
 
-The demo compiles trusted sources with annotation processing disabled, traces a cross-method SQL finding, verifies separately bound SQL parameters are clean, demonstrates an explicit partial frontier, and checks an exact baseline. `up` prepares local CLI state; `down` preserves reports; `reset-demo` removes only owned demo files. Scripts rebuild and test when the source fingerprint changes, and reuse the verified artifact otherwise.
+`up` prepares the CLI; there is no server. The asserted demo checks a cross-method SQL flow, a separately bound SQL parameter, partial analysis, and exact baseline matching. Fixture compilation disables annotation processing. `down` retains reports; `reset-demo` removes only owned demo files. Changed source or executable bytes invalidate the scripts' verified-artifact cache.
 
-Exit codes: `0` complete with no new findings; `1` complete with findings; `2` invalid configuration/input or analysis failure; `3` partial. An exact SARIF fingerprint baseline marks unchanged findings; it cannot suppress a new identity through a filename wildcard. Unknown calls produce uncertainty diagnostics, distinct from partial analysis or clean values.
+Keep reports and explanation files outside scanned directories. Output validation refuses aliases of inputs, classpath files, rules, and baselines. An unsafe destination produces exit 2 without writing a failure report over the protected file.
 
-Read [architecture](docs/ARCHITECTURE.md), [engine walkthrough](docs/ENGINE.md), [threat model](docs/THREAT-MODEL.md), [corpus methodology](corpus/README.md), [case study](docs/CASE_STUDY.md), [interview guide](docs/INTERVIEW.md), and [observed status](docs/STATUS.md). Performance uses `scripts/benchmark.sh` and publishes actual measurements in `evidence/benchmark.json` after a successful full run.
+## Interpret a scan
 
-Current observed checks:65 methods pass in a fresh clean integration/mutation run; core94.31%line/83.54%branch coverage;164/177 targeted mutants killed; frozen corpus60TP/60TN with zeroFP/FN. Three full10,000-class scans took3.9325/4.0275/4.3934seconds in the reserved four-core host, and independent A08 review closed. The current packaged demo passes twice with exact artifact reuse. These results cover the declared bounded model; repository-wide clean-checkout and final release checks remain separate. Historical failures and the old enclosing-shell exit discrepancy remain preserved in the evidence.
+| Exit | Meaning |
+| --- | --- |
+| `0` | Analysis completed within the model, with no new findings |
+| `1` | Analysis completed with new modeled findings |
+| `2` | Invalid input/configuration or analysis failure |
+| `3` | Partial analysis with explicit unfinished coverage |
+
+Unknown-library uncertainty differs from clean values and from partial coverage. A SARIF baseline matches exact finding fingerprints; it cannot suppress findings with a filename wildcard. Report limitations and unfinished coverage remain relevant even when the new-finding count is zero.
+
+## Code map
+
+| Module | Responsibility |
+| --- | --- |
+| `analysis-core` | Bounded input reader, CFG, frame/taint analysis, dispatch, summaries, and budgets |
+| `report` | Findings, stable identities, witnesses, SARIF, and opt-in IR explanations |
+| `cli` | Local input/configuration validation, output protection, and exit policy |
+| `evaluation` | Frozen synthetic corpus, adversarial boundaries, and packaged CLI checks |
+
+Read [architecture](docs/ARCHITECTURE.md) and the [engine walkthrough](docs/ENGINE.md) for implementation details, [security](docs/SECURITY.md) for trust boundaries, and [operations](docs/OPERATIONS.md) for scan controls. The [corpus methodology](corpus/README.md) explains fixed labels and accuracy limits. [Verification status](docs/STATUS.md) separates current checks from historical results; [performance evidence](docs/PERFORMANCE.md) applies only to its recorded source revision.
+
+The historical frozen corpus recorded 60 true positives and 60 true negatives. It does not estimate field accuracy. Object-insensitive aliases and coarse shell-array modeling have known false positives outside that corpus; see the [threat model](docs/THREAT-MODEL.md).

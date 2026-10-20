@@ -1,31 +1,35 @@
-# Independent review ledger
+# Design review record
 
-Reviewer: A08 ThreadLens owner, read-only review of ByteGuard. ByteGuard owner made all changes. Coordinator reviewed corpus labels separately before evaluation.
+Review concentrates on adversarial input handling, bytecode identity, frame consistency, uncertainty, and fixed-point termination. Findings below describe development defects and their regression coverage, not production incidents.
 
-| Finding | Correction and regression | Status |
+## Current hardening
+
+| Finding | Correction | Regression |
 | --- | --- | --- |
-| Directory walk eagerly sorted/materialized unbounded paths before entry/deadline checks. | Lazy traversal charges every filesystem entry and checks deadline. Reader/adversarial tests. | Implemented; historical integration passed. |
-| Unsupported void invokedynamic pushed a TOP result and corrupted frame shape. | Preserve void stack effect; retain unknown/partial diagnostic. `BoundaryTest.unsupportedVoidIndyIsPartialWithoutInvalidFrame`. | Verified in historical integration. |
-| Callee parameter-array writes were not substituted onto caller reference identities. | Symbolic argument-element write summaries, actual-reference substitution, transitive effects. `helperArrayAndCollectionWritesReachCaller`. | Verified in historical integration. |
-| Deep recursive hierarchy indexing retained transitive O(n²) edges before budgets; recursive SCC could overflow. | Linear direct-child index; iterative budgeted hierarchy/default-interface resolution and iterative Kosaraju. `EngineTest.deepHierarchyAndCallGraphAreIterativeAndBudgeted`, `inheritedDefaultInterfaceIsResolved`. | Verified in historical integration. |
-| Native/unresolved calls could be treated as empty summaries; default-interface implementation resolution was missing. | Native/abstract target filtering and explicit unknown transfer, interface-default traversal. Native/default-interface boundary tests. | Verified in historical integration. |
-| Unknown/native void mutator discarded uncertainty along with its void return, leaving argument-array contents apparently clean. | Havoc receiver/argument element summaries with joined operands plus unknown; record transitive writes. `unknownVoidMutatorsHavocElementsAndPropagateArgumentTaint`. | Independently verified PASS in current-root Boundary XML; overall checkpoint failed on unrelated lambda dependency. |
-| R8: field loads discarded container identities and R9: known call returns discarded formal/allocation identities. | Bounded weak alias closure, stable field/formal/mutable-return identities, scalar field-write effects and method-scoped parameter symbols. Three new boundary regressions include positive mutation cases and matched constant-only cases. Direct bounded probes and actual boundary cases passed. Reused-helper clean control reveals disclosed cross-call heap false positive. | A08 independently verified R8/R9 PASS in current-root XML; overall checkpoint failed on unrelated lambda dependency. |
-| R10: unknown object mutation state was bypassed by scalar GETFIELD reads. | Join specific field state with existing receiver-content havoc; native Box/source positive, unknown-not-bottom return, matched known constant-field control. | A08 independently verified PASS in actual20-method Boundary XML. Full release review awaits benchmark. |
-| Declarative sanitizer/sink contexts and argument indices needed configuration validation. | Exact method descriptors, rule/context consistency, valid argument index, single sanitizer context. Direct invalid-model assertions and packaged rules path. | Verified in the current clean65-method run. |
+| Source-label parsing treated `|` as a delimiter even though it is legal in JVM method names. | Length-prefixed internal source identities retain the full method, instruction ordinal, and exact source descriptor. Existing ordinary finding fingerprints remain unchanged. | Actual bytecode with a `read|source@17:label` method produces the expected finding and report. |
+| Individually selected classfiles bypassed the entry counter. | Explicit classfiles share the global entry budget with classpath, directory, and archive entries. | One-file budget accepts one class and rejects a second application or classpath class. |
+| Report and failure-report paths could overwrite an input, baseline, or rule model. | Resolve existing filesystem components before normalizing unresolved suffixes, and check hard-link aliases before scanning; unsafe destinations cannot receive failure reports. | Direct alias, hard link, symbolic parent with `..`, baseline, rule, and explanation-location controls preserve the original bytes. |
+| Serialization failure could truncate an earlier complete report. | Serialize to a sibling temporary file, then replace the destination after success. | Forced serializer failure preserves the previous report and removes temporary output. |
 
-Owner adversarial review additionally added independent state-allocation limits (parser facts, frame cells, taint/reference identities, diagnostics), unknown/partial ConstantDynamic behavior, source-metadata path sanitization, exact executable cache integrity, and unsupported lambda heap-effect diagnostics. These changes remain subject to the final frozen-source run and A08 review closure.
+Current executed results are recorded in [verification status](STATUS.md).
 
-The coordinator's v2 preregistration approval is recorded in `corpus/README.md`: supplied SQL interfaces, fixed shell executable, and final transformed path validation. Original v1 sources, labels, hashes and rationale remain available. No labels changed in response to scanner metrics.
+## Earlier findings and corrections
 
-Initial targeted mutation score68% was a failed gate, preserved in `evidence/mutation-first.json` with raw XML/HTML under `.work/A09/mutation-first`. Semantic tests were strengthened; the70% threshold and four original algorithm classes were retained. The cancelled mixed-source invocation is not certification evidence.
+- Directory enumeration now walks lazily and charges entry/deadline budgets before retaining unbounded paths.
+- Unsupported void `invokedynamic` preserves the void stack effect and reports partial coverage. Unsupported/native lambda implementations never become apparently clean empty summaries.
+- Symbolic argument-element writes are substituted onto caller references. Native void mutation retains uncertainty in receiver and argument contents.
+- Hierarchy, strongly connected component, and weak-alias traversals are iterative and budgeted. Hierarchy indexing retains direct edges instead of a quadratic transitive closure.
+- Field and returned-container identities survive transfer. Scalar field reads include unknown-object mutation state. Matched clean controls accompany positive regressions.
+- Declarative sanitizer/sink contexts, exact descriptors, and argument indices receive configuration validation.
+- Parser facts, frame cells, taint/reference identities, diagnostics, descriptors, and entry-frame setup have independent allocation/work bounds.
+- Source metadata is sanitized for report locations; executable cache validation binds actual source and artifact bytes.
 
-Final review does not certify general soundness or exploitability. The shell positional-argument false positive, unknown libraries, lexical-only fixture path confinement, unsupported bootstrap/heap behavior, and performance-bound scope remain explicit in the threat model and case study.
+The retained source/report review for fingerprint `a6055cdfb18245240a3341c4a712c256e5502541dcdb85523e662423d7edf09c` examined 65-method results, 164 / 177 mutation results, unchanged frozen labels, and three full-scan outputs. That historical review covered its recorded source and measured artifact, not later changes.
 
-Historical pre-benchmark checkpoint:59 methods passed, with final all-evidence review still open at that time. The current closure below supersedes this checkpoint.
+An initial mutation score of 68% failed the unchanged 70% gate. Additional semantic tests strengthened coverage while retaining the same four targeted algorithm classes and survivor denominator; [the first result](../evidence/mutation-first.json) remains available. Earlier alias/lambda checkpoints and the enclosing-session exit discrepancy remain historical failures.
 
-## Final current-source closure
+## Precision and review limits
 
-A08 independently reviewed the final source `a6055cdfb18245240a3341c4a712c256e5502541dcdb85523e662423d7edf09c`, CLI SHA `390a7a39ef6041fdcbc347b5a0be437eead09a9feb0bb2277b11951a6783db93`, fresh65-method reports,164/177 mutation results, unchanged frozen labels and three actual quiet full-scan raw outputs. R11 descriptor-allocation failure is resolved with linear JVM limits, compact lossless-identity scopes, budgeted entry setup and real64MiB invalid/valid child tests. The exact old invalid fixture now returns2 without OOM. Final scoped closure: PASS, no unresolved concrete finding.
+The heap remains object-insensitive across calls. A source-filled array and a constant-only array passed through the same helper can contaminate the nominally clean call. Coarse shell-array modeling can also flag a positional argument that is not command text. These reproduced false positives remain outside the frozen corpus rather than being relabeled to improve its score.
 
-This supersedes the earlier pending checkpoint descriptions above. R7–R10 and sanitizer-model regressions pass in the full current clean run. The earlier enclosing-session exit discrepancy remains historical evidence; a new clean full command returned0. The current artifact's reset/up/demo/reuse/down separately returned0. General soundness, field accuracy and repository-wide clean-checkout/CI release approval are outside this review.
+Review does not establish universal soundness, exploitability, filesystem race protection, general Java support, or production accuracy. Frozen corpus methodology, remaining model boundaries, and benchmark scope are described in the [corpus guide](../corpus/README.md), [threat model](THREAT-MODEL.md), and [performance protocol](PERFORMANCE.md).

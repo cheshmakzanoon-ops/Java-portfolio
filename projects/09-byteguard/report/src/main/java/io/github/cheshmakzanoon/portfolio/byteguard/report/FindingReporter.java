@@ -14,13 +14,9 @@ public final class FindingReporter {
       for (var flow : summary.flows().values())
         for (var source : flow.taint().labels().entrySet()) {
           if (source.getKey().startsWith("P:") || (source.getValue() & flow.mask()) == 0) continue;
-          int separator = source.getKey().indexOf('|');
-          if (separator < 0) continue;
-          String at = source.getKey().substring(0, separator);
-          int ordinal = at.lastIndexOf('@');
-          InstructionId sourceId =
-              new InstructionId(
-                  at.substring(0, ordinal), Integer.parseInt(at.substring(ordinal + 1)));
+          if (!source.getKey().startsWith("S:")) continue;
+          SourceIdentity identity = SourceIdentity.fromLabel(source.getKey());
+          InstructionId sourceId = identity.instruction();
           String fingerprint =
               BoundedJarReader.sha(
                   (flow.rule() + "|" + sourceId + "|" + flow.sink())
@@ -32,7 +28,7 @@ public final class FindingReporter {
                   "warning",
                   flow.taint().unknown() ? "low" : "medium",
                   fingerprint,
-                  source.getKey().substring(separator + 1),
+                  identity.descriptor(),
                   flow.descriptor(),
                   sourceId,
                   flow.sink(),

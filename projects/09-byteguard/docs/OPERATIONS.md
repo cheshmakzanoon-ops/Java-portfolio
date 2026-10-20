@@ -1,5 +1,7 @@
 # Running and diagnosing ByteGuard
 
+## Build and prepare
+
 From the repository root, use the provisioned Java25 environment and Maven wrapper:
 
 ```bash
@@ -12,6 +14,8 @@ projects/09-byteguard/scripts/down.sh
 
 `up.sh` prepares local CLI state; there is no server, database or port. The demo compiles owned fixtures with `-proc:none`, asserts a cross-method SQL finding, corrected parameter binding, a deliberately partial scan and an exact baseline. `down.sh` preserves local reports; `reset-demo.sh` removes only this project's seeded demo directory. The scripts use `.runtime/`; the executable is `cli/target/byteguard-cli-1.0.0-SNAPSHOT.jar`. The source/artifact cache keys actual source/configuration and executable bytes; a stale key requires verification again.
 
+## Scan local inputs
+
 A scan takes explicit local inputs/classpath only:
 
 ```bash
@@ -20,7 +24,11 @@ java -Xmx2g -jar projects/09-byteguard/cli/target/byteguard-cli-1.0.0-SNAPSHOT.j
   --rules projects/09-byteguard/rules/core.yaml --format sarif --out report.sarif
 ```
 
+Keep `--out` and `--explain-dir` outside scanned directories. A report must not alias an input, classpath file, rule model, or baseline, including through a hard link or symbolic parent directory. Rejected destinations return exit 2 without writing an error report over the protected path. Use a separate owned explanation directory without untrusted pre-existing files; these checks do not protect against filesystem races.
+
 Use `--explain-dir ir-output` and optionally `--explain-method 'owner.method(descriptor)'` to inspect method instructions, CFG/DOT, inferred frames and instantiated summaries. No Graphviz installation is required to read DOT. Missing debug metadata stays bytecode-only. SARIF contains witness steps, model limitations, diagnostics, coverage/frontier and stable identity. `--baseline prior.sarif` matches exact fingerprints and excludes only unchanged results from the new-finding count.
+
+## Interpret results
 
 | Exit | Meaning | Action |
 | --- | --- | --- |
@@ -30,5 +38,7 @@ Use `--explain-dir ir-output` and optionally `--explain-method 'owner.method(des
 |3|Partial analysis|Inspect unfinished frontier and limit; absence of findings is incomplete coverage.|
 
 Adjust `--work-budget`, `--deadline-ms`, `--dispatch-limit` and `--provenance-depth` separately. Lowering provenance truncates witnesses; it does not suppress taint. Unknown-library diagnostics differ from an unfinished frontier. No automatic dependency download occurs during scanning; provide dependencies explicitly.
+
+## Performance measurements
 
 The benchmark command is `projects/09-byteguard/scripts/benchmark.sh`; coordinate a quiet host window before execution. It uses three independent JVM forks, a fixed10,000-class JAR and `-Xmx2g`, asserting full coverage,10,000 findings and<=120s each. Do not treat an explicit partial run as the successful completion gate. See [performance](PERFORMANCE.md), [security](SECURITY.md), and [current status](STATUS.md) for observed versus pending results.

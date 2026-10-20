@@ -460,7 +460,7 @@ public final class TransferFunction implements Opcodes {
         && receiver.references().stream()
             .anyMatch(r -> !heap.read(r + "#shell").equals(Taint.BOTTOM)))
       flow("BG-SHELL-COMMAND", 2, site, id, heap.elements(receiver), List.of(method.id), false);
-    if (models.source(id)) returned = Taint.source(site.toString() + "|" + id);
+    if (models.source(id)) returned = Taint.source(new SourceIdentity(site, id).label());
     else if (models.sanitizer(id) != 0) returned = joined.sanitize(models.sanitizer(id));
     else if (n.owner.equals("java/lang/StringBuilder")
         || n.owner.equals("java/lang/StringBuffer")) {

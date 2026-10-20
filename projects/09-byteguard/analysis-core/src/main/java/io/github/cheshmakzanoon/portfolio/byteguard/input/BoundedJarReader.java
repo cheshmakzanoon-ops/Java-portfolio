@@ -65,6 +65,7 @@ public final class BoundedJarReader {
       return;
     }
     if (p.toString().endsWith(".class")) {
+      count();
       try (InputStream in = Files.newInputStream(p)) {
         byte[] bytes = bounded(in, limits.classBytes());
         put(

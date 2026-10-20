@@ -11,4 +11,5 @@
 9. Read the actual 10,000-class benchmark envelope. Explain setup work charging, direct hierarchy indexing, shared-heap requeue cost, and the next memory bottleneck.
 10. Reproduce the disclosed shell positional-argument false positive. Discuss a bounded index-sensitive array refinement without expanding sanitizer claims.
 
-Assisted development: implemented with OpenAI Codex agents under repository-owner direction; independent project-owner review found concrete defects and informed regressions. ASM, Jackson, picocli, networknt, JUnit, jqwik, JaCoCo and PIT are third-party supporting tools; the analyzer algorithm is original project code.
+
+Dependency roles and upstream notices are described in [attribution](ATTRIBUTION.md).

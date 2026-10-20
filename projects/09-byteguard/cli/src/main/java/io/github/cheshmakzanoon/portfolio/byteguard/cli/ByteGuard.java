@@ -85,7 +85,10 @@ public final class ByteGuard implements Runnable {
     @Spec Model.CommandSpec spec;
 
     public Integer call() {
+      boolean outputSafe = false;
       try {
+        OutputGuard.validate(out, explainDir, input, classpath, rules, baseline);
+        outputSafe = true;
         if (!Set.of("sarif", "json").contains(format))
           throw new IllegalArgumentException("format must be sarif or json");
         RuleModels models = rules == null ? new RuleModels() : validateRules(rules);
@@ -154,6 +157,7 @@ public final class ByteGuard implements Runnable {
                     + e.getMessage()
                     + "; exit "
                     + code);
+        if (!outputSafe) return code;
         try {
           SarifExporter exporter = new SarifExporter();
           exporter.write(
