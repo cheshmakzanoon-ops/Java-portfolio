@@ -14,6 +14,8 @@ scanner="$scanner_dir/trivy"
 archive_sha=8b4376d5d6befe5c24d503f10ff136d9e0c49f9127a4279fd110b727929a5aa9
 binary_sha=379d59f24a4a828c55de5f0b91b6805cc35d13580180b658820e648611256166
 mkdir -p "$scanner_dir"
+# A failed bootstrap/build must not leave earlier generated results presented as current.
+rm -f "$root/target/bom.json" "$root/target/bom.xml" "$security_dir/dependency-scan.json"
 if [[ ! -f $scanner ]]; then
   staging=$(mktemp -d "$scanner_dir/install.XXXXXX")
   trap 'rm -rf "$staging"' EXIT
@@ -28,10 +30,13 @@ if [[ ! -f $scanner ]]; then
   trap - EXIT
 fi
 printf '%s  %s\n' "$binary_sha" "$scanner" | sha256sum -c -
+python3 "$root/scripts/dependency-inventory.py" --snapshot "$security_dir/pom-inputs.json"
 # Always regenerate: scanning an old checked-in inventory can miss newly added dependencies.
 "$root/mvnw" -Dmaven.repo.local="$security_dir/m2" -B -ntp org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom
 "$scanner" --cache-dir "$security_dir/trivy-cache" sbom \
   --db-repository ghcr.io/aquasecurity/trivy-db:2 \
-  --scanners vuln --severity HIGH,CRITICAL --no-progress \
+  --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed=false --ignorefile /dev/null --no-progress \
   --format json --output "$security_dir/dependency-scan.json" --exit-code 1 --timeout 5m \
   "$root/target/bom.json"
+python3 "$root/scripts/dependency-inventory.py" --pom-inputs "$security_dir/pom-inputs.json" \
+  "$root/target/bom.json" "$security_dir/dependency-scan.json"

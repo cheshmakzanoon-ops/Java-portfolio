@@ -1,22 +1,22 @@
 {
-  "observedAtUtc": "2026-10-18T02:29:10.793988+00:00",
-  "source": "docker image inspect of locally pulled and actually tested images",
+  "observedAtUtc": "2026-10-20T08:33:06.332551+00:00",
+  "source": "docker image inspect of official pulled image identities",
   "images": [
     {
-      "tag": "postgres:18.3",
+      "tag": "postgres:18.6-alpine",
       "repoDigests": [
-        "postgres@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db"
+        "postgres@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873"
       ],
-      "imageId": "sha256:fbaa243599038521bbda8f6fa286d2a8fc1236509606f22de81d0739b0610ba7",
+      "imageId": "sha256:c293117fcecda7344b5480222e813b9f673d7abd69b1dd95eff239b768b04f59",
       "architecture": "amd64",
       "os": "linux"
     },
     {
-      "tag": "postgres:18.3-alpine",
+      "tag": "apache/kafka:4.2.2",
       "repoDigests": [
-        "postgres@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7"
+        "apache/kafka@sha256:1213eb3943d551e5ed1fca7a4e109001cee35770b66a02a0c37a8964efe09b69"
       ],
-      "imageId": "sha256:f6d4985d97e69bb9de4d5e24f9f24cbfaa90d30877ce935a8ee872f62efbb621",
+      "imageId": "sha256:2805184e4ad28dac8f911174609d66b853b04d62005397097ab1ad88bc7da2df",
       "architecture": "amd64",
       "os": "linux"
     },
@@ -30,32 +30,19 @@
       "os": "linux"
     },
     {
-      "tag": "apache/kafka:4.2.1",
-      "repoDigests": [
-        "apache/kafka@sha256:9916d60eca5d599550e2c320230808fda342124ba550bb4ac4ea8591803262a0"
-      ],
-      "imageId": "sha256:55c1b9c10383fbe90c4cf5f68cf02e6813f645fddd553483dcc66e8c3d3c6f24",
-      "architecture": "amd64",
-      "os": "linux"
-    },
-    {
       "tag": "testcontainers/ryuk:0.14.0",
       "repoDigests": [
         "testcontainers/ryuk@sha256:7c1a8a9a47c780ed0f983770a662f80deb115d95cce3e2daa3d12115b8cd28f0"
       ],
       "imageId": "sha256:9a5f93e8f9300530b91866bcf41c0b8a5d72f0e5a7b4365167a48df9816cd36e",
       "architecture": "amd64",
-      "os": "linux",
-      "role": "Testcontainers cleanup helper",
-      "digestObservedAtUtc": "2026-10-18T05:09:30.474395+00:00",
-      "limitations": [
-        "Earlier integration logs prove use of the tag; exact wrapper pin is newly configured and awaits fresh integration execution."
-      ]
+      "os": "linux"
     }
   ],
   "limitations": [
-    "This records observed content identities; it is not a signed image provenance or vulnerability attestation.",
-    "Project Compose/Testcontainers definitions must pin the listed tested identities before release.",
-    "The Maven wrappers now select the inspected Ryuk cleanup-helper digest by default; explicit environment overrides are outside this default inventory."
+    "Content identities are not signed provenance or a vulnerability attestation.",
+    "Current security results separately retain unresolved findings; no security exclusions or threshold reductions were applied.",
+    "Runtime integration and lifecycle results are project-specific. A tag alone does not select content; every active definition pins the digest.",
+    "Historical measured volumes and image evidence remain historical; switching between libc distributions requires an explicit export/restore procedure, not a raw volume transplant."
   ]
 }

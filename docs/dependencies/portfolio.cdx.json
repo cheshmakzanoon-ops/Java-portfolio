@@ -492,45 +492,45 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/tools.jackson.core/jackson-databind@3.1.5?type=jar",
+      "bom-ref" : "pkg:maven/tools.jackson.core/jackson-databind@3.1.7?type=jar",
       "publisher" : "FasterXML",
       "group" : "tools.jackson.core",
       "name" : "jackson-databind",
-      "version" : "3.1.5",
+      "version" : "3.1.7",
       "description" : "General data-binding functionality for Jackson: works on core streaming API",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "7b399cbb2bea1429c46c1b8c73af42b9"
+          "content" : "bd36876c84ba73520f0633336ca2f93a"
         },
         {
           "alg" : "SHA-1",
-          "content" : "782178f0b1fe088803c03b85eb9a406f60519044"
+          "content" : "1f45f7dd68639c962435fae38ca100a70ccc0971"
         },
         {
           "alg" : "SHA-256",
-          "content" : "3a2338d996fd3056791df8d335fa9ba8a62a706ed4245ecf81b3e583df37d08a"
+          "content" : "48c781de87e2016e1f0d973748a27130f11643e7ac080173f40e2d9669d84be3"
         },
         {
           "alg" : "SHA-512",
-          "content" : "897ee93528010d2956908da5ea90c37dc9d6c37388bd1aa9da954c582a7bdf986a477f248d631d833c2bc281e0827782df978ecc76d5518a33e475aa9ddcb2d9"
+          "content" : "fe0b99b58de750a449286d12aa00c99bb0213f09ed082d1c5723bba1018f41738e8759e1e16f82cae70dfe91f42108fb5edbe6f121f0348b3df22be7f0d519e9"
         },
         {
           "alg" : "SHA-384",
-          "content" : "da6c8695a80410cb666c33b13604d695db2993fff67a86bc08c90d4014e6e76ef2107bc014bcba3ab5a9db1640d6cb21"
+          "content" : "87f9068a3e5e4db443b28b8faf972e995fde5c90440e5ae33799b3adf82e7625129079ce622a2c1af36777a12ed4b68e"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "e2c113d73ce6b4526cdfd6b15539ad7469314b2e95a5df33f3df4039e125e7dd62c139ec590e6aee65bf9406dc125c14"
+          "content" : "16b0ce9c73ded795ff6aef613435f6f374b97f8929b6c1f6d8e7f778b92e0929b242c3932226d389b6fbe168119f9cd3"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "8fa8f03e322972d87a6fe7f712714038b29bd9ddbeb3da599ec12d62fd2502c7"
+          "content" : "c10479d89ca9313c2fb84548a9e1a857b24755f8c06c13d7cc5e636470489b74"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "8882ba1d58fb5ab58d06663f510a69b551a1a73bae534206a07e91d9bfb4dd898c8b00d3e72ccf773b6309bcff17f5da8bed7089deb963fc16b4e0d36ef7d3d5"
+          "content" : "4cc49aedacc5290fa7443fa769fa31b29e7a82cfcb435f965f883d825ceb3957b541930ce589f08e207a6d0404b4b886d8a3efcecc79294f1b2fcaaacadb7770"
         }
       ],
       "licenses" : [
@@ -540,7 +540,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/tools.jackson.core/jackson-databind@3.1.5?type=jar",
+      "purl" : "pkg:maven/tools.jackson.core/jackson-databind@3.1.7?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -562,45 +562,45 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/tools.jackson.core/jackson-core@3.1.5?type=jar",
+      "bom-ref" : "pkg:maven/tools.jackson.core/jackson-core@3.1.7?type=jar",
       "publisher" : "FasterXML",
       "group" : "tools.jackson.core",
       "name" : "jackson-core",
-      "version" : "3.1.5",
+      "version" : "3.1.7",
       "description" : "Core Jackson processing abstractions (aka Streaming API), implementation for JSON",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "ed1c26680ceec80183239a74ef15a838"
+          "content" : "4dcb2a5b488b0e020f6546a2973c0a28"
         },
         {
           "alg" : "SHA-1",
-          "content" : "ccd7eb3269b8d33bc097b36770f367cdfe2f1150"
+          "content" : "a2b54921d5528a9df7f014222d2d519a14858801"
         },
         {
           "alg" : "SHA-256",
-          "content" : "9431b7fa2673bbb618c11d865fe15e13222fd182a214ff998cb7e56afd8f35d2"
+          "content" : "7608c367fd8a92666d28711519599543c180298259963184ce04d2947a8f71e7"
         },
         {
           "alg" : "SHA-512",
-          "content" : "ca302aa4954b4bb543bcffe326f67b3371ce57f781e88d505e4e9c74d7722b1e5388b5a3545b1b30a32110c2718bb555a6ec13050b8cee9f8fba94fa88d9ba3d"
+          "content" : "1c37cd61544eb6fd422ae5990edc28141c58e067354d45d914bfb2264012388642dc0a37527278a684c8be77947b6610aec9a198e993aa9f1aa41abe0d4564f3"
         },
         {
           "alg" : "SHA-384",
-          "content" : "716ba8ca7cccf0aea47f9d6c82219a0b417c1935446ef4fcf997da7690357f60d350e1aa8b2726d3bc454279fa3fcafb"
+          "content" : "4dbdce594cc59c7782097960ce5e0ce7be76f0fc35c88a3277b17cfba504f708b138235519faea44ee5d39569a5fb52a"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "f085d86c0c1f3fb77cdb901f2ae10e94842acc170fc9c5fed6f7e806e30ab37087961def920eeea6a5c6e122903b4e87"
+          "content" : "0315d3fabdbe773346dab3fb1484bb8a085a32a17954b8c9cdbfd49050de2d8a265f669b8819925e8b2f932b63a26be7"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "e6a656f6451ac74824d1c339bb39c74e37ba546f4b565dbcc7a0777c813fa306"
+          "content" : "8b7f324cfdb00a01e0c57f7dd0a119aa4f8b4df49c4783fb119e293610eca5c5"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "62130e669e9f41b0f12df47588d2535666ed35b4fd3b5916b1289479dcd6e4c5ff10d343c3add423932577b44a642b1ea40dab03e5071d22678277a56ebe0b64"
+          "content" : "dec1814dc66a81941672e19650d8752ad21f3e2283bb77dd61b36e490f5d1eb63cba14be45699759fb50e6789b37d729029780b769500e9cfdc3e97ee4fbe9a2"
         }
       ],
       "licenses" : [
@@ -610,7 +610,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/tools.jackson.core/jackson-core@3.1.5?type=jar",
+      "purl" : "pkg:maven/tools.jackson.core/jackson-core@3.1.7?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -693,45 +693,45 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar",
+      "bom-ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
       "publisher" : "FasterXML",
       "group" : "com.fasterxml.jackson.core",
       "name" : "jackson-databind",
-      "version" : "2.21.5",
+      "version" : "2.21.7",
       "description" : "General data-binding functionality for Jackson: works on core streaming API",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "f1cdb6f418d6d587c64d5dc44a2a24fc"
+          "content" : "71abb795e3c9beff91198f789d2572e9"
         },
         {
           "alg" : "SHA-1",
-          "content" : "84924990b468233a28214ae2c505a9ec24cd6ea6"
+          "content" : "a2ebbc72e3092323f0f3defa786ff3bb0c47218c"
         },
         {
           "alg" : "SHA-256",
-          "content" : "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0"
+          "content" : "1290c2795e93e8a6861a6c4d9ff0d844d32f5ea178362cb2721edf5561e828b1"
         },
         {
           "alg" : "SHA-512",
-          "content" : "d21422d843f48a5386a0c46ed8113e12c961adeb7e9af95b61757985c279e9b2ffab0a5df28766d0ff0522780d72b1ff91d30dbee1202453e5936068cf645531"
+          "content" : "3485a31a4815ef2577b91667768eebb10bea7ece6b1b7cc0fa3c06f2746c003f4f32c19c52cc30ad13813eff9941ae212caffa9353c717d00947ab80ecc76bd3"
         },
         {
           "alg" : "SHA-384",
-          "content" : "e628c49d62ab7963084808a2aa5894b9bdcf067dd5378d01a92d25f08e282306555205fb5779e29199241e1c3e037ae0"
+          "content" : "dec105362feb79f6674df0f7b635ec1cc0dc798a6b1626d8c8b9be0cadd2cfe52a674b572a03405f6bc1eefa52622570"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "9eaee059eec1631ddaf7e49f56846e5880111dd156076443423944cb50e9349eb59180c317e4bc066b591f2815962053"
+          "content" : "a06bbc372c5ee02cd721366e6349291290075927b27e5fd6b7849cabba3e564ab2e40b954e5db53815b68dfc3c95c853"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "2047b325775793d29cbd64c7b2b5e94ea2da79788eb20c742a1cc67a7957b38d"
+          "content" : "5ddf3f0b32ae55b476de1f267be264b18d7ffd372ac1b0e35787986255e68c84"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "53ec901e930f789a98f65989ac8a96ad3c55ddbe68834de46f83de41bba229d8da8cf302b3e44e45dce8e7a2a6f3c38fb5a19926ed368a3bdb9d1360fc550e6d"
+          "content" : "5b58ad040187c209248ac0ebd60299056f7bba7984bf8bb8195391fab99778a4dc1df71057537244bf3e4f2c20ee92c35d8979c0cf8054e0ada0ba7aa1ed09b8"
         }
       ],
       "licenses" : [
@@ -741,7 +741,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar",
+      "purl" : "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -833,45 +833,45 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.5?type=jar",
+      "bom-ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.7?type=jar",
       "publisher" : "FasterXML",
       "group" : "com.fasterxml.jackson.core",
       "name" : "jackson-core",
-      "version" : "2.21.5",
+      "version" : "2.21.7",
       "description" : "Core Jackson processing abstractions (aka Streaming API), implementation for JSON",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "76c6cb978edc2c67b79a89a4f7224c28"
+          "content" : "3b91b1c736a66b115e5a09378f418016"
         },
         {
           "alg" : "SHA-1",
-          "content" : "7ec0c8bf8402fa998f64b2009632d6566a42ceb7"
+          "content" : "5abfb904683e642f4a5458f2a78ab9308c7c5a46"
         },
         {
           "alg" : "SHA-256",
-          "content" : "b64b5874162b503a0e58a8f7758266e8dd9f91bf49e3a59ae0b5f47589a231b7"
+          "content" : "8c5623b98f32d5f7e1287ff61ed50e08ab7b11381e991fff89327faabba42261"
         },
         {
           "alg" : "SHA-512",
-          "content" : "e38be02a800765e5841c321e972e83149634bee42de1fcb177a115f1e21fde828f9db1a5862e741f2bd440550517a365b75ee8f7640ff72bcaa73f356b10dc70"
+          "content" : "a4f38908ebf7cb3da776955c398c7b55b0c056ae7265a511b4a2a37ef5a4c6fed433d611ee4f3a1071aa966cc5d16b1fcb95a0e7d672002ece9d89367a4f8f85"
         },
         {
           "alg" : "SHA-384",
-          "content" : "61caf9c116560e207437d4fbdc912de8211606cc6174140e4de06ad0347b0bed723e162d149afa6b0db172d04fd2313b"
+          "content" : "3aeabfb54452889a3f00a573046f8b0f66be7bf358cc4508797dd8e806620ca60cc27074fe171a50512c0db609bc6e44"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "8aab2349ba6f2cd916393be6f8edaf928fc5cbfbfa3089fc4eb284ad0fd8a02df496e939f455a936d6dcd0e244f8ba9c"
+          "content" : "1ab7ec68a3ef0fa912b69466362cf4d85367548836d4339187d348c6af885accb34405c0f6674c5049ddc25ddc292582"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "64f93dbf5a725407dd7f7a193dde6c8fb34295cbc84208994cb35c2866e5889e"
+          "content" : "e36426bcb4ad4fc45330029f2fe3f7ec89867d556dbf67824ea9b939fa15f62f"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "3e95f930376250f4b6acfba4412e1470dba561ab83393da68632846337ec74b51606f8762065b619f43831484d9299550bb8e6042fde7dcf48ee4c573e035bb3"
+          "content" : "f3b933bcc044f42d550481f8cbf69e1f3dc5061386de5e893c20ee00b82fd14f8c46b57ff5785819ad2613f2c1d12cce685d21477670c5cf055724780cf855b8"
         }
       ],
       "licenses" : [
@@ -881,7 +881,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.5?type=jar",
+      "purl" : "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.7?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -2012,44 +2012,44 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.24?type=jar",
+      "bom-ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25?type=jar",
       "group" : "org.apache.tomcat.embed",
       "name" : "tomcat-embed-core",
-      "version" : "11.0.24",
+      "version" : "11.0.25",
       "description" : "Core Tomcat implementation",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "87410cbfa90c782419859efb70e1fd91"
+          "content" : "c8cf49bb321cc30b3af3c9a40ae65c9e"
         },
         {
           "alg" : "SHA-1",
-          "content" : "0172bb449cba1a8ffcffa249727907602a4cc899"
+          "content" : "d4f3c448998c6cf8267fb5077b7eeeb0980cd37d"
         },
         {
           "alg" : "SHA-256",
-          "content" : "e7b966dcaac8c5ffa4f10e44031ebf5b71f2123560c08ac8b7120028615aea08"
+          "content" : "282b65b9fe43647b1459c0df11101f8599a58de5832075acff485c3705ba4894"
         },
         {
           "alg" : "SHA-512",
-          "content" : "9b19f196c80c0be933feef4258547dbcf32a8d30dca33f3e69f898c95208b74adfa3dc9cc09dcd59d37e5f669a50f64e6ac04b3f3c32e26c9a2714c11ee33dfd"
+          "content" : "d03633bece0f07f38eaf4086be549a3465f030a295da7309953b82fcd9e6c9a362fc970ad8118aeeea104411634b7c74e0a6413766014fd7135e4e0e03b901d7"
         },
         {
           "alg" : "SHA-384",
-          "content" : "b94ac5e4a642698c47137dcf986348ab8346995ad764243a51cc26a89a122e5e7dd3098501c87b9d1f903637d90befaf"
+          "content" : "9ac05e63ed4f4136ea7706d91bbf7b99d9e2c9c40dc53693bdfd395d365bcfc911342459b306e66dc1553c84811470f7"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "8217f63b252e6edd3327569cfb91ab74677417c652bffae1fcdbaa93943ae94fbd262554f03b050bdc8187ba5ea260d1"
+          "content" : "51ca4d805352957a29f2ce4ae2965ccb88b64cb081999102d53cdaad4816480e18ba57429408ce10b3b9d830dec51680"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "345cb2c2445d336719dace681d7dff8f404835570aed8d648c54320629a30804"
+          "content" : "081c234a62a0976f7eb352639e76c41a268c2a9168796ef489d53417ef102bfb"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "e2acf943eb4afe8aa9d9c9a7bba7770e98d974cdd490be153dc279357920b9cc5db109d5917b1c8dc705d1d4a6280c9c6908e44be84f1f81c74d341e4d9826b9"
+          "content" : "a0d79aa909f994babfd1b4f0835abb1277bfedea53ff86282298ce94d0d7cd7cfdf4a713f3955f8200acfa89dd2984de08c8dbacc3b03e6b48cd7db314622d12"
         }
       ],
       "licenses" : [
@@ -2059,7 +2059,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.24?type=jar",
+      "purl" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -2069,44 +2069,44 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.24?type=jar",
+      "bom-ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.25?type=jar",
       "group" : "org.apache.tomcat.embed",
       "name" : "tomcat-embed-el",
-      "version" : "11.0.24",
+      "version" : "11.0.25",
       "description" : "Core Tomcat implementation",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "cb6b040782afb670264116a994b0bcae"
+          "content" : "5bf54a11dee87604bdc08b96158a0049"
         },
         {
           "alg" : "SHA-1",
-          "content" : "3eafa072a45e67081452e56576ab4fe68b525fb5"
+          "content" : "ee9244d0c6a0ff7d066c5fe3b0642f201891cbc1"
         },
         {
           "alg" : "SHA-256",
-          "content" : "ad0546f12dace008aacce18ba13222137760b310ca719e173d3e13021b9af6c6"
+          "content" : "5f84c660ff9a8f85b1c28e1ebe75bb2df486f2457d00257c823888a2e964a793"
         },
         {
           "alg" : "SHA-512",
-          "content" : "33488782406e10935a2a755b9627ea70f8a38cb7bf8a6b868a950db7444a746f4dab543ad68e1cab90965171fa98479c23e92f513a9ff782e39e6eaf5704d404"
+          "content" : "b361e6911e22321113164739f9bf4d1339599abe20d58ab157e47ba9a46cb05bd4b6cd487cd10a98d71425104480331575bee1c0ea3739af5eb7fada21a0ea0e"
         },
         {
           "alg" : "SHA-384",
-          "content" : "78cd6394e0324841e200ce885b91525f1380597a48cd9496103a6da63f86307d04a222b19e338bf6c1f40c7a2754ee3b"
+          "content" : "1063ba9ad06cead1f40ec025f359002a3766b7128f0881af1195cf2cf909dbe29b140ad149e4849677f7710f6357515e"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "6189c7b86a23d9cc0c5c87a65231d55589594a71168198924380a24ef7a82d2d1bc2613314361c6805063d5436794763"
+          "content" : "9fb1755cd7e3bda7a0783f49444e995db4f663a2af71807f0fcb1d1f1eb90a643fc2db0302b8f7f922194f82072c447d"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "44dd5dd480623c36ace04a4d9e2bd62660e8732e4300ca153abf5c1fa5ad6f6e"
+          "content" : "40724f1e1adbf9b0624b73cb217d5103617169ac0d656b6d6a8389f82663eaf8"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "fff65e91a26d1a886c6febdbc124e58db4dfac231de8a424651869a8d6b5f1aadb5f8e81dbbea87873ad6929534233864b8aa0f2c4f753773164a27c24568979"
+          "content" : "a6a49181e7cc97cb5f8f276285851453126e65a95896083a672c44aaba22265ac851322388c003181db9a20abdf5234b46d58bb36eb4df43ab7020f054497f8d"
         }
       ],
       "licenses" : [
@@ -2116,7 +2116,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.24?type=jar",
+      "purl" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.25?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -2126,44 +2126,44 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.24?type=jar",
+      "bom-ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.25?type=jar",
       "group" : "org.apache.tomcat.embed",
       "name" : "tomcat-embed-websocket",
-      "version" : "11.0.24",
+      "version" : "11.0.25",
       "description" : "Core Tomcat implementation",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "4276fc81c04ef0458c5111a0726ad22b"
+          "content" : "1456dc1f3a10127075d7fdfffa40d4aa"
         },
         {
           "alg" : "SHA-1",
-          "content" : "8cd43556888f042c90115d54b124a4648f2b413f"
+          "content" : "855e2e8777a08c1c8c95aedb937f5742f022e0f9"
         },
         {
           "alg" : "SHA-256",
-          "content" : "825160101f0da4a10e19b5730c2ae2f99f8c2c7a7211ac05562726c5e97ab91e"
+          "content" : "7d05c8cac38f39e2e0ac6e6d7d0920823372b3f9dc4fac53aaea96727107601a"
         },
         {
           "alg" : "SHA-512",
-          "content" : "65a96354d0c437e8ec408cec8d364c8eb6803465c8592dc63456a018e4c1e706389b6765d258fc68ee1d70ac80d73c9c3a91e3bed13ad9694b436919b8913357"
+          "content" : "4423038712ca27ae9b1bd365bd6adfe3625caa2c4897b5419dedc542d25794f64792f43514e873f2ae493822d46947603fa5148fd30eee07f229d0d7e0ab02d2"
         },
         {
           "alg" : "SHA-384",
-          "content" : "45436567644d3d64ae776a1755851262e791472829f277be7f90042689e56c0fa64df5440baa29106638e878bc7ef252"
+          "content" : "4d1aeb234e1fe4cbd5632ccb14a4957b281938816c5fa2f28d0026ed3de5684c1d484b7617390eed637ef6d653387117"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "7c4fa7314f66ff2ec671edb036f159981bcceba4fb260e9f66ff2ab731164b91fdb9b070afa156048fe429bbffbe3bb4"
+          "content" : "0fac40ebbac26360393dc08d4b4c3f8eb9a542bd5968a89746b92cf5398c791b0d7b720384f7f4d045fbdfb2c2e4840a"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "f9de292b5b4fa629f3480b72fa773329d9b970d99a4864b064573d0505c92bfa"
+          "content" : "abd7a13d3049b8fd6e725be907dcefb3506af5380587f6362f9c19b5975474c5"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "acbbe65effd0e68cdc09c4b8fd0abf5aa34bead39213958561487574cc3a92fc5a9e2783f4e0a46a494ef24c4b53f5b77f418e0ff47effd7ce1c3e11cf81c8e5"
+          "content" : "27e8201c207be55fc4b0ac97fb8effef9c9df87a8adf298b6d782cecd336019d59b7c2fdc8bc09237b068e2bad1ea836fcd3d629e1c3203d5e9e4b7da2757e94"
         }
       ],
       "licenses" : [
@@ -2173,7 +2173,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.24?type=jar",
+      "purl" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.25?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -4754,44 +4754,44 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/at.yawk.lz4/lz4-java@1.10.1?type=jar",
+      "bom-ref" : "pkg:maven/at.yawk.lz4/lz4-java@1.11.4?type=jar",
       "group" : "at.yawk.lz4",
       "name" : "lz4-java",
-      "version" : "1.10.1",
+      "version" : "1.11.4",
       "description" : "Java bindings and pure Java implementations of LZ4 and XXHash",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "8ea4d77e6a652da0162a69b6aea6e4a9"
+          "content" : "bf4431da97b91459fba1ad55e42bcd78"
         },
         {
           "alg" : "SHA-1",
-          "content" : "f541d7f910fe3d76f38f799c507c48cc81b12ecb"
+          "content" : "a27ccbac6c886771d3db36f91b144950bdb5082a"
         },
         {
           "alg" : "SHA-256",
-          "content" : "a58a84c4271e50df4c96ed916ccb7e48a869f8ed9cdcda1ad5d3d4c33b0214a3"
+          "content" : "58c8e0b813960d2a248e050c353baea73139b48a2ffc55382d42c69707e17325"
         },
         {
           "alg" : "SHA-512",
-          "content" : "6930598c1c27a247de88a0db74aa14e90d7837832b61042edde7f954f55c8382b505aa35a21d3e69a3dc333b013866a98a7c3570c34aeea3ab1c1ef1c05d0048"
+          "content" : "0db8664f43cc4e0f5af07d7adbac7ba5a1137e8cf15379fa749c3b5a483b2f639d609b6e4acecfb6caeac5a5e11bc4a909ef4dae54e82915f3954e74d6d0b62e"
         },
         {
           "alg" : "SHA-384",
-          "content" : "f266dbead14988f5b05d11628bb55b5266c6e1d10578356f9a25967310c301d20fab78d46d6dfe8a31b641c2844ba2f9"
+          "content" : "2ea8b956ee33b0753e644e64f6eb19060ec2e969152e0bff0351b520a9e7d7865109d5ac49077c63f5be200cc1046e93"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "a35fd2201de77821293560ca5dcbbc4f831ee0a1ae056b0511847370091402c1433fd7e0ff18d4fc26f217b613d6f0e9"
+          "content" : "895c23271ae2740a26593008a736cab33546895b3ade1d26bddd70961fd8ca1beeac8319e3fd5e1418d81fc0a377e048"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "cd5bc0d64595fc34b50d830be6d61a5e537389368a9c50136d76100ff17c9727"
+          "content" : "3e62e56ac56625e89aa7cc69dce9e1a25a8b01da09ddd2de8d9c7e9022b9bcdc"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "d3da038eca828202ecccc8ccb0ba3355839723369ebf9e42ab0ed9d564671bad25b3559decf20673381a30c43da7b70af0a440d155021932cd6b1dc39bb43da5"
+          "content" : "dac9c7ccd77a70586608db9e4bc09624ee08ab6aa86bb7d11d482b02b8a56f39d2159ad6230a9e7ac292828a50fae4afedbebd6f41b63aaddb7a98d8f309b601"
         }
       ],
       "licenses" : [
@@ -4801,7 +4801,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/at.yawk.lz4/lz4-java@1.10.1?type=jar",
+      "purl" : "pkg:maven/at.yawk.lz4/lz4-java@1.11.4?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -8061,45 +8061,45 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.5?type=jar",
+      "bom-ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.7?type=jar",
       "publisher" : "FasterXML",
       "group" : "com.fasterxml.jackson.datatype",
       "name" : "jackson-datatype-jsr310",
-      "version" : "2.21.5",
+      "version" : "2.21.7",
       "description" : "Add-on module to support JSR-310 (Java 8 Date & Time API) data types.",
       "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "6a1cfd9d7dace618bd512ad3647ebae6"
+          "content" : "3e0a6b99aee1b568b72a8ad2b1240745"
         },
         {
           "alg" : "SHA-1",
-          "content" : "2f8d061404266c0edbdd5674131ed689b6d84491"
+          "content" : "ed949b76fb4a5530986cf5ab4a74aa0f03ca0cd6"
         },
         {
           "alg" : "SHA-256",
-          "content" : "e941f9718d16a649614cb06711de06da34722afff9cee0b7725fc5318638304c"
+          "content" : "5989b937f0aa5b6407e7a061077c9bfcac0590dc0a32e54b2fac6a3e2d49e812"
         },
         {
           "alg" : "SHA-512",
-          "content" : "1704cfbcd21d6b5a51b86e4f4c7ac5c30383f01ad49e108b14850e8b248f964bd2aaa209f5e63b2f14b907d43eba91dbade9cff1983648717d126f4dbfede382"
+          "content" : "3f0d918fb479ee6b0c1fc77e0ac3bc77426696158920b21d38324477597a5033909be3049bb42f73ac6e0c77c22f5057e4836a906446ce384528f912a2c39704"
         },
         {
           "alg" : "SHA-384",
-          "content" : "7072d6b6694cde868cf0c329d9b5380b641c396553618d302b93294dedbbf750c4dbc0fafb8f3ad445a4e5bcf9200330"
+          "content" : "65bd3cb7ce36078f7b5be685651bcc4e0075cb111a17ae29a1e4c8943a5195b0683f236692178bbd4fca35d7a58bca8c"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "235695963012014225cdaa2213d7f0ff88e8eba044bff9075d0ea32e845cfb5bdbf4982e3e05d5c6c6857f77ef7f350f"
+          "content" : "b45ecaa01aa39a8192987f4bab7b7ec7ecbe7a33ecf2d1227663adad852f8c97643bddb1620ca48a88b82edd549344a3"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "a65145aadafeb40035282c42d9f0c532760940847ea0b458de549c0fae43ca1c"
+          "content" : "99efec687946d83ccb23e34add5cbb0d14fa9370618731fa9f8f356391cfb0ca"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "8dc8391927336301f7f9d30fd53f7fe6f4c3f8c40970ce135e9d7f9544b6812afd636c7bf30b4307d57f73f2ab376cb394ec4e0b459352323499e6974e5251f1"
+          "content" : "26ace591a92141b2087d564b97855ac5c9cfe8ceea3f40402f2e704c1d9fe800f64306df3d80e068f53a4aac211dfa3d3ccc9bb54df4cef0048b41a244b9ee34"
         }
       ],
       "licenses" : [
@@ -8109,7 +8109,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.5?type=jar",
+      "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.7?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -8175,7 +8175,7 @@
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
         "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
         "pkg:maven/org.flywaydb/flyway-database-postgresql@12.4.0?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
@@ -8201,14 +8201,14 @@
     {
       "ref" : "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
       "dependsOn" : [
-        "pkg:maven/tools.jackson.core/jackson-databind@3.1.5?type=jar"
+        "pkg:maven/tools.jackson.core/jackson-databind@3.1.7?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/tools.jackson.core/jackson-databind@3.1.5?type=jar",
+      "ref" : "pkg:maven/tools.jackson.core/jackson-databind@3.1.7?type=jar",
       "dependsOn" : [
         "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21?type=jar",
-        "pkg:maven/tools.jackson.core/jackson-core@3.1.5?type=jar"
+        "pkg:maven/tools.jackson.core/jackson-core@3.1.7?type=jar"
       ]
     },
     {
@@ -8216,7 +8216,7 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/tools.jackson.core/jackson-core@3.1.5?type=jar",
+      "ref" : "pkg:maven/tools.jackson.core/jackson-core@3.1.7?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -8226,14 +8226,14 @@
       ]
     },
     {
-      "ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar",
+      "ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
       "dependsOn" : [
         "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.7?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.5?type=jar",
+      "ref" : "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.7?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -8389,7 +8389,7 @@
       "ref" : "pkg:maven/org.springframework.boot/spring-boot-jackson@4.1.1?type=jar",
       "dependsOn" : [
         "pkg:maven/org.springframework.boot/spring-boot@4.1.1?type=jar",
-        "pkg:maven/tools.jackson.core/jackson-databind@3.1.5?type=jar"
+        "pkg:maven/tools.jackson.core/jackson-databind@3.1.7?type=jar"
       ]
     },
     {
@@ -8406,16 +8406,16 @@
         "pkg:maven/org.springframework.boot/spring-boot-tomcat@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-web-server@4.1.1?type=jar",
         "pkg:maven/jakarta.annotation/jakarta.annotation-api@3.0.0?type=jar",
-        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.24?type=jar",
-        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.24?type=jar",
-        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.24?type=jar"
+        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25?type=jar",
+        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.25?type=jar",
+        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.25?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/org.springframework.boot/spring-boot-tomcat@4.1.1?type=jar",
       "dependsOn" : [
         "pkg:maven/org.springframework.boot/spring-boot-web-server@4.1.1?type=jar",
-        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.24?type=jar",
+        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25?type=jar",
         "pkg:maven/jakarta.annotation/jakarta.annotation-api@3.0.0?type=jar"
       ]
     },
@@ -8424,17 +8424,17 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.24?type=jar",
+      "ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.24?type=jar",
+      "ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.25?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.24?type=jar",
+      "ref" : "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.25?type=jar",
       "dependsOn" : [
-        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.24?type=jar"
+        "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.25?type=jar"
       ]
     },
     {
@@ -8615,7 +8615,7 @@
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
         "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
         "pkg:maven/org.flywaydb/flyway-database-postgresql@12.4.0?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
         "pkg:maven/com.zaxxer/HikariCP@7.0.2?type=jar"
       ]
     },
@@ -8774,14 +8774,14 @@
       "dependsOn" : [
         "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.apache.kafka/kafka-clients@4.2.1?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/org.apache.kafka/kafka-clients@4.2.1?type=jar",
       "dependsOn" : [
         "pkg:maven/com.github.luben/zstd-jni@1.5.6-10?type=jar",
-        "pkg:maven/at.yawk.lz4/lz4-java@1.10.1?type=jar",
+        "pkg:maven/at.yawk.lz4/lz4-java@1.11.4?type=jar",
         "pkg:maven/org.xerial.snappy/snappy-java@1.1.10.7?type=jar",
         "pkg:maven/org.slf4j/slf4j-api@2.0.18?type=jar"
       ]
@@ -8791,7 +8791,7 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/at.yawk.lz4/lz4-java@1.10.1?type=jar",
+      "ref" : "pkg:maven/at.yawk.lz4/lz4-java@1.11.4?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -8998,7 +8998,7 @@
       "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
@@ -9006,7 +9006,7 @@
       "dependsOn" : [
         "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
         "pkg:maven/org.springframework.security/spring-security-oauth2-jose@7.1.1?type=jar",
         "pkg:maven/org.springframework.security/spring-security-oauth2-resource-server@7.1.1?type=jar"
       ]
@@ -9150,7 +9150,7 @@
       "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
@@ -9165,7 +9165,7 @@
         "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
@@ -9197,7 +9197,7 @@
       "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-report@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
@@ -9327,8 +9327,8 @@
         "pkg:maven/org.springframework.boot/spring-boot-starter-security@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar",
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar",
-        "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
+        "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.7?type=jar"
       ]
     },
     {
@@ -9385,11 +9385,11 @@
       ]
     },
     {
-      "ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.5?type=jar",
+      "ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.21.7?type=jar",
       "dependsOn" : [
         "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.5?type=jar",
-        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.21.7?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
