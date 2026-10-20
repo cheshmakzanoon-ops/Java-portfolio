@@ -1,6 +1,6 @@
 # RouteWeaver architecture
 
-Four Maven modules separate immutable domain snapshots, original planning algorithms and a confined mutable Timefold adapter, the PostgreSQL/Spring HTTP service, and independent verification/oracle/workload drivers. No dependency from domain to Spring or Timefold exists. Each cloud task uses its existing isolated checkout; no worktree is required.
+Four Maven modules separate immutable domain snapshots, original planning algorithms and a confined mutable Timefold adapter, the PostgreSQL/Spring HTTP service, and independent verification/oracle/workload drivers. No dependency from domain to Spring or Timefold exists.
 
 
 ```mermaid
@@ -35,3 +35,7 @@ PostgreSQL stores immutable inputs/candidate snapshots and all solve metadata. A
 Queued cancellation is direct CANCELLED. Running cancellation becomes CANCEL_REQUESTED and is acknowledged by a cooperative worker as CANCELLED, preserving its incumbent. If completion locks first, terminal completion wins and cancellation is idempotent. Cancellation never publishes. Publication separately locks active input and plan revision and requires current problem/version/hash plus an independently valid terminal incumbent; concurrent revision-CAS attempts have one winner. Historical expired/superseded worker results cannot become the active plan.
 
 Cancellation database reads are sampled at 100 ms and latch termination for that generation. CPU deadline/interruption checks stay on every trial. This caches observation only, never authority: candidate, terminal and publication transactions retain all row-locked state/fence/lease/version checks.
+
+## Browser boundary
+
+The dispatcher uses semantic HTML, a responsive stylesheet, and an external script with no framework dependency. Action controls reflect durable job state; solving does not publish. Progress requests run serially, and a connection generation prevents a late response from restoring data after the problem or token changes. Same-input hashes gate baseline comparisons. Tokens remain in the page memory and are never persisted to browser storage. A same-origin Content Security Policy forbids inline scripts, embedded objects, and framing. Development-mode requests also validate Host, Origin, and Fetch Metadata before receiving the trusted demo identity.

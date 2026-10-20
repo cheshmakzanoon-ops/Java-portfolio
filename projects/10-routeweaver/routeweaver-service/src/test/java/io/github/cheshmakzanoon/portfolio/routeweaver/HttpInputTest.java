@@ -39,6 +39,65 @@ class HttpInputTest {
   }
 
   @Test
+  void trustedLocalModeRejectsCrossOriginMutationsAndReboundHostsBeforePersistence()
+      throws Exception {
+    DATABASE_TOUCHED.set(false);
+    try (var context =
+        new SpringApplicationBuilder(RejectionApplication.class)
+            .run("--server.port=0", "--server.address=127.0.0.1", "--routeweaver.auth-mode=dev")) {
+      int port = ((ServletWebServerApplicationContext) context).getWebServer().getPort();
+      String base = "http://127.0.0.1:" + port;
+      HttpClient client = HttpClient.newHttpClient();
+      for (String origin :
+          java.util.List.of(
+              "https://unrelated.example", "null", base + "/", base + "@unrelated.example")) {
+        var response =
+            client.send(
+                HttpRequest.newBuilder(URI.create(base + "/v1/demo/reset"))
+                    .header("Origin", origin)
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertEquals(403, response.statusCode(), origin);
+        assertTrue(response.body().contains("UNTRUSTED_LOCAL_REQUEST"));
+      }
+      for (var headers : java.util.List.of(Map.of("Origin", base), Map.<String, String>of())) {
+        var request = HttpRequest.newBuilder(URI.create(base + "/health"));
+        headers.forEach(request::header);
+        assertEquals(
+            200,
+            client.send(request.GET().build(), HttpResponse.BodyHandlers.ofString()).statusCode());
+      }
+      assertEquals(
+          403,
+          client
+              .send(
+                  HttpRequest.newBuilder(URI.create(base + "/health"))
+                      .header("Sec-Fetch-Site", "cross-site")
+                      .GET()
+                      .build(),
+                  HttpResponse.BodyHandlers.ofString())
+              .statusCode());
+      try (var socket = new java.net.Socket("127.0.0.1", port)) {
+        socket.setSoTimeout(5000);
+        socket
+            .getOutputStream()
+            .write(
+                ("GET /health HTTP/1.1\r\nHost: rebound.example:"
+                        + port
+                        + "\r\nConnection: close\r\n\r\n")
+                    .getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+        var reader =
+            new java.io.BufferedReader(
+                new java.io.InputStreamReader(
+                    socket.getInputStream(), java.nio.charset.StandardCharsets.US_ASCII));
+        assertTrue(reader.readLine().contains("403"));
+      }
+      assertFalse(DATABASE_TOUCHED.get());
+    }
+  }
+
+  @Test
   void authenticatedPostRejectsInvalidIdsAndScalarTypesWith400BeforePersistence() throws Exception {
     DATABASE_TOUCHED.set(false);
     try (LocalIssuer issuer = new LocalIssuer();
@@ -60,6 +119,20 @@ class HttpInputTest {
                 HttpResponse.BodyHandlers.ofString());
         assertEquals(200, shellResponse.statusCode());
         assertTrue(shellResponse.body().contains("RouteWeaver dispatch"));
+        assertTrue(shellResponse.body().contains("src=\"/app.js\""));
+        String policy = shellResponse.headers().firstValue("Content-Security-Policy").orElseThrow();
+        assertTrue(policy.contains("default-src 'self'"));
+        assertFalse(policy.contains("unsafe-inline"));
+      }
+      for (String asset : java.util.List.of("/app.js", "/styles.css")) {
+        var assetResponse =
+            client.send(
+                HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + asset))
+                    .GET()
+                    .build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, assetResponse.statusCode());
+        assertFalse(assetResponse.body().isBlank());
       }
       var unauthenticated =
           client.send(
@@ -89,6 +162,33 @@ class HttpInputTest {
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(400, response.statusCode(), response.body());
+      }
+      for (var requestBody :
+          java.util.List.of(
+              Map.entry("publish", "{}"),
+              Map.entry(
+                  "publish", "{\"solveJobId\":null,\"expectedVersion\":1,\"expectedRevision\":0}"),
+              Map.entry(
+                  "publish",
+                  "{\"solveJobId\":\"00000000-0000-0000-0000-000000000001\",\"expectedVersion\":0,\"expectedRevision\":0}"),
+              Map.entry("replan", "{}"),
+              Map.entry(
+                  "replan",
+                  "{\"expectedVersion\":1,\"expectedRevision\":0,\"planningInstant\":\"2026-10-20T12:00:00Z\",\"observations\":null,\"urgent\":[]}"),
+              Map.entry(
+                  "replan",
+                  "{\"expectedVersion\":1,\"expectedRevision\":0,\"planningInstant\":\"2026-10-20T12:00:00.5Z\",\"observations\":[],\"urgent\":[]}"))) {
+        var response =
+            client.send(
+                HttpRequest.newBuilder(
+                        URI.create(
+                            "http://127.0.0.1:" + port + "/v1/plans/p/" + requestBody.getKey()))
+                    .header("Authorization", "Bearer " + issuer.token(Map.of()))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody.getValue()))
+                    .build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertEquals(400, response.statusCode(), requestBody.toString());
       }
       assertFalse(DATABASE_TOUCHED.get());
     }

@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -103,6 +104,13 @@ public class Security {
       @Value("${routeweaver.audience:routeweaver}") String audience)
       throws Exception {
     http.csrf(c -> c.disable())
+        .headers(
+            headers ->
+                headers.contentSecurityPolicy(
+                    policy ->
+                        policy.policyDirectives(
+                            "default-src 'self'; object-src 'none'; base-uri 'none';"
+                                + " frame-ancestors 'none'; form-action 'self'")))
         .sessionManagement(
             s ->
                 s.sessionCreationPolicy(
@@ -116,6 +124,12 @@ public class Security {
             protected void doFilterInternal(
                 HttpServletRequest request, HttpServletResponse response, FilterChain chain)
                 throws IOException, ServletException {
+              if (!trustedLocalRequest(request)) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"code\":\"UNTRUSTED_LOCAL_REQUEST\"}");
+                return;
+              }
               var auth =
                   UsernamePasswordAuthenticationToken.authenticated(
                       "trusted-loopback-demo",
@@ -138,13 +152,40 @@ public class Security {
     http.addFilterBefore(new BodyBound(), AuthorizationFilter.class)
         .authorizeHttpRequests(
             a ->
-                a.requestMatchers("/health", "/", "/index.html")
+                a.requestMatchers("/health", "/", "/index.html", "/app.js", "/styles.css")
                     .permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/**")
                     .hasAuthority("SCOPE_routeweaver.read")
                     .anyRequest()
                     .hasAuthority("SCOPE_routeweaver.write"));
     return http.build();
+  }
+
+  /**
+   * Loopback binding does not prevent a browser on an unrelated site from reaching a local API.
+   * Validate the Host against DNS rebinding and reject cross-origin browser requests before
+   * granting the disposable demo identity. Local command-line clients need no Origin header.
+   */
+  static boolean trustedLocalRequest(HttpServletRequest request) {
+    String host = request.getServerName();
+    if (!Set.of("localhost", "127.0.0.1", "::1", "[::1]").contains(host)) return false;
+    if ("cross-site".equalsIgnoreCase(request.getHeader("Sec-Fetch-Site"))) return false;
+    String origin = request.getHeader("Origin");
+    if (origin == null) return true;
+    try {
+      URI value = URI.create(origin);
+      int port = value.getPort();
+      if (port == -1) port = "https".equals(value.getScheme()) ? 443 : 80;
+      return request.getScheme().equals(value.getScheme())
+          && host.equalsIgnoreCase(value.getHost())
+          && request.getServerPort() == port
+          && value.getRawUserInfo() == null
+          && (value.getRawPath() == null || value.getRawPath().isEmpty())
+          && value.getRawQuery() == null
+          && value.getRawFragment() == null;
+    } catch (IllegalArgumentException ignored) {
+      return false;
+    }
   }
 
   /** Bound raw bytes before JSON parsing, including chunked requests and false Content-Length. */

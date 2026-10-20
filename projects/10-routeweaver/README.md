@@ -1,8 +1,12 @@
 # RouteWeaver
 
-Constrained synthetic fleet dispatch with independently validated planning, original directed route moves, Timefold search, and durable PostgreSQL publication. All workload data is fictional.
+RouteWeaver is a synthetic fleet-dispatch application that treats route feasibility and publication as separate correctness boundaries. It combines immutable planning inputs, an independent route validator, original insertion and directed-route moves, Timefold improvement search, and PostgreSQL-backed solve jobs.
 
-From the repository root with JDK25, Maven wrapper, Docker/Compose:
+The dispatcher can inspect routes and shift timelines, compare a candidate with its same-input baseline, request cancellation, and explicitly publish a validated incumbent. Travel times, coordinates, jobs, and vehicles are fictional.
+
+## Run the demonstration
+
+From the repository root, use Java 25, the pinned Maven wrapper, and Docker with Compose. In the managed cloud environment, first source `scripts/cloud-env.sh`.
 
 ```sh
 projects/10-routeweaver/scripts/build.sh
@@ -11,22 +15,31 @@ projects/10-routeweaver/scripts/demo.sh
 projects/10-routeweaver/scripts/down.sh
 ```
 
-The live demo creates 60 deliveries/six vehicles, retains a same-version validated incumbent, publishes it, advances to observed stop boundaries, breaks a vehicle, audits release of its commitments, preserves completed history and onboard cargo, inserts a depot urgent delivery, uses the standby vehicle, and asserts stale publication returns409. Repeat seeded data only after the explicit `scripts/reset-demo.sh`. UI/API use http://127.0.0.1:19000. The launcher explicitly selects the trusted disposable loopback-only development profile. No real token is used in that profile.
+The dispatcher listens at `http://127.0.0.1:19000` during the demo. The launcher explicitly enables a disposable local profile; the page needs no token in that profile. Browser requests must use a loopback Host and the same origin. A protected deployment instead requires an OIDC issuer, tenant-scoped tokens, and read/write scopes; see [security](docs/SECURITY.md).
 
-Protected mode is the default outside that launcher: set ROUTEWEAVER_ISSUER to a real local OIDC issuer and ROUTEWEAVER_AUDIENCE (default routeweaver); tokens require verified signature/issuer/expiry, explicit subject/audience and a string tenant, plus routeweaver.read or routeweaver.write scopes. Set database credentials through environment bindings; committed credentials are disposable local PostgreSQL fixtures only. Do not bind development mode beyond loopback.
+The demo creates 60 deliveries and six vehicles, publishes a valid plan, observes completed stops, records a breakdown, releases applicable commitments through an audit entry, inserts urgent depot cargo, and replans. It asserts preserved completed history and physical cargo, then verifies that an older plan cannot be published. To repeat the seeded scenario, run `projects/10-routeweaver/scripts/reset-demo.sh` before the next demo. Shutdown preserves database state.
+
+## Verify changes
 
 ```sh
 source scripts/cloud-env.sh
-./mvnw -f projects/10-routeweaver/pom.xml -Dmaven.repo.local="$PWD/.work/A10/m2" -B -ntp -Pintegration verify
-./mvnw -f projects/10-routeweaver/pom.xml -Dmaven.repo.local="$PWD/.work/A10/m2" -B -ntp -Pmutation verify
-projects/10-routeweaver/scripts/benchmark.sh
+./mvnw -f projects/10-routeweaver/pom.xml -B -ntp verify
+./mvnw -f projects/10-routeweaver/pom.xml -B -ntp -Pintegration verify
+./mvnw -f projects/10-routeweaver/pom.xml -B -ntp -Pmutation verify
+python3 projects/10-routeweaver/scripts/check-ui.py
 ```
 
-Integration requires Docker and fails if unavailable. The benchmark driver preregisters ten deterministic100/250/500-job inputs,5/10/25 vehicles and three independent30-second runs, records real elapsed time, independent scores, heap observation, validation throughput and score traces; queue/HTTP latency is a distinct service boundary. Performance runs require an otherwise quiet reference host. `docs/STATUS.md` states observed gates and remaining gaps; implementation is not equivalent to released acceptance.
+Ordinary verification covers the domain, independent oracle, planning properties, real OIDC/HTTP input checks, formatting, and coverage. Integration adds PostgreSQL tests and requires Docker; missing Docker is a failure. The UI check uses installed Chromium and the existing Playwright Python package with deterministic API fixtures. It verifies browser behavior separately from the live-service check in `scripts/browser-check.py`.
 
+Performance runs use `scripts/benchmark.sh` on an otherwise idle host. The [performance report](docs/PERFORMANCE.md) records the measured source, complete corpus outcomes, variability, and cooperative-budget limits. Historical measurements do not certify later source changes.
 
-The [architecture](docs/ARCHITECTURE.md), [invariants](docs/INVARIANTS.md), [operations](docs/OPERATIONS.md), [security boundaries](docs/SECURITY.md), [performance protocol/results](docs/PERFORMANCE.md), [case study](docs/CASE_STUDY.md) and [engineering discussion](docs/INTERVIEW.md) describe the implemented guarantees and their limits. [Decisions](docs/DECISIONS/) explain the common depot and independent-validation/publication tradeoffs. [Demo walkthrough](demo/README.md) links the actual fixture generator and expected live observations.
+## Engineering boundaries
 
-Integer units, complete directed return evaluation, exact assigned/unassigned partition, physical residual cargo and same-input lexicographic retention are enforced independently from the solver. Published routes require current-input/revision compare-and-set; cancellation and worker expiry cannot silently install a plan. The tiny oracle certifies only exhausted bounded cases. Release 1 uses synthetic travel, a shared declared depot and observed stop-boundary replanning; it does not support cargo transfers, mid-road interpolation or large-instance optimality claims.
+- Integer units and checked arithmetic govern distance, time, load, and objective calculations.
+- An independent validator checks the complete directed route, return arc, assigned/unassigned partition, skills, capacity, windows, and frozen work.
+- Leases and fencing protect durable job writes. Publication separately compares the active problem version and published-plan revision.
+- Replanning begins at observed stop boundaries. Cargo stays on its observed vehicle; failed onboard cargo is reported as stranded.
 
-Executed results are tied to exact fingerprints in [evidence](evidence/) and [current status](docs/STATUS.md). Historical ordinary/PIT and PostgreSQL results remain separate from later source. Live demonstration and quiet workload claims are made only after their actual recorded runs; see [performance](docs/PERFORMANCE.md) for measured boundaries and open gates.
+Release 1 uses one declared depot and synthetic directed travel. It does not model road interpolation, cargo transfer, real traffic, or large-instance optimality.
+
+Read the [architecture](docs/ARCHITECTURE.md), [invariants](docs/INVARIANTS.md), [API contract](contracts/API.md), [operations](docs/OPERATIONS.md), [decisions](docs/DECISIONS/), and [case study](docs/CASE_STUDY.md). The [validation status](docs/STATUS.md) distinguishes current checks from historical evidence and outstanding release work.

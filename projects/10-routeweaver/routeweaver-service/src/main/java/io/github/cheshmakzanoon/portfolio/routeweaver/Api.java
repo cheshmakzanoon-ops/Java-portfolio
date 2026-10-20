@@ -111,7 +111,20 @@ public final class Api {
       long expectedRevision,
       Instant planningInstant,
       List<Replanner.Observation> observations,
-      List<Job> urgent) {}
+      List<Job> urgent) {
+    public ReplanRequest {
+      if (expectedVersion < 1 || expectedRevision < 0 || planningInstant == null)
+        throw new IllegalArgumentException(
+            "positive version, revision and planning instant required");
+      observations = List.copyOf(observations);
+      urgent = List.copyOf(urgent);
+      if (planningInstant.getNano() != 0
+          || observations.size() > MAX_VEHICLES
+          || urgent.size() > MAX_JOBS)
+        throw new IllegalArgumentException(
+            "replan observations, jobs and integer instant must be bounded");
+    }
+  }
 
   @PostMapping("/v1/plans/{id}/replan")
   public ResponseEntity<String> replan(

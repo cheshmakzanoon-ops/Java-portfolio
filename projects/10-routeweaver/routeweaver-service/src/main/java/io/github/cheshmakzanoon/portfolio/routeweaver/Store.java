@@ -68,7 +68,13 @@ public final class Store {
 
   public record PlanView(String id, long revision, long problemVersion, Validation solution) {}
 
-  public record PublishRequest(UUID solveJobId, long expectedVersion, long expectedRevision) {}
+  public record PublishRequest(UUID solveJobId, long expectedVersion, long expectedRevision) {
+    public PublishRequest {
+      if (solveJobId == null || expectedVersion < 1 || expectedRevision < 0)
+        throw new IllegalArgumentException(
+            "solve job, positive version and nonnegative revision required");
+    }
+  }
 
   @FunctionalInterface
   private interface Tx<T> {

@@ -5,7 +5,7 @@ import datetime
 import json
 from pathlib import Path
 import shutil
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base', default='http://127.0.0.1:19000')
@@ -32,20 +32,20 @@ try:
             page.goto(args.base, wait_until='networkidle')
             page.locator('#problem').fill(args.problem)
             page.get_by_role('button', name='Load current published plan', exact=True).click()
-            page.wait_for_function("document.querySelectorAll('#timeline tr').length === 6")
-            initial = json.loads(page.locator('#state').inner_text())
-            score = json.loads(page.locator('#score').inner_text())
+            expect(page.locator('#timeline tr')).to_have_count(6)
+            initial = json.loads(page.locator('#state').text_content())
+            score = json.loads(page.locator('#score').text_content())
             assert score['inputVersion'] == args.expected_version and score['score']['hard'] == 0 and score['feasibility'] == 'PARTIAL_FEASIBLE', score
-            assert 'STRANDED_CARGO' in page.locator('#unassigned').inner_text()
+            assert 'Stranded cargo' in page.locator('#unassigned-jobs').inner_text()
             assert 'URGENT' in page.locator('#timeline').inner_text()
             assert page.locator('#map polyline').count() == 6
             page.get_by_role('button', name='Solve active input', exact=True).click()
-            page.wait_for_function("document.querySelector('#state').textContent.includes('COMPLETED')", timeout=40000)
-            solved = json.loads(page.locator('#score').inner_text())
+            expect(page.locator('#state')).to_contain_text('COMPLETED', timeout=40000)
+            solved = json.loads(page.locator('#score').text_content())
             assert 'baseline' in solved and solved['score']['hard'] == 0
             page.get_by_role('button', name='Publish validated incumbent', exact=True).click()
-            page.wait_for_function("expected => { try { return JSON.parse(document.querySelector('#state').textContent).planRevision === expected; } catch { return false; } }", arg=initial['planRevision'] + 1)
-            status_text = page.locator('#state').inner_text()
+            expect(page.locator('#state')).to_contain_text('"planRevision": ' + str(initial['planRevision'] + 1))
+            status_text = page.locator('#state').text_content()
             assert len(status_text) < 500, 'publication status must not dump full route/validation internals'
             assert not errors, errors
             page.screenshot(path=str(output / 'dispatcher.png'), full_page=True)
