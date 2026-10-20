@@ -15,9 +15,7 @@ import java.util.function.*;
 public final class NodeMain implements AutoCloseable {
   private record Waiting(Consumer<Result> response, long deadline) {}
 
-  private final ThreadPoolExecutor owner =
-      new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<>(512));
-  private final ExecutorService disk = Executors.newSingleThreadExecutor();
+  private final NodeExecutor execution;
   private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
   private final Journal journal;
   private final Raft raft;
@@ -25,57 +23,62 @@ public final class NodeMain implements AutoCloseable {
   private final Set<Integer> partitioned = new HashSet<>();
   private final Map<Long, Waiting> waiting = new HashMap<>();
   private long serial;
-  private volatile boolean fatal;
+  private boolean closed;
   private volatile long snapshotLastNanos, snapshotCount, flushCount;
 
   public NodeMain(int id, Path directory, TlsTransport.Settings settings) throws Exception {
-    journal = new Journal(directory);
-    raft = new Raft(id, new SecureRandom().nextInt(Integer.MAX_VALUE), journal.recovered());
-    transport = new TlsTransport(id, settings, this::receive);
+    Journal opened = new Journal(directory);
+    TlsTransport initialized = null;
+    try {
+      raft = new Raft(id, new SecureRandom().nextInt(Integer.MAX_VALUE), opened.recovered());
+      initialized = new TlsTransport(id, settings, this::receive);
+      transport = initialized;
+      execution =
+          new NodeExecutor(
+              error ->
+                  System.err.println(
+                      "FAIL_CLOSED "
+                          + error.getClass().getSimpleName()
+                          + ": "
+                          + error.getMessage()));
+      journal = opened;
+    } catch (Exception | Error failure) {
+      closeAdding(failure, initialized);
+      closeAdding(failure, opened);
+      closeAdding(failure, () -> timer.shutdownNow());
+      throw failure;
+    }
   }
 
   public void start() throws Exception {
-    transport.start();
-    timer.scheduleAtFixedRate(
-        () ->
-            submit(
-                () -> {
-                  long now = System.nanoTime() / 1_000_000;
-                  drive(new Tick(now));
-                  var it = waiting.entrySet().iterator();
-                  while (it.hasNext()) {
-                    Waiting w = it.next().getValue();
-                    if (w.deadline() < now) {
-                      w.response().accept(new Result("UNKNOWN_OUTCOME", null, raft.leader()));
-                      it.remove();
+    try {
+      transport.start();
+      timer.scheduleAtFixedRate(
+          () ->
+              submit(
+                  () -> {
+                    long now = System.nanoTime() / 1_000_000;
+                    drive(new Tick(now));
+                    var it = waiting.entrySet().iterator();
+                    while (it.hasNext()) {
+                      Waiting w = it.next().getValue();
+                      if (w.deadline() < now) {
+                        w.response().accept(new Result("UNKNOWN_OUTCOME", null, raft.leader()));
+                        it.remove();
+                      }
                     }
-                  }
-                }),
-        10,
-        10,
-        TimeUnit.MILLISECONDS);
-  }
-
-  private Runnable guard(Runnable action) {
-    return () -> {
-      try {
-        action.run();
-      } catch (Throwable error) {
-        fatal = true;
-        System.err.println(
-            "FAIL_CLOSED " + error.getClass().getSimpleName() + ": " + error.getMessage());
-      }
-    };
+                  }),
+          10,
+          10,
+          TimeUnit.MILLISECONDS);
+    } catch (Exception | Error failure) {
+      closeAdding(failure, this);
+      throw failure;
+    }
   }
 
   private boolean submit(Runnable action) {
-    if (fatal) return false;
-    try {
-      owner.execute(guard(action));
-      return true;
-    } catch (RejectedExecutionException ignored) {
-      return false;
-    }
+    return execution.submit(action);
   }
 
   private void receive(Envelope envelope, Consumer<Result> response) {
@@ -107,27 +110,19 @@ public final class NodeMain implements AutoCloseable {
     for (Effect effect : raft.accept(event)) {
       switch (effect) {
         case Persist p ->
-            disk.execute(
+            execution.persist(
                 () -> {
-                  try {
-                    boolean snapshot =
-                        p.durable().snapshot().index() != journal.recovered().snapshot().index();
-                    long begin = System.nanoTime();
-                    journal.persist(p.durable());
-                    flushCount++;
-                    if (snapshot) {
-                      snapshotLastNanos = System.nanoTime() - begin;
-                      snapshotCount++;
-                    }
-                    if (!submit(() -> drive(new Persisted(p.token())))) {
-                      if (!fatal)
-                        owner.getQueue().put(guard(() -> drive(new Persisted(p.token()))));
-                    }
-                  } catch (Exception error) {
-                    fatal = true;
-                    System.err.println("FAIL_CLOSED_DISK " + error.getMessage());
+                  boolean snapshot =
+                      p.durable().snapshot().index() != journal.recovered().snapshot().index();
+                  long begin = System.nanoTime();
+                  journal.persist(p.durable());
+                  flushCount++;
+                  if (snapshot) {
+                    snapshotLastNanos = System.nanoTime() - begin;
+                    snapshotCount++;
                   }
-                });
+                },
+                () -> drive(new Persisted(p.token())));
         case Send s -> {
           if (!partitioned.contains(s.peer())) transport.send(s.peer(), s.rpc());
         }
@@ -148,6 +143,10 @@ public final class NodeMain implements AutoCloseable {
           response.accept(
               new Result("OK", status().getBytes(StandardCharsets.UTF_8), raft.leader()));
       case "partition" -> {
+        if (admin.peer() < 0 || admin.peer() > 2 || admin.peer() == raft.id()) {
+          response.accept(new Result("INVALID_ADMIN", null, raft.leader()));
+          return;
+        }
         partitioned.add(admin.peer());
         response.accept(new Result("OK", null, raft.leader()));
       }
@@ -200,15 +199,35 @@ public final class NodeMain implements AutoCloseable {
   }
 
   @Override
-  public void close() throws Exception {
-    timer.shutdownNow();
-    transport.close();
-    disk.shutdown();
-    if (!disk.awaitTermination(5, TimeUnit.SECONDS))
-      throw new java.io.IOException("DISK_SHUTDOWN_TIMEOUT");
-    owner.shutdown();
-    owner.awaitTermination(5, TimeUnit.SECONDS);
-    journal.close();
+  public synchronized void close() throws Exception {
+    if (closed) return;
+    closeResources(execution, timer, transport, journal);
+    closed = true;
+  }
+
+  static void closeResources(
+      NodeExecutor execution, ExecutorService timer, AutoCloseable transport, AutoCloseable journal)
+      throws Exception {
+    execution.beginClose();
+    Throwable failure = closeAdding(null, () -> timer.shutdownNow());
+    failure = closeAdding(failure, transport);
+    Throwable executionFailure = closeAdding(null, execution);
+    if (executionFailure == null) failure = closeAdding(failure, journal);
+    else if (failure == null) failure = executionFailure;
+    else if (failure != executionFailure) failure.addSuppressed(executionFailure);
+    if (failure instanceof Exception exception) throw exception;
+    if (failure instanceof Error error) throw error;
+  }
+
+  private static Throwable closeAdding(Throwable failure, AutoCloseable resource) {
+    if (resource == null) return failure;
+    try {
+      resource.close();
+    } catch (Exception | Error cleanup) {
+      if (failure == null) return cleanup;
+      if (failure != cleanup) failure.addSuppressed(cleanup);
+    }
+    return failure;
   }
 
   public static void main(String[] args) throws Exception {

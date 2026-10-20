@@ -76,6 +76,23 @@ public final class Model {
       return copy(expected);
     }
 
+    @Override
+    public boolean equals(Object other) {
+      return other instanceof Command c
+          && sequence == c.sequence
+          && client.equals(c.client)
+          && kind == c.kind
+          && key.equals(c.key)
+          && Arrays.equals(value, c.value)
+          && Arrays.equals(expected, c.expected);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(
+          client, sequence, kind, key, Arrays.hashCode(value), Arrays.hashCode(expected));
+    }
+
     public byte[] digest() {
       try {
         return MessageDigest.getInstance("SHA-256").digest(Codec.command(this));

@@ -35,6 +35,7 @@ public final class Journal implements AutoCloseable {
   private FileChannel wal;
   private long generation;
   private Durable state;
+  private boolean failed, closed;
 
   public Journal(Path directory) throws IOException {
     this(directory, b -> {});
@@ -49,9 +50,13 @@ public final class Journal implements AutoCloseable {
             directory.resolve("LOCK"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
     try {
       lock = lockChannel.tryLock();
-    } catch (OverlappingFileLockException e) {
-      lockChannel.close();
-      throw new IOException("DIRECTORY_LOCKED", e);
+    } catch (IOException | OverlappingFileLockException e) {
+      try {
+        lockChannel.close();
+      } catch (IOException cleanup) {
+        e.addSuppressed(cleanup);
+      }
+      throw new IOException("DIRECTORY_LOCK_FAILED", e);
     }
     if (lock == null) {
       lockChannel.close();
@@ -66,10 +71,23 @@ public final class Journal implements AutoCloseable {
         state = Durable.empty();
         publish(state);
       } else {
-        String[] fields = Files.readString(manifest).trim().split(" ");
+        byte[] manifestBytes;
+        try (var input = Files.newInputStream(manifest)) {
+          manifestBytes = input.readNBytes(257);
+        }
+        if (manifestBytes.length > 256) throw new IOException("MANIFEST_LENGTH");
+        String[] fields =
+            new String(manifestBytes, java.nio.charset.StandardCharsets.US_ASCII).trim().split(" ");
         if (fields.length != 3 || !fields[0].equals("QKV1"))
           throw new IOException("INCOMPATIBLE_MANIFEST: expected QKV1");
-        generation = Long.parseLong(fields[1]);
+        if (!fields[1].matches("[0-9]{1,19}") || !fields[2].matches("[0-9]{1,19}"))
+          throw new IOException("MANIFEST_COORDINATES");
+        try {
+          generation = Long.parseLong(fields[1]);
+          Long.parseLong(fields[2]);
+        } catch (NumberFormatException invalid) {
+          throw new IOException("MANIFEST_COORDINATES", invalid);
+        }
         Path snapshot = directory.resolve("snapshot-" + fields[2]);
         byte[] body = checkedFile(snapshot);
         Snapshot s = Codec.snapshot(body);
@@ -86,9 +104,11 @@ public final class Journal implements AutoCloseable {
           throw new IOException("MANIFEST_SNAPSHOT_MISMATCH");
       }
     } catch (IOException | RuntimeException e) {
-      if (wal != null) wal.close();
-      lock.release();
-      lockChannel.close();
+      try {
+        close();
+      } catch (IOException cleanup) {
+        e.addSuppressed(cleanup);
+      }
       throw e;
     }
   }
@@ -98,20 +118,41 @@ public final class Journal implements AutoCloseable {
   }
 
   public synchronized void persist(Durable next) throws IOException {
+    if (closed || failed) throw new IOException("JOURNAL_CLOSED_OR_FAILED");
+    if (next.term() == state.term() && state.vote() != -1 && next.vote() != state.vote())
+      throw new IOException("VOTE_CHANGED_WITHIN_TERM");
+    if (next.snapshot().index() < state.snapshot().index())
+      throw new IOException("SNAPSHOT_REGRESSION");
+    if (next.snapshot() != state.snapshot()
+        && next.snapshot().index() == state.snapshot().index()
+        && !Arrays.equals(Codec.snapshot(next.snapshot()), Codec.snapshot(state.snapshot())))
+      throw new IOException("SNAPSHOT_IDENTITY_CHANGED");
+    for (Entry committed : state.log()) {
+      if (committed.index() > state.commit()) break;
+      if (committed.index() <= next.snapshot().index()) continue;
+      long offset = committed.index() - next.snapshot().index() - 1;
+      if (offset >= next.log().size() || !committed.equals(next.log().get(Math.toIntExact(offset))))
+        throw new IOException("COMMITTED_PREFIX_CHANGED");
+    }
     if (next.term() < state.term() || next.commit() < state.commit())
       throw new IOException("DURABILITY_REGRESSION");
-    if (next.snapshot().index() != state.snapshot().index() || wal.size() > 8L * 1024 * 1024) {
-      publish(next);
-      return;
+    try {
+      if (next.snapshot().index() != state.snapshot().index() || wal.size() > 8L * 1024 * 1024) {
+        publish(next);
+        return;
+      }
+      byte[] delta = delta(state, next);
+      ByteBuffer record = record((byte) 2, next, delta);
+      wal.position(wal.size());
+      write(wal, record);
+      fault.at(Boundary.WAL_WRITE);
+      wal.force(true);
+      fault.at(Boundary.WAL_FLUSH);
+      state = next;
+    } catch (IOException | RuntimeException failure) {
+      failed = true;
+      throw failure;
     }
-    byte[] delta = delta(state, next);
-    ByteBuffer record = record((byte) 2, next, delta);
-    wal.position(wal.size());
-    write(wal, record);
-    fault.at(Boundary.WAL_WRITE);
-    wal.force(true);
-    fault.at(Boundary.WAL_FLUSH);
-    state = next;
   }
 
   private void publish(Durable next) throws IOException {
@@ -240,7 +281,7 @@ public final class Journal implements AutoCloseable {
     int prefix = 0;
     while (prefix < old.log().size() && prefix < next.log().size()) {
       Entry a = old.log().get(prefix), b = next.log().get(prefix);
-      if (a.index() != b.index() || a.term() != b.term()) break;
+      if (!a.equals(b)) break;
       prefix++;
     }
     int shared = prefix;
@@ -267,6 +308,8 @@ public final class Journal implements AutoCloseable {
       if (in.available() != 0) throw new IOException("WAL_TRAILING");
       if (term < old.term() || commit < old.commit()) throw new IOException("WAL_REGRESSION");
       return new Durable(term, vote, commit, old.snapshot(), log);
+    } catch (IllegalArgumentException | NullPointerException invalid) {
+      throw new IOException("INVALID_WAL_STATE", invalid);
     }
   }
 
@@ -337,9 +380,27 @@ public final class Journal implements AutoCloseable {
   }
 
   @Override
-  public void close() throws IOException {
-    if (wal != null) wal.close();
-    lock.release();
-    lockChannel.close();
+  public synchronized void close() throws IOException {
+    if (closed) return;
+    closed = true;
+    IOException failure = null;
+    try {
+      if (wal != null) wal.close();
+    } catch (IOException error) {
+      failure = error;
+    }
+    try {
+      lock.release();
+    } catch (IOException error) {
+      if (failure == null) failure = error;
+      else failure.addSuppressed(error);
+    }
+    try {
+      lockChannel.close();
+    } catch (IOException error) {
+      if (failure == null) failure = error;
+      else failure.addSuppressed(error);
+    }
+    if (failure != null) throw failure;
   }
 }

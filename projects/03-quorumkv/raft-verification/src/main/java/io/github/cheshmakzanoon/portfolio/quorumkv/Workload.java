@@ -14,7 +14,12 @@ public final class Workload {
   private Workload() {}
 
   public static void run(Path directory, int port, int operations, int runs) throws Exception {
+    if (operations < 1 || operations > 100_000 || runs < 1 || runs > 3)
+      throw new IllegalArgumentException("WORKLOAD_BOUNDS: operations 1..100000, runs 1..3");
     Files.createDirectories(directory);
+    if (Files.exists(directory.resolve("environment.txt"))
+        || Files.exists(directory.resolve("workload.csv")))
+      throw new java.io.IOException("WORKLOAD_OUTPUT_EXISTS: use a fresh directory");
     StringBuilder raw =
         new StringBuilder(
             "run,profile,clients,operations,payloadBytes,elapsedSeconds,opsPerSecond,p50Micros,p95Micros,p99Micros,errors,clientGcCount,clientGcMs,replicationLag,maxSampledLag,clientCpuSeconds,membersCpuSeconds,workerAllocatedBytes,snapshotMicros,lagSamples,lagSampleFailures\n");
@@ -35,7 +40,8 @@ public final class Workload {
             + "\nclientMaxHeap="
             + Runtime.getRuntime().maxMemory()
             + "\nflags="
-            + ManagementFactory.getRuntimeMXBean().getInputArguments()
+            + safeFlags(ManagementFactory.getRuntimeMXBean().getInputArguments())
+            + "\nflagsPolicy=heap and ActiveProcessorCount only; application properties are excluded"
             + "\nsourceFingerprint="
             + System.getProperty("quorumkv.source", "unrecorded")
             + "\nseed=42\nfsync=every state transaction; atomic snapshot manifest + directory fsync\nmeasurement=closed-loop TLS replicated commit/quorum read; coordinated omission applies\nCPU="
@@ -47,7 +53,10 @@ public final class Workload {
             + Files.readString(Path.of("/sys/fs/cgroup/cpu.max")).trim()
             + "\nmemoryLimit="
             + Files.readString(Path.of("/sys/fs/cgroup/memory.max")).trim()
-            + "\n");
+            + "\n",
+        StandardOpenOption.CREATE_NEW);
+    Files.writeString(
+        directory.resolve("workload.csv"), raw.toString(), StandardOpenOption.CREATE_NEW);
     for (int run = 1; run <= runs; run++)
       for (String profile : List.of("read-heavy", "mixed"))
         for (int clients : new int[] {1, 8, 32}) {
@@ -180,6 +189,15 @@ public final class Workload {
             ClusterTool.require(errors.get() == 0, "workload rejected/failed operations=" + errors);
           }
         }
+  }
+
+  static List<String> safeFlags(List<String> arguments) {
+    return arguments.stream()
+        .filter(
+            flag ->
+                flag.matches("-Xm[sx][0-9]+[kKmMgG]?")
+                    || flag.matches("-XX:ActiveProcessorCount=[0-9]+"))
+        .toList();
   }
 
   private static long processCpu() {

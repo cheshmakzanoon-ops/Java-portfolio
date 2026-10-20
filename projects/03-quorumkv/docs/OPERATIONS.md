@@ -1,13 +1,71 @@
 # Operations and recovery
 
-Requirements: Java 25, Bash, OpenSSL, local POSIX/Linux filesystem with working FileChannel directory `force`, atomic same-directory rename, and disks/controllers honoring flushes. The demo has run only on the environment recorded with its evidence. Network filesystems, Windows rename behavior, unprotected volatile device caches and whole-machine failure are outside the tested storage contract.
+## Supported environment
 
-Use project scripts `up`, `down`, `demo`, `reset-demo`, and `benchmark`. Run scripts from any directory. `QUORUMKV_RUNTIME` selects another durable runtime; destructive reset intentionally accepts only the default `.work/A03/runtime`. `QUORUMKV_PORT` selects the first of three consecutive loopback ports. Do not run two clusters on the same ports. `QUORUMKV_M2` selects the already resolved Maven cache.
+Use Java 25, Bash, Python 3 and OpenSSL on a local POSIX/Linux filesystem that supports directory `FileChannel.force` and atomic same-directory rename. Devices/controllers must honor flushes. Network filesystems, unprotected volatile device caches, Windows rename behavior and whole-host survival are outside verified support.
 
-`up` stores per-node PIDs and logs under the project-owned ignored runtime. A directory lock prevents two processes from using one member directory. Startup fails for incompatible format, manifest mismatch, noncontiguous logs or complete corrupt records. Keep the original directory for inspection. Never delete a corrupt record to make startup pass. Recover an unavailable member from a healthy majority through snapshot/append replication using a deliberately new local directory; do not claim that an old local suffix is committed merely because it exists.
+The default runtime is `.work/A03/runtime`. `QUORUMKV_RUNTIME` selects another durable directory; `QUORUMKV_PORT` selects the first of three consecutive loopback ports (default 18300–18302). `QUORUMKV_M2` selects the Maven cache. Never start two clusters on the same member directories or ports.
 
-WAL layout and snapshot publication are specified in `contracts/storage.md`. Every accepted state transaction calls `force(true)`. Snapshot publication verifies a temporary snapshot, flushes it, publishes the snapshot and a new fully flushed WAL generation, flushes the directory, writes and flushes the temporary manifest, atomically publishes the manifest and flushes the directory again. Previous generations remain until the new manifest is durable; at least the immediate previous generation is retained. The current and preceding snapshot recovery paths are retained; older covered snapshots and WAL generations retire only after manifest durability. WAL generations rotate after8MiB of appended transactions, independently of snapshot index changes. Each record is bounded to64MiB; monitor free disk space.
+```bash
+source scripts/cloud-env.sh
+./scripts/portfolio.sh up quorumkv
+./scripts/portfolio.sh down quorumkv
+./scripts/portfolio.sh demo quorumkv
+```
 
-A write timeout is an unknown outcome. Retry the same identity, sequence and payload. Do not advance a client's sequence manually. The shipped client prevents a different payload while its previous mutation outcome remains unknown. A lost client identity journal cannot safely be reconstructed by inventing a new sequence. This demo's client sequence is process-local; callers who need restartable outstanding client operations must durably preserve the command externally. Server-side deduplication itself survives snapshots and all-member restart.
+The fault demo owns a separate fresh directory and terminates its JVMs. Stop the ordinary cluster before running it on the same ports. `down` preserves durable state and verifies process identity before terminating a member; it refuses unrelated PIDs. `reset-demo` is destructive and accepts only the default seeded runtime. It is not a recovery command.
 
-Status observations expose node/role/term/commit/applied/snapshot index, state digest, disk-pending state and pending request count. They are administrative observations, not a promise of current leadership. `FAIL_CLOSED` or `FAIL_CLOSED_DISK` logs mean the node stops protocol progress and requires diagnosis. Back up all durable files only from stopped members or a stable published snapshot generation; copying a live WAL without coordination is unsupported.
+TLS setup stages a disposable certificate/key and role credentials before publication. An interrupted certificate generator cannot publish a completed credential set; retrying a partial older setup preserves existing role credentials. Helpers have enforced deadlines and timed-out children are terminated. These credentials are for trusted local demonstration, not production PKI or remote deployment.
+
+## What client outcomes mean
+
+| Outcome | Interpretation and next action |
+| --- | --- |
+| `OK` | The mutation has reached a stable majority, the leader persisted its commit position, and the deterministic result was applied. A GET additionally completed a fresh current-term quorum barrier. |
+| `CAS_MISMATCH` | A committed failed CAS; its observed value and receipt survive retry/recovery. Advance to the next sequence only after accepting that definitive result. |
+| `NOT_LEADER` | Retry using the supplied leader hint when valid. A local status role is not a substitute for a quorum operation. |
+| `UNAVAILABLE`, `UNKNOWN_OUTCOME`, timeout or connection loss | An admitted mutation may still have committed. Preserve identity, sequence and the exact payload; retry it. Close/shutdown unavailability does not prove nonexecution. |
+| `RESOURCE_EXHAUSTED` | A bound prevented progress. Retain any previously uncertain mutation identity. Investigate client concurrency, pending work, retained state and session capacity before retrying. |
+| `IDENTITY_CONFLICT`, `STALE_SEQUENCE`, `SEQUENCE_GAP` | Inspect the client identity journal. Do not invent a replacement sequence or assume that an earlier command was absent. |
+
+The shipped client's retry identity is process-local. Applications needing retry continuity across their own restart must durably preserve the outstanding command externally. Server-side receipts survive snapshots and member restarts; no session expiration or garbage collection is provided.
+
+## Failure matrix
+
+| Failure | Expected behavior | Operational response |
+| --- | --- | --- |
+| Startup cannot load TLS or bind its port | Construction/startup reports the original failure and attempts all owned cleanup; later cleanup errors are suppressed. | Resolve the certificate/port conflict, inspect any suppressed cleanup failure, then retry. |
+| One member stops or is partitioned | A timely majority can elect/commit. The isolated leader cannot acknowledge new quorum operations. | Restore connectivity or restart the member; confirm quorum operations, not only status. |
+| Reply is lost after commit | Client sees uncertainty; the repeated latest identity returns its committed result. | Retry the unchanged command. |
+| Snapshot reply takes several heartbeat periods | The same outstanding chunk is retried; delayed/duplicate replies remain correlated. | Allow transfer to finish; inspect storage/network errors if it cannot progress. |
+| Member crashes during a snapshot | Manifest still selects the old complete generation or the newly published complete generation. Partial transfer state is never active. | Restart against the retained directory. Preserve all artifacts on any validation failure. |
+| Incomplete final WAL header/body | Recovery truncates only the structurally incomplete tail. | Retain the recovery diagnosis; do not generalize this rule to complete corrupt records. |
+| Complete record CRC, manifest or snapshot mismatch | Startup refuses the ambiguous state. | Stop and preserve the directory. Rejoin from a healthy majority using a fresh member directory. |
+| Disk write/flush fails | The journal is poisoned; queued protocol work cannot resume after terminal failure. | Restore capacity/storage health, close the failed node and reopen/recover. No in-process retry on the failed writer. |
+| Shutdown overlaps persistence | Admission closes; queued work is abandoned, admitted writes finish and no late success is emitted. | Treat interrupted client outcomes as unknown and retry after restart. |
+| TLS peers connect without authenticating | Handshake/first authenticated frame must complete within three seconds; stalled channels release inbound capacity. | Inspect local resource pressure or credential mismatch; do not disable certificate verification. |
+| Shutdown deadline or process identity check fails | Cleanup reports failure instead of claiming the member stopped. | Inspect that exact owned process and its logs; never kill an unrelated PID or delete a live member's files. |
+
+## Rejoin one damaged member
+
+This example preserves the failed member and rejoins node 1 from the two healthy retained members. It requires a verified healthy majority; it is not a method for reconstructing data after losing the majority.
+
+```bash
+./scripts/portfolio.sh down quorumkv
+runtime="$PWD/.work/A03/runtime"
+# Preserve the entire failed member directory; choose an unused archive name.
+mv "$runtime/node-1" "$runtime/node-1.failed-$(date -u +%Y%m%dT%H%M%SZ)"
+./scripts/portfolio.sh up quorumkv
+```
+
+Keep `tls/` and the healthy node directories unchanged. A new node-1 directory starts empty and catches up through authenticated snapshot/append replication. Do not delete a corrupt record, copy a selected WAL suffix, or mark retained entries committed manually. If more than one member is damaged, stop and assess a coordinated backup rather than treating an arbitrary surviving suffix as authoritative.
+
+## Storage and diagnosis
+
+[Journal](../raft-storage/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Journal.java) holds one directory lock. Each transaction calls `force(true)`. Snapshot publication verifies/flushed temporary content, publishes a fresh WAL generation, flushes the directory, then atomically publishes and flushes the manifest. Old recovery artifacts retire only after publication is durable. WAL generations rotate after 8 MiB; records are capped at 64 MiB. Monitor free space before workloads and preserve complete generations when backing up.
+
+Status exposes node/role/term/commit/applied/snapshot positions, state digest, disk barrier state, pending requests and snapshot/flush counters. `commit` and `applied` should converge after recovery, but digests/status alone cannot establish current read authority. `FAIL_CLOSED` identifies a terminal protocol or persistence failure; diagnose the first message and corresponding member log before restarting.
+
+Back up a stopped member's complete directory or a coordinated stable generation. Copying a live WAL without synchronization is unsupported. The storage and wire versions remain 1, so this revision needs no data migration. New validation may refuse previously accepted malformed or internally inconsistent state; preserve it for diagnosis rather than editing it to pass.
+
+The workload accepts 1–100,000 operations and one to three runs, with a fresh output directory. Its launcher creates that directory automatically. Existing measurement metadata/results are never overwritten by a new direct invocation. Full isolated measurements remain separate from functional verification; see [performance](PERFORMANCE.md).

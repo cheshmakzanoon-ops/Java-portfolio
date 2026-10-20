@@ -125,7 +125,7 @@ public final class Simulator {
             mutate(
                 node,
                 new Command(
-                    "c" + node,
+                    "schedule-" + n,
                     1,
                     Kind.PUT,
                     new Key(new byte[] {(byte) node}),
@@ -142,6 +142,15 @@ public final class Simulator {
     reliable();
     run(5000);
     if (leader() < 0) throw new AssertionError("NO_PROGRESS_AFTER_HEAL " + trace());
+    Key recoveryKey = new Key(new byte[] {127});
+    long resumed =
+        mutate(leader(), new Command("recovery", 1, Kind.PUT, recoveryKey, new byte[] {42}, null));
+    run(1000);
+    if (!replies.containsKey(resumed) || !replies.get(resumed).code().equals("OK"))
+      throw new AssertionError("NO_COMMIT_AFTER_HEAL " + trace());
+    for (Raft node : nodes)
+      if (!Arrays.equals(new byte[] {42}, node.view().data().get(recoveryKey)))
+        throw new AssertionError("NO_CONVERGENCE_AFTER_HEAL " + trace());
   }
 
   public String trace() {

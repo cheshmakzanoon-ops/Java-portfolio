@@ -24,6 +24,17 @@ import javax.net.ssl.SSLParameters;
 /** Loopback-only TLS transport with bounded frames, channels, and outbound watermarks. */
 public final class TlsTransport implements AutoCloseable {
   public record Settings(Path directory, int basePort, Properties properties) {
+    public Settings {
+      Objects.requireNonNull(directory);
+      if (basePort < 1 || basePort > 65533) throw new IllegalArgumentException("THREE_PORT_RANGE");
+      properties = (Properties) properties.clone();
+    }
+
+    @Override
+    public Properties properties() {
+      return (Properties) properties.clone();
+    }
+
     public static Settings load(Path directory, int basePort) throws IOException {
       var p = new Properties();
       try (var in = Files.newInputStream(directory.resolve("auth.properties"))) {
@@ -48,8 +59,7 @@ public final class TlsTransport implements AutoCloseable {
   private final int id;
   private final Settings settings;
   private final SslContext serverTls, clientTls;
-  private final EventLoopGroup acceptors = new NioEventLoopGroup(1),
-      workers = new NioEventLoopGroup(2);
+  private final EventLoopGroup acceptors, workers;
   private final Map<Integer, Channel> peers = new ConcurrentHashMap<>();
   private final Set<Integer> connecting = ConcurrentHashMap.newKeySet();
   private final AtomicInteger open = new AtomicInteger();
@@ -57,6 +67,7 @@ public final class TlsTransport implements AutoCloseable {
   private Channel listener;
 
   public TlsTransport(int id, Settings settings, Receiver receiver) throws Exception {
+    if (id < 0 || id > 2) throw new IllegalArgumentException("MEMBER");
     this.id = id;
     this.settings = settings;
     this.receiver = receiver;
@@ -68,6 +79,8 @@ public final class TlsTransport implements AutoCloseable {
             .protocols("TLSv1.3")
             .build();
     clientTls = clientContext(settings);
+    acceptors = new NioEventLoopGroup(1);
+    workers = new NioEventLoopGroup(2);
   }
 
   public static SslContext clientContext(Settings settings) throws Exception {
@@ -102,22 +115,36 @@ public final class TlsTransport implements AutoCloseable {
             .childHandler(
                 new ChannelInitializer<SocketChannel>() {
                   protected void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast(serverTls.newHandler(ch.alloc()));
+                    SslHandler handshake = serverTls.newHandler(ch.alloc());
+                    handshake.setHandshakeTimeoutMillis(3000);
+                    ch.pipeline().addLast(handshake);
                     frames(ch.pipeline());
                     ch.pipeline()
                         .addLast(
                             new SimpleChannelInboundHandler<ByteBuf>() {
-                              private boolean counted;
+                              private boolean counted, authenticated;
+                              private ScheduledFuture<?> authenticationDeadline;
 
                               @Override
                               public void channelActive(ChannelHandlerContext ctx) {
                                 counted = true;
                                 if (open.incrementAndGet() > 64) ctx.close();
+                                else
+                                  authenticationDeadline =
+                                      ctx.executor()
+                                          .schedule(
+                                              () -> {
+                                                if (!authenticated) ctx.close();
+                                              },
+                                              3,
+                                              TimeUnit.SECONDS);
                               }
 
                               @Override
                               public void channelInactive(ChannelHandlerContext ctx) {
                                 if (counted) open.decrementAndGet();
+                                if (authenticationDeadline != null)
+                                  authenticationDeadline.cancel(false);
                               }
 
                               @Override
@@ -130,6 +157,9 @@ public final class TlsTransport implements AutoCloseable {
                                   ctx.close();
                                   return;
                                 }
+                                authenticated = true;
+                                if (authenticationDeadline != null)
+                                  authenticationDeadline.cancel(false);
                                 receiver.receive(
                                     e,
                                     result -> {

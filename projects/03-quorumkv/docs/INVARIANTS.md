@@ -1,21 +1,31 @@
-# Executable invariants
+# Protocol and recovery invariants
 
-| Invariant | Enforcement | Evidence |
-|---|---|---|
-| At most one leader per term | Persistent single vote; candidate log freshness; correlated vote replies | `Simulator.invariants`, recorded seeds, direct vote regression |
-| Committed prefixes agree | Append log matching; never truncate committed entries; current-term majority commit | Per-event simulator entry comparison; heartbeat/divergence regressions |
-| Application is monotonic and never beyond commit | Apply only after commit persistence acknowledgment; replay only persisted commit | Per-event simulator checks; seed27 named crash regression |
-| Equal committed commands produce equal results | Deterministic ordered state machine and replicated sessions | Simulator result comparison; jqwik commute/retry property |
-| Append acknowledgments imply stable entries | Persist effect gates successful replies | Direct persistence barrier regression; WAL crash tests |
-| Old-term replication alone does not advance commit | Explicit current-term predicate | `oldTermEntriesCannotCommitWithoutCurrentTermMarker` |
-| Empty heartbeats cannot remove suffixes | Truncation only at conflicting supplied entry | Named heartbeat regression |
-| Delayed rejection cannot regress established progress | Request lookup and monotonic match; next bounded by match+1 | Named delayed-rejection regression |
-| Isolated former leader cannot read locally | Marker gate + fresh majority + safe applied index | Partition simulation and actual process demo |
-| Pending reads cannot permanently exhaust capacity | Per-read deadline cleanup | Saturate/partition/heal regression |
-| Identity retries cannot mutate twice | Persistent seq/digest/result, snapshot sessions | Register tests/property and restart demo |
-| Complete corrupt records never silently disappear | CRC32C on entire record; final complete record treated as corruption | Interior/final corruption tests |
-| A torn unacknowledged tail is distinguishable | Only incomplete header/body tail truncates; complete CRC failure aborts | Tail truncation regression |
+These invariants describe the stable state exposed after a matching persistence acknowledgment. While persistence is pending, prospective term/log/snapshot state may exist inside the transition owner, but dependent messages, application and client results remain held.
 
-No finite test schedule proves universal safety. The checker separately evaluates invocation/response intervals against an independent register/CAS model, considers timed-out mutations potentially applied, and returns INCONCLUSIVE when its search budget is exhausted. INCONCLUSIVE is never counted as a correctness pass.
+| Invariant | Enforcement | Executable regression |
+| --- | --- | --- |
+| At most one leader per term | Persistent single vote, candidate log freshness and correlated vote replies | `RaftTest.voteWaitsForFlushAndRestrictsLog`; per-event simulator leader map |
+| Committed prefixes agree | Log matching, committed-truncation refusal and current-term majority commitment | `RaftTest.actualOldTermMajorityCannotCommitWithoutCurrentTermMarker`; simulator prefix/result comparisons |
+| Application never exceeds known commitment or decreases across restart | Apply only after commit persistence; replay only persisted commit | `RaftTest.commitApplicationSurvivesCrashOnlyAfterDiskAck`; seed-27 schedule |
+| A successful append response implies stable entries | Persist effect holds dependent response | Direct follower barrier checks and WAL fault tests |
+| Empty heartbeats preserve retained suffixes | Only a conflicting supplied entry can truncate | `RaftTest.heartbeatNeverTruncatesAndConflictingSuffixWaitsForDisk` |
+| Delayed replies cannot reverse established replication progress | Peer/term/correlation lookup and monotonic match position | `RaftTest.delayedRejectionCannotUndoSuccessfulProgress` |
+| An isolated leader cannot serve a register read from its local map | Current-term marker, fresh majority and safe applied index | Partition schedules and the actual TLS-process fault demo |
+| Slow/lost snapshot acknowledgments do not restart healthy progress | Preserve outstanding request identity; duplicate chunk acknowledgment | `SnapshotTransferTest.snapshotProgressSurvivesRepliesSlowerThanHeartbeatAndLostChunkAcknowledgments` |
+| Partial snapshot data never becomes active | Complete decoding, coordinate validation and persistence barrier | Chunked, corrupted, interrupted and conflicting transfer cases |
+| Equal committed commands produce equal register results | Deterministic integer/byte transitions and persistent receipts | Simulator application-result comparisons and generated register histories |
+| Retry identity cannot silently change on timeout, overload or restart | Latest sequence/digest/result; unknown outcomes retain the command | `MutationIdentityTest`, snapshot/restart deduplication and transport close tests |
+| Same-coordinate WAL entries retain their actual payload | Full semantic entry comparison when finding shared delta prefixes | `JournalTest.sameCoordinatesDoNotHideChangedUncommittedPayloadOnRestart` |
+| Granted votes and committed entries are immutable | Storage transition tripwires before writing | `JournalTest.committedCommandsAndVotesCannotBeRewrittenWithinTheirTerm` |
+| Failed persistence cannot be followed by another append behind uncertain bytes | Poisoned journal writer until close/recovery | `JournalTest.failedPersistencePoisonsTheWriterUntilItIsClosedAndRecovered` |
+| Fatal state stops already queued protocol work | Execution-time state check, not only admission check | `NodeExecutorTest` protocol-failure and disk-failure schedules |
+| Shutdown does not release storage beneath a writer, including after transport teardown fails | Close admission, stop protocol execution, finish disk work, release lock last; retain lock on timeout | `NodeExecutorTest.shutdownFinishesAdmittedDiskWriteAndAbandonsQueuedProtocolWork`; both `NodeMainLifecycleTest` schedules |
+| Request and unauthenticated connection bounds survive concurrency | Atomic client permits; TLS authentication deadline | `TransportLifecycleIT` concurrent admission/close and 64 stalled sockets |
 
-The extended old-term counterexample repairs a40-entry prior-term suffix, acknowledges exactly the first32 old-term entries on a second member (a genuine majority prefix), asserts commit remains0, then acknowledges current-term marker41 and asserts commit41. This separately exercises the current-term rule rather than relying only on malformed/stale-response rejection.
+For a stable log, `snapshot.index <= applied <= commit <= snapshot.index + log.size`; retained entries are contiguous and nondecreasing in term. During installation, the prospective snapshot can be ahead of active `applied`, but its data and dependent success remain unavailable until persistence completes. The simulator checks application monotonicity, election safety, committed-prefix agreement and equal application results after events.
+
+The extended simulator uses 1,000 deterministic seeds with 180 fault actions each. Mutations use distinct bounded client identities so the workload continues exercising state changes instead of degenerating into repeated identity conflicts. After healing, each seed must commit a fresh command and converge its value on all members; merely observing a leader is insufficient.
+
+The independent [history checker](../raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/HistoryChecker.java) models register/CAS operations using recorded invocation/response intervals. A timed-out mutation may be omitted or may take effect after its timeout; completed operations retain their real-time precedence. Search is bounded, histories over 62 calls are inconclusive, and exhausted search returns `INCONCLUSIVE`, never a pass. Named absent-versus-literal-`null` and stale-read counterexamples preserve distinctions in its memo state.
+
+No finite simulator, process test or bounded history search proves universal Raft correctness. There is no pre-vote, lease-read, dynamic-membership or Byzantine guarantee. Liveness additionally depends on a timely communicating majority and available storage capacity.

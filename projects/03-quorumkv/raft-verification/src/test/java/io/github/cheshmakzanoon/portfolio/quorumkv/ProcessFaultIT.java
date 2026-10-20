@@ -11,6 +11,18 @@ class ProcessFaultIT {
   @TempDir Path directory;
 
   @Test
+  void failedBindClosesTheNodeAndReleasesItsStorageLock() throws Exception {
+    try (ServerSocket occupied = new ServerSocket(0, 16, InetAddress.getLoopbackAddress());
+        ProcessCluster identity = new ProcessCluster(directory, occupied.getLocalPort());
+        NodeMain node = new NodeMain(0, directory.resolve("data"), identity.settings())) {
+      assertThrows(Exception.class, node::start);
+      try (Journal recovered = new Journal(directory.resolve("data"))) {
+        assertEquals(0, recovered.recovered().commit());
+      }
+    }
+  }
+
+  @Test
   void actualTlsThreeProcessPartitionSnapshotAndCrashRecovery() throws Exception {
     int port;
     try (ServerSocket socket = new ServerSocket(0, 16, InetAddress.getLoopbackAddress())) {
@@ -21,6 +33,27 @@ class ProcessFaultIT {
     String result = Files.readString(directory.resolve("demo-result.json"));
     assertTrue(result.contains("\"history\":\"PASS\""));
     assertTrue(result.contains("\"dedupRestart\":\"OK\""));
+  }
+
+  @Test
+  void invalidPartitionTargetsDoNotChangeLiveQuorumProgress() throws Exception {
+    int port;
+    try (ServerSocket socket = new ServerSocket(0, 16, InetAddress.getLoopbackAddress())) {
+      port = Math.min(socket.getLocalPort(), 65532);
+    }
+    try (ProcessCluster cluster = new ProcessCluster(directory, port)) {
+      cluster.start();
+      try (KvClient client = new KvClient(cluster.settings(), "admin-bounds")) {
+        ClusterTool.leader(client, -1);
+        for (int peer : new int[] {-1, 0, 3, Integer.MAX_VALUE})
+          assertEquals("INVALID_ADMIN", client.admin(0, "partition", peer).code());
+        assertEquals(
+            "OK",
+            client
+                .mutate(Model.Kind.PUT, new Model.Key(new byte[] {1}), new byte[] {42}, null)
+                .code());
+      }
+    }
   }
 
   @Test

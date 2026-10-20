@@ -64,6 +64,19 @@ class BinaryTest {
   }
 
   @Test
+  void roleSettingsDoNotChangeWhenCallerMutatesItsProperties() {
+    Properties properties = new Properties();
+    properties.setProperty("peer.0", "initial");
+    var settings = new TlsTransport.Settings(Path.of("unused"), 18300, properties);
+    properties.setProperty("peer.0", "changed");
+    settings.properties().setProperty("peer.0", "exposed");
+    assertEquals("initial", settings.token(0));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new TlsTransport.Settings(Path.of("unused"), 65534, properties));
+  }
+
+  @Test
   void memberAndClientIdentitiesCannotCrossRoles() {
     Properties p = new Properties();
     p.setProperty("peer.0", "a");

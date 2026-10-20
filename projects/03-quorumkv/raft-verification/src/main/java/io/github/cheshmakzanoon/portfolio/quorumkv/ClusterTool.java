@@ -127,12 +127,12 @@ public final class ClusterTool {
             client.admin(old, "partition", n);
             client.admin(n, "partition", old);
           }
-        long unknownStart = System.nanoTime();
         Result isolatedRead = client.direct(old, new Get(key), 1600);
         require(!isolatedRead.code().equals("OK"), "isolated leader served read");
         Command unknown =
             new Command(
                 "unknown", 1, Kind.PUT, key, "unknown".getBytes(StandardCharsets.UTF_8), null);
+        long unknownStart = System.nanoTime();
         Result timeout = client.direct(old, new Mutation(unknown), 1600);
         long unknownEnd = System.nanoTime();
         require(!timeout.code().equals("OK"), "isolated leader acknowledged mutation");
@@ -150,20 +150,14 @@ public final class ClusterTool {
         long recoveryMs = (System.nanoTime() - failureStart) / 1_000_000;
         for (int n = 0; n < 3; n++) client.admin(n, "heal", -1);
         converge(client);
+        long getStart = System.nanoTime();
         Result value = client.get(key);
+        long getEnd = System.nanoTime();
         require(
             value.code().equals("OK")
                 && Arrays.equals(value.value(), "two".getBytes(StandardCharsets.UTF_8)),
             "healed value");
-        history.add(
-            new Call(
-                System.nanoTime() - 1,
-                System.nanoTime(),
-                Operation.GET,
-                null,
-                null,
-                "two",
-                value.code()));
+        history.add(new Call(getStart, getEnd, Operation.GET, null, null, "two", value.code()));
         Verdict verdict = new HistoryChecker(1_000_000).check(history, null);
         require(verdict == Verdict.PASS, "history " + verdict);
         long snapStart = System.nanoTime();
@@ -232,13 +226,19 @@ public final class ClusterTool {
     switch (args[0]) {
       case "up" -> {
         ProcessCluster cluster = new ProcessCluster(directory, port);
-        cluster.start();
-        try (KvClient client = new KvClient(cluster.settings(), "health")) {
-          System.out.println("leader=" + leader(client, -1));
+        boolean ready = false;
+        try {
+          cluster.start();
+          try (KvClient client = new KvClient(cluster.settings(), "health")) {
+            System.out.println("leader=" + leader(client, -1));
+          }
+          ready = true;
+        } finally {
+          if (!ready) cluster.close();
         }
       }
       case "down" -> {
-        try (ProcessCluster cluster = new ProcessCluster(directory, port)) {}
+        try (ProcessCluster cluster = ProcessCluster.controller(directory, port)) {}
       }
       case "demo" -> demo(directory, port);
       case "benchmark" ->

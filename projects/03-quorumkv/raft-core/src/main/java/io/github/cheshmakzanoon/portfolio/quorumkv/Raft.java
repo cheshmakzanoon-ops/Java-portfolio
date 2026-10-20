@@ -82,8 +82,7 @@ public final class Raft {
   private List<Effect> held = List.of();
   private ArrayList<Effect> out;
   private boolean dirty;
-  private ByteArrayOutputStream incoming;
-  private long incomingIndex, incomingTerm;
+  private final SnapshotAssembler incoming = new SnapshotAssembler();
   private byte[] outgoingSnapshot;
   private final Map<Integer, Integer> snapshotOffsets = new HashMap<>();
 
@@ -261,7 +260,7 @@ public final class Raft {
     sent.values().forEach(Map::clear);
     snapshotOffsets.clear();
     snapshotRequests.clear();
-    incoming = null;
+    incoming.clear();
     outgoingSnapshot = null;
   }
 
@@ -499,6 +498,11 @@ public final class Raft {
     int offset = snapshotOffsets.getOrDefault(peer, 0);
     if (offset >= outgoingSnapshot.length) offset = 0;
     int end = Math.min(outgoingSnapshot.length, offset + 16384);
+    SnapshotRequest previous = snapshotRequests.get(peer);
+    if (previous != null && previous.index() == snapshot.index() && previous.offset() == offset) {
+      out.add(new Send(peer, previous));
+      return;
+    }
     SnapshotRequest message =
         new SnapshotRequest(
             term,
@@ -519,36 +523,20 @@ public final class Raft {
     if (role != Role.FOLLOWER) stepDown(term);
     leader = peer;
     resetDeadline();
-    if (r.total() < 1
-        || r.total() > MAX_SNAPSHOT
-        || r.offset() < 0
-        || r.offset() + r.chunk().length > r.total()) return;
     if (r.index() <= commit) {
       out.add(new Send(peer, new SnapshotResponse(term, r.request(), r.index(), r.total(), true)));
       return;
     }
-    if (r.offset() == 0) {
-      incoming = new ByteArrayOutputStream();
-      incomingIndex = r.index();
-      incomingTerm = r.snapshotTerm();
-    }
-    if (incoming == null
-        || incomingIndex != r.index()
-        || incomingTerm != r.snapshotTerm()
-        || incoming.size() != r.offset()) {
-      out.add(new Send(peer, new SnapshotResponse(term, r.request(), r.index(), 0, false)));
-      return;
-    }
-    incoming.writeBytes(r.chunk());
-    if (incoming.size() < r.total()) {
-      out.add(
-          new Send(
-              peer, new SnapshotResponse(term, r.request(), r.index(), incoming.size(), false)));
-      return;
-    }
     try {
-      Snapshot installed = Codec.snapshot(incoming.toByteArray());
-      if (installed.index() != r.index() || installed.term() != r.snapshotTerm()) return;
+      SnapshotAssembler.Progress progress = incoming.accept(r);
+      Snapshot installed = progress.completed();
+      if (installed == null) {
+        out.add(
+            new Send(
+                peer,
+                new SnapshotResponse(term, r.request(), r.index(), progress.nextOffset(), false)));
+        return;
+      }
       List<Entry> suffix =
           termAt(r.index()) == r.snapshotTerm()
               ? log.stream().filter(e -> e.index() > r.index()).toList()
@@ -558,10 +546,10 @@ public final class Raft {
       log.addAll(suffix);
       commit = installed.index();
       dirty = true;
-      incoming = null;
+      incoming.clear();
       out.add(new Send(peer, new SnapshotResponse(term, r.request(), r.index(), r.total(), true)));
     } catch (IOException | IllegalArgumentException e) {
-      incoming = null;
+      incoming.clear();
     }
   }
 
@@ -577,16 +565,19 @@ public final class Raft {
       match.put(peer, Math.max(match.get(peer), r.index()));
       next.put(peer, Math.max(next.get(peer), r.index() + 1));
       snapshotOffsets.remove(peer);
+      snapshotRequests.remove(peer);
       replicate(peer, 0);
     } else {
       if (r.nextOffset() == 0 && request.offset() > 0) {
         snapshotOffsets.put(peer, 0);
+        snapshotRequests.remove(peer);
         sendSnapshot(peer);
         return;
       }
       if (r.nextOffset() != request.offset() + request.chunk().length
           || r.nextOffset() >= request.total()) return;
       snapshotOffsets.put(peer, r.nextOffset());
+      snapshotRequests.remove(peer);
       sendSnapshot(peer);
     }
   }

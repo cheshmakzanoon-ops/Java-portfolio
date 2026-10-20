@@ -1,27 +1,82 @@
-# Architecture
+# Architecture and consistency contract
+
+QuorumKV is a fixed-membership, three-node Raft register store. One member owns each protocol state machine; network and disk adapters exchange typed events and effects with it. Success requires a communicating majority and storage that honors the flush/rename contract. A local leader flag alone grants no read authority.
+
+## Source boundaries
+
+| Module | Implementation and responsibility |
+| --- | --- |
+| `raft-core` | [Raft](../raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Raft.java) owns elections, log matching, commitment and read barriers. [SnapshotAssembler](../raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/SnapshotAssembler.java) owns one bounded incoming transfer. [Registers](../raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Registers.java) applies deterministic register/CAS transitions and retry receipts. [Model](../raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Model.java) defines immutable values and versioned codecs. [Simulator](../raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Simulator.java) separates virtual network, volatile state and stable writes. |
+| `raft-storage` | [Journal](../raft-storage/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Journal.java) owns the directory lock, append-only transactions, generation publication and fail-closed recovery. |
+| `raft-transport` | [Binary](../raft-transport/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Binary.java) defines bounded wire framing. [TlsTransport](../raft-transport/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/TlsTransport.java) owns TLS channels, role authentication and connection admission. |
+| `kv-server` | [NodeMain](../kv-server/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeMain.java) adapts protocol effects and local administration. [NodeExecutor](../kv-server/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeExecutor.java) owns the protocol/disk execution lifecycle and terminal failure barrier. |
+| `kv-client` | [KvClient](../kv-client/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/KvClient.java) bounds concurrent requests, validates correlated replies and closes channels. [MutationIdentity](../kv-client/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/MutationIdentity.java) serializes a client's uncertain mutation identity. |
+| `raft-verification` | [HistoryChecker](../raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/HistoryChecker.java) independently searches interval-consistent register histories. [ClusterTool](../raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/ClusterTool.java) records actual request intervals and asserts fault/recovery behavior. [ProcessCluster](../raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/ProcessCluster.java) owns child JVM identities and cleanup. [LocalTlsIdentity](../raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/LocalTlsIdentity.java) stages disposable credentials and bounds helper subprocesses. [Workload](../raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Workload.java) is the separate closed-loop system driver. |
+
+## Election and persistence ownership
 
 ```mermaid
-flowchart LR
-  C[kv-client: ordered identity retries] --> T[raft-transport: TLS + bounded Netty codec]
-  T --> S[kv-server: one event queue]
-  S --> R[raft-core: typed transitions + effects]
-  R --> D[raft-storage: persistence queue + FileChannel.force]
-  D -->|Persisted token| S
-  V[raft-verification: independent interval checker + real-process driver] --> C
-  SIM[core simulator: virtual network and disk] --> R
+stateDiagram-v2
+  [*] --> Follower: recover persisted term/vote/commit
+  Follower --> Candidate: election timeout; persist term + self-vote
+  Candidate --> Candidate: timeout; start a higher persisted term
+  Candidate --> Leader: matching current-term majority votes
+  Leader --> Follower: higher-term RPC
+  Candidate --> Follower: higher term or valid current-term leader
+  Follower --> Follower: persist granted vote before replying
 ```
 
-Each member owns term, vote, log, progress, pending reads and the committed state machine on one thread. Netty callbacks enqueue events. A dedicated disk worker persists one transition at a time. Incoming events wait in a bounded FIFO during a persistence barrier; the matching acknowledgment drains the FIFO until the next barrier. Rejected client work receives resource exhaustion. Dropped overloaded peer traffic is retried by Raft and cannot manufacture success.
+The implementation uses randomized election deadlines of 250–499 ms and 50-ms heartbeat scheduling. These are liveness parameters, not a safety lease. It has no pre-vote or check-quorum optimization: an isolated member may raise its term, and a healed higher-term member can force a new election. An isolated leader can remain locally labelled leader while its reads and writes fail to obtain quorum confirmation.
 
-A candidate persists its increased term and self-vote before sending election requests. A follower persists a granted vote before replying. Leaders persist entries before replication. Followers flush appended entries before a successful AppendResponse. A leader advances commit only when a majority match an entry from its own term. Commit is also persisted here, allowing restart to replay exactly known committed entries; uncommitted retained entries are not applied. This extra flush is a deliberate latency cost.
+`Raft.accept` emits a single `Persist` effect for dirty durable state. Dependent sends, replies and application are held until the matching `Persisted` token. Up to 256 incoming events can wait behind that barrier; excess client work gets resource exhaustion, while dropped peer work behaves as network loss. Acknowledgments from another token cannot release the barrier.
 
-A leader appends a current-term marker. Reads wait for its commitment, capture a safe committed index, and obtain a fresh correlated majority AppendEntries exchange in the same term. They respond only after the safe index is applied. Read correlation expiry releases bounded pending state without granting a read. Local role flags, last-contact time and observation status cannot establish linearizability. The implementation uses no clock lease.
+## Mutation acknowledgment
 
-A register mutation includes client identity, contiguous sequence, operation and SHA-256 payload digest. The replicated state records its latest accepted sequence, digest and result. Same-sequence retries return that result; different payloads conflict; older requests are stale; gaps reject. Failed CAS records the observed committed value without changing the register. Mutation timeouts preserve the supplied client's outstanding command until it is retried. Administrative status contains no linearizable key-value API.
+```mermaid
+sequenceDiagram
+  participant C as KvClient
+  participant L as Leader Raft
+  participant LD as Leader Journal
+  participant F as Follower Raft
+  participant FD as Follower Journal
+  C->>L: mutation(client, sequence, payload)
+  L->>LD: Persist appended entry
+  LD-->>L: force completed / Persisted
+  L->>F: correlated AppendEntries
+  F->>FD: Persist entries
+  FD-->>F: force completed / Persisted
+  F-->>L: successful AppendResponse
+  Note over L: majority match + current-term entry
+  L->>LD: Persist new commit index
+  LD-->>L: force completed / Persisted
+  L->>L: apply register transition and receipt
+  L-->>C: OK or CAS_MISMATCH
+```
 
-The network uses fixed IDs 0/1/2 and cluster `quorumkv-local-v1`. Port 18300+ID serves authenticated peer and client frames. The administrative role is separately authenticated and every listener binds loopback. See the wire grammar for bounds and trust details.
+A successful mutation has a stable majority prefix and a locally persisted commit position before application/reply. A failed CAS is a committed result carrying the observed value. Repeated latest sequence/payload returns the stored result; a changed payload conflicts, older sequences are stale, and gaps reject. Receipt state is included in snapshots. Capacity rejections do not advance the client's sequence.
 
-Protocol reference: [Raft paper, Figure 2 and sections 5/8](https://raft.github.io/raft.pdf). Persistence ordering reference: [etcd Raft integration documentation](https://github.com/etcd-io/raft). Neither implementation is imported.
+Timeout, connection loss and shutdown unavailability are uncertain outcomes. They do not prove that an admitted command was not committed. The client retains its outstanding identity until `OK` or `CAS_MISMATCH`; it never substitutes a new payload after uncertainty. Client-side retry state is process-local, so callers requiring restartable outstanding operations must preserve the exact command externally.
 
+## Linearizable reads
 
-Snapshot recovery validates both checksums and state invariants before activation. In particular, client receipts cannot be silently merged: duplicate IDs, invalid sequences, malformed digests and uncommitted routing results are refused. The same checks apply to values constructed in memory and to decoded snapshots, keeping persistence and network snapshot transfer on one validation path.
+A new leader first commits its current-term marker. Each read then captures a safe commit position and sends fresh correlated append exchanges to both peers. A matching current-term majority response establishes authority; the reply waits until the captured position is applied. The state machine may have advanced further by reply time, which remains valid within the read's interval.
+
+Responses are matched by term, peer and request identity. A delayed append rejection cannot undo acknowledged progress. Snapshot completion itself does not grant a read acknowledgment: a follower must rejoin append/read-barrier exchanges. Pending reads expire with `UNAVAILABLE`, releasing their bounded state. Administrative status and state digests are observations, not linearizable register reads.
+
+## Snapshot transfer and storage
+
+A leader retains the exact outstanding chunk correlation across heartbeat retransmissions. Receiving a response slower than one heartbeat therefore still advances the transfer. The follower tracks one declared snapshot identity/length in a bounded buffer. A repeated last chunk is checked byte-for-byte and acknowledged without appending it twice; a missing prefix requests offset zero. The complete payload is decoded and checked before becoming a pending durable snapshot. Active register state changes only after its persistence acknowledgment.
+
+Compaction replaces only applied state. It resets outgoing transfer identities so stale responses for an earlier snapshot cannot advance its successor. A follower already at or beyond the requested snapshot can acknowledge completion; retained suffix entries survive only when the last-included index/term matches.
+
+The journal preserves version-1 wire and storage formats. WAL delta sharing compares complete semantic entries, including command bytes. It refuses a changed committed prefix, a changed granted vote within one term, backward commit/term/snapshot movement, and further writes after failed persistence. Recovery validates the selected manifest, snapshot and contiguous WAL before replaying only the persisted commit position. See [storage grammar](../contracts/storage.md).
+
+## Resource and shutdown ownership
+
+`NodeExecutor` checks its terminal state both when admitting work and immediately before executing it. A failed protocol transition or disk write therefore cannot be followed by queued work on partially changed state. The first failure is reported once; the node requires diagnosis and restart.
+
+Shutdown closes admission before transport teardown. Queued protocol actions are abandoned, admitted disk writes finish, and late disk completions cannot restart protocol work. The protocol executor stops before disk admission closes; the journal lock is released only after its writer terminates. Transport cleanup failure does not skip that termination barrier. Cleanup preserves the first failure and attaches later errors as suppressed exceptions; a writer timeout retains the journal lock for a safe cleanup retry. Shutdown deadlines are enforced rather than treated as successful cleanup.
+
+The client uses atomic permits for its 256-request cap and a separate lifecycle lock from mutation sequencing. Close prevents channel publication, completes outstanding calls as unavailable and shuts its owned event loop down. TLS connections have a three-second handshake/first-authenticated-frame deadline, so unauthenticated local sockets cannot retain all 64 inbound slots indefinitely. Authenticated identities remain within the documented trusted local/non-Byzantine boundary.
+
+Protocol reference: [Raft paper, Figure 2 and sections 5/8](https://raft.github.io/raft.pdf). Persistence ordering reference: [etcd integration documentation](https://github.com/etcd-io/raft). Neither implementation is imported.

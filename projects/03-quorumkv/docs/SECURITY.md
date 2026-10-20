@@ -14,3 +14,10 @@ Bounds limit connections, state-machine events, pending commands/reads, outbound
 Checksums detect accidental corruption; they do not authenticate local storage. Recovery additionally validates the structure and meaning of a checksum-valid snapshot. Snapshot index/term coordinates must be nonnegative and agree on the empty-state boundary. The persisted vote must identify a fixed member or the unset sentinel, and the current term must cover the snapshot term.
 
 Retry receipts are part of the consistency boundary. Each client ID must satisfy the same limits as a live mutation; duplicate IDs are rejected rather than overwritten. A receipt requires a positive sequence, an exact 32-byte SHA-256 digest and a committed `OK` or `CAS_MISMATCH` result. Malformed snapshots and WAL state fail with an `IOException` before becoming active. Recovery never repairs an ambiguous client history by dropping a receipt. Network snapshot installation also rejects a last-included term above the current RPC term before changing active state; a malformed transfer cannot force the persistence layer to activate an impossible term history.
+
+
+## Admission and lifecycle
+
+The three-second TLS handshake/first-authenticated-frame deadline releases silent unauthenticated sockets. It is not an authorization lease or protection against an authenticated trusted identity intentionally consuming its bounded allocation. Client admission uses atomic permits; request correlation also binds the expected member and destination role. Closing the client prevents new channel publication and completes outstanding calls as unavailable.
+
+A terminal protocol/disk failure closes execution as well as admission: already queued work cannot resume on partial state. The journal remains owned until its writer terminates. TLS initialization failure releases a newly acquired storage lock, and partial disposable identity creation can be retried without replacing existing role credentials. Benchmark metadata exports only heap/processor flags, excluding arbitrary application properties.

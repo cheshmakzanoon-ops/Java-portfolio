@@ -25,6 +25,101 @@ class JournalTest {
   }
 
   @Test
+  void sameCoordinatesDoNotHideChangedUncommittedPayloadOnRestart() throws Exception {
+    Command first =
+        new Command("pending", 1, Kind.PUT, new Key(new byte[] {9}), new byte[] {1}, null);
+    Command changed =
+        new Command("pending", 1, Kind.PUT, new Key(new byte[] {9}), new byte[] {2}, null);
+    try (Journal journal = new Journal(temp)) {
+      journal.persist(new Durable(1, -1, 0, Snapshot.empty(), List.of(new Entry(1, 1, first))));
+      journal.persist(new Durable(1, -1, 0, Snapshot.empty(), List.of(new Entry(1, 1, changed))));
+    }
+    try (Journal journal = new Journal(temp)) {
+      assertEquals(changed, journal.recovered().log().getFirst().command());
+      assertArrayEquals(new byte[] {2}, journal.recovered().log().getFirst().command().value());
+    }
+  }
+
+  @Test
+  void committedCommandsAndVotesCannotBeRewrittenWithinTheirTerm() throws Exception {
+    try (Journal journal = new Journal(temp)) {
+      journal.persist(written());
+      long length = Files.size(temp.resolve("wal-0"));
+      assertThrows(
+          IOException.class,
+          () -> journal.persist(new Durable(2, 2, 1, Snapshot.empty(), written().log())));
+      Command altered =
+          new Command("c", 1, Kind.PUT, new Key(new byte[] {1}), new byte[] {99}, null);
+      assertThrows(
+          IOException.class,
+          () ->
+              journal.persist(
+                  new Durable(
+                      2,
+                      1,
+                      1,
+                      Snapshot.empty(),
+                      List.of(new Entry(1, 1, altered), new Entry(2, 2, null)))));
+      assertEquals(length, Files.size(temp.resolve("wal-0")));
+    }
+    try (Journal journal = new Journal(temp)) {
+      assertEquals(1, journal.recovered().vote());
+      assertArrayEquals(new byte[] {2}, journal.recovered().log().getFirst().command().value());
+    }
+  }
+
+  @Test
+  void unchangedSnapshotCoordinateCannotAcquireDifferentContents() throws Exception {
+    try (Journal journal = new Journal(temp)) {
+      var data = new TreeMap<Key, byte[]>();
+      data.put(new Key(new byte[] {1}), new byte[] {99});
+      Snapshot changed = new Snapshot(0, 0, CLUSTER, data, Map.of());
+      assertThrows(
+          IOException.class, () -> journal.persist(new Durable(0, -1, 0, changed, List.of())));
+      assertTrue(journal.recovered().snapshot().data().isEmpty());
+      journal.persist(Durable.empty());
+    }
+    try (Journal journal = new Journal(temp)) {
+      assertTrue(journal.recovered().snapshot().data().isEmpty());
+    }
+  }
+
+  @Test
+  void failedPersistencePoisonsTheWriterUntilItIsClosedAndRecovered() throws Exception {
+    try (Journal journal = new Journal(temp)) {
+      journal.persist(written());
+    }
+    java.util.concurrent.atomic.AtomicBoolean once =
+        new java.util.concurrent.atomic.AtomicBoolean();
+    try (Journal journal =
+        new Journal(
+            temp,
+            boundary -> {
+              if (boundary == Journal.Boundary.WAL_WRITE && once.compareAndSet(false, true))
+                throw new IOException("injected write failure");
+            })) {
+      Durable replacement =
+          new Durable(
+              3,
+              2,
+              1,
+              Snapshot.empty(),
+              List.of(written().log().getFirst(), new Entry(2, 3, null)));
+      assertThrows(IOException.class, () -> journal.persist(replacement));
+      long failedLength = Files.size(temp.resolve("wal-0"));
+      assertThrows(IOException.class, () -> journal.persist(replacement));
+      assertEquals(
+          failedLength,
+          Files.size(temp.resolve("wal-0")),
+          "a failed writer cannot append behind an uncertain tail");
+    }
+    try (Journal journal = new Journal(temp)) {
+      assertEquals(1, journal.recovered().commit());
+      assertArrayEquals(new byte[] {2}, journal.recovered().log().getFirst().command().value());
+    }
+  }
+
+  @Test
   void restartRestoresOnlyPersistedCommitAndDirectoryLock() throws Exception {
     try (Journal j = new Journal(temp)) {
       j.persist(written());

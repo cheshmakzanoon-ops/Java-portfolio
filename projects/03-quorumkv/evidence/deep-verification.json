@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "completed_at_utc": "2026-10-20T08:34:44Z",
+  "workflow": "extended simulation, unit/property/storage/lifecycle tests, real TLS/JVM integration and strict mutation certification",
+  "command": "source scripts/cloud-env.sh && ./mvnw -f projects/03-quorumkv/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A03/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pextended,integration,mutation verify",
+  "exit_code": 0,
+  "toolchain": {
+    "java": "Temurin 25.0.4.1+1",
+    "maven": "3.10.0"
+  },
+  "source_fingerprint": "ed8c8a488d10fb7df0e1438b90861e8aa06ed50248fcb0b05a2fef708505df93",
+  "shared_parent_pom_sha256": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+  "validation_log_sha256": "b0de35498333db49759b3789eb00ee88bbbe55e55b54217e69bfbea00d5acb7b",
+  "simulation": {
+    "seeds": 1000,
+    "fault_actions_per_seed": 180,
+    "post_heal_requirement": "fresh command committed and its value converged on all three members"
+  },
+  "test_gate": {
+    "counts": {
+      "tests": 76,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": [
+      {
+        "module": "raft-core",
+        "counts": {
+          "surefire": {
+            "tests": 31,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "raft-storage",
+        "counts": {
+          "surefire": {
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "raft-transport",
+        "counts": {
+          "surefire": {
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "kv-server",
+        "counts": {
+          "surefire": {
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "kv-client",
+        "counts": {
+          "surefire": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "raft-verification",
+        "counts": {
+          "surefire": {
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ],
+    "failures": []
+  },
+  "mutation_gate": {
+    "modules": [
+      {
+        "module": "raft-core",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 298,
+          "SURVIVED": 79,
+          "NO_COVERAGE": 8,
+          "TIMED_OUT": 3
+        },
+        "killedPercent": 76.80412371134021,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "kv-server",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 27,
+          "TIMED_OUT": 2,
+          "SURVIVED": 3,
+          "NO_COVERAGE": 1
+        },
+        "killedPercent": 81.81818181818181,
+        "requiredKilledPercent": 70
+      }
+    ],
+    "outcomes": {
+      "KILLED": 325,
+      "SURVIVED": 82,
+      "NO_COVERAGE": 9,
+      "TIMED_OUT": 5
+    },
+    "failures": []
+  },
+  "suites": [
+    {
+      "module": "kv-client",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.MutationIdentityTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "b4cb2960bf5f554afc647742575e3a2688baf2acf6cf86ca34bde94443fe15dc"
+    },
+    {
+      "module": "kv-server",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.NodeExecutorTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "1baab797e54f76a776c89904fbdd29a78cda7623ccd14d178e7330f92b28b069"
+    },
+    {
+      "module": "kv-server",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.NodeMainLifecycleTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "0527fb5dff4b7dc5f5739529a127dd6520322bdaf6bd2f6885f0ee0de04ca441"
+    },
+    {
+      "module": "raft-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.CodecTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "3166ecb088d7a9902df9f6e22c026830e58f4b3b813d519c3bff07bdd46a09de"
+    },
+    {
+      "module": "raft-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.RaftTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "0b6af143e29c3634dc06a0fdc964b72bc0b131df853054a3e2d97b7a5250b8a0"
+    },
+    {
+      "module": "raft-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.RegistersPropertyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "40c8005e7d2f647bb28a1efffe968f236d0864001147d724bc17df98c8539110"
+    },
+    {
+      "module": "raft-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "2ac3a89a5c480b083e92ebb1c8b64d1b1a41864c3b730087e89f3bc6a30b3dfc"
+    },
+    {
+      "module": "raft-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.SnapshotAssemblerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "e6cabeec21092cc942f1e1f0cb503e00b55bc9dc5fd24184bfb0f001c09b3ad4"
+    },
+    {
+      "module": "raft-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.SnapshotTransferTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "a21168e092d00defc57ac53d37817cb55d2de8e3319cadc8aa514d1b46770b22"
+    },
+    {
+      "module": "raft-storage",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.JournalTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "1e20864675b41ea3b03f234ca5b5eeb6e8c33fb97360d47a3fffff43f14be6ee"
+    },
+    {
+      "module": "raft-transport",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.BinaryTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "635ecf590c530f39fa841394a60a4cdbe0b58fc92908ad81743df5b102ca4577"
+    },
+    {
+      "module": "raft-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.ProcessFaultIT",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "63b3f798b3e48ba172a7bfae60de66fc7cf256df3ff10383656a80a5fe5cf801"
+    },
+    {
+      "module": "raft-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.TransportLifecycleIT",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "25a248139fcc7fbc550742d46b9c31078233290abcc311049f4f54eb00eb6f2a"
+    },
+    {
+      "module": "raft-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.BoundaryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "3dfc8052ecefdc4886c80e51b5f1955944167acc4d731701d83ce1631cbac7aa"
+    },
+    {
+      "module": "raft-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.HistoryCheckerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "0fc0794744101515691d774c714dffea830999fdbebc628c67243e0d648ed7ec"
+    },
+    {
+      "module": "raft-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.quorumkv.LocalTlsIdentityTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report_sha256": "126a8ab3774ef9ebedc41a6cc8a64b880f0668b821f9011f91e64b3dee56ca19"
+    }
+  ],
+  "mutation_reports": [
+    {
+      "module": "kv-server",
+      "report_sha256": "71d7af92677b15cc1ed86c108ae1762636ac8c30b23039a6cd768db8533ac722",
+      "outcomes": {
+        "KILLED": 27,
+        "TIMED_OUT": 2,
+        "SURVIVED": 3,
+        "NO_COVERAGE": 1
+      }
+    },
+    {
+      "module": "raft-core",
+      "report_sha256": "b6c573a4084a847c7ef613e978614151e904cfd3cee771df83df9b3b1a5c9db5",
+      "outcomes": {
+        "KILLED": 298,
+        "SURVIVED": 79,
+        "NO_COVERAGE": 8,
+        "TIMED_OUT": 3
+      }
+    }
+  ],
+  "reviewed_production_sources": [
+    "kv-client/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/KvClient.java",
+    "kv-client/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/MutationIdentity.java",
+    "kv-server/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeExecutor.java",
+    "kv-server/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeMain.java",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Model.java",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Raft.java",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Registers.java",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Simulator.java",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/SnapshotAssembler.java",
+    "raft-storage/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Journal.java",
+    "raft-transport/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Binary.java",
+    "raft-transport/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/TlsTransport.java",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/ClusterTool.java",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/HistoryChecker.java",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/LocalTlsIdentity.java",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/ProcessCluster.java",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Workload.java"
+  ],
+  "source_and_build_sha256": {
+    "kv-client/pom.xml": "76f8096c85f56b3830f2286d6c2541f569f8ead3ff375a56a26ff1912c9c9b52",
+    "kv-client/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/KvClient.java": "c288ae520999dc354ae69133a666ebd8c80655866ebfe7ef94dd24fd775697f0",
+    "kv-client/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/MutationIdentity.java": "4af9e1746e85f20a026afe07a5ce6270d9a2978d4e888381c003e875e671c215",
+    "kv-client/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/MutationIdentityTest.java": "718006dfb9c3df5df8f4f8f8bb1090ff0efce08e17ecc56c58c418b3dd34c690",
+    "kv-server/pom.xml": "b38dc6b71eb75c1eb64d46fdb9a6e1a51917e14f247c331fb20b1c2df12bc79c",
+    "kv-server/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeExecutor.java": "0ec5bedb282b510378b829c9892a22325ca3463bb67a129d2b8f3d81557b7ad5",
+    "kv-server/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeMain.java": "9558fc8c7b060e055c348ab589dfbe01a5d701c7c1917b189f26466afe6356f1",
+    "kv-server/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeExecutorTest.java": "854d94b4014c8b5d0c2e3b9ffef74c6afb26e237ced51c96bfe253d161b4b72f",
+    "kv-server/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/NodeMainLifecycleTest.java": "45b9b0141beff71b590473eb14405df963f1458f8d6697f97b2b631d61f3d1b0",
+    "pom.xml": "efe1cdd9dd1ebd2dd9f9e89fab8adc1a49d3f82423afb69f2fdf14e7627a7e97",
+    "raft-core/pom.xml": "084c37ef8e17034d323126d6d757ee950b491ca376964241279076903aaab521",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Model.java": "1bbfee42f17a05b38ddf5b83fa7e3d04c0ddb3f7d6e34def148e0071e07fffff",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Raft.java": "b92fbdea5cd1f6258a1aa010614166af065758a588d88a4222898898d9eb934d",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Registers.java": "caf0f905d927676b357f970cfaf16495428c1f72d8fe66c284088de9d46011bd",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Simulator.java": "6e261a1ed760bb3003f232d364a694b946ac48a67461758f005af41529aaca89",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/SnapshotAssembler.java": "64d40fbcbcae2ef6969fbc5273c62db8da4048ff6c9d31df03da921f1fa37d17",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/CodecTest.java": "a218e237c274a07fa384e9e8236c0a3aa472c5782e0e99f82fdea9f72c054910",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/RaftTest.java": "34ef263c6b98b05e27ada76791e4b001d5a7f8042ce1d2bd430e6b52a47f7294",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/RegistersPropertyTest.java": "aca9a7d2e78ff6d1a258107d69c59613e3ba975cca24b4d57c55ea80a8925489",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/SimulationTest.java": "5aea47d3324737a03f827a9c384a9f5ea4cf6bd249edb5502d3f5cd64034b44c",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/SnapshotAssemblerTest.java": "7237e6de266109edb74680bb602f61fbd4045ac37aeb44056ab3af6cac1515ab",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/SnapshotTransferTest.java": "396073b7aab028681fb2a5d8fabb55d7f6380d5aa0f920bbb1f606edbe3d52a8",
+    "raft-storage/pom.xml": "a8f3a959e08fdb9c3752455a98a911745037e33be772547321e9a7ac14be3759",
+    "raft-storage/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Journal.java": "849cedf978672ba269a3ec4660b79036c6cb0930e2b4a940b8e63c51d517b051",
+    "raft-storage/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/JournalTest.java": "513816dd63c478056413fc6b5f180dc5c3592bcf280ed5e496e830c681fd5f0d",
+    "raft-transport/pom.xml": "964dbc3afce16c6a73507d1a2db01a9d00490e8af138d96db3da166eb340c49a",
+    "raft-transport/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Binary.java": "25785db5435da1806cff9dcdbc5d1f109fc0e3ce363f8f3ab61b51c23e9280de",
+    "raft-transport/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/TlsTransport.java": "71525d78cb9faf8f3d885ac5571c3890a1fe89f6b14fe98b307d0aeb5cb34270",
+    "raft-transport/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/BinaryTest.java": "f84e1ac3d1c3a43a04b8f2ff4e54e7b802d93926bf3e6169749e2d91538fe43a",
+    "raft-verification/pom.xml": "4851d47085cc4d624ff7c8e0d54fe16c3fd852e74794fffb1695c587c686a960",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/ClusterTool.java": "eb1b3cf9eac40113a08ebe51b60cb1a9d9fa99f02c65eb84a64aad02e1391cbe",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/HistoryChecker.java": "c142436a798942deaf65a5e63a2756afe8674be2f99553d665283b54a21f761a",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/LocalTlsIdentity.java": "1312e93a6113484954258ebb69adcd103f3f51fb87b8d8d8cb5bc3394f46d908",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/ProcessCluster.java": "0a756f1464c68184696116cdae5b4882b104192a58a2e4a51116adf65dbbf372",
+    "raft-verification/src/main/java/io/github/cheshmakzanoon/portfolio/quorumkv/Workload.java": "a5123df7ba23fc4d242da277a9c4ed7249f4a808993021edf87597ff1a5248ef",
+    "raft-verification/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/BoundaryTest.java": "6b1e926522193d4a3d9984785d78ff7d0cfbfd5775e0a031f58ebeecaf19615c",
+    "raft-verification/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/HistoryCheckerTest.java": "89977fee2ff5ebab370c12b63e87bc537512d7cfbd54c00e8bdef5a83a49da6b",
+    "raft-verification/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/LocalTlsIdentityTest.java": "8801f1d0d4b95d7b5823736b60b8e06fa3f71ab9b2e08fd8f38271ded2fd3609",
+    "raft-verification/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/ProcessFaultIT.java": "6fdcc535182140dfda0b536b2f91ed8832358d02b44c4a696afde734220ba68f",
+    "raft-verification/src/test/java/io/github/cheshmakzanoon/portfolio/quorumkv/TransportLifecycleIT.java": "51f9999f2478982fdacee5aa45c4ca71bdcef39ffa1bcfedb7ade2d887c09f34",
+    "scripts/benchmark.sh": "05300cd5b0c645df1f7a92447e0406641b741e500ae7ecd6c08c3f69255601e7",
+    "scripts/common.sh": "af5ca46d8c227c98cd5f326d06469a113a5e1bd12b65ab1fd18fcea1abb37859",
+    "scripts/demo.sh": "15ed4967e0a8b3a60c4df2ed52ab8444693050aa65dcc744dbfb5ec1ce55f794",
+    "scripts/down.sh": "ac08d01919de4bb736ae71adac3bbfbc17614e712f7015c77444e27fedbf06b7",
+    "scripts/reset-demo.sh": "9fe642f9790fa8486bc95d93f0ea02d774b9b798f6ec9b92d281d38402095fd5",
+    "scripts/runtime-artifacts.py": "879057caf4336080e4718c9f91eeffb7b7a7c5b21ef1818e8ee08299f445f150",
+    "scripts/source-fingerprint.py": "c700d0a3bebc45c8e573a0d21fef1f82c2d98ff960dd61dd1c5d102b04fad72a",
+    "scripts/up.sh": "14b4433f6f7076c92e51f230fed07862930515e2b06e91783016a8ba4667fe35"
+  },
+  "additional_checks": {
+    "runtime_artifacts_receipt": "write and check passed after successful combined verification",
+    "stopped_processes": "no project Java, running Compose containers or catalog listeners",
+    "documentation_links": "12 Markdown documents; no missing relative link targets",
+    "diff_whitespace": "git diff --check passed"
+  },
+  "compatibility": {
+    "wire_version": 1,
+    "storage_version": 1,
+    "migration": "No migration for valid existing state; malformed or inconsistent recovered state is refused."
+  },
+  "not_run": [
+    "full prescribed 100,000-operation/profile/concurrency performance study",
+    "fresh clean-checkout/full-reactor/hosted CI release checks",
+    "Windows/macOS validation",
+    "whole-host/power-loss fault validation"
+  ]
+}
