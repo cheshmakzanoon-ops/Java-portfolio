@@ -20,3 +20,7 @@ Replan observation: vehicleId,completedPrefix,broken,freezeNext,releaseFailedCom
 Publication requires a non-null solve-job UUID, positive expected input version, and nonnegative expected plan revision. Replanning requires the same version/revision bounds, a whole-second planning instant, at most 25 observations, and at most 500 urgent jobs. Missing/null lists and malformed request envelopes fail with 400 before persistence access. Domain checks still validate the resulting full snapshot.
 
 The trusted local development profile accepts only loopback Host values. An Origin header must exactly match the request scheme, host, and port; cross-site Fetch Metadata and opaque origins are refused with 403 `UNTRUSTED_LOCAL_REQUEST`. Local command-line clients may omit Origin. These checks are additional browser protections, not authentication for direct local clients.
+
+Record components are required, including zero-valued revisions and seeds; omission is not an implicit default. Root null is invalid. Requested input versions must be positive. Unexpected server errors return 500 `INTERNAL_ERROR` with an opaque `incident` identifier, while request-shape/domain failures remain 400.
+
+A graceful service shutdown may return running work to QUEUED at a higher fence while retaining its incumbent; cancellation already requested is acknowledged as CANCELLED. Neither transition publishes a plan. Database lease recovery remains the fallback if shutdown cannot write its release.

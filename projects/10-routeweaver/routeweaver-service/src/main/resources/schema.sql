@@ -37,3 +37,38 @@ CREATE OR REPLACE TRIGGER problem_snapshot_immutable BEFORE UPDATE ON problem_sn
  FOR EACH ROW EXECUTE FUNCTION routeweaver_immutable_snapshot();
 CREATE OR REPLACE TRIGGER candidate_snapshot_immutable BEFORE UPDATE ON solution_candidate
  FOR EACH ROW EXECUTE FUNCTION routeweaver_immutable_snapshot();
+
+-- Additive, repeatable migration for existing databases. Schema initialization holds an advisory
+-- transaction lock, so two replicas cannot race these constraint additions.
+CREATE UNIQUE INDEX IF NOT EXISTS candidate_job_identity ON solution_candidate(tenant,job_id,id);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='solve_job'::regclass AND conname='rw_job_lease_shape') THEN
+    ALTER TABLE solve_job ADD CONSTRAINT rw_job_lease_shape CHECK (
+      (state IN ('RUNNING','CANCEL_REQUESTED')) = (lease_until IS NOT NULL)
+      AND (state <> 'QUEUED' OR owner IS NULL));
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='solve_job'::regclass AND conname='rw_job_terminal_time') THEN
+    ALTER TABLE solve_job ADD CONSTRAINT rw_job_terminal_time CHECK (
+      state NOT IN ('COMPLETED','CANCELLED','FAILED') OR finished_at IS NOT NULL);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='solve_job'::regclass AND conname='rw_job_nonnegative_fence') THEN
+    ALTER TABLE solve_job ADD CONSTRAINT rw_job_nonnegative_fence CHECK (fence >= 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='solve_job'::regclass AND conname='rw_job_incumbent_identity') THEN
+    ALTER TABLE solve_job ADD CONSTRAINT rw_job_incumbent_identity
+      FOREIGN KEY(tenant,id,best_candidate) REFERENCES solution_candidate(tenant,job_id,id)
+      ON DELETE SET NULL (best_candidate);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='published_plan'::regclass AND conname='rw_plan_revision') THEN
+    ALTER TABLE published_plan ADD CONSTRAINT rw_plan_revision CHECK (revision >= 0);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='published_plan'::regclass AND conname='rw_plan_input_identity') THEN
+    ALTER TABLE published_plan ADD CONSTRAINT rw_plan_input_identity
+      FOREIGN KEY(tenant,id,problem_version) REFERENCES problem_snapshot(tenant,problem_id,version);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='published_plan'::regclass AND conname='rw_plan_candidate_identity') THEN
+    ALTER TABLE published_plan ADD CONSTRAINT rw_plan_candidate_identity
+      FOREIGN KEY(tenant,candidate_id) REFERENCES solution_candidate(tenant,id);
+  END IF;
+END $$;

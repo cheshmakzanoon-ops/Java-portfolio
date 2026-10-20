@@ -12,6 +12,10 @@ public final class Model {
   private static final Map<Problem, String> HASHES =
       Collections.synchronizedMap(new IdentityHashMap<>());
   public static final int MAX_JOBS = 500, MAX_VEHICLES = 25, MAX_LOCATIONS = 501;
+  // Even a malformed maximum-sized route must remain representable during independent validation.
+  private static final long MAX_ROUTE_SECONDS = (MAX_JOBS + 1L) * 10_000_000 + MAX_JOBS * 604_800L;
+  public static final Instant MAX_INPUT_INSTANT =
+      Instant.ofEpochSecond(Instant.MAX.getEpochSecond() - MAX_ROUTE_SECONDS);
 
   public record Arc(int seconds, int meters) {
     public Arc {
@@ -23,8 +27,8 @@ public final class Model {
   public record Matrix(String version, List<List<Arc>> entries) {
     public Matrix {
       text(version);
-      entries = entries.stream().map(List::copyOf).toList();
       bounded(entries.size(), 1, MAX_LOCATIONS, "locations");
+      entries = entries.stream().map(List::copyOf).toList();
       for (var row : entries) {
         if (row.size() != entries.size() || row.stream().anyMatch(Objects::isNull))
           throw new IllegalArgumentException("complete square matrix required");
@@ -188,9 +192,13 @@ public final class Model {
       for (Completed c : completed)
         if (!vIds.contains(c.vehicleId))
           throw new IllegalArgumentException("unknown completed vehicle");
-      for (var e : previous.entrySet())
+      Set<Previous> previousPositions = new HashSet<>();
+      for (var e : previous.entrySet()) {
         if (!ids.contains(e.getKey()) || !vIds.contains(e.getValue().vehicleId))
           throw new IllegalArgumentException("invalid previous assignment");
+        if (!previousPositions.add(e.getValue()))
+          throw new IllegalArgumentException("previous route positions must be unique per vehicle");
+      }
     }
 
     public Map<String, Job> jobMap() {
@@ -271,15 +279,22 @@ public final class Model {
   public record Route(String vehicleId, List<String> jobs) {
     public Route {
       text(vehicleId);
+      bounded(jobs.size(), 0, MAX_JOBS, "route stops");
       jobs = List.copyOf(jobs);
+      jobs.forEach(Model::text);
     }
   }
 
   public record Candidate(String inputHash, List<Route> routes, Map<String, String> unassigned) {
     public Candidate {
       text(inputHash);
+      bounded(routes.size(), 0, MAX_VEHICLES, "candidate routes");
+      bounded(unassigned.size(), 0, MAX_JOBS, "unassigned jobs");
       routes = List.copyOf(routes);
       unassigned = Map.copyOf(unassigned);
+      unassigned.keySet().forEach(Model::text);
+      for (String reason : unassigned.values())
+        if (reason.length() > 2000) throw new IllegalArgumentException("unassigned reason bound");
     }
   }
 
@@ -385,6 +400,8 @@ public final class Model {
     Objects.requireNonNull(value);
     if (value.getNano() != 0)
       throw new IllegalArgumentException("integer second instants required");
+    if (value.isAfter(MAX_INPUT_INSTANT))
+      throw new IllegalArgumentException("instant leaves no bounded route arithmetic headroom");
   }
 
   private static void timeRange(Instant a, Instant b) {

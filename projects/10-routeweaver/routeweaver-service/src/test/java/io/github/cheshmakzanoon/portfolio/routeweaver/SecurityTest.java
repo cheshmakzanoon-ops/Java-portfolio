@@ -75,4 +75,20 @@ class SecurityTest {
     assertThrows(IllegalArgumentException.class, () -> Json.read("{\"x\":1,\"x\":2}", Map.class));
     assertThrows(IllegalArgumentException.class, () -> Json.read("{} {}", Map.class));
   }
+
+  @Test
+  void missingRequiredRecordFieldsAndRootNullDoNotBecomeImplicitDefaults() {
+    assertThrows(IllegalArgumentException.class, () -> Json.read("null", Model.Problem.class));
+    assertThrows(IllegalArgumentException.class, () -> Json.read("null", Map.class));
+    assertThrows(
+        IllegalArgumentException.class, () -> Json.readList("null", Store.TracePoint.class));
+    assertThrows(
+        IllegalArgumentException.class, () -> Json.read("{\"seconds\":1}", Model.Arc.class));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            Json.read(
+                "{\"solveJobId\":\"00000000-0000-0000-0000-000000000001\",\"expectedVersion\":1}",
+                Store.PublishRequest.class));
+  }
 }

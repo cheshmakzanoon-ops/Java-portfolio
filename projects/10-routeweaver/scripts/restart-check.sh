@@ -24,10 +24,17 @@ while time.monotonic()<deadline:
     assert before['state'] not in ('COMPLETED','FAILED','CANCELLED'),before['state']
     time.sleep(.1)
 else:raise AssertionError('worker did not establish a validated incumbent before crash deadline')
-pid=int((runtime/'service.pid').read_text())
-assert b'routeweaver-service' in Path('/proc/'+str(pid)+'/cmdline').read_bytes(),'refuse unrelated PID'
-os.kill(pid,signal.SIGKILL)
-(runtime/'service.pid').unlink()
+import importlib.util
+spec=importlib.util.spec_from_file_location('routeweaver_lifecycle',project/'scripts/lifecycle.py')
+lifecycle=importlib.util.module_from_spec(spec);spec.loader.exec_module(lifecycle)
+jar=project/'routeweaver-service/target/routeweaver-service-1.0.0-SNAPSHOT-exec.jar'
+java=Path(os.environ['JAVA_HOME'])/'bin/java'
+pid=lifecycle.owned(runtime,jar,java)
+assert pid is not None,'owned service must be running before crash'
+lifecycle.signal_owned(runtime,jar,java,pid,signal.SIGKILL)
+stop_deadline=time.monotonic()+5
+while lifecycle.process(pid) is not None and time.monotonic()<stop_deadline:time.sleep(.02)
+assert lifecycle.process(pid) is None,'crashed process did not exit before restart'
 subprocess.run([str(project/'scripts/up.sh')],check=True,timeout=120,stdout=subprocess.DEVNULL)
 deadline=time.monotonic()+75
 while time.monotonic()<deadline:

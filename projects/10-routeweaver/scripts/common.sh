@@ -32,13 +32,9 @@ require_build() {
     echo "Current sources require verification: run $project/scripts/build.sh" >&2
     exit 1
   fi
+  python3 "$project/scripts/runtime-artifacts.py" check --source "$current"
   export ROUTEWEAVER_SOURCE_REVISION="$current"
 }
 health() {
-  for attempt in $(seq 1 60); do
-    if curl --fail --silent "http://127.0.0.1:${ROUTEWEAVER_PORT:-19000}/health" >/dev/null; then return; fi
-    sleep 1
-  done
-  echo "RouteWeaver health timeout; inspect $runtime/service.log" >&2
-  exit 1
+  python3 "$project/scripts/lifecycle.py" health
 }

@@ -85,6 +85,7 @@ public final class TimefoldAdapter {
         });
     // Cancellation is cooperative. The watcher only requests solver termination; it never marks a
     // job terminal.
+    AtomicReference<RuntimeException> cancellationFailure = new AtomicReference<>();
     Thread watcher =
         Thread.ofPlatform()
             .daemon()
@@ -92,7 +93,11 @@ public final class TimefoldAdapter {
                 () -> {
                   try {
                     while (!Thread.currentThread().isInterrupted()) {
-                      if (stopping.getAsBoolean()) {
+                      try {
+                        if (cancellationFailure.get() != null || stopping.getAsBoolean())
+                          solver.terminateEarly();
+                      } catch (RuntimeException failure) {
+                        cancellationFailure.compareAndSet(null, failure);
                         solver.terminateEarly();
                       }
                       Thread.sleep(20);
@@ -104,12 +109,19 @@ public final class TimefoldAdapter {
     try {
       if (!stopping.getAsBoolean()) {
         beforeStart.run();
+        if (cancellationFailure.get() != null) throw cancellationFailure.get();
         WorkingPlan result = solver.solve(WorkingPlan.from(p, best.get().candidate()));
         best.set(Heuristics.retain(p, best.get(), new Validator().validate(p, result.candidate())));
       }
+      if (cancellationFailure.get() != null) throw cancellationFailure.get();
       return best.get();
     } finally {
       watcher.interrupt();
+      try {
+        watcher.join(1000);
+      } catch (InterruptedException interrupted) {
+        Thread.currentThread().interrupt();
+      }
     }
   }
 

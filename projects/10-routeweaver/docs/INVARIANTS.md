@@ -29,3 +29,22 @@ These are executable guarantees, not claims of global optimality. Domain and pla
 | Time zone ambiguity is explicit | UTC instants internally; service ZoneId for display; ambiguous local time requires offset; nonexistent time rejected | ModelTest timeZonesAmbiguousNonexistentAndCrossMidnight |
 
 Cancellation polling can delay observation by up to 100 ms plus an in-flight bounded database operation. It cannot confer authority: every candidate, finish and publication repeats the database checks. Budget expiry is cooperative rather than a promise to interrupt an individual validation or JDBC operation instantly.
+
+## Execution and persistence contracts
+
+| Contract | Authority in source | Failure schedule / regression |
+| --- | --- | --- |
+| A candidate is checked against the durable job's input, even if a caller supplies a different problem identity | `SolveJobRepository.record` loads `now.problemId/problemVersion` after locking that row | `PostgresIT.authoritativeCandidateIdentityComesFromTheLockedJobNotTheCaller` offers a valid candidate from another snapshot through a modified job view; it remains non-authoritative |
+| A stopped generation cannot finish or publish after requeue | `SolveJobRepository.release` increments the fence and clears lease/owner in the same conditional update | `gracefulShutdownFencesAndRequeuesInterruptedWorkWithoutPublishing`, `shutdownAcknowledgesCancellationAndCannotReleaseANewerGeneration` |
+| Closing while a claim is in flight cannot start an unowned CPU task | `Dispatcher` checks closing after claim, registers the active generation before submission, and guards scheduler registration with task cleanup | `closeDuringClaimNeverStartsAnUnownedTaskOrLeavesARunningLease` holds a real claim transaction while close begins |
+| Renewal failure is observable and cannot consume the sole worker permit permanently | Heartbeat exceptions latch task termination; terminal failure is attempted with the original fence; task `finally` releases capacity | `heartbeatFailureIsVisibleAndDoesNotLeakTheSingleWorkerSlot` injects one JDBC renewal failure, then completes a second job |
+| Every problem creation write commits together | `ProblemRepository.create` shares one `JdbcTransactions` invocation for snapshot, active pointer, plan and audit | `eventWriteFailureRollsBackEveryProblemCreationWrite` fails the final event insert and verifies all preceding rows absent |
+| Recovery metadata has database backstops | Additive named constraints enforce active lease shape, terminal time, nonnegative generation/revision, and same-job incumbent references | `migrationIsRepeatableAndDatabaseRejectsCrossJobIncumbentsAndIllegalStates` runs initialization twice over existing results, then attempts illegal writes |
+| The first decision under the job lock determines cancel-versus-complete ordering | Both operations take the same job row; publication remains separate | `rowLockBarriersForceBothCancellationCompletionOrders` holds that lock before starting the competing decision and exercises each ordering |
+| Rollback diagnostics retain the original cause | `JdbcTransactions` suppresses a rollback failure on the original operation failure | `TransactionTest` injects both faults and verifies connection closure |
+| A JVM null fault is not mislabeled as bad user input | `Json` rejects root null and missing record components; `ApiErrors` leaves unexpected null faults as incident-bearing 500 | `HttpInputTest.unexpectedNullFaultIsAServerIncidentRatherThanAnInputRejection`; required-field parser negatives |
+| Launch uses verified artifacts and the recorded process identity | Source/JAR receipt, lifecycle lock, PID start ticks, exact executable/JAR and pidfd signalling | `scripts/test-runtime.py` exercises same-size/mtime tampering, altered receipts, symlinks, wrong JAR, recycled identity and real owned-process stop |
+
+These tests verify defined local failure schedules. They do not prove arbitrary Byzantine database behavior, distributed availability, hardware power-loss recovery, or a hard wall-clock bound around every JVM/database operation.
+
+The browser keeps a displayed validation paired with the exact problem snapshot used to evaluate it. Vehicle filtering cannot substitute newer active locations into an older published route while a solve is pending. Terminal progress also outranks a late cancellation acknowledgement. Deterministic schedules in `scripts/check-ui.py` and a delayed real response in `scripts/browser-check.py` exercise these view-state contracts.

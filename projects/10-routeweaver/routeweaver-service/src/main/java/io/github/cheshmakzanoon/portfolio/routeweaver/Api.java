@@ -1,5 +1,6 @@
 package io.github.cheshmakzanoon.portfolio.routeweaver;
 
+import static io.github.cheshmakzanoon.portfolio.routeweaver.ApiErrors.response;
 import static io.github.cheshmakzanoon.portfolio.routeweaver.Model.*;
 
 import java.time.Instant;
@@ -32,12 +33,6 @@ public final class Api {
     throw new IllegalArgumentException("authenticated tenant required");
   }
 
-  private ResponseEntity<String> response(Object body, int status) {
-    return ResponseEntity.status(status)
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(Json.write(body));
-  }
-
   @GetMapping("/health")
   public Map<String, String> health() {
     return Map.of("status", "UP", "product", "RouteWeaver");
@@ -54,6 +49,8 @@ public final class Api {
   @GetMapping("/v1/problems/{id}")
   public ResponseEntity<String> problem(
       Authentication a, @PathVariable String id, @RequestParam(required = false) Long version) {
+    if (version != null && version < 1)
+      throw new IllegalArgumentException("positive input version required");
     String t = tenant(a);
     return response(store.load(t, id, version == null ? store.active(t, id) : version), 200);
   }
@@ -148,46 +145,5 @@ public final class Api {
       throw new org.springframework.security.access.AccessDeniedException("development reset only");
     store.resetDemo();
     return response(Map.of("reset", "demo tenant only"), 200);
-  }
-
-  @ExceptionHandler(Store.Conflict.class)
-  ResponseEntity<String> conflict(Store.Conflict e) {
-    return response(Map.of("code", "CONFLICT", "message", e.getMessage()), 409);
-  }
-
-  @ExceptionHandler(Store.Missing.class)
-  ResponseEntity<String> missing() {
-    return response(Map.of("code", "NOT_FOUND"), 404);
-  }
-
-  @ExceptionHandler(Store.Busy.class)
-  ResponseEntity<String> busy() {
-    return response(Map.of("code", "SOLVER_CAPACITY", "retryAfterSeconds", 1), 429);
-  }
-
-  @ExceptionHandler({
-    IllegalArgumentException.class,
-    ArithmeticException.class,
-    NullPointerException.class
-  })
-  ResponseEntity<String> invalid(RuntimeException e) {
-    return response(
-        Map.of(
-            "code",
-            "INVALID_INPUT",
-            "message",
-            e instanceof NullPointerException
-                ? "required field missing"
-                : Objects.toString(e.getMessage(), "invalid input")),
-        400);
-  }
-
-  @ExceptionHandler(Exception.class)
-  ResponseEntity<String> internal(Exception e) {
-    if (e instanceof org.springframework.security.access.AccessDeniedException)
-      return response(Map.of("code", "FORBIDDEN"), 403);
-    if (e instanceof org.springframework.web.ErrorResponse error)
-      return response(Map.of("code", "HTTP_ERROR"), error.getStatusCode().value());
-    return response(Map.of("code", "INTERNAL_ERROR"), 500);
   }
 }

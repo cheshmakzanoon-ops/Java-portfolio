@@ -38,7 +38,11 @@ public final class Driver {
     else
       b.header("Content-Type", "application/json")
           .POST(HttpRequest.BodyPublishers.ofString(Json.write(body)));
-    var r = http.send(b.build(), HttpResponse.BodyHandlers.ofString());
+    var r = http.send(b.build(), HttpResponse.BodyHandlers.ofInputStream());
+    String response;
+    try (var input = r.body()) {
+      response = boundedResponse(input);
+    }
     check(
         r.statusCode() == expected,
         "HTTP "
@@ -48,8 +52,15 @@ public final class Driver {
             + " actual="
             + r.statusCode()
             + " body="
-            + r.body());
-    return r.body();
+            + response.substring(0, Math.min(4096, response.length())));
+    return response;
+  }
+
+  static String boundedResponse(java.io.InputStream input) throws java.io.IOException {
+    int limit = 32 * 1024 * 1024;
+    byte[] bytes = input.readNBytes(limit + 1);
+    if (bytes.length > limit) throw new java.io.IOException("HTTP response exceeds 32 MiB");
+    return new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
   }
 
   private void check(boolean condition, String message) {

@@ -17,11 +17,12 @@ import org.springframework.context.annotation.Import;
 /** Actual authenticated HTTP rejection must occur before a database connection is opened. */
 class HttpInputTest {
   static final AtomicBoolean DATABASE_TOUCHED = new AtomicBoolean();
+  static final AtomicBoolean INTERNAL_FAULT = new AtomicBoolean();
 
   // Deliberately a lite configuration, not component-scanned by the full PostgreSQL test app.
   @EnableAutoConfiguration(
       excludeName = "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration")
-  @Import({Api.class, Security.class})
+  @Import({Api.class, ApiErrors.class, Security.class})
   public static class RejectionApplication {
     @Bean
     Store store() {
@@ -32,6 +33,8 @@ class HttpInputTest {
                   new Class<?>[] {DataSource.class},
                   (proxy, method, args) -> {
                     DATABASE_TOUCHED.set(true);
+                    if (INTERNAL_FAULT.get())
+                      throw new NullPointerException("private fault canary");
                     throw new AssertionError("invalid input must be rejected before persistence");
                   });
       return new Store(unreachable);
@@ -98,6 +101,30 @@ class HttpInputTest {
   }
 
   @Test
+  void unexpectedNullFaultIsAServerIncidentRatherThanAnInputRejection() throws Exception {
+    INTERNAL_FAULT.set(true);
+    try (var context =
+        new SpringApplicationBuilder(RejectionApplication.class)
+            .run("--server.port=0", "--server.address=127.0.0.1", "--routeweaver.auth-mode=dev")) {
+      int port = ((ServletWebServerApplicationContext) context).getWebServer().getPort();
+      var response =
+          HttpClient.newHttpClient()
+              .send(
+                  HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/v1/plans/p"))
+                      .GET()
+                      .build(),
+                  HttpResponse.BodyHandlers.ofString());
+      assertEquals(500, response.statusCode());
+      assertTrue(response.body().contains("INTERNAL_ERROR"));
+      assertFalse(response.body().contains("private fault canary"));
+      Map<?, ?> body = Json.read(response.body(), Map.class);
+      assertNotNull(java.util.UUID.fromString((String) body.get("incident")));
+    } finally {
+      INTERNAL_FAULT.set(false);
+    }
+  }
+
+  @Test
   void authenticatedPostRejectsInvalidIdsAndScalarTypesWith400BeforePersistence() throws Exception {
     DATABASE_TOUCHED.set(false);
     try (LocalIssuer issuer = new LocalIssuer();
@@ -141,11 +168,35 @@ class HttpInputTest {
                   .build(),
               HttpResponse.BodyHandlers.ofString());
       assertEquals(401, unauthenticated.statusCode());
+      // Headers alone must be denied before the body filter allocates or asks for upload bytes.
+      try (var socket = new java.net.Socket("127.0.0.1", port)) {
+        socket.setSoTimeout(5000);
+        socket
+            .getOutputStream()
+            .write(
+                ("POST /v1/problems HTTP/1.1\r\nHost: 127.0.0.1:"
+                        + port
+                        + "\r\nContent-Length: "
+                        + (Security.BODY_LIMIT + 1)
+                        + "\r\nExpect: 100-continue\r\nConnection: close\r\n\r\n")
+                    .getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+        var reader =
+            new java.io.BufferedReader(
+                new java.io.InputStreamReader(
+                    socket.getInputStream(), java.nio.charset.StandardCharsets.US_ASCII));
+        String status = reader.readLine();
+        if (status.contains("100")) {
+          while (!reader.readLine().isEmpty()) {}
+          status = reader.readLine();
+        }
+        assertTrue(status.contains("401"), status);
+      }
       String original = Json.write(PostgresIT.problem("demo"));
       var invalidBodies = new java.util.ArrayList<String>();
       for (String invalid : java.util.List.of("a/b", "..", "a b")) {
         invalidBodies.add(original.replace("\"id\":\"p\"", "\"id\":\"" + invalid + "\""));
       }
+      invalidBodies.add("null");
       invalidBodies.add(original.replace("\"grams\":1000", "\"grams\":1000.5"));
       invalidBodies.add(original.replace("\"grams\":1000", "\"grams\":\"1000\""));
       invalidBodies.add(original.replace("\"seconds\":10", "\"seconds\":10.5"));

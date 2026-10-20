@@ -1,67 +1,94 @@
-# RouteWeaver operations
+# Operating RouteWeaver
 
-The local fleet and travel data are synthetic. Use the repository checkout with JDK 25, the pinned Maven wrapper and Docker Compose. Each cloud task already has its isolated checkout; use it directly. Port 19000 is HTTP, 19001 PostgreSQL; both default to loopback. ROUTEWEAVER_PORT and ROUTEWEAVER_DB_PORT override them. Compose name is java-portfolio-routeweaver with its own named volume.
+The supported local workflow is a Linux Java 25 process and a pinned PostgreSQL Compose service. The database is authoritative; killing a JVM does not remove queued jobs or published plans. All included data is synthetic.
 
-## Build and lifecycle
+## Build and local demonstration
 
 From the repository root:
 
 ```sh
+source scripts/cloud-env.sh  # managed cloud toolchain/proxy initialization
 projects/10-routeweaver/scripts/build.sh
+python3 projects/10-routeweaver/scripts/test-runtime.py
 projects/10-routeweaver/scripts/up.sh
 projects/10-routeweaver/scripts/demo.sh
-projects/10-routeweaver/scripts/restart-check.sh
+python3 projects/10-routeweaver/scripts/browser-check.py
 projects/10-routeweaver/scripts/down.sh
 ```
 
-build.sh formats and verifies the full four-module reactor, then records a fingerprint. up.sh refuses changed source/root POMs, starts only the pinned PostgreSQL stack, starts the service in explicitly trusted disposable loopback dev mode and waits for /health. It verifies a stored PID's command before signalling a stale service. down.sh stops only that process/Compose project and preserves data. A source stamp establishes which binaries were verified; it does not establish that an unexecuted demo passed.
+`build.sh` accepts optional Maven flags; use `scripts/build.sh -Pintegration` from the project directory, or the full project path from the repository root, to include PostgreSQL verification in the same source/artifact receipt. It formats this project, verifies it, checks that the source did not change during verification, and writes source/JAR receipts. It refuses to rebuild an owned running service. `up.sh` checks those receipts before starting anything, then starts the project database and an explicitly trusted disposable local service on port 19000. The dispatcher and API share that listener. `down.sh` stops the identified process, waits for exit and removes the project container/network; it preserves the named data volume.
 
-GET /health returns application liveness. It does not prove a writable database or sufficient solver capacity. Check an actual problem/solve transaction for functional readiness. Logs are .runtime/service.log and .runtime/service-gc.log; source/PID metadata is also in .runtime. Runtime data, JARs, logs and database volumes do not belong in Git.
+The demo creates 60 jobs and six vehicles, publishes a valid plan, observes completed stops, records a breakdown, audits commitment release, introduces urgent depot cargo and rejects stale publication. To repeat the same seeded scenario, explicitly run `projects/10-routeweaver/scripts/reset-demo.sh` while the service is running and has no active jobs, then rerun the demo. Reset is restricted to the development profile and demo tenant. Do not remove a volume to reset fixtures.
 
-Repeat seed scenarios only while jobs are idle:
+Build/up/down and polling diagnosis share `.runtime/lifecycle.lock`. A concurrent lifecycle command waits at most 30 seconds. Neither a PID file nor an open port alone establishes ownership: the launcher checks process start ticks, executable, exact JAR argument and listening-socket ownership. Linux pidfds protect signal delivery from PID recycling. Legacy live PID files without process metadata require inspection; the launcher refuses to signal them.
 
-```sh
-projects/10-routeweaver/scripts/reset-demo.sh
-projects/10-routeweaver/scripts/demo.sh
-```
+## Configuration
 
-Reset is a deliberate destructive action limited by the service to the demo tenant in dev mode; it refuses outstanding solves. It is unavailable in protected mode. It is not a global volume deletion or Docker prune. Preserve needed evidence before resetting.
-
-## Protected service configuration
-
-Protected mode is the application default. Set ROUTEWEAVER_ISSUER to an OIDC discovery issuer, ROUTEWEAVER_AUDIENCE (default routeweaver), and ROUTEWEAVER_DB_URL/USER/PASSWORD through environment bindings. Provide verified tokens with routeweaver.read for API GET and routeweaver.write for changes. Release launchers also supply ROUTEWEAVER_SOURCE_REVISION from the verified source fingerprint; manual protected startup must supply the correct executing artifact identity, never an old label. The static shell is public so its token entry is reachable; its data requests remain protected. No real secret belongs in logs, screenshots, source or benchmark records. The launcher intentionally selects the disposable dev profile and must remain on loopback.
-
-## Durable solve and recovery
-
-Submit an immutable version, explicit seed, requestId, budgetMs from 1 to 30,000 and steps from 1 to 100,000. The request returns 202 plus a durable UUID; poll the job until terminal. At most 17 outstanding jobs are admitted globally. A service process has one CPU worker; adding replicas changes total CPU capacity and must be budgeted explicitly. JDBC pool is eight, HTTP worker limit eight, connection bound 32 and accept queue 16. JDBC transaction statement timeout is ten seconds, lock timeout five seconds; connection acquisition is bounded too.
-
-| Observation | Meaning and action |
+| Variable | Default / effect |
 | --- | --- |
-| 400 INVALID_INPUT | Correct the bounded typed problem/request. Fractional units and scalar coercion are rejected. |
-| 401/403 | Check signature/issuer/audience/expiry/claim types and required scope; do not weaken authorization to retry. |
-| 404 | Identifier is absent in the caller's tenant. Do not search another tenant. |
-| 409 CONFLICT | Refresh active input and plan revision, or use the original idempotent body. An obsolete solve cannot be published. |
-| 429 SOLVER_CAPACITY | Outstanding admission is full. Back off and inspect active jobs; do not create unlimited client retries. |
-| CANCEL_REQUESTED | Cooperative acknowledgement is pending; a valid incumbent is retained. Completion may have serialized first. |
-| RUNNING after worker loss | Wait for its 15-second database-clock lease to expire. Startup/poll recovery requeues with a new fence. |
-| Failed/blocked residual | Inspect frozen/cargo constraints; audit release only unstarted failed commitments. Never reassign stranded onboard cargo. |
+| `ROUTEWEAVER_PORT` | 19000, bound to loopback by the committed service configuration |
+| `ROUTEWEAVER_DB_PORT` | 19001 for the disposable local Compose database |
+| `ROUTEWEAVER_DB_URL` | JDBC URL; the local launcher supplies its selected database port |
+| `ROUTEWEAVER_DB_USER`, `ROUTEWEAVER_DB_PASSWORD` | Database credentials; committed defaults are disposable fixtures |
+| `ROUTEWEAVER_AUTH_MODE` | `protected`; `up.sh` explicitly selects `dev` |
+| `ROUTEWEAVER_ISSUER`, `ROUTEWEAVER_AUDIENCE` | Required protected issuer; audience defaults to `routeweaver` |
+| `ROUTEWEAVER_SOURCE_REVISION` | Set from verified launch inputs, never an HTTP field |
+| `ROUTEWEAVER_DEMO_TOKEN` | Optional Bearer token for the command-line live driver against protected mode |
 
-Heartbeats renew the live lease every three seconds. Cancellation/fence reads are sampled every 100 ms to keep CPU search from opening a transaction per trial. Final writes always recheck current state/fence/lease under a lock. On restart, expired RUNNING becomes QUEUED with a newer fence and retained incumbent; expired CANCEL_REQUESTED becomes CANCELLED. No recovery path publishes automatically. Each recovered/queued claim must match the executing binary's configured source identity. A mismatch terminates through the fenced transaction with SOURCE_REVISION_MISMATCH, preserves the old incumbent as historical and emits no new candidate; a prior cancellation keeps its normal acknowledgement precedence. Drain/cancel old jobs before a rolling/source upgrade, retain the exact old artifact to resume them, or submit a new job under the current fingerprint. Even UI-only changes are conservatively incompatible. Do not relabel a new artifact with an old source hash to bypass this check. A recovered attempt receives its configured solve budget again; queue/recovery time is additional wall time. Do not edit generation/state columns manually to bypass authority checks.
+The protected profile uses signed OIDC tokens with explicit expiry, subject, audience, tenant and scopes. GET routes require `routeweaver.read`; mutations require `routeweaver.write`. The anonymous shell/assets contain no tenant data. A development request must use a loopback Host; supplied browser Origin must match the request scheme/host/port, and cross-site Fetch Metadata is refused.
 
-restart-check.sh verifies an actual SIGKILL of its own service after a durable incumbent exists, restarts against the same database and asserts a newer fence, same-input nondegradation, exact partition, terminal completion and no automatic publication. Its result artifact is .runtime/restart-result.json; execution status is recorded separately in evidence/STATUS.
+To run protected mode in the foreground, first build and stop the local demo. Initialize your credential bindings and issuer settings, then source `projects/10-routeweaver/scripts/common.sh`, run `require_build`, set `ROUTEWEAVER_AUTH_MODE=protected`, and execute the service JAR with the verified Java 25 toolchain. That foreground process is owned by its terminal, not the background launcher's PID record; stop it with its terminal. Protect network-exposed tokens with TLS and provision actual migration/runtime database privileges. Automatic startup DDL currently requires a schema-owning role.
 
-## Backup and restore
+## Solve and publish
 
-Use a PostgreSQL logical backup with immutable input, candidate, job, plan and event tables together. The development database and credentials are disposable. For a consistent logical export of this project only:
+A minimal sequence for a problem already imported under the authenticated tenant is:
 
-```sh
-docker compose -f projects/10-routeweaver/infra/compose.yaml exec -T postgres pg_dump -U routeweaver -d routeweaver --no-owner --no-acl > /tmp/routeweaver-backup.sql
+```http
+POST /v1/problems/example/solve
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{"expectedVersion":1,"requestId":"dispatch-2026-001","seed":42,"budgetMs":5000,"steps":1000}
 ```
 
-Record a checksum and source/config identity beside the dump and protect it as tenant data. Restore first to a new isolated database with psql -v ON_ERROR_STOP=1; retain the original database. On a production restore, provision a least-privilege role and TLS separately, then start one service with the matching executing source against the restored database. An upgrade requires the source-compatibility policy above; old queued jobs are not silently relabeled. Independently validate stored published candidates against their exact restored problem snapshots before serving dispatches. Preserved lease timestamps remain subject to normal database-clock recovery; do not manufacture terminal states or transfer cargo.
+Poll `GET /v1/solve-jobs/{uuid}`. A returned UUID is durable admission, not completion. Reusing the same tenant/request ID with the same problem/version/seed/budget/steps returns the original job; changed parameters return 409. At most 17 queued/running/cancel-requested jobs exist globally. Each service process has one CPU task; additional replicas increase potential CPU demand and must be budgeted separately.
 
-PostgresIT.backupRestorePreservesImmutableInputsValidatedPlanAndDurableQueue exercises pg_dump and psql into a separate database, equality of source hash and published plan, reference validation, durable queued/idempotent work and restored immutability triggers. Its observed pass is required before treating this protocol as certified; see evidence/integration.json for the exact tested run. High availability, WAL archival/PITR and a production secret/TLS deployment are outside the local portfolio runtime.
+After reviewing a terminal valid incumbent, publication remains explicit:
 
-## Release checks
+```http
+POST /v1/plans/example/publish
+Content-Type: application/json
+Authorization: Bearer <token>
 
-Use -Pintegration verify for real PostgreSQL and -Pmutation verify for selected original Validator mutation checks. Docker absence must fail integration. scripts/benchmark.sh requires a separately scheduled quiet reference host and current binaries; do not run it beside builds or other stress. It writes raw corpus/JMH/resource/GC files. docs/RESUME.md and STATUS.md distinguish historical passes from current-source gates.
+{"solveJobId":"00000000-0000-0000-0000-000000000001","expectedVersion":1,"expectedRevision":0}
+```
+
+Use the actual UUID and current revision. A 409 means the active input, plan revision, job state or input identity no longer permits that publication; load the current problem/plan and decide again. Never retry by silently replacing expected versions. The [API contract](../contracts/API.md) describes import, trace, baseline, cancellation and observed-prefix replan bodies. Required record fields must be present; null/fractional/scalar-coerced units and missing fields fail with 400.
+
+## Failure and recovery
+
+| Observation | Meaning | Supported action |
+| --- | --- | --- |
+| 400 `INVALID_INPUT` | Invalid shape, units, bounds or domain relationships | Correct the request; nothing should be inferred from a missing response |
+| 401 / 403 | Invalid token, scope/tenant denial, or untrusted development browser origin | Correct authentication or origin; do not relax the profile |
+| 429 `SOLVER_CAPACITY` | Global durable admission is full | Back off, inspect existing jobs, or cancel work intentionally |
+| `CANCEL_REQUESTED` | A running generation has not acknowledged cancellation | Keep polling; cancellation does not publish or erase its incumbent |
+| Process exits with `RUNNING` job | Search memory was lost; persisted progress remains | Restart matching source; an expired 15-second database-clock lease requeues with a new fence |
+| Graceful shutdown | Current work is interrupted and fenced | Restart matching source; queued work resumes from durable state |
+| `LEASE_HEARTBEAT_FAILURE` | Renewal failed and useful work stopped | Diagnose database/network availability; a failed terminal write falls back to lease recovery |
+| `SOURCE_REVISION_MISMATCH` | Submitted and executing source differ | Drain before upgrading, or submit a new request for the current source; do not rewrite historical source labels |
+| `BLOCKED_RESIDUAL` / failed frozen commitment | Observed/frozen state has a hard conflict | Correct observations or make an explicit audited replan; never bypass validation |
+| 500 with `incident` | Unexpected server failure | Correlate that incident with protected service logs; the client receives no stack trace |
+| Receipt or ownership refusal | Source/JAR bytes or process identity cannot be trusted | Inspect the exact files/process; rebuild after stopping the owned service; do not replace a live PID record |
+
+For a real process-crash exercise, run `scripts/restart-check.sh` against a running disposable service. It waits for an incumbent, kills only the recorded process through a pidfd, restarts, waits for lease recovery, and asserts a higher fence, valid nondegraded same-input incumbent, exact demand partition and no automatic publication. This modifies disposable demo state and uses its own fixture identifier.
+
+JDBC transactions set 10-second statement and five-second lock timeouts. The default pool has eight connections, a five-second acquisition/connect limit and 15-second PostgreSQL socket limit. HTTP has eight worker threads, 32 connections and a 16-entry accept queue. Bodies are bounded to 16 MiB before parsing. Cooperative search checks stop/deadline conditions between trials; an individual validation or JDBC operation is allowed to finish. These limits do not promise a hard 30-second wall-clock terminal time.
+
+## Backup, schema and retention
+
+Back up with PostgreSQL's supported `pg_dump`/restore tools using securely supplied credentials. The integration suite performs a real dump into a separate database and verifies input identity, plan/queue survival and immutable triggers. Restore into a separate database first, run schema initialization, validate representative plans, and reconcile job states before switching a service to it. Do not edit lease/fence columns to force a recovered result into a plan.
+
+Startup schema changes are additive and serialized. New constraints verify lease/state shape, terminal timestamps, nonnegative revisions/generations and referenced input/candidate identity. Existing incompatible rows fail initialization; preserve a backup and diagnose the failing constraint rather than dropping it. Snapshots cannot be updated through ordinary SQL because of the immutable triggers. Database owners can override those controls, so restrict administrative access.
+
+Published snapshots, job traces and audit records grow over time. Retention/export policy is an operator responsibility; there is no automatic deletion service. Preserve required audit and failed measurement evidence before any deliberate archival. Shutdown preserves the database volume and never prunes another project or a shared Docker cache.

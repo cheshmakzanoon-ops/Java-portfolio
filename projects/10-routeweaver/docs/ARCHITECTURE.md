@@ -1,41 +1,116 @@
 # RouteWeaver architecture
 
-Four Maven modules separate immutable domain snapshots, original planning algorithms and a confined mutable Timefold adapter, the PostgreSQL/Spring HTTP service, and independent verification/oracle/workload drivers. No dependency from domain to Spring or Timefold exists.
+RouteWeaver separates three decisions: whether a route is physically valid, whether a search result improves the same immutable input, and whether that result may become the published plan. A solver score, a live thread, or a previously valid lease cannot substitute for any of those decisions.
 
+## Module boundaries
+
+| Module | Owns | Excludes |
+| --- | --- | --- |
+| `routeweaver-domain` | Copied immutable records, integer units, residual cargo/history, input identity and lexicographic score | Spring, JDBC, mutable solver entities |
+| `routeweaver-planning` | Reference validation, deterministic baseline, directed local moves, residual repair and confined Timefold adaptation | Database state and publication |
+| `routeweaver-service` | HTTP authorization, immutable persistence, durable jobs, lease generations and explicit publication | Solving on HTTP threads; trusting submitted scores |
+| `routeweaver-verification` | Exhaustive tiny oracle, analytical/property fixtures, live driver and declared measurement protocols | Runtime dependencies required by the service |
 
 ```mermaid
 flowchart LR
-  UI[Dispatcher UI / protected HTTP] --> S[Service: immutable inputs and durable jobs]
-  S --> DB[(PostgreSQL)]
-  DB --> W[One leased CPU worker]
-  W --> B[Original nearest-feasible insertion and directed moves]
-  B --> T[Confined Timefold working model]
-  T --> V[Independent reference validator]
-  V --> I[Immutable same-input incumbent]
-  I --> DB
-  DB --> CAS[Explicit current-version / revision publication CAS]
-  CAS --> UI
-  D[Domain: immutable units, time, cargo and identity] --> B
-  D --> V
-  O[Verification: analytic fixtures and tiny exhaustive oracle] --> V
+  HTTP[Protected API / dispatcher] --> Store[Store application facade]
+  Store --> Inputs[ProblemRepository]
+  Store --> Jobs[SolveJobRepository]
+  Store --> Plans[PlanRepository]
+  Inputs --> Tx[JdbcTransactions]
+  Jobs --> Tx
+  Plans --> Tx
+  Tx --> DB[(PostgreSQL)]
+  DB --> Dispatcher[Dispatcher: one leased CPU task]
+  Dispatcher --> Task[PlanningTask]
+  Task --> Search[Baseline / original moves / Timefold]
+  Search --> Validator[Independent Validator]
+  Validator --> Jobs
+  Plans --> Validator
+  Oracle[Exhaustive tiny oracle] --> Validator
 ```
 
-The domain has no solver, Spring or JDBC dependency. Planning depends on domain and confines solver mutation. Service owns HTTP/JDBC and bounded dispatch. Verification depends on implemented modules to run oracle, properties, live scenarios, system workload and JMH; it is not required by the service runtime. A JVM crash loses mutable search state, but the last authoritative immutable candidate and job remain in PostgreSQL. A later generation resumes from durable state and cannot bypass publication CAS.
+[Store](../routeweaver-service/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/Store.java) preserves the application-facing records and method signatures. SQL belongs to three package-private repositories; [JdbcTransactions](../routeweaver-service/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/JdbcTransactions.java) alone acquires connections, applies transaction/lock timeouts, commits, rolls back and binds parameters. A failed rollback is attached to the original failure rather than replacing it. No transaction remains open while the CPU solver runs.
 
-All deliveries are depot-loaded drops. Distances are integer meters, travel and service use integer seconds, cargo uses integer grams. A service may start at either inclusive window endpoint. Waiting is permitted; service must finish within the vehicle shift and return to the depot within that shift. Maximums are 500 jobs, 25 vehicles, 501 locations, seven-day job windows/shifts, 1,000,000,000 gram loads. Checked long arithmetic accumulates distances, durations, and objectives. Matrix entries are complete and directed. Fixtures contain synthetic coordinates/travel rather than actual Canadian roads.
+## Domain and independent evaluation
 
-The objective minimizes lexicographically: hard violation count; sum of unassigned priorities; then meters times `metersWeight` plus travel seconds times `secondsWeight` plus changed assignment/order penalties times `disruptionWeight`. Waiting/service are feasibility inputs, not charged operating travel. Defaults are one cost unit/meter, one/second and 1,000 per changed vehicle or index; every unassigned previously assigned job incurs one disruption penalty. Hard violations never trade against cost. Validation recomputes the full directed route including return arcs and rejects missing/duplicate/overlapping partitions, unavailable cargo, skill/capacity/time/freeze violations. It never calls the solver calculator.
+[Model](../routeweaver-domain/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/Model.java) uses integer seconds, meters and grams. A snapshot contains at most 500 jobs, 25 vehicles and 501 locations; its complete matrix is directed and has a zero diagonal. Lists, nested rows, sets and maps are copied. Route/candidate cardinalities are bounded independently of problem parsing. Previous assignments cannot occupy the same vehicle/index pair. Whole-second input instants reserve enough representational headroom for a maximum-length route, including service and return travel.
 
-Baseline inserts jobs in descending priority and stable ID order at the feasible insertion with least added directed travel seconds, with stable vehicle/position tie breaks. Local moves recompute all arcs after relocation, swap, and 2-opt reversal. The Timefold adapter assigns job vehicle and order rank; ties use stable IDs. Its independent calculator models the same physical/objective constraints. Every emitted candidate is independently validated and compared to the same immutable input hash only. Wall-clock search is bounded but does not promise repeatable routes; tiny fixtures also use seeded step limits. Tiny oracle recursively includes the unassigned choice and every vehicle insertion position, thus enumerating all assignments and permutations including empty routes. Only exhausted enumeration returns OPTIMUM.
+A vehicle begins at its observed location and availability with its actual onboard cargo. Depot-loaded drops can add cargo only at the declared depot. Service may start at either inclusive window endpoint; waiting is allowed, but service and the final directed return must finish within the shift. [Validator](../routeweaver-planning/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/Validator.java) reconstructs every arc, load, skill, window, frozen prefix and assigned/unassigned partition. It calculates cost from raw route orders and never invokes Timefold's calculator.
 
-A residual revision records completed history, observed stop location/availability, all onboard jobs and gram load, and frozen remaining prefix. Advancing requires an actual completed route prefix with completion instants at or before the planning instant. Mid-road observations are unsupported. Non-depot vehicles can deliver their own onboard jobs only. New urgent cargo stays at the depot. Failed onboard cargo remains unassigned with STRANDED_CARGO. Releasing failed frozen work requires explicit audited consent in the revision; completed work is immutable. Prior plans must be repaired/revalidated before same-version retention, and are never compared as raw scores across revisions.
+The objective minimizes hard violations, then weighted unassigned priority, then operating cost plus disruption. Operating cost charges directed meters and travel seconds; waiting/service affect feasibility. [Heuristics](../routeweaver-planning/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/Heuristics.java) inserts jobs in descending priority/stable identifier order, tries directed-duration insertion deltas, and independently validates complete candidates. Relocation, swap and reversal also reevaluate the full route. Retention requires the same input hash and an independently reconstructed score.
 
-PostgreSQL stores immutable inputs/candidate snapshots and all solve metadata. A global admission lock bounds outstanding durable jobs to 17; one CPU worker runs per service process and the local executor is also bounded. SKIP LOCKED claims increment a generation and establish a database-clock lease. Candidate/terminal writes lock the same job row and check legal state, generation, and unexpired lease in one transaction. Stale/invalid candidate snapshots remain diagnostic without replacing a valid incumbent. Lease expiration requeues RUNNING jobs with a new fence, or acknowledges expired CANCEL_REQUESTED as CANCELLED. Startup/polling run recovery; a live lease is never stolen just because a second process starts.
+[TimefoldAdapter](../routeweaver-planning/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/TimefoldAdapter.java) owns every mutable assignment and working solution. The separate search calculator uses epoch-second arithmetic; the reference evaluator uses `Instant` timelines. Solver callbacks emit immutable candidates and must pass the reference validator before replacing the incumbent. Cancellation remains latched across solver startup. Observer failures request termination and propagate to the owning task rather than silently disabling cancellation.
 
-Queued cancellation is direct CANCELLED. Running cancellation becomes CANCEL_REQUESTED and is acknowledged by a cooperative worker as CANCELLED, preserving its incumbent. If completion locks first, terminal completion wins and cancellation is idempotent. Cancellation never publishes. Publication separately locks active input and plan revision and requires current problem/version/hash plus an independently valid terminal incumbent; concurrent revision-CAS attempts have one winner. Historical expired/superseded worker results cannot become the active plan.
+[ExactOracle](../routeweaver-verification/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/ExactOracle.java) enumerates an explicit unassigned choice and every vehicle insertion position for up to seven jobs/two vehicles. Each invocation owns its search frontier, leaf budget and optimum; a shared oracle instance cannot mix concurrent searches. Only exhausted enumeration returns an optimum. A leaf-limit result is inconclusive and has no optimum.
 
-Cancellation database reads are sampled at 100 ms and latch termination for that generation. CPU deadline/interruption checks stay on every trial. This caches observation only, never authority: candidate, terminal and publication transactions retain all row-locked state/fence/lease/version checks.
+## Durable state and transaction order
 
-## Browser boundary
+```mermaid
+stateDiagram-v2
+  [*] --> QUEUED: submit immutable input identity
+  QUEUED --> RUNNING: claim / fence++ / database-clock lease
+  QUEUED --> CANCELLED: queued cancellation
+  RUNNING --> CANCEL_REQUESTED: request cancellation
+  RUNNING --> COMPLETED: live generation finishes
+  RUNNING --> FAILED: planning / source / heartbeat failure
+  CANCEL_REQUESTED --> CANCELLED: cooperative acknowledgement
+  RUNNING --> QUEUED: expired lease or shutdown / fence++
+  CANCEL_REQUESTED --> CANCELLED: expired lease or shutdown / fence++
+```
 
-The dispatcher uses semantic HTML, a responsive stylesheet, and an external script with no framework dependency. Action controls reflect durable job state; solving does not publish. Progress requests run serially, and a connection generation prevents a late response from restoring data after the problem or token changes. Same-input hashes gate baseline comparisons. Tokens remain in the page memory and are never persisted to browser storage. A same-origin Content Security Policy forbids inline scripts, embedded objects, and framing. Development-mode requests also validate Host, Origin, and Fetch Metadata before receiving the trusted demo identity.
+A terminal job is never automatically published. Publication can select an independently valid retained incumbent from `COMPLETED` or `CANCELLED`; `FAILED` is diagnostic only. Shutdown requeues interrupted work with a new fence and retains its last incumbent. If shutdown loses database access, lease expiration remains the recovery mechanism.
+
+| Operation | Lock/authority order | Committed effect |
+| --- | --- | --- |
+| Submit | Global admission advisory lock, active-input row | Idempotent request or a new queued job; at most 17 outstanding globally |
+| Claim/recover | Expired job rows, then oldest queued row with `SKIP LOCKED` | New generation and database-clock lease |
+| Candidate | Job row; current state/fence/lease; immutable snapshot loaded from that row | Diagnostic candidate; only a live valid candidate may improve the incumbent |
+| Cancel/finish | Same job row | One legal ordering of cancellation and completion |
+| Release on shutdown | Conditional update of the current generation | Fence increment, lease/owner cleared, requeue or cancellation acknowledgement |
+| Publish | Active-input row, plan row, terminal job read, independent validation | One revision CAS winner and audit event |
+| Replan | Active-input row, plan row, observed-prefix calculation | New immutable input version and audited residual state |
+
+Candidate validation reads the locked job's problem identity, never a caller-supplied copy. Publication deliberately does not acquire a job row lock after locking the plan: terminal job metadata does not transition back to active work, and candidate snapshots are immutable. This avoids a job-to-plan lock cycle. Input changes can leave an old solve as valid historical evidence, but publication still rejects its version.
+
+```mermaid
+sequenceDiagram
+  participant UI as Dispatcher
+  participant API
+  participant DB as PostgreSQL
+  participant CPU as Leased task
+  UI->>API: submit(expectedVersion, requestId)
+  API->>DB: admission + active version transaction
+  DB-->>API: durable queued UUID
+  API-->>UI: 202 job
+  CPU->>DB: claim(fence, lease)
+  loop improvements
+    CPU->>CPU: search + independent validation
+    CPU->>DB: lock job; recheck fence/state/lease; retain
+  end
+  CPU->>DB: terminal transition (no publication)
+  UI->>API: publish(job, expectedVersion, expectedRevision)
+  API->>DB: lock active input + plan; validate; CAS + audit
+  DB-->>API: new plan revision or conflict
+```
+
+The [schema](../routeweaver-service/src/main/resources/schema.sql) has immutable snapshot triggers and additive, idempotent constraints for lease/state shape, terminal timestamps, nonnegative generations/revisions, input references and same-job incumbent identity. Initialization is serialized by an advisory transaction lock. Existing rows are checked; incompatible data causes startup failure rather than silently dropping a constraint.
+
+## Execution ownership and shutdown
+
+[Dispatcher](../routeweaver-service/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/Dispatcher.java) owns one CPU permit, a bounded executor and two scheduler threads. [PlanningTask](../routeweaver-service/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/PlanningTask.java) only loads, constructs, repairs and improves candidates; it cannot mark jobs terminal. Heartbeat failure stops the task and is recorded explicitly when authority remains. Registration, execution and cleanup share one guarded region, including a concurrent shutdown. `close()` fences the active claim, interrupts owned work and waits up to 15 seconds for CPU termination and five for schedulers, in addition to bounded database operations. JDBC connect/socket limits cover network stalls as well as SQL statement/lock timeouts.
+
+| Resource | Owner | Release/failure rule |
+| --- | --- | --- |
+| JDBC connection/transaction | `JdbcTransactions` invocation | Try-with-resources; rollback on operation failure |
+| CPU permit | Claimed dispatcher generation | Released in task `finally`, or immediately when submission fails |
+| Heartbeat | Running task | Cancelled in task `finally`; failures stop useful work |
+| Mutable solver/watcher | `TimefoldAdapter.solve` | Confined to the invocation; watcher interrupted and joined on exit |
+| Service process | Launcher PID/start-time/JAR/executable record | Linux pidfd signal after identity recheck; bounded TERM/KILL |
+| Local database volume | Explicit Compose project | Shutdown removes container/network and retains the volume |
+
+## Browser and runtime integrity
+
+The dispatcher puts feasibility, hard violations and unassigned demand above its publication controls. A native vehicle selector filters the map and matching timeline, preserves valid selections on refresh and clears them when workspace identity changes. Shared service-zone/date context keeps stop times compact; a later day is shown explicitly. It uses semantic HTML, external CSS/JavaScript and a strict same-origin CSP. It renders untrusted text through DOM text nodes. It polls serially and discards responses from a superseded connection generation. Tokens stay in page memory; candidate solving and explicit publication remain separate controls. Readable demand reasons do not turn a heuristic miss into a proof of infeasibility. Unsupported browser calendar/zone representations fall back to explicit timestamp text.
+
+[build.sh](../scripts/build.sh) verifies a stable source fingerprint and writes a receipt binding both launchable JARs. Launch refuses changed bytes, stale source or symbolic-link artifacts. [lifecycle.py](../scripts/lifecycle.py) checks PID start ticks, executable and exact JAR argument; a matching health response must also belong to that process's listening socket. Build/up/down serialize on one lifecycle lock. These controls prevent accidental stale/tampered launch and recycled-PID signalling; they do not sandbox a malicious local user who can rewrite the checkout and its receipts.

@@ -12,6 +12,13 @@ public final class Fixtures {
   public static final Instant START = Instant.parse("2026-10-17T11:00:00Z");
 
   public static Problem problem(int count, int vehicleCount, long seed, String difficulty) {
+    if (count < 0
+        || count > Model.MAX_JOBS
+        || vehicleCount < 1
+        || vehicleCount > Model.MAX_VEHICLES)
+      throw new IllegalArgumentException("fixture size outside supported domain bounds");
+    if (!Set.of("easy", "tight", "overconstrained").contains(difficulty))
+      throw new IllegalArgumentException("unknown fixture difficulty");
     Random random = new Random(seed);
     List<List<Arc>> matrix = new ArrayList<>();
     int[] x = new int[count + 1], y = new int[count + 1];

@@ -17,6 +17,7 @@ public final class Json {
           .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
           .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
           .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+          .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
           .enable(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS)
           .withCoercionConfig(
               LogicalType.Textual,
@@ -39,8 +40,9 @@ public final class Json {
 
   public static <T> java.util.List<T> readList(String value, Class<T> type) {
     try {
-      return MAPPER.readValue(
-          value, MAPPER.getTypeFactory().constructCollectionType(java.util.List.class, type));
+      return java.util.Objects.requireNonNull(
+          MAPPER.readValue(
+              value, MAPPER.getTypeFactory().constructCollectionType(java.util.List.class, type)));
     } catch (Exception e) {
       throw new IllegalArgumentException("invalid JSON list", e);
     }
@@ -48,7 +50,7 @@ public final class Json {
 
   public static <T> T read(String value, Class<T> type) {
     try {
-      return MAPPER.readValue(value, type);
+      return java.util.Objects.requireNonNull(MAPPER.readValue(value, type));
     } catch (Exception e) {
       throw new IllegalArgumentException("invalid JSON input", e);
     }

@@ -28,6 +28,15 @@
           <small id="token-help">Kept in this page only. Leave empty for the trusted local demo.</small></div>
         <button id="load" type="submit" class="primary">Load current published plan</button>
       </form>
+      <section id="plan-summary" class="plan-summary" aria-label="Dispatch decision" aria-live="polite">
+        <p id="plan-context" class="summary-context">No validated plan</p>
+        <dl class="decision-metrics">
+          <div><dt>Feasibility</dt><dd id="plan-status">Load a plan</dd></div>
+          <div><dt>Unassigned jobs</dt><dd><a id="unassigned-count" href="#demand-title">—</a></dd></div>
+          <div><dt>Hard violations</dt><dd id="hard-count">—</dd></div>
+        </dl>
+        <p id="summary-explanation">A validated result is required before publication.</p>
+      </section>
       <div class="toolbar" aria-label="Planning actions">
         <button id="solve" type="button" disabled>Solve active input</button>
         <button id="cancel" type="button" disabled>Request cancellation</button>
@@ -41,6 +50,9 @@
       <div class="section-heading"><div><h2 id="routes-title">Directed routes</h2>
         <p>Schematic stop order, using fictional coordinates. Lines do not represent roads.</p></div>
         <span id="route-count" class="badge">No plan loaded</span></div>
+      <div class="route-inspector field"><label for="vehicle-filter">Inspect vehicle</label>
+        <select id="vehicle-filter" aria-describedby="vehicle-help" disabled><option value="">All routes</option></select>
+        <small id="vehicle-help">Choose one vehicle to inspect its route and matching timeline.</small></div>
       <svg id="map" viewBox="0 0 900 400" role="img" aria-labelledby="map-title map-description">
         <title id="map-title">Synthetic stop sequence</title>
         <desc id="map-description">Routes appear after a plan is loaded. The shift table provides the same stop order in text.</desc>
@@ -48,7 +60,7 @@
     </section>
     <section class="panel" aria-labelledby="timeline-title">
       <h2 id="timeline-title">Shift timelines</h2>
-      <p>Times use the problem's service zone. Cargo remains on its observed vehicle.</p>
+      <p id="timeline-zone">Times use the problem's service zone. Cargo remains on its observed vehicle.</p>
       <div class="table-scroll" tabindex="0" role="region" aria-label="Vehicle shift timelines">
         <table><caption class="visually-hidden">Vehicle route, stop service start and return time</caption>
           <thead><tr><th scope="col">Vehicle</th><th scope="col">Stop sequence and service start</th><th scope="col">Return</th></tr></thead>

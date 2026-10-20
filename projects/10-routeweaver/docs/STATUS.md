@@ -2,9 +2,19 @@
 
 RouteWeaver implements immutable bounded dispatch inputs, independent feasibility validation and a complete tiny-instance oracle, original route moves, Timefold improvement, PostgreSQL solve jobs with lease fencing, explicit publication, tenant-scoped HTTP, and a browser dispatcher. Repository-wide release certification remains separate from project checks.
 
-## Current changes
+## Current implementation hardening
 
-The current hardening adds a development-mode browser boundary against cross-origin mutations and DNS rebinding, a same-origin Content Security Policy, early publication/replanning request validation, and a readable responsive dispatcher. The UI keeps tokens in page memory, gates actions by durable job state, polls serially, and discards progress responses after connection details change. Unassigned jobs have readable reason labels in an accessible table; raw validation payloads and detailed score provenance are expandable. JavaScript and CSS now participate in the launcher source fingerprint.
+The latest implementation separates JDBC transactions, immutable inputs, leased jobs and publication behind the compatible Store facade. It corrects caller-supplied candidate identity, shutdown/claim races, heartbeat and cancellation-observer failure handling, shared oracle search state, bounded route/time/fixture/HTTP inputs, and ambiguous JSON/error classification. Additive schema constraints protect state and candidate references. Launchers now bind artifact bytes and kernel process identity.
+
+The final supported integration/mutation build passed at **09:02:23 UTC on 20 October 2026: 73 methods, comprising 51 ordinary and 22 real PostgreSQL methods, with zero failures, errors or skips**. All 82 selected Validator mutants were killed. Domain coverage is 242/248 lines and 129/130 branches; planning coverage is 516/534 lines and 302/342 branches. The original line/branch and mutation thresholds remain unchanged. Forty generated property checks and the exhausted 95,901-leaf oracle are included. [Deep hardening evidence](../evidence/deep-hardening-current.json) binds source `e814e426`, the parent POM, reports and packaged artifact bytes.
+
+Eight Python artifact/process/socket regressions passed. Strict-CSP browser fixtures cover prominent partial-plan decisions, keyboard vehicle filtering, refresh/reset and stale-response schedules, cross-day service times, published-input pairing and late cancellation acknowledgement. The packaged application passed actual desktop and 390-pixel Chromium rendering, a delayed unchanged real HTTP response, solve/publication and retained-data SIGKILL recovery. Recovery advanced fence 1 to 3, retained a nondegrading valid incumbent and published nothing automatically. Teardown stopped the owned service and removed its container/network while retaining the volume.
+
+The first immediate restart check exposed a TIME_WAIT false positive in port ownership; an actual socket regression and repeated live recovery verify the correction. One instrumented watcher fixture also exhausted its one-second setup budget; an explicit thread/latch schedule and legal thirty-second solve budget replaced that timing assumption. Failed run hashes remain recorded. No new benchmark was run.
+
+## Previous browser and HTTP hardening
+
+The earlier browser hardening adds a development-mode browser boundary against cross-origin mutations and DNS rebinding, a same-origin Content Security Policy, early publication/replanning request validation, and a readable responsive dispatcher. The UI keeps tokens in page memory, gates actions by durable job state, polls serially, and discards progress responses after connection details change. Unassigned jobs have readable reason labels in an accessible table; raw validation payloads and detailed score provenance are expandable. JavaScript and CSS now participate in the launcher source fingerprint.
 
 The final ordinary verification passed 41 methods at 07:32:37 UTC on 20 October 2026. The subsequent full integration reactor passed at 07:36:31 UTC: **55 methods, comprising 41 ordinary and 14 PostgreSQL, with no failures, errors, or skips**. It includes malformed publication/replanning rejection before persistence and real HTTP static-asset/CSP assertions. [Current hardening evidence](../evidence/hardening-current.json) binds source and report hashes.
 
@@ -35,4 +45,4 @@ The [sealed packet](../evidence/performance-v1/packet.json) preserves all outcom
 
 ## Remaining work
 
-Project-scoped hardening verification and the live-service browser check are complete. Fresh-checkout, repository-wide CI, hosted security scans, and release certification remain separate checks. Historical measurements need a new complete run before being attributed to changed runtime source.
+Project-scoped deep hardening, packaged browser and crash-recovery checks are complete. Fresh-checkout, repository-wide CI, hosted security scans, and release certification remain separate checks. Historical measurements need a new complete run before being attributed to changed runtime source.

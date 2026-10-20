@@ -59,27 +59,45 @@ async def check(base):
             errors = []
             page.on('pageerror', lambda error: errors.append(str(error)))
             hold_poll = False
+            revised_input = False
             poll_started = asyncio.Event()
             release_poll = asyncio.Event()
+            hold_load = False
+            load_started = asyncio.Event()
+            release_load = asyncio.Event()
+            hold_cancel = False
+            force_running = False
+            cancel_started = asyncio.Event()
+            release_cancel = asyncio.Event()
             poll_requests = 0
 
             async def route_api(route):
-                nonlocal poll_requests
+                nonlocal poll_requests, force_running
                 path = route.request.url.split(base, 1)[1]
                 if path.endswith('/solve'):
                     value = dict(job, state='QUEUED', incumbent=None)
                 elif '/solve-jobs/' in path and path.endswith('/baseline'):
                     value = validation
+                elif '/solve-jobs/' in path and path.endswith('/cancel'):
+                    assert hold_cancel
+                    force_running = False
+                    cancel_started.set()
+                    await release_cancel.wait()
+                    value = dict(job, state='CANCEL_REQUESTED')
                 elif '/solve-jobs/' in path:
                     poll_requests += 1
                     if hold_poll:
                         poll_started.set()
                         await release_poll.wait()
-                    value = job
+                    value = dict(job, state='RUNNING') if force_running else job
                 elif path.endswith('/publish'):
                     value = dict(plan, revision=2)
                 elif '/v1/problems/' in path:
-                    value = problem
+                    if hold_load:
+                        load_started.set()
+                        await release_load.wait()
+                    value = dict(problem, version=2, vehicles=[dict(problem['vehicles'][0], currentLocation=4)]) \
+                        if revised_input and '?version=' not in path else problem
                 elif '/v1/plans/' in path:
                     value = plan
                 else:
@@ -102,6 +120,56 @@ async def check(base):
             assert 'STRANDED_CARGO' not in await page.locator('#unassigned-jobs').inner_text()
             assert await page.locator('#unassigned-jobs img').count() == 0
             assert await page.locator('#map title').count() == 1
+            await expect(page.locator('#plan-status')).to_have_text('Partially feasible')
+            await expect(page.locator('#unassigned-count')).to_have_text('2')
+            await expect(page.locator('#hard-count')).to_have_text('0')
+            assert (await page.locator('#plan-summary').bounding_box())['y'] < (await page.locator('#publish').bounding_box())['y']
+            selector = page.get_by_label('Inspect vehicle', exact=True)
+            await selector.focus()
+            await page.keyboard.press('Home')
+            await page.keyboard.press('ArrowDown')
+            await expect(selector).to_have_value('van-1')
+            await expect(page.locator('#timeline tr')).to_have_count(1)
+            await expect(page.locator('#map polyline')).to_have_count(1)
+            await expect(page.locator('#timeline-zone')).to_contain_text('America/Halifax')
+            await expect(page.locator('#timeline time')).to_have_text('09:00:00')
+            problem['serviceZone'] = 'Z'
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
+            await expect(page.locator('#solve')).to_be_enabled()
+            await expect(selector).to_have_value('van-1')
+            assert await page.locator('#timeline tr').count() == 1
+            await expect(page.locator('#timeline time')).to_have_text('12:00:00')
+            validation['timelines'][0]['returnedAt'] = '2026-10-21T13:00:00Z'
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
+            await expect(page.locator('#timeline tr td').last).to_contain_text('Oct 21, 2026')
+            validation['timelines'][0]['returnedAt'] = '2026-10-20T13:00:00Z'
+            # An explicitly empty plan must clear an earlier result, including its selector/summary.
+            plan['solution'] = None
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
+            await expect(selector).to_be_disabled()
+            await expect(page.locator('#plan-context')).to_have_text('No validated plan')
+            assert await page.locator('#map polyline').count() == 0
+            plan['solution'] = validation
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
+            await expect(selector).to_have_value('')
+            # A pending solve uses a revised input; the still-displayed published route keeps its own locations.
+            revised_input = True
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
+            await selector.select_option('van-1')
+            published_points = await page.locator('#map polyline').get_attribute('points')
+            hold_poll = True
+            await page.get_by_role('button', name='Solve active input', exact=True).click()
+            await asyncio.wait_for(poll_started.wait(), timeout=10)
+            await selector.select_option('')
+            await selector.select_option('van-1')
+            assert await page.locator('#map polyline').get_attribute('points') == published_points
+            release_poll.set()
+            await expect(page.locator('#publish')).to_be_enabled()
+            assert await page.locator('#map polyline').get_attribute('points') != published_points
+            hold_poll = revised_input = False
+            poll_started.clear()
+            release_poll.clear()
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
             await page.get_by_role('button', name='Solve active input', exact=True).click()
             await expect(page.locator('#publish')).to_be_enabled()
             score = json.loads(await page.locator('#score').text_content())
@@ -112,6 +180,18 @@ async def check(base):
             assert len(await page.locator('#state').text_content()) < 500
             await page.set_viewport_size({'width': 390, 'height': 844})
             assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+
+            # The worker completes while the cancellation acknowledgement is still in flight.
+            hold_cancel = True
+            force_running = True
+            await page.get_by_role('button', name='Solve active input', exact=True).click()
+            await expect(page.locator('#state')).to_contain_text('RUNNING')
+            await page.get_by_role('button', name='Request cancellation', exact=True).click()
+            await asyncio.wait_for(cancel_started.wait(), timeout=10)
+            await expect(page.locator('#state')).to_contain_text('COMPLETED')
+            release_cancel.set()
+            await expect(page.locator('#publish')).to_be_enabled()
+            await expect(page.locator('#state')).to_contain_text('COMPLETED')
 
             # A pending progress response must not revive a workspace after its identity changes.
             hold_poll = True
@@ -125,10 +205,24 @@ async def check(base):
             await expect(page.locator('#state')).to_have_text('{}')
             assert await page.locator('#solve').is_disabled()
             assert await page.locator('#map polyline').count() == 0
+            await expect(selector).to_be_disabled()
+            await expect(selector).to_have_value('')
+            await expect(page.locator('#unassigned-count')).to_have_text('—')
+            hold_poll = False
+            hold_load = True
+            await page.get_by_role('button', name='Load current published plan', exact=True).click()
+            await asyncio.wait_for(load_started.wait(), timeout=10)
+            await page.locator('#problem').fill('superseding-problem')
+            release_load.set()
+            await expect(page.locator('#load')).to_be_enabled()
+            await expect(selector).to_be_disabled()
+            await expect(page.locator('#plan-context')).to_have_text('No validated plan')
+            assert await page.locator('#timeline tr').count() == 0
             assert await page.evaluate('localStorage.length + sessionStorage.length') == 0
             assert not errors, errors
             print('PASS: keyboard access, mobile layout, safe text rendering, solve/publication states, '
-                  'readable unassigned reasons, same-input baseline, serial polling, stale response isolation, no stored credentials')
+                  'prominent partial-plan decision, vehicle keyboard selection, compact zoned times/day boundary, published-input pairing, safe selection refresh/reset, '
+                  'readable unassigned reasons, same-input baseline, serial polling, monotonic terminal status, stale response/load isolation, no stored credentials')
         finally:
             await browser.close()
 

@@ -149,7 +149,7 @@ public class Security {
       JwtDecoder decoder = protectedDecoder(issuer, audience);
       http.oauth2ResourceServer(o -> o.jwt(j -> j.decoder(decoder)));
     }
-    http.addFilterBefore(new BodyBound(), AuthorizationFilter.class)
+    http.addFilterAfter(new BodyBound(), AuthorizationFilter.class)
         .authorizeHttpRequests(
             a ->
                 a.requestMatchers("/health", "/", "/index.html", "/app.js", "/styles.css")

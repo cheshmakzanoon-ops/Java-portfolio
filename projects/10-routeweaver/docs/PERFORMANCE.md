@@ -1,5 +1,7 @@
 # RouteWeaver performance protocol and evidence
 
+The measurements in this document belong to historical source `d5964723`. The later transaction, shutdown, input-bound and launcher changes have not been benchmarked. Reexecute the complete quiet-host protocol before attributing these numbers to the current runtime.
+
 No large-instance optimum or uniform speedup is promised. Feasibility, physical cargo/freeze preservation and same-input incumbent nondegradation are mandatory. The proposed 10% operating-cost reduction applies only to the preregistered deliberately improvable fixture within a 30-second budget. The completed reference run met it on that fixture in all three outcomes; the measured limits and remaining release gates are recorded below.
 
 ## Workload and boundaries
@@ -33,7 +35,7 @@ projects/10-routeweaver/scripts/down.sh
 
 The script checks the source stamp and health, records real environment/JVM/cgroup details, runs JMH and all 30 system solves, and propagates failures. Default raw output is a fresh .runtime/benchmark/run-<UTC> directory (existing result files are never overwritten): corpus-raw.json, validation-jmh.json/log, client gc.log, server-gc.log, server-resources.jsonl and server-process-status.txt. Compact source/environment-linked results belong in evidence; raw JFR/logs/JARs do not belong in Git. Use a fresh/reset demo tenant before repeating corpus problem IDs. Never prune unrelated volumes.
 
-Reference host currently observed: Intel Xeon Platinum 8573C, Linux x86_64, a four-CPU cgroup quota and 32 GiB memory limit; Temurin 25.0.4.1+1. Maven 3.10.0, Timefold 2.7.1, Spring Boot 4.1.1, Jackson 2.21.5 and PostgreSQL 18.3 Alpine digest are pinned. Latest root JUnit is 6.1.3; earlier historical tests used 6.0.3. Every actual run must capture the environment again and identify other containers/processes and source/root POM fingerprint.
+Reference host currently observed: Intel Xeon Platinum 8573C, Linux x86_64, a four-CPU cgroup quota and 32 GiB memory limit; Temurin 25.0.4.1+1. Maven 3.10.0, Timefold 2.7.1, Spring Boot 4.1.1, Jackson 2.21.7/3.1.7 and PostgreSQL 18.6 Alpine digest are pinned. Latest root JUnit is 6.1.3; earlier historical tests used 6.0.3. Every actual run must capture the environment again and identify other containers/processes and source/root POM fingerprint.
 
 ## Diagnosed baseline bottleneck
 

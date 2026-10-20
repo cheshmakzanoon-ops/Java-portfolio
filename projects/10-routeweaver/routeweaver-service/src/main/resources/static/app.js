@@ -14,6 +14,7 @@ const reasonLabels = {
 let currentJob = null;
 let currentPlan = null;
 let currentProblem = null;
+let currentValidation = null;
 let activeProblem = null;
 let baseline = null;
 let pollTimer = null;
@@ -82,12 +83,7 @@ function resetWorkspace() {
   generation++;
   stopPolling();
   currentJob = currentPlan = currentProblem = activeProblem = baseline = null;
-  $('timeline').replaceChildren();
-  $('map').replaceChildren();
-  $('route-count').textContent = 'No plan loaded';
-  $('score').textContent = $('unassigned').textContent = 'No plan loaded.';
-  $('unassigned-jobs').replaceChildren();
-  $('score-metrics').replaceChildren();
+  clearRenderedPlan();
   show({}, 'Connection details changed. Load the problem to continue.');
   controls();
 }
@@ -103,9 +99,52 @@ function svgElement(tag, attributes, text) {
   return element;
 }
 
-function render(validation, problem) {
+function clearRenderedPlan() {
+  currentValidation = null;
+  $('timeline').replaceChildren();
+  $('map').replaceChildren();
+  $('route-count').textContent = 'No plan loaded';
+  $('score').textContent = $('unassigned').textContent = 'No plan loaded.';
+  $('unassigned-jobs').replaceChildren();
+  $('score-metrics').replaceChildren();
+  const all = document.createElement('option');
+  all.value = '';
+  all.textContent = 'All routes';
+  $('vehicle-filter').replaceChildren(all);
+  $('vehicle-filter').disabled = true;
+  $('plan-summary').classList.remove('partial', 'invalid');
+  $('plan-context').textContent = 'No validated plan';
+  $('plan-status').textContent = 'Awaiting a result';
+  $('unassigned-count').textContent = $('hard-count').textContent = '—';
+  $('summary-explanation').textContent = 'A validated result is required before publication.';
+  $('timeline-zone').textContent = "Times use the problem's service zone. Cargo remains on its observed vehicle.";
+}
+
+function timeFormatter(problem, validation) {
+  const zone = problem.serviceZone === 'Z' ? 'UTC' : problem.serviceZone;
+  const reference = problem.planningInstant || validation.timelines[0]?.stops[0]?.serviceStart
+    || validation.timelines[0]?.returnedAt;
+  try {
+    const day = new Intl.DateTimeFormat('en-CA', {timeZone: zone, year: 'numeric', month: 'short', day: '2-digit'});
+    const clock = new Intl.DateTimeFormat('en-CA', {timeZone: zone, hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'});
+    const referenceDay = day.format(new Date(reference));
+    $('timeline-zone').textContent = referenceDay + ' · ' + zone + '. Times include the date when a stop crosses into another day.';
+    return time => {
+      const date = new Date(time);
+      if (Number.isNaN(date.getTime())) return time + ' (outside browser calendar range)';
+      const dateLabel = day.format(date);
+      return (dateLabel === referenceDay ? '' : dateLabel + ' ') + clock.format(date);
+    };
+  } catch (unsupportedZoneOrDate) {
+    $('timeline-zone').textContent = 'Service zone ' + zone + '; explicit timestamps shown because the browser cannot format this calendar or zone.';
+    return time => time;
+  }
+}
+
+function render(validation, problem, context = 'Published plan') {
   if (!validation) return;
-  const format = time => new Date(time).toLocaleString('en-CA', {timeZone: problem.serviceZone});
+  currentProblem = problem;
+  currentValidation = validation;
   const unassigned = Object.keys(validation.candidate.unassigned).length;
   const metrics = {
     'Plan status': validation.violations.length ? 'Constraint violations' : unassigned ? 'Partially feasible' : 'Fully feasible',
@@ -115,6 +154,16 @@ function render(validation, problem) {
     'Disruption cost': validation.score.disruption.toLocaleString('en-CA'),
     'Input version': problem.version
   };
+  $('plan-context').textContent = context + ' · input version ' + problem.version;
+  $('plan-status').textContent = metrics['Plan status'];
+  $('unassigned-count').textContent = unassigned;
+  $('hard-count').textContent = validation.score.hard;
+  $('plan-summary').classList.toggle('partial', unassigned > 0 && validation.score.hard === 0);
+  $('plan-summary').classList.toggle('invalid', validation.score.hard > 0);
+  $('summary-explanation').textContent = validation.score.hard > 0
+    ? 'Constraint violations prevent dispatch. Inspect the validation details.'
+    : unassigned > 0 ? unassigned + ' jobs remain unassigned. Review their reasons before publishing this partial plan.'
+      : 'All jobs are assigned with no hard violations. Review the route details before publishing.';
   $('score-metrics').replaceChildren();
   Object.entries(metrics).forEach(([label, value]) => {
     const item = document.createElement('div');
@@ -159,22 +208,59 @@ function render(validation, problem) {
     row.append(job, description);
     $('unassigned-jobs').append(row);
   });
+  renderRoutes(validation, problem);
+}
+
+function renderRoutes(validation, problem) {
+  const format = timeFormatter(problem, validation);
+  const selected = $('vehicle-filter').value;
+  const all = document.createElement('option');
+  all.value = '';
+  all.textContent = 'All routes';
+  const options = validation.timelines.map(timeline => {
+    const option = document.createElement('option');
+    option.value = timeline.vehicleId;
+    option.textContent = timeline.vehicleId + ' · ' + timeline.stops.length + ' stops';
+    return option;
+  });
+  $('vehicle-filter').replaceChildren(all, ...options);
+  $('vehicle-filter').disabled = validation.timelines.length === 0;
+  $('vehicle-filter').value = validation.timelines.some(item => item.vehicleId === selected) ? selected : '';
+  const filter = $('vehicle-filter').value;
   $('timeline').replaceChildren();
   $('map').replaceChildren(
-    svgElement('title', {id: 'map-title'}, 'Synthetic stop sequence'),
-    svgElement('desc', {id: 'map-description'}, 'Read the shift timelines below for vehicle names, stop order and service times.')
+    svgElement('title', {id: 'map-title'}, filter ? 'Stop sequence for ' + filter : 'Synthetic stop sequence'),
+    svgElement('desc', {id: 'map-description'}, 'Read the matching shift timelines below for vehicle names, stop order and service times.')
   );
-  $('route-count').textContent = validation.timelines.length + ' vehicle routes';
+  $('route-count').textContent = filter ? filter + ' · 1 of ' + validation.timelines.length + ' vehicle routes'
+    : validation.timelines.length + ' vehicle routes';
   validation.timelines.forEach((timeline, index) => {
+    if (filter && timeline.vehicleId !== filter) return;
     const vehicle = problem.vehicles.find(item => item.id === timeline.vehicleId);
     const row = document.createElement('tr');
-    const schedule = timeline.stops.map(stop => stop.jobId + ' @ ' + format(stop.serviceStart)).join(' → ')
-      || (vehicle.failed ? 'Broken; ' + vehicle.onboard.length + ' onboard jobs' : 'Standby / unscheduled');
-    [timeline.vehicleId, schedule, format(timeline.returnedAt)].forEach(text => {
-      const cell = document.createElement('td');
-      cell.textContent = text;
-      row.append(cell);
-    });
+    const name = document.createElement('th');
+    name.scope = 'row';
+    name.textContent = timeline.vehicleId;
+    const schedule = document.createElement('td');
+    if (timeline.stops.length) {
+      const sequence = document.createElement('ol');
+      sequence.className = 'stop-list';
+      timeline.stops.forEach(stop => {
+        const item = document.createElement('li');
+        const job = document.createElement('span');
+        job.textContent = stop.jobId;
+        const time = document.createElement('time');
+        time.dateTime = stop.serviceStart;
+        time.title = stop.serviceStart + ' · service zone ' + problem.serviceZone;
+        time.textContent = format(stop.serviceStart);
+        item.append(job, time);
+        sequence.append(item);
+      });
+      schedule.append(sequence);
+    } else schedule.textContent = vehicle.failed ? 'Broken; ' + vehicle.onboard.length + ' onboard jobs' : 'Standby / unscheduled';
+    const returned = document.createElement('td');
+    returned.textContent = format(timeline.returnedAt);
+    row.append(name, schedule, returned);
     $('timeline').append(row);
     const locations = vehicle.failed ? [point(vehicle.currentLocation)]
       : [point(vehicle.currentLocation), ...timeline.stops.map(stop => point(stop.location)), point(problem.depot)];
@@ -208,6 +294,7 @@ async function load(expected) {
   show({planRevision: plan.revision, activeInputVersion: problem.version, publishedInputVersion: plan.problemVersion},
     plan.solution ? 'Published plan loaded. Review routes or solve the active input.' : 'Problem loaded. Solve the active input to create a candidate.');
   if (plan.solution) render(plan.solution, published);
+  else clearRenderedPlan();
 }
 
 async function poll(jobId, problem, expected) {
@@ -220,7 +307,7 @@ async function poll(jobId, problem, expected) {
     show({job: job.id, state: job.state, inputVersion: job.problemVersion, stop: job.stopCondition},
       terminal.has(job.state) ? 'Solve ' + job.state.toLowerCase() + '. Review the candidate before publishing.'
         : job.state === 'CANCEL_REQUESTED' ? 'Cancellation requested. Waiting for the worker to stop.' : 'Solving input version ' + job.problemVersion + '…');
-    render(job.incumbent, problem);
+    render(job.incumbent, problem, 'Candidate plan');
     controls();
     if (!terminal.has(job.state)) pollTimer = setTimeout(() => poll(jobId, problem, expected), 500);
   } catch (error) {
@@ -229,6 +316,10 @@ async function poll(jobId, problem, expected) {
     controls();
   }
 }
+
+$('vehicle-filter').addEventListener('change', () => {
+  if (currentValidation && currentProblem) renderRoutes(currentValidation, currentProblem);
+});
 
 $('connection').addEventListener('submit', event => { event.preventDefault(); guarded(load); });
 $('problem').addEventListener('input', resetWorkspace);
@@ -241,15 +332,17 @@ $('solve').addEventListener('click', () => guarded(async expected => {
   });
   if (generation !== expected) return;
   currentJob = job;
-  currentProblem = problem;
   show({job: job.id, state: job.state, inputVersion: job.problemVersion}, 'Solve submitted. The published plan is unchanged.');
   pollTimer = setTimeout(() => poll(job.id, problem, expected), 0);
 }));
 $('cancel').addEventListener('click', () => guarded(async expected => {
   const job = await api('/v1/solve-jobs/' + currentJob.id + '/cancel', {});
   if (generation !== expected) return;
-  currentJob = job;
-  show({job: job.id, state: job.state}, 'Cancellation requested. A completed solve may already be terminal.');
+  // A progress response may reach terminal state while this cancellation request is in flight.
+  if (!terminal.has(currentJob.state)) currentJob = job;
+  show({job: currentJob.id, state: currentJob.state}, terminal.has(currentJob.state)
+    ? 'Solve ' + currentJob.state.toLowerCase() + '. Review the candidate before publishing.'
+    : 'Cancellation requested. Waiting for the worker to stop.');
 }));
 $('publish').addEventListener('click', () => guarded(async expected => {
   const id = encodeURIComponent(activeProblem.id);

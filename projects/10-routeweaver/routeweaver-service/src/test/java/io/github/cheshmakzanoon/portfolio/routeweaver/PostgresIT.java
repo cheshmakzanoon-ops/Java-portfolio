@@ -17,7 +17,7 @@ class PostgresIT {
   static final PostgreSQLContainer PG =
       new PostgreSQLContainer(
           org.testcontainers.utility.DockerImageName.parse(
-                  "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7")
+                  "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
               .asCompatibleSubstituteFor("postgres"));
 
   static PGSimpleDataSource ds;
@@ -427,9 +427,12 @@ class PostgresIT {
               .id());
       try (var c = restoredDataSource.getConnection();
           var statement = c.createStatement()) {
-        assertThrows(
-            java.sql.SQLException.class,
-            () -> statement.execute("UPDATE problem_snapshot SET payload=payload"));
+        var refused =
+            assertThrows(
+                java.sql.SQLException.class,
+                () -> statement.execute("UPDATE problem_snapshot SET snapshot=snapshot"));
+        assertEquals("55000", refused.getSQLState());
+        assertTrue(refused.getMessage().contains("immutable"));
       }
     } finally {
       var dropped = PG.execInContainer("dropdb", "-U", PG.getUsername(), restoredName);
@@ -512,6 +515,339 @@ class PostgresIT {
               "source-v2",
               17);
       assertEquals("COMPLETED", awaitTerminal(replacement.id()).state());
+    }
+  }
+
+  @Test
+  void authoritativeCandidateIdentityComesFromTheLockedJobNotTheCaller() {
+    Problem original = problem("demo");
+    Problem other =
+        new Problem(
+            original.tenant(),
+            "other",
+            1,
+            original.serviceZone(),
+            original.depot(),
+            original.planningInstant(),
+            original.matrix(),
+            original.jobs(),
+            original.vehicles(),
+            original.completed(),
+            original.previous(),
+            original.objective(),
+            original.audit());
+    store.create(other);
+    submit("forged-identity");
+    Store.JobView worker = store.claim("owner", 15);
+    Map<String, Object> changed = Json.read(Json.write(worker), Map.class);
+    changed.put("problemId", "other");
+    Store.JobView forged = Json.read(Json.write(changed), Store.JobView.class);
+    assertFalse(store.record(forged, new Heuristics().baseline(other)));
+    assertNull(store.job("demo", worker.id()).incumbent());
+    assertTrue(store.record(worker, new Heuristics().baseline(original)));
+    assertEquals(
+        original.canonicalHash(),
+        store.job("demo", worker.id()).incumbent().candidate().inputHash());
+  }
+
+  @Test
+  void eventWriteFailureRollsBackEveryProblemCreationWrite() {
+    Store broken =
+        new Store(
+            intercept(
+                (sql, after) -> {
+                  if (!after && sql.startsWith("INSERT INTO plan_event"))
+                    throw new java.sql.SQLException("injected event storage failure");
+                }));
+    assertThrows(IllegalStateException.class, () -> broken.create(problem("rollback")));
+    assertThrows(Store.Missing.class, () -> store.load("rollback", "p", 1));
+    assertThrows(Store.Missing.class, () -> store.active("rollback", "p"));
+    assertThrows(Store.Missing.class, () -> store.plan("rollback", "p"));
+    assertNotNull(store.create(problem("rollback")));
+  }
+
+  @Test
+  void migrationIsRepeatableAndDatabaseRejectsCrossJobIncumbentsAndIllegalStates()
+      throws Exception {
+    Store.JobView first = completed("first-for-fk");
+    Store.JobView second = completed("second-for-fk");
+    new Store(ds).initialize();
+    new Store(ds).initialize();
+    assertEquals(first.incumbent(), store.job("demo", first.id()).incumbent());
+    try (var c = ds.getConnection();
+        var statement = c.createStatement()) {
+      assertThrows(
+          java.sql.SQLException.class,
+          () ->
+              statement.executeUpdate(
+                  "UPDATE solve_job SET best_candidate='"
+                      + first.bestCandidate()
+                      + "' WHERE id='"
+                      + second.id()
+                      + "'"));
+      assertThrows(
+          java.sql.SQLException.class,
+          () ->
+              statement.executeUpdate(
+                  "UPDATE solve_job SET state='RUNNING',lease_until=NULL WHERE id='"
+                      + second.id()
+                      + "'"));
+      assertThrows(
+          java.sql.SQLException.class,
+          () ->
+              statement.executeUpdate("UPDATE published_plan SET revision=-1 WHERE tenant='demo'"));
+    }
+  }
+
+  @Test
+  void rowLockBarriersForceBothCancellationCompletionOrders() throws Exception {
+    for (boolean cancelFirst : new boolean[] {true, false}) {
+      var queued = submit("ordered-" + cancelFirst);
+      var worker = store.claim("owner", 15);
+      store.record(worker, new Heuristics().baseline(problem("demo")));
+      CountDownLatch locked = new CountDownLatch(1),
+          release = new CountDownLatch(1),
+          secondEntered = new CountDownLatch(1);
+      Store gated =
+          new Store(
+              intercept(
+                  (sql, after) -> {
+                    if (after
+                        && sql.startsWith("SELECT state FROM solve_job")
+                        && Thread.currentThread().getName().equals("decision-first")) {
+                      locked.countDown();
+                      assertTrue(release.await(5, TimeUnit.SECONDS));
+                    }
+                  }));
+      try (ExecutorService first =
+              Executors.newSingleThreadExecutor(
+                  Thread.ofPlatform().name("decision-first").factory());
+          ExecutorService second = Executors.newSingleThreadExecutor()) {
+        Future<?> a =
+            first.submit(
+                () -> {
+                  if (cancelFirst) gated.cancel("demo", queued.id());
+                  else gated.finish(worker, null);
+                });
+        assertTrue(locked.await(5, TimeUnit.SECONDS));
+        Future<?> b =
+            second.submit(
+                () -> {
+                  secondEntered.countDown();
+                  if (cancelFirst) gated.finish(worker, null);
+                  else gated.cancel("demo", queued.id());
+                });
+        assertTrue(secondEntered.await(5, TimeUnit.SECONDS));
+        assertFalse(b.isDone(), "second decision cannot pass the held row lock");
+        release.countDown();
+        a.get(10, TimeUnit.SECONDS);
+        b.get(10, TimeUnit.SECONDS);
+      } finally {
+        release.countDown();
+      }
+      assertEquals(cancelFirst ? "CANCELLED" : "COMPLETED", store.job("demo", queued.id()).state());
+      assertNotNull(store.job("demo", queued.id()).incumbent());
+      assertNull(store.plan("demo", "p").solution());
+    }
+  }
+
+  @Test
+  void gracefulShutdownFencesAndRequeuesInterruptedWorkWithoutPublishing() throws Exception {
+    var queued =
+        store.submit(
+            "demo",
+            "p",
+            new Store.SolveRequest(1, "close", 42, 30000, 100000),
+            "shutdown-source",
+            17);
+    CountDownLatch entered = new CountDownLatch(1);
+    java.util.concurrent.atomic.AtomicReference<Store.JobView> claim =
+        new java.util.concurrent.atomic.AtomicReference<>();
+    Dispatcher dispatcher =
+        new Dispatcher(
+            store,
+            "shutdown-source",
+            (job, deadline, stop) -> {
+              claim.set(job);
+              store.record(job, new Heuristics().baseline(problem("demo")));
+              entered.countDown();
+              while (!stop.getAsBoolean()) Thread.onSpinWait();
+            },
+            Duration.ofMillis(10),
+            Duration.ofMillis(50));
+    try {
+      assertTrue(entered.await(5, TimeUnit.SECONDS));
+    } finally {
+      dispatcher.close();
+    }
+    assertTrue(dispatcher.terminated());
+    var after = store.job("demo", queued.id());
+    assertEquals("QUEUED", after.state());
+    assertTrue(after.fence() > claim.get().fence());
+    assertNotNull(after.incumbent());
+    assertFalse(store.finish(claim.get(), null));
+    assertNull(store.plan("demo", "p").solution());
+  }
+
+  @Test
+  void heartbeatFailureIsVisibleAndDoesNotLeakTheSingleWorkerSlot() throws Exception {
+    var first =
+        store.submit(
+            "demo",
+            "p",
+            new Store.SolveRequest(1, "heartbeat-fault", 42, 30000, 100000),
+            "heartbeat-source",
+            17);
+    var injected = new java.util.concurrent.atomic.AtomicBoolean();
+    Store unreliable =
+        new Store(
+            intercept(
+                (sql, after) -> {
+                  if (!after
+                      && sql.startsWith("UPDATE solve_job SET lease_until=")
+                      && injected.compareAndSet(false, true))
+                    throw new java.sql.SQLException("injected heartbeat outage");
+                }));
+    try (Dispatcher dispatcher =
+        new Dispatcher(
+            unreliable,
+            "heartbeat-source",
+            (job, deadline, stop) -> {
+              unreliable.record(job, new Heuristics().baseline(problem("demo")));
+              if (job.id().equals(first.id())) while (!stop.getAsBoolean()) Thread.onSpinWait();
+            },
+            Duration.ofMillis(10),
+            Duration.ofMillis(20))) {
+      var failed = awaitTerminal(first.id());
+      assertEquals("FAILED", failed.state());
+      assertEquals("LEASE_HEARTBEAT_FAILURE", failed.failure());
+      var second =
+          store.submit(
+              "demo",
+              "p",
+              new Store.SolveRequest(1, "after-heartbeat-fault", 42, 1000, 10),
+              "heartbeat-source",
+              17);
+      assertEquals("COMPLETED", awaitTerminal(second.id()).state());
+    }
+  }
+
+  @Test
+  void closeDuringClaimNeverStartsAnUnownedTaskOrLeavesARunningLease() throws Exception {
+    var queued =
+        store.submit(
+            "demo",
+            "p",
+            new Store.SolveRequest(1, "close-claim", 42, 30000, 100000),
+            "close-source",
+            17);
+    CountDownLatch claimed = new CountDownLatch(1), release = new CountDownLatch(1);
+    java.util.concurrent.atomic.AtomicInteger executions =
+        new java.util.concurrent.atomic.AtomicInteger();
+    Store gated =
+        new Store(
+            intercept(
+                (sql, after) -> {
+                  if (after && sql.startsWith("UPDATE solve_job SET state='RUNNING'")) {
+                    claimed.countDown();
+                    boolean interrupted = false;
+                    while (true) {
+                      try {
+                        assertTrue(release.await(5, TimeUnit.SECONDS));
+                        break;
+                      } catch (InterruptedException expected) {
+                        interrupted = true;
+                      }
+                    }
+                    if (interrupted) Thread.currentThread().interrupt();
+                  }
+                }));
+    Dispatcher dispatcher =
+        new Dispatcher(
+            gated,
+            "close-source",
+            (job, deadline, stop) -> executions.incrementAndGet(),
+            Duration.ofMillis(10),
+            Duration.ofMillis(50));
+    try (ExecutorService closer = Executors.newSingleThreadExecutor()) {
+      assertTrue(claimed.await(5, TimeUnit.SECONDS));
+      Future<?> closed = closer.submit(dispatcher::close);
+      long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+      while (!dispatcher.isClosing() && System.nanoTime() < deadline) Thread.onSpinWait();
+      assertTrue(dispatcher.isClosing());
+      release.countDown();
+      closed.get(20, TimeUnit.SECONDS);
+      assertTrue(dispatcher.terminated());
+      assertEquals(0, executions.get());
+      assertEquals("QUEUED", store.job("demo", queued.id()).state());
+    } finally {
+      release.countDown();
+      dispatcher.close();
+    }
+  }
+
+  @Test
+  void shutdownAcknowledgesCancellationAndCannotReleaseANewerGeneration() throws Exception {
+    var queued = submit("shutdown-cancel");
+    var claim = store.claim("owner", 15);
+    store.record(claim, new Heuristics().baseline(problem("demo")));
+    store.cancel("demo", queued.id());
+    assertTrue(store.release(claim, "SERVICE_SHUTDOWN_REQUEUED"));
+    var after = store.job("demo", queued.id());
+    assertEquals("CANCELLED", after.state());
+    assertNotNull(after.finishedAt());
+    assertNotNull(after.incumbent());
+    assertFalse(store.finish(claim, null));
+    submit("shutdown-expired");
+    var stale = store.claim("old", 15);
+    expire(stale);
+    store.recover();
+    var current = store.claim("new", 15);
+    assertFalse(store.release(stale, "SERVICE_SHUTDOWN_REQUEUED"));
+    assertEquals("RUNNING", store.job("demo", current.id()).state());
+    assertTrue(store.release(current, "SERVICE_SHUTDOWN_REQUEUED"));
+  }
+
+  @FunctionalInterface
+  interface SqlHook {
+    void execute(String sql, boolean after) throws Exception;
+  }
+
+  static javax.sql.DataSource intercept(SqlHook hook) {
+    return (javax.sql.DataSource)
+        java.lang.reflect.Proxy.newProxyInstance(
+            PostgresIT.class.getClassLoader(),
+            new Class<?>[] {javax.sql.DataSource.class},
+            (proxy, method, args) -> {
+              Object result = invoke(ds, method, args);
+              if (!method.getName().equals("getConnection")) return result;
+              return java.lang.reflect.Proxy.newProxyInstance(
+                  PostgresIT.class.getClassLoader(),
+                  new Class<?>[] {java.sql.Connection.class},
+                  (connection, call, values) -> {
+                    Object prepared = invoke(result, call, values);
+                    if (!call.getName().equals("prepareStatement")) return prepared;
+                    String sql = (String) values[0];
+                    return java.lang.reflect.Proxy.newProxyInstance(
+                        PostgresIT.class.getClassLoader(),
+                        new Class<?>[] {java.sql.PreparedStatement.class},
+                        (statement, operation, parameters) -> {
+                          boolean executes = operation.getName().startsWith("execute");
+                          if (executes) hook.execute(sql, false);
+                          Object answer = invoke(prepared, operation, parameters);
+                          if (executes) hook.execute(sql, true);
+                          return answer;
+                        });
+                  });
+            });
+  }
+
+  static Object invoke(Object receiver, java.lang.reflect.Method method, Object[] args)
+      throws Throwable {
+    try {
+      return method.invoke(receiver, args);
+    } catch (java.lang.reflect.InvocationTargetException failure) {
+      throw failure.getCause();
     }
   }
 
