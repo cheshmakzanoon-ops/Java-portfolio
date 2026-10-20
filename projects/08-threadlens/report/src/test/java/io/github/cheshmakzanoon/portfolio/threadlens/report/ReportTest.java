@@ -14,11 +14,12 @@ class ReportTest {
   @Test
   void representativeOfflineReportsExposeEveryNavigationTargetAndSafeText() throws Exception {
     ProfileAccumulator accumulator = new ProfileAccumulator(100, 1_000_000_000L, 20);
+    long epochNanos = 1_790_000_000_000_000_000L;
     for (int i = 0; i < 30; i++)
       accumulator.accept(
           new NormalizedEvent(
               NormalizedEvent.Kind.SAMPLE,
-              i * 100_000_000L,
+              epochNanos + i * 100_000_000L,
               1,
               "sample",
               List.of(
@@ -33,7 +34,11 @@ class ReportTest {
             NormalizedEvent.Kind.TIMING))
       accumulator.accept(
           new NormalizedEvent(
-              kind, 100_000_000, 123456789, "safe.application.Work.handle()V", List.of()));
+              kind,
+              epochNanos + 100_000_000L,
+              123456789,
+              "safe.application.Work.handle()V",
+              List.of()));
     ReportDocument document =
         ReportDocument.create(
             "offline-browser-fixture",

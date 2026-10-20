@@ -1,0 +1,133 @@
+{
+  "passed": true,
+  "browser": "/usr/bin/chromium",
+  "observations": [
+    {
+      "viewport": "desktop",
+      "report": "report.html",
+      "html_sha256": "f44b890b82fe3b9a2d618c7ae17c0f435c3035f3b73b076a6fd11c72328510ce",
+      "navigation_targets": 5,
+      "tables": 6,
+      "global_overflow": false,
+      "local_table_scroll": false,
+      "epoch_cells": [
+        {
+          "text": "1790000000000000000",
+          "width": 239,
+          "lines": 1,
+          "contentFits": true
+        },
+        {
+          "text": "1790000001000000000",
+          "width": 239,
+          "lines": 1,
+          "contentFits": true
+        },
+        {
+          "text": "1790000002000000000",
+          "width": 239,
+          "lines": 1,
+          "contentFits": true
+        }
+      ],
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "b19cf62eca96f8df8d6ae27709a58b5bf405a7196a26760d3c2d8d83dc868d47"
+    },
+    {
+      "viewport": "desktop",
+      "report": "comparison.html",
+      "html_sha256": "75001668868e62ad9d480c6c8cb7262e95d8deb31718b36a0827b1a983690733",
+      "navigation_targets": 4,
+      "tables": 1,
+      "global_overflow": false,
+      "local_table_scroll": false,
+      "epoch_cells": [],
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "ca7393717688afd98d562a75db122fdd3e4c4ad22a6a26e64bb4ec5301d16f13"
+    },
+    {
+      "viewport": "mobile",
+      "report": "report.html",
+      "html_sha256": "f44b890b82fe3b9a2d618c7ae17c0f435c3035f3b73b076a6fd11c72328510ce",
+      "navigation_targets": 5,
+      "tables": 6,
+      "global_overflow": false,
+      "local_table_scroll": true,
+      "epoch_cells": [
+        {
+          "text": "1790000000000000000",
+          "width": 191,
+          "lines": 1,
+          "contentFits": true
+        },
+        {
+          "text": "1790000001000000000",
+          "width": 191,
+          "lines": 1,
+          "contentFits": true
+        },
+        {
+          "text": "1790000002000000000",
+          "width": 191,
+          "lines": 1,
+          "contentFits": true
+        }
+      ],
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "993299d7d3cee17bb216262df28f807a03480da7561718ba7d87a407d55ec9b6"
+    },
+    {
+      "viewport": "mobile",
+      "report": "comparison.html",
+      "html_sha256": "75001668868e62ad9d480c6c8cb7262e95d8deb31718b36a0827b1a983690733",
+      "navigation_targets": 4,
+      "tables": 1,
+      "global_overflow": false,
+      "local_table_scroll": true,
+      "epoch_cells": [],
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "0bb867043ede16d3fb2adad3219e6f1276cfbc38ddd33a2b0882fa98503e8ea6"
+    }
+  ],
+  "schemaVersion": 1,
+  "project": "threadlens",
+  "sourceFingerprint": "a8091db4e038e14017857404082533732141dec74a0381b1791bd593473dd3cd",
+  "browserVersion": "Chromium 154.0.8037.57 (Debian 13)",
+  "command": "timeout 100s python3 projects/08-threadlens/scripts/check-report-ui.py --output .work/A08/mobile-report-browser",
+  "harnessSha256": "6cd7cc8ed7fe73ca008b7b55b19256ba9bdab2c16f38bc4af08651da344143a5",
+  "transport": "Ephemeral loopback HTTP server serving the actual Java-generated report fixtures",
+  "change": "Epoch-nanosecond header/cells have a 12rem minimum and remain on one line; only their local table scrolls when needed. No truncation or hidden data.",
+  "beforeObservation": {
+    "viewportWidth": 390,
+    "values": [
+      "0",
+      "1000000000",
+      "2000000000"
+    ],
+    "cellWidths": [
+      41,
+      41,
+      41
+    ],
+    "renderedLines": [
+      1,
+      3,
+      3
+    ]
+  },
+  "fixtureEpochOriginNanos": 1790000000000000000,
+  "checks": [
+    "Existing four desktop/mobile standard/differential report cases",
+    "Every 19-digit epoch cell fits and has exactly one rendered text line",
+    "Fragment navigation/skip-link focus/native details",
+    "Keyboard horizontal scrolling",
+    "Literal hostile content/no executable elements",
+    "No global viewport overflow/console errors/remote requests"
+  ],
+  "artifactRetention": "Screenshots and generated HTML remain ignored build artifacts identified by hashes; committed tests/harness reproduce them.",
+  "localArtifactsDirectory": ".work/A08/mobile-report-browser"
+}

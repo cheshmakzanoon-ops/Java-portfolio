@@ -54,6 +54,7 @@ def main():
                                 if urlsplit(request.url).scheme in ('http', 'https')
                                 and urlsplit(request.url).hostname not in ('127.0.0.1', 'localhost') else None)
                         for file in ['report.html', 'comparison.html']:
+                            epoch_cells = []
                             path = (args.fixtures / file).resolve(strict=True)
                             page.goto(address + '/' + file, wait_until='domcontentloaded', timeout=20000)
                             expect(page.locator('main h1')).to_be_visible()
@@ -88,6 +89,13 @@ def main():
                                     page.wait_for_timeout(50)
                                 assert tables.first.evaluate('(element) => element.scrollLeft') > 0
                             if file == 'report.html':
+                                epoch_cells = page.locator('td.epoch-nanos').evaluate_all(
+                                    'elements => elements.map(element => {const range = document.createRange();'
+                                    'range.selectNodeContents(element); return {text: element.textContent,'
+                                    'width: element.clientWidth, lines: range.getClientRects().length,'
+                                    'contentFits: element.scrollWidth <= element.clientWidth};})')
+                                assert epoch_cells, 'timeline must expose epoch values'
+                                assert all(cell['lines'] == 1 and cell['contentFits'] for cell in epoch_cells), epoch_cells
                                 details = page.locator('details').first
                                 details.locator('summary').first.click()
                                 assert not details.evaluate('(element) => element.open')
@@ -100,6 +108,7 @@ def main():
                                                  'navigation_targets': len(links),
                                                  'tables': tables.count(), 'global_overflow': overflow,
                                                  'local_table_scroll': local_scroll,
+                                                 'epoch_cells': epoch_cells,
                                                  'console_errors': list(errors), 'remote_requests': list(remote),
                                                  'screenshot_sha256': hashlib.sha256(screenshot.read_bytes()).hexdigest()})
                     finally:

@@ -6,7 +6,7 @@ ThreadLens has functional, transformation, privacy and boundedness evidence on J
 
 The current implementation separates live event processing, startup instrumentation ownership, child-JVM termination and report validation into explicit components. Regressions cover sealed admission, bounded drain, callback-triggered shutdown, failed startup rollback, duplicate agent declarations, directory-budget escapes, incomplete observations, immutable aggregation and adversarial report input. [Architecture](ARCHITECTURE.md) links all 36 production classes; [review findings](REVIEW.md) describes the concrete failure schedules and corrections.
 
-The final build/integration run passed on **2026-10-20 at 09:27:08 UTC: 164 test methods, comprising 157 Surefire methods and seven packaged-JVM integration methods; zero failures, errors or skips**. The latter include real startup failure, duplicate-agent and host-survival checks. [Current verification](../evidence/deep-verification.json) binds source/build hashes, commands, test suites, strict mutation outcomes and log identities.
+The final build/integration run passed on **2026-10-20 at 09:44:12 UTC: 164 test methods, comprising 157 Surefire methods and seven packaged-JVM integration methods; zero failures, errors or skips**. The latter include real startup failure, duplicate-agent and host-survival checks. [Current verification](../evidence/mobile-report-verification.json) binds source/build hashes, commands, test suites, strict mutation outcomes and log identities.
 
 ```bash
 source scripts/cloud-env.sh
@@ -14,7 +14,7 @@ source scripts/cloud-env.sh
   -Dmaven.repo.local="$PWD/.work/A08/m2" -B -ntp -Pintegration verify
 ```
 
-The combined integration/mutation campaign passed at **09:22:14 UTC**. Its 19 targeted production source files and six mutation reports were hash-checked unchanged after the final report-rendering rebuild. Strict results count only killed mutations as successes; surviving, uncovered and timed-out mutations remain in the denominator. Existing 70% module gates are unchanged.
+The combined integration/mutation campaign passed at **09:22:14 UTC**. Its 19 targeted production source files and six mutation reports were hash-checked unchanged after the final report-rendering rebuild. The later timeline-width correction changed rendering outside those targets and was verified by ordinary/integration and browser checks; no additional mutation campaign was run. Strict results count only killed mutations as successes; surviving, uncovered and timed-out mutations remain in the denominator. Existing 70% module gates are unchanged.
 
 | Module | Killed / generated | Strict killed percentage |
 | --- | ---: | ---: |
@@ -28,7 +28,7 @@ The combined integration/mutation campaign passed at **09:22:14 UTC**. Its 19 ta
 
 The [non-killed mutation inventory](../evidence/deep-mutation-survivors.json) preserves 72 survivors, 12 uncovered mutations and three timeouts. These outcomes are limitations of the selected tests, not evidence of equivalence or complete fault detection.
 
-The rebuilt standard and differential reports also passed actual Chromium checks at 1280×960 and 390×844. All four cases verified fragment navigation, skip-link focus, literal rendering of hostile identifiers, local mobile table scrolling, no viewport overflow and no console errors or remote requests. Native stack expansion and keyboard table scrolling were exercised. [Browser receipt](../evidence/deep-browser.json) identifies the generated HTML and screenshots; the reproducible harness is documented in [operations](OPERATIONS.md#live-jfr-and-offline-reports).
+The rebuilt standard and differential reports also passed actual Chromium checks at 1280×960 and 390×844. All four cases verified fragment navigation, skip-link focus, literal rendering of hostile identifiers, local mobile table scrolling, no viewport overflow and no console errors or remote requests. Native stack expansion and keyboard table scrolling were exercised. Epoch-nanosecond cells retain useful width and stay on one line; the mobile fixture verifies full 19-digit values without clipping or global overflow. [Browser receipt](../evidence/mobile-report-browser.json) identifies the generated HTML and screenshots; the reproducible harness is documented in [operations](OPERATIONS.md#live-jfr-and-offline-reports).
 
 Long stress, planted-cause and full overhead studies were not rerun. The historical results below certify only their recorded implementation and settings.
 

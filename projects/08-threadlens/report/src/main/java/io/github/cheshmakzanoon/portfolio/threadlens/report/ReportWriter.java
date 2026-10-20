@@ -72,6 +72,7 @@ public final class ReportWriter {
           nav{position:sticky;top:0;z-index:1;display:flex;flex-wrap:wrap;gap:.5rem;padding:.75rem;background:#f3f6fa;border:1px solid var(--line);border-radius:8px}nav a{padding:.35rem .7rem;text-decoration:none;border-radius:4px}nav a:hover{background:#e0eafb}
           a{color:var(--accent)}:focus-visible{outline:3px solid #2456a6;outline-offset:3px}.skip-link{position:absolute;left:1rem;top:-5rem;padding:.6rem 1rem;background:white;z-index:2}.skip-link:focus{top:1rem}
           .table-scroll th:not(:first-child){min-width:6rem}.table-hint{font-size:.875rem}.table-scroll{max-width:100%;overflow-x:auto;margin:1rem 0 2rem}.flame-tree{max-height:48rem;max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:.5rem}table{min-width:40rem;border-collapse:collapse;width:100%;margin:1rem 0 2rem;font-size:.9rem;font-variant-numeric:tabular-nums}td,th{border:1px solid var(--line);padding:.65rem;text-align:left;overflow-wrap:anywhere}th{background:#edf2f8}tr:nth-child(even) td{background:#fafbfd}caption{text-align:left;font-weight:650;padding:.5rem 0}
+          .epoch-nanos{min-width:12rem;white-space:nowrap;overflow-wrap:normal}
           summary{cursor:pointer;background:#edf2f8;border:1px solid var(--line);border-radius:4px;margin:3px 0;padding:.4rem .6rem;overflow-wrap:anywhere}details{margin-left:1rem}meter{display:block;width:100%;height:.6rem;accent-color:var(--accent)}
           code,pre{font: .85rem/1.6 ui-monospace,monospace;overflow-wrap:anywhere}pre{background:#f3f6fa;border:1px solid var(--line);border-radius:8px;padding:1rem;white-space:pre-wrap}
           @media(max-width:700px){main{margin:0;padding:1rem;border:0;border-radius:0}nav{position:static}td,th{padding:.35rem;font-size:.8rem}details{margin-left:.5rem}}
@@ -124,14 +125,14 @@ public final class ReportWriter {
                     .append("</td></tr>"));
     out.append("</table>");
     out.append(
-        "<h2 id=\"timeline\">Event-time timeline</h2><p>Fixed one-second buckets; durations assigned by event start. Unseen or incomplete windows cannot establish inactivity. Sampled-event tables use the recording's observation window and declared settings. Selected-method timing artifacts have a separate collection interval.</p><table><caption>Per-window observed totals</caption><tr><th>Start epoch ns</th><th>Samples</th><th>Weighted allocation bytes</th><th>GC ns</th><th>Monitor ns</th><th>Park ns</th><th>Incomplete</th></tr>");
+        "<h2 id=\"timeline\">Event-time timeline</h2><p>Fixed one-second buckets; durations assigned by event start. Unseen or incomplete windows cannot establish inactivity. Sampled-event tables use the recording's observation window and declared settings. Selected-method timing artifacts have a separate collection interval.</p><table><caption>Per-window observed totals</caption><tr><th class=\"epoch-nanos\" scope=\"col\">Start epoch ns</th><th>Samples</th><th>Weighted allocation bytes</th><th>GC ns</th><th>Monitor ns</th><th>Park ns</th><th>Incomplete</th></tr>");
     report
         .profile()
         .windows()
         .values()
         .forEach(
             w ->
-                out.append("<tr><td>")
+                out.append("<tr><td class=\"epoch-nanos\">")
                     .append(w.startNanos())
                     .append("</td><td>")
                     .append(w.samples())
