@@ -93,7 +93,7 @@ paths:
         '422': {$ref: '#/components/responses/Invalid'}
   /v1/statements:
     post:
-      description: Requires ledger.reconcile. UTF-8 CSV header source_id,reference,currency,amount; maximum1MiB/5000 data rows. Line-oriented CSV permits quoted commas/escaped quotes; multiline fields are rejected visibly. Same content hash returns same importId.
+      description: Requires ledger.reconcile. UTF-8 CSV header source_id,reference,currency,amount; maximum 1 MiB and 5000 data rows. Invalid UTF-8 returns IMPORT_ENCODING and NUL characters return IMPORT_NUL_BYTE before any import is persisted. Line-oriented CSV permits quoted commas and escaped quotes; multiline fields are rejected visibly. The same content hash returns the same importId.
       requestBody:
         required: true
         content:

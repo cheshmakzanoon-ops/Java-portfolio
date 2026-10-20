@@ -1,6 +1,9 @@
 package io.github.cheshmakzanoon.portfolio.clearledger;
 
 import java.math.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.sql.*;
@@ -15,7 +18,20 @@ public final class Reconciliation {
 
   public UUID ingest(UUID tenant, byte[] csv) {
     if (csv.length > 1048576) throw new IllegalArgumentException("IMPORT_BYTE_BOUND");
-    var text = new String(csv, StandardCharsets.UTF_8);
+    final String text;
+    try {
+      text =
+          StandardCharsets.UTF_8
+              .newDecoder()
+              .onMalformedInput(CodingErrorAction.REPORT)
+              .onUnmappableCharacter(CodingErrorAction.REPORT)
+              .decode(ByteBuffer.wrap(csv))
+              .toString();
+    } catch (CharacterCodingException invalid) {
+      throw new IllegalArgumentException("IMPORT_ENCODING", invalid);
+    }
+    // PostgreSQL text cannot represent NUL. Reject the file before starting a transaction.
+    if (text.indexOf('\0') >= 0) throw new IllegalArgumentException("IMPORT_NUL_BYTE");
     var lines = text.split("\\r?\\n", -1);
     if (lines.length - 1 - (lines[lines.length - 1].isEmpty() ? 1 : 0) > 5000)
       throw new IllegalArgumentException("IMPORT_ROW_BOUND");

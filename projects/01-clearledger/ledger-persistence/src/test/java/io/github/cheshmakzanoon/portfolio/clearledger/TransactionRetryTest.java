@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 class TransactionRetryTest {
   static final class Connections extends HikariDataSource {
     final List<String> events = new ArrayList<>();
+    SQLException rollbackFailure;
 
     @Override
     public Connection getConnection() {
@@ -37,11 +38,58 @@ class TransactionRetryTest {
                         (statement, call, parameters) ->
                             call.getName().equals("execute") ? true : null);
                   }
-                  case "rollback", "commit", "close" -> events.add(method.getName());
+                  case "rollback" -> {
+                    events.add("rollback");
+                    if (rollbackFailure != null) throw rollbackFailure;
+                  }
+                  case "commit", "close" -> events.add(method.getName());
                   default -> throw new AssertionError("Unexpected connection method " + method);
                 }
                 return null;
               });
+    }
+  }
+
+  @Test
+  void rollbackFailureRetainsOriginalDatabaseErrorAndRetryClassification() {
+    var connections = new Connections();
+    connections.rollbackFailure = new SQLException("connection lost during rollback", "08006");
+    var original = new SQLException("permanent validation failure", "23514");
+    try (var store =
+        new LedgerStore(connections, new RetryBackoff(bound -> fail(), millis -> fail()))) {
+      var failure =
+          assertThrows(
+              LedgerStore.LedgerException.class,
+              () ->
+                  store.tx(
+                      c -> {
+                        throw original;
+                      }));
+      assertSame(original, failure.getCause());
+      assertFalse(failure.temporary);
+      assertArrayEquals(new Throwable[] {connections.rollbackFailure}, original.getSuppressed());
+      assertEquals(List.of("open", "serializable", "rollback", "close"), connections.events);
+    }
+  }
+
+  @Test
+  void rollbackFailureDoesNotTurnApplicationRejectionIntoDatabaseFailure() {
+    var connections = new Connections();
+    connections.rollbackFailure = new SQLException("connection lost during rollback", "08006");
+    var original = new IllegalArgumentException("INVALID_MANUAL_CANDIDATE");
+    try (var store =
+        new LedgerStore(connections, new RetryBackoff(bound -> fail(), millis -> fail()))) {
+      var failure =
+          assertThrows(
+              IllegalArgumentException.class,
+              () ->
+                  store.tx(
+                      c -> {
+                        throw original;
+                      }));
+      assertSame(original, failure);
+      assertArrayEquals(new Throwable[] {connections.rollbackFailure}, original.getSuppressed());
+      assertEquals(0, store.retryCount());
     }
   }
 

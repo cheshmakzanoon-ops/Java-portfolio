@@ -413,6 +413,33 @@ class LedgerPostgresIT {
   }
 
   @Test
+  void reconciliationPreservesUnicodeAndRejectsCorruptFilesWithoutPersistingImports() {
+    var reconciliation = new Reconciliation(store);
+    var header = "source_id,reference,currency,amount\n";
+    var withNul =
+        (header + "source,ref\0,CAD,1.00\n").getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    assertThrows(IllegalArgumentException.class, () -> reconciliation.ingest(tenant, withNul));
+    var headerBytes = header.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    var corrupt = Arrays.copyOf(headerBytes, headerBytes.length + 1);
+    corrupt[corrupt.length - 1] = (byte) 0xc3;
+    assertThrows(IllegalArgumentException.class, () -> reconciliation.ingest(tenant, corrupt));
+    assertEquals(0, count("statement_import"));
+    assertEquals(0, count("statement_row"));
+
+    store.post(tenant, "unicode", journal(100, "café-支払-\uD83D\uDE00"));
+    var csv =
+        (header + "énoncé-\uD83D\uDE00,café-支払-\uD83D\uDE00,CAD,1.00\n")
+            .getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    var id = reconciliation.ingest(tenant, csv);
+    assertEquals(id, reconciliation.ingest(tenant, csv));
+    var row = reconciliation.rows(tenant, id).getFirst();
+    assertEquals("énoncé-\uD83D\uDE00", row.get("source_id"));
+    assertEquals("café-支払-\uD83D\uDE00", row.get("reference"));
+    assertEquals("MATCHED", row.get("status"));
+    assertEquals(1, count("statement_import"));
+  }
+
+  @Test
   void reconciliationDistinguishesRowsAndPreservesDuplicateImport() {
     store.post(tenant, "match", journal(100, "unique"));
     store.post(tenant, "amb1", journal(200, "ambiguous"));

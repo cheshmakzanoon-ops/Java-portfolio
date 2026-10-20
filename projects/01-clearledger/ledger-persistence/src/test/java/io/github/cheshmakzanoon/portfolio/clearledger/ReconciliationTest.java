@@ -7,6 +7,39 @@ import org.junit.jupiter.api.*;
 
 class ReconciliationTest {
   @Test
+  void invalidUtf8CannotSilentlyChangeFinancialReferences() {
+    var header =
+        "source_id,reference,currency,amount\n".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    for (byte[] invalid :
+        List.of(
+            new byte[] {(byte) 0xc3},
+            new byte[] {(byte) 0xc3, 0x28},
+            new byte[] {(byte) 0xc0, (byte) 0xaf},
+            new byte[] {(byte) 0xed, (byte) 0xa0, (byte) 0x80})) {
+      var csv = java.util.Arrays.copyOf(header, header.length + invalid.length);
+      System.arraycopy(invalid, 0, csv, header.length, invalid.length);
+      var failure =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> new Reconciliation(null).ingest(UUID.randomUUID(), csv));
+      assertEquals("IMPORT_ENCODING", failure.getMessage());
+    }
+  }
+
+  @Test
+  void nulIsRejectedBeforeDatabaseAccess() {
+    var csv = "source_id,reference,currency,amount\nsource,ref\0,CAD,1.00\n";
+    var failure =
+        assertThrows(
+            IllegalArgumentException.class,
+            () ->
+                new Reconciliation(null)
+                    .ingest(
+                        UUID.randomUUID(), csv.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+    assertEquals("IMPORT_NUL_BYTE", failure.getMessage());
+  }
+
+  @Test
   void csvIsBoundedAndQuoted() {
     assertEquals(List.of("a", "b,c", "JPY", "2"), Reconciliation.parseLine("a,\"b,c\",JPY,2"));
     assertEquals(List.of("a\"b"), Reconciliation.parseLine("\"a\"\"b\""));

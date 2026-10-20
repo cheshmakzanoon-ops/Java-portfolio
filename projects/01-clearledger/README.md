@@ -1,25 +1,39 @@
 # ClearLedger
 
-A synthetic marketplace accounting engine with a privileged PostgreSQL posting boundary, durable idempotency receipts, full reversals, bank-statement review and verified reporting replay. Moves no money; no payment network or regulatory-compliance claim.
+ClearLedger is a multi-tenant accounting engine for a synthetic marketplace. Its core is a PostgreSQL transaction that posts a balanced journal, updates authoritative balances, and records the idempotency receipt and reporting event in one commit. It also supports full reversals, accounting-period closure, statement reconciliation, and reporting replay.
 
-Requires JDK25, the repository Maven wrapper, Docker Compose and Python3. From the repository root:
+The project uses synthetic data and has no payment-network connection. Its guarantees cover the documented database and application boundaries; it makes no regulatory-compliance claim.
+
+## Run locally
+
+Requirements: JDK 25, the repository Maven wrapper, Docker with Compose, Bash, and Python 3. Run these commands from the repository root. In the managed workspace, first run `source scripts/cloud-env.sh` to select the pinned JDK and Maven proxy configuration.
 
 ```bash
-./mvnw -f projects/01-clearledger/pom.xml -B -ntp verify
-./mvnw -f projects/01-clearledger/pom.xml -B -ntp -Pintegration verify
+./scripts/portfolio.sh verify clearledger
+./scripts/portfolio.sh integration clearledger
 ./scripts/portfolio.sh up clearledger
 ./scripts/portfolio.sh demo clearledger
 ./scripts/portfolio.sh down clearledger
-projects/01-clearledger/scripts/benchmark.sh 100000 3
-projects/01-clearledger/scripts/microbenchmark.sh full
 ```
 
-`benchmark.sh 1000 1` is a functional smoke; the full workload and JMH measurements require an otherwise idle host. See the performance document for raw results, retry counters, profiling and limitations. The optional `-Pbenchmarks` Maven profile adds the isolated CPU benchmark module.
+The API listens on `127.0.0.1:18100`; PostgreSQL uses `127.0.0.1:18101`. The lifecycle script explicitly selects the disposable `dev` authentication profile. Protected mode requires a trusted issuer configured through `--ledger.issuer=...`. Keep development mode on loopback and do not expose it through a public proxy.
 
-`demo` checks live HTTP results, kills a committed JVM writer, imports the same CSV twice, shows unresolved ambiguity, and verifies shadow reporting. `reset-demo.sh` explicitly resets only the named synthetic tenant; `down` preserves the database volume. The default API is127.0.0.1:18100 and database127.0.0.1:18101. Configure a protected issuer using `--ledger.issuer=...`; only `up.sh` explicitly selects the disposable `dev` JWT profile.
+The demo asserts live HTTP results, recovers a committed JVM writer after termination, imports the same CSV twice, leaves ambiguous reconciliation candidates for review, and checks shadow reporting. `reset-demo.sh` resets only the named synthetic tenant. `down` stops services and retains the database volume.
 
-[Architecture](docs/ARCHITECTURE.md), [invariants](docs/INVARIANTS.md), [operations](docs/OPERATIONS.md), [security](docs/SECURITY.md), [OpenAPI](contracts/openapi.yaml), [measured results](docs/PERFORMANCE.md), [current gates](docs/STATUS.md), [walkthrough](docs/INTERVIEW.md).
+## Design boundaries
 
-Amounts use strict decimal strings at the boundary and BigInteger minor units internally. Input amount and cumulative debit/credit balances are each at most10^30−1 minor units; journals contain2–100 lines. CAD/USD use two decimal places; JPY uses zero, pinned by `fixtures/currency-scales-v1.csv`. PostgreSQL is the authoritative current ledger. Reporting exposes pending-event freshness.
+- **Exact amounts:** HTTP inputs are decimal strings; the domain uses `BigInteger` minor units. CAD and USD have two decimal places; JPY has none. The versioned [currency fixture](fixtures/currency-scales-v1.csv) defines those scales. Individual amounts and cumulative debit/credit balances are bounded by `10^30 − 1` minor units; journals contain 2–100 lines.
+- **Atomic posting:** the restricted database function validates and writes the journal, balances, receipt, and outbox event together. Application transactions use serializable isolation with bounded retries of the complete operation.
+- **Tenant identity:** verified JWT claims supply the tenant. Request bodies cannot select another tenant; repository queries bind tenant identifiers and composite foreign keys preserve their relationships.
+- **Reporting consistency:** PostgreSQL journals and balances are authoritative. The reporting projector exposes freshness, tracks applied events individually, and promotes a shadow replay only after comparison with the source.
+- **Reconciliation:** only an unambiguous reference, currency, and amount match is automatic. Manual decisions retain actor, reason, and evidence. Invalid UTF-8 and NUL-containing imports are rejected before database access; malformed rows remain visible in valid files.
 
-Assisted-development provenance: implemented by coding agents under the owner's execution brief; no prior customers, deployments or employment history implied. Dependencies retain their upstream licenses. All fixtures are generated synthetic data.
+## Verification and further reading
+
+Ordinary verification covers domain properties, strict request parsing, transaction retry behavior, and local validation. The integration profile exercises real PostgreSQL permissions, concurrency, recovery, reconciliation, and signed HTTP identities. Docker is required; a missing database is a failed prerequisite.
+
+For workload development, `projects/01-clearledger/scripts/benchmark.sh 1000 1` is a functional smoke run. Full measurements and JMH require an otherwise idle host. The optional Maven `benchmarks` profile adds the isolated CPU benchmark module. See [performance](docs/PERFORMANCE.md) for executed results and their limits; a smoke run does not establish capacity.
+
+[Architecture](docs/ARCHITECTURE.md) · [Invariants](docs/INVARIANTS.md) · [Operations](docs/OPERATIONS.md) · [Security](docs/SECURITY.md) · [API contract](contracts/openapi.yaml) · [Verification status](docs/STATUS.md) · [Technical walkthrough](docs/INTERVIEW.md)
+
+Dependencies retain their upstream licenses. All fixtures are synthetic.

@@ -1,20 +1,74 @@
 # Operations
 
-Run `scripts/up.sh`, `scripts/demo.sh`, `scripts/down.sh` from this project or use the root launcher. Scripts resolve their own paths, bound readiness waits, preserve failures, and isolate Compose project `java-portfolio-clearledger`. Only loopback18100/18101 are published. `target/api.log` and `target/api.pid` hold local process output/state; down verifies the PID command before stopping it and preserves volumes.
+## Local lifecycle
 
-Health: GET `/health` reports adapter readiness. Database-affecting operations independently enforce timeout budgets; an UP adapter alone does not prove PostgreSQL readiness. Reporting: GET `/v1/reports/freshness` with `ledger.admin` reports pending events for the authenticated tenant. The global replay endpoint requires distinct `ledger.system`, not tenant `ledger.admin`. Do not use reporting as the authoritative current balance.
+From the repository root:
 
-Run the projector independently using `java -cp '<domain classes>:<persistence classes>:<runtime dependencies>/*' io.github.cheshmakzanoon.portfolio.clearledger.Projector`; set LEDGER_URL/LEDGER_PASSWORD. It can be terminated/restarted; every applied event/checkpoint is atomic. To rebuild, pass `replay`; a mismatch fails promotion and preserves the active generation.
+```bash
+./scripts/portfolio.sh up clearledger
+./scripts/portfolio.sh demo clearledger
+./scripts/portfolio.sh down clearledger
+```
 
-Ambiguous timeout recovery: retain the same Idempotency-Key, query GET `/v1/requests/{key}` under the same tenant and operation, or resend the identical request.503 permits a bounded client backoff with the original key;422 requires input correction;409 means changed intent or an already reversed source.
+The scripts resolve their own paths and isolate Compose project `java-portfolio-clearledger`. Only loopback ports `18100` and `18101` are published. The API log and PID file are under `projects/01-clearledger/target/`. Shutdown verifies the tracked PID's command before signaling it and preserves database volumes.
 
-Backup example: `docker compose -f infra/compose.yaml exec -T postgres pg_dump -U postgres -d clearledger --no-owner > target/backup.sql`. Restore into a new empty database using psql `-v ON_ERROR_STOP=1`; do not overwrite live tables. The integration suite restores a dump into a second clean PostgreSQL instance and rechecks balance/source equality and replay. Provision the runtime login separately before restoration (using securely injected credentials), then restore the dump with its original ACLs. The restore test also proves the restored runtime can replay and still cannot directly delete postings. Do not strip ACLs or assume rerunning an already-recorded Flyway migration will recreate them.
+`reset-demo.sh` removes and reseeds only synthetic tenant `00000000-0000-0000-0000-000000000101` and its dependent records. Benchmark scripts replace only their explicitly named `clearledger_benchmark_rN_wN` databases. Neither lifecycle operation authorizes deleting unrelated data.
 
-Audit uses the shared query at `ledger-verification/src/main/resources/clearledger/source-audit.sql`, also bundled for the verification driver. Run it through `docker compose -f infra/compose.yaml exec -T postgres psql -v ON_ERROR_STOP=1 -U postgres -d clearledger < ledger-verification/src/main/resources/clearledger/source-audit.sql`. It starts from every journal, so zero-posting journals remain visible; it checks2–100 positive postings, bounded equal debit/credit totals, account currency, period dates and exact side-swapped reversal multisets. No rows means these source predicates hold in that snapshot. Separately recompute grouped account totals and compare with authoritative balances; shadow promotion performs that comparison before switching generations. Investigate any mismatch before accepting further writes. The eight-case corruption regression deliberately uses DBA powers to bypass the source backstop; ordinary runtime users cannot perform those changes. Demo credentials remain disposable local fixtures.
+## Health and reporting
 
-`reset-demo.sh` deliberately removes only fixture tenant00000000-0000-0000-0000-000000000101 and dependents, then reseeds it. Benchmark scripts replace only explicitly named `clearledger_benchmark_rN_wN` databases. No global prune or destructive live reporting replay exists.
+`GET /health` checks adapter readiness. An `UP` adapter alone does not prove database availability; database operations independently enforce timeout budgets.
 
+`GET /v1/reports/freshness` requires `ledger.admin` and reports pending events for the authenticated tenant. Reporting is a derived view, not the authoritative current balance. Global shadow replay requires the separate platform scope `ledger.system`.
 
-Launchers reuse prepared application artifacts only when hashes of all module inputs, root/project POMs and generated runtime bytes match a marker written after successful preparation. A changed source or artifact triggers ordinary verified preparation again after all owned Java processes stop. On a cache miss, Linux `/proc` ownership inspection and six independent launcher refusal regressions run before Maven; source/root hashes must remain unchanged across preparation, and stamping repeats the idle check. Run `down` before rebuilding an active service. A healthy port with no tracked owned API and an unhealthy tracked API are refused rather than silently reused. This cache is confined to launchers; `verify` and integration commands always execute their gates. Dependency-copy output is cleared on preparation to avoid keeping stale-version jars. Benchmark preparation runs before starting its PostgreSQL stack so queued Maven work does not reserve a database unnecessarily.
+The projector has a supported entry point:
 
-If an owned API PID file is lost, `up` refuses untracked port reuse and preparation reports the live owned PID instead of rewriting its JAR. Inspect that exact PID with `ps -p PID -o args=` and terminate it before rebuilding; `down` deliberately signals only its tracked API PID and stops its own Compose project.
+```bash
+projects/01-clearledger/scripts/projector.sh
+```
+
+Set `LEDGER_URL` and `LEDGER_PASSWORD` for the intended database through runtime configuration. Each event application and membership update commits atomically, so the process can restart safely. Passing `replay` builds a separate generation; a comparison failure preserves the currently active generation.
+
+## Ambiguous outcomes and retries
+
+Keep the original `Idempotency-Key` and economic intent after an HTTP timeout. Query `GET /v1/requests/{key}` under the same tenant and operation, or resend the identical request. A lost response does not prove rollback.
+
+| Response | Client action |
+| --- | --- |
+| `503` | Retry within a bounded budget, with backoff and the original key and payload |
+| `422` | Correct the terminal input error; do not retry unchanged input indefinitely |
+| `409` | Investigate changed intent under a retained key or an already reversed source |
+
+## Backup and restore
+
+Run the following from `projects/01-clearledger` against the disposable local stack:
+
+```bash
+docker compose -f infra/compose.yaml exec -T postgres \
+  pg_dump -U postgres -d clearledger --no-owner > target/backup.sql
+```
+
+Restore into a new, empty database with `psql -v ON_ERROR_STOP=1`; do not overwrite live tables. Provision the runtime login through secure configuration before restoration, then restore the original ACLs. Stripping grants or assuming an already-recorded Flyway migration will recreate them invalidates the permission boundary.
+
+The PostgreSQL integration suite restores into a second clean instance, compares source and balances, replays reporting, and proves the restored runtime role still cannot delete postings.
+
+## Source audit
+
+From `projects/01-clearledger`:
+
+```bash
+docker compose -f infra/compose.yaml exec -T postgres \
+  psql -v ON_ERROR_STOP=1 -U postgres -d clearledger \
+  < ledger-verification/src/main/resources/clearledger/source-audit.sql
+```
+
+The audit starts from every journal, including journals with no postings. It checks 2–100 positive postings, bounded balanced totals, account currency, period dates, and exact side-swapped reversal multisets. No returned rows means those predicates hold in that snapshot. It does not establish every possible accounting invariant.
+
+Separately recompute grouped account totals and compare them with authoritative balances. Shadow promotion performs that comparison before switching generations. Investigate any mismatch before accepting further writes. Corruption regression fixtures deliberately use administrator powers unavailable to the runtime role.
+
+## Artifact preparation and recovery
+
+Launchers reuse prepared artifacts only when module inputs, root/project POMs, and generated runtime bytes match the receipt written after successful preparation. Source or artifact changes require ordinary verified preparation after owned Java processes stop. Input hashes must remain unchanged across preparation; stale dependency copies are cleared.
+
+Run `down` before rebuilding an active API. Preparation refuses a live owned Java process even if its PID file is missing. An untracked healthy port and an unhealthy tracked API are refused rather than silently reused. Inspect the exact reported process with `ps -p PID -o args=` before terminating it. Shutdown deliberately signals only the tracked API and stops its own Compose project.
+
+The cache is confined to lifecycle launchers. Ordinary verification and integration commands still execute their checks. Benchmark preparation occurs before starting PostgreSQL, so queued Maven work does not reserve an idle database stack.

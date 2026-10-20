@@ -85,7 +85,11 @@ public final class LedgerStore implements AutoCloseable {
           c.commit();
           return result;
         } catch (SQLException | RuntimeException e) {
-          c.rollback();
+          try {
+            c.rollback();
+          } catch (SQLException rollbackFailure) {
+            e.addSuppressed(rollbackFailure);
+          }
           throw e;
         }
       } catch (SQLException e) {

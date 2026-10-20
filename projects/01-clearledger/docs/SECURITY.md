@@ -1,15 +1,35 @@
-# Security and trust boundaries
+# Security model
 
-Protected mode uses actual OIDC discovery and JWKS RSA signature validation, issuer, audience `clearledger`, required expiry, nonblank bounded string subject and canonical UUID string tenant claim. After cryptographic validation, a bounded strict parser also checks original signed JSON identity types because Nimbus can coerce registered subject claims. Spring Security verifies operation scopes: ledger.read, ledger.write, ledger.reconcile, tenant reporting ledger.admin, and distinct platform-only ledger.system for global shadow replay. The verified principal supplies tenant identity; DTOs have no tenant field. SQL always binds tenant identifiers and uses composite foreign keys.
+ClearLedger protects tenant operations through verified identity, operation scopes, tenant-qualified SQL, and restricted database write capabilities. It is an educational accounting system, not a security certification or a regulatory product. Use synthetic data only.
 
-The local OIDC integration fixture serves discovery and public JWKS over loopback and signs real RSA tokens. It exercises wrong signature, issuer, audience, expiry, tenant isolation and scopes. Two HTTP application instances share PostgreSQL and preserve a common idempotency receipt.
+## Identity and authorization
 
-`up.sh` explicitly activates `dev`: a known disposable HS256 key and loopback-only issuer enable a repeatable local demo. The application rejects a non-loopback server.address in that profile. Do not expose the development profile through a public proxy. Protected mode is the default and requires reachable trusted issuer configuration; real credentials never belong in Git.
+Protected mode validates OIDC discovery, JWKS RSA signatures, issuer, audience `clearledger`, and expiry. Subjects must be nonblank strings of at most 255 characters; the tenant claim must be a canonical UUID string. A bounded strict parser checks the original signed JSON claim types after cryptographic validation, preventing claim coercion from changing their meaning.
 
-The database runtime role is a trusted application capability, not a login exposed to end users. It can SELECT tenant data for the application and manage reconciliation/projections, but cannot modify immutable posted source or authoritative balances. Cross-tenant isolation is enforced in verified adapter identity and parameterized repository predicates; DBA/host compromise and direct misuse of an application credential are outside tenant-user threat model. Privileged functions have fixed schema resolution and restricted grants.
+Spring Security requires `ledger.read`, `ledger.write`, or `ledger.reconcile` according to the operation. Tenant reporting requires `ledger.admin`. Global shadow replay is a platform operation requiring the separate `ledger.system` scope. The verified principal supplies tenant identity; request DTOs have no tenant selector.
 
-Jackson coercion from numeric/boolean scalars to monetary/name strings and ordinal enums is disabled; malformed DTO types fail before journal creation.
+Integration tests use a loopback discovery/JWKS issuer and real RSA signatures. They exercise invalid signatures, issuer, audience, expiry, scopes, and cross-tenant identifiers. Two HTTP application instances share PostgreSQL to verify durable idempotency across instances.
 
-The adapter bounds actual POST bytes to1MiB, including chunked bodies; journal lines≤100, statement page≤200, CSV rows≤5000 and decimal text≤64 characters. Terminal errors produce structured codes, not stack traces. CSV import records rejection reasons; export prefixes spreadsheet-trigger characters and quotes fields. Names and references use bound SQL, never query concatenation.
+## Development authentication
 
-No card, bank-network or personal data is processed. All accounting data is synthetic. This is not a security certification or regulatory product.
+`up.sh` explicitly selects the `dev` profile, which uses a known disposable HS256 key and local issuer. Startup rejects a non-loopback `server.address` in that profile. A reverse proxy can defeat the intent of a loopback binding: do not expose this profile through one.
+
+Protected mode is the default and requires a reachable trusted issuer. Credentials and signing keys belong in runtime configuration, never in Git.
+
+## Database boundary
+
+The runtime database role is a trusted application capability, not a tenant login. It may read tenant data for the application and manage reconciliation and projections. It cannot directly modify immutable posted journals, postings, or authoritative balances. Privileged functions use fixed schema resolution and restricted grants.
+
+Tenant-user isolation relies on verified adapter identity, parameterized tenant predicates, and composite tenant-aware foreign keys. A database administrator, compromised host, or direct misuse of the application database credential is outside this boundary. Database access is not a substitute for HTTP authorization.
+
+## Input and output handling
+
+The adapter bounds actual POST bodies, including chunked requests, to 1 MiB. Journal batches contain at most 100 lines, statement pages at most 200 rows, CSV imports at most 5,000 rows, and decimal strings at most 64 characters. JSON scalar-to-string coercion, ordinal enums, and duplicate keys are rejected.
+
+CSV imports must be valid UTF-8 and contain no NUL characters. Invalid encoding is rejected before a transaction starts, so replacement characters cannot silently change financial references or source identities. Within a valid file, malformed rows receive explicit rejection reasons. Export quotes cells and neutralizes spreadsheet formula prefixes.
+
+SQL values are bound parameters. Terminal validation errors return structured codes rather than stack traces. Database rollback failures are retained as suppressed diagnostics without replacing the original transaction error or changing its retry classification.
+
+## Reporting an issue
+
+Follow the repository's [security reporting policy](../../../SECURITY.md). Include the affected operation, required privileges, and a synthetic reproducer. Do not publish credentials or sensitive financial input.
