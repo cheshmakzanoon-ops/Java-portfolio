@@ -4,14 +4,13 @@ ClearLedger implements atomic posting, tenant-scoped idempotency, full reversals
 
 ## Current verification, 2026-10-20
 
-Project-scoped `spotless:apply -Pintegration,mutation verify` passed at **08:16:26 UTC** on the updated dependency baseline with **67 test methods: 45 ordinary and 22 PostgreSQL, zero failures, errors, or skips**. The property suite also generated 500 accounting examples. [Current evidence](../evidence/engineering-verification-2026-10-20.json) binds these results to root/project POMs and module sources.
+Project-scoped `-Pintegration,mutation verify` passed at **09:25:56 UTC** on the updated dependency baseline and PostgreSQL 18.6 with **67 test methods: 45 ordinary and 22 PostgreSQL, zero failures, errors, or skips**. The property suite also generated 500 accounting examples. [Current evidence](../evidence/engineering-verification-2026-10-20.json) binds these results to root/project POMs and module sources.
 
 ```bash
 source scripts/cloud-env.sh
-export PORTFOLIO_TEST_RUN_STARTED="$(date +%s)"
+export PORTFOLIO_TEST_RUN_STARTED="$(python3 -c 'import time; print(time.time())')"
 ./mvnw -f projects/01-clearledger/pom.xml \
   -Dmaven.repo.local=/workspace/Java-portfolio/.work/A01/m2 -B -ntp \
-  com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply \
   -Pintegration,mutation verify
 python3 scripts/check-tests.py projects/01-clearledger integration
 python3 scripts/check-mutations.py projects/01-clearledger
@@ -26,7 +25,7 @@ The PostgreSQL cases include a V2-to-V3 upgrade with retained receipts and grant
 
 The denominator includes survivors and the timeout. The persistence survivors change the first-position NUL error classification and remove a cleanup warning; the quoted-CSV increment mutation times out. None is presented as killed. This is targeted mutation coverage, not mutation analysis of every production class. The expanded persistence gate initially failed at 89/106 killed with one timeout and one uncovered mutant; the final result followed additional boundary, transaction-state, and SQL-state regressions. No threshold or exclusion was relaxed.
 
-The refreshed working-checkout lifecycle also passed: runtime preparation ran six cache regressions, startup became healthy, the live demo passed 9/9 HTTP/SQL/process assertions, and the exact documented POST/repeat/receipt commands passed three checks. Shutdown stopped the owned API and PostgreSQL service. [Demo evidence](../evidence/engineering-demo-2026-10-20.json) retains its executed source manifest; this is not a clean-checkout release run.
+The refreshed working-checkout lifecycle also passed on a fresh PostgreSQL 18.6 Alpine cluster: runtime preparation ran six cache regressions, startup became healthy, and the live demo passed 9/9 HTTP/SQL/process assertions. Shutdown stopped the owned API and PostgreSQL service while retaining the named volume. The earlier PostgreSQL 18.3 lifecycle separately checked the unchanged documented POST/repeat/receipt examples. [Demo evidence](../evidence/engineering-demo-2026-10-20.json) retains the current executed source manifest; this is not a clean-checkout release run or evidence for transplanting an existing data volume.
 
 ## Local lifecycle ownership, 2026-10-20
 
