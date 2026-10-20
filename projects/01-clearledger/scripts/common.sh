@@ -1,19 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 077
 PROJECT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT="$(cd -- "$PROJECT/../.." && pwd)"
 if [[ -d /workspace/.tools/jdk-25 ]]; then source "$ROOT/scripts/cloud-env.sh"; fi
 CACHE="$ROOT/.work/A01/m2"
 MVN=("$ROOT/mvnw" -Dmaven.repo.local="$CACHE" -B -ntp)
 COMPOSE=(docker compose -f "$PROJECT/infra/compose.yaml")
-for tool in java docker python3 curl; do command -v "$tool" >/dev/null || { echo "Required tool missing: $tool" >&2; exit 1; }; done
+for tool in java docker python3 curl flock; do command -v "$tool" >/dev/null || { echo "Required tool missing: $tool" >&2; exit 1; }; done
 mkdir -p "$PROJECT/target"
 export LEDGER_URL="${LEDGER_URL:-jdbc:postgresql://127.0.0.1:${CLEARLEDGER_DB_PORT:-18101}/clearledger}"
 CP="$PROJECT/ledger-verification/target/classes:$PROJECT/ledger-domain/target/classes:$PROJECT/ledger-persistence/target/classes:$PROJECT/ledger-verification/target/dependency/*"
+PROCESS_HELPER="$PROJECT/scripts/runtime-process.py"
+API_JAR="$PROJECT/ledger-api/target/clearledger-api-1.0.0-SNAPSHOT-exec.jar"
+API_RECORD="$PROJECT/target/api.pid"
 owned_api_running() {
- [[ -f "$PROJECT/target/api.pid" ]] || return 1
- local api_pid; api_pid="$(cat "$PROJECT/target/api.pid")"
- [[ "$api_pid" =~ ^[0-9]+$ ]] && kill -0 "$api_pid" 2>/dev/null && [[ "$(ps -p "$api_pid" -o command=)" == *"$PROJECT/ledger-api/target/clearledger-api-1.0.0-SNAPSHOT-exec.jar"* ]]
+ python3 "$PROCESS_HELPER" alive "$API_RECORD" "$API_JAR"
+}
+current_api_running() {
+ python3 "$PROCESS_HELPER" current "$API_RECORD" "$API_JAR"
+}
+stop_owned_api() {
+ python3 "$PROCESS_HELPER" stop "$API_RECORD" "$API_JAR"
 }
 prepare_classes() {
  if python3 "$PROJECT/scripts/runtime-cache.py" check; then

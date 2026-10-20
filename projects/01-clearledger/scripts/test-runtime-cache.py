@@ -18,7 +18,7 @@ class RuntimeCacheTest(unittest.TestCase):
         self.root = pathlib.Path(self.temp.name)
         self.project = self.root / "projects/01-clearledger"
         (self.project / "scripts").mkdir(parents=True)
-        for name in ["runtime-cache.py", "common.sh", "up.sh"]:
+        for name in ["runtime-cache.py", "runtime-process.py", "common.sh", "up.sh"]:
             shutil.copyfile(SCRIPTS / name, self.project / "scripts" / name)
         (self.root / "pom.xml").write_text("root version one")
         (self.project / "pom.xml").write_text("project version one")
@@ -103,12 +103,12 @@ class RuntimeCacheTest(unittest.TestCase):
         self.stamp()
         self.assertEqual(0, self.command("check").returncode)
 
-    def test_unknown_healthy_port_is_refused_before_build_or_docker(self):
+    def test_unknown_healthy_port_is_refused_before_build_or_resource_mutation(self):
         tools = self.root / "fake-tools"
         tools.mkdir()
         for name in ["curl", "docker"]:
             path = tools / name
-            path.write_text("#!/bin/sh\n" + ("exit 0\n" if name == "curl" else "touch '" + str(self.root / "unexpected-side-effect") + "'\nexit 1\n"))
+            path.write_text("#!/bin/sh\n" + ("exit 0\n" if name == "curl" else "for arg; do [ \"$arg\" != ps ] || exit 0; done\ntouch '" + str(self.root / "unexpected-side-effect") + "'\nexit 1\n"))
             path.chmod(0o755)
         maven = self.root / "mvnw"
         maven.write_text("#!/bin/sh\ntouch '" + str(self.root / "unexpected-side-effect") + "'\nexit 1\n")

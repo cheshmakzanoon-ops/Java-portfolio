@@ -1,10 +1,14 @@
 package io.github.cheshmakzanoon.portfolio.clearledger;
 
-import java.math.*;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.time.*;
-import java.util.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public record Journal(
     UUID period, LocalDate date, String currency, String reference, List<Line> lines) {
@@ -19,19 +23,20 @@ public record Journal(
 
   public record Line(UUID account, Side side, BigInteger minor) {
     public Line {
-      Objects.requireNonNull(account);
-      Objects.requireNonNull(side);
+      if (account == null || side == null) throw new IllegalArgumentException("MISSING_FIELD");
       if (minor == null || minor.signum() <= 0 || minor.compareTo(Money.MAX) > 0)
         throw new IllegalArgumentException("POSITIVE_BOUNDED_AMOUNT");
     }
   }
 
   public Journal {
-    Objects.requireNonNull(period);
-    Objects.requireNonNull(date);
+    if (period == null || date == null || currency == null || lines == null)
+      throw new IllegalArgumentException("MISSING_FIELD");
     if (!Money.SCALES.containsKey(currency)) throw new IllegalArgumentException("CURRENCY");
-    if (reference == null || reference.length() > 120)
+    if (!LedgerText.valid(reference) || reference.length() > 120)
       throw new IllegalArgumentException("REFERENCE");
+    if (lines.stream().anyMatch(Objects::isNull))
+      throw new IllegalArgumentException("MISSING_FIELD");
     lines = List.copyOf(lines);
     if (lines.size() < 2 || lines.size() > 100) throw new IllegalArgumentException("BATCH_BOUND");
     var debit = BigInteger.ZERO;

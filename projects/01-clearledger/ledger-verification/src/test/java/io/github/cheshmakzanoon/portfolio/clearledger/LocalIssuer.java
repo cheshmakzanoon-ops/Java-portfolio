@@ -97,6 +97,25 @@ final class LocalIssuer implements AutoCloseable {
     return jwt.serialize();
   }
 
+  String rawIdentityToken(UUID tenant, String subjectJson) throws Exception {
+    String json =
+        "{\"iss\":\""
+            + issuer
+            + "\",\"aud\":[\"clearledger\"],\"exp\":"
+            + Instant.now().plusSeconds(300).getEpochSecond()
+            + ",\"scope\":\"ledger.read\",\"tenant\":\""
+            + tenant
+            + "\",\"sub\":"
+            + subjectJson
+            + "}";
+    var jwt =
+        new JWSObject(
+            new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("local-oidc").build(),
+            new Payload(json));
+    jwt.sign(new RSASSASigner(key));
+    return jwt.serialize();
+  }
+
   public void close() {
     server.stop(0);
   }

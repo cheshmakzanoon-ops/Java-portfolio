@@ -36,6 +36,7 @@ final class StrictIdentityDecoder {
         if (compact.length != 3) throw new IllegalArgumentException();
         Map<?, ?> raw = JSON.readValue(Base64.getUrlDecoder().decode(compact[1]), Map.class);
         if (!(raw.get("sub") instanceof String subject)
+            || !LedgerText.valid(subject)
             || subject.isBlank()
             || subject.length() > 255
             || !(raw.get("tenant") instanceof String tenant)

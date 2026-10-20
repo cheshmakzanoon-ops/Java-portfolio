@@ -1,21 +1,25 @@
 package io.github.cheshmakzanoon.portfolio.clearledger;
 
-import java.math.*;
-import java.security.*;
-import java.sql.*;
-import java.time.*;
-import java.util.*;
-import java.util.function.*;
+import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import org.flywaydb.core.Flyway;
 
 public final class LedgerStore implements AutoCloseable {
   private final com.zaxxer.hikari.HikariDataSource pool;
-  private final RetryBackoff backoff;
-  private final java.util.concurrent.atomic.AtomicLong retries =
-      new java.util.concurrent.atomic.AtomicLong();
+  private final SerializableTransactions transactions;
 
   public long retryCount() {
-    return retries.get();
+    return transactions.retryCount();
   }
 
   public record Failure(String code, boolean temporary) {}
@@ -36,7 +40,6 @@ public final class LedgerStore implements AutoCloseable {
   }
 
   public LedgerStore(String url, String user, String password, int poolSize) {
-    backoff = new RetryBackoff();
     var config = new com.zaxxer.hikari.HikariConfig();
     config.setJdbcUrl(url);
     config.setUsername(user);
@@ -47,11 +50,12 @@ public final class LedgerStore implements AutoCloseable {
     config.setInitializationFailTimeout(-1);
     config.setPoolName("clearledger-" + UUID.randomUUID());
     pool = new com.zaxxer.hikari.HikariDataSource(config);
+    transactions = new SerializableTransactions(pool, new RetryBackoff());
   }
 
   LedgerStore(com.zaxxer.hikari.HikariDataSource pool, RetryBackoff backoff) {
     this.pool = Objects.requireNonNull(pool);
-    this.backoff = Objects.requireNonNull(backoff);
+    transactions = new SerializableTransactions(pool, backoff);
   }
 
   public void close() {
@@ -71,59 +75,9 @@ public final class LedgerStore implements AutoCloseable {
     T run(Connection c) throws SQLException;
   }
 
+  /** Execute complete database work; callbacks must not perform external side effects. */
   public <T> T tx(SqlWork<T> work) {
-    for (int attempt = 0; attempt < 12; attempt++) {
-      try (var c = pool.getConnection()) {
-        c.setAutoCommit(false);
-        c.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-        try (var st = c.createStatement()) {
-          st.execute("SET LOCAL statement_timeout='15s'");
-          st.execute("SET LOCAL lock_timeout='10s'");
-        }
-        try {
-          T result = work.run(c);
-          c.commit();
-          return result;
-        } catch (SQLException | RuntimeException e) {
-          try {
-            c.rollback();
-          } catch (SQLException rollbackFailure) {
-            e.addSuppressed(rollbackFailure);
-          }
-          throw e;
-        }
-      } catch (SQLException e) {
-        if (("40001".equals(e.getSQLState())
-                || "40P01".equals(e.getSQLState())
-                || "55P03".equals(e.getSQLState())
-                || "23505".equals(e.getSQLState()))
-            && attempt < 11) {
-          try {
-            backoff.pause(attempt);
-            retries.incrementAndGet();
-          } catch (InterruptedException x) {
-            Thread.currentThread().interrupt();
-            throw new LedgerException("INTERRUPTED", true, x);
-          }
-          continue;
-        }
-        throw new LedgerException(
-            e.getSQLState() != null && e.getSQLState().startsWith("P0")
-                ? (e instanceof org.postgresql.util.PSQLException pg
-                        && pg.getServerErrorMessage() != null
-                    ? pg.getServerErrorMessage().getMessage()
-                    : "POSTING_REJECTED")
-                : "DATABASE_REJECTED",
-            e instanceof SQLTransientException
-                || "40001".equals(e.getSQLState())
-                || "40P01".equals(e.getSQLState())
-                || "55P03".equals(e.getSQLState())
-                || "57014".equals(e.getSQLState())
-                || e.getSQLState() != null && e.getSQLState().startsWith("08"),
-            e);
-      }
-    }
-    throw new IllegalStateException();
+    return transactions.execute(work);
   }
 
   public static int execute(Connection c, String sql, Object... args) throws SQLException {
@@ -155,8 +109,9 @@ public final class LedgerStore implements AutoCloseable {
   }
 
   public UUID account(UUID tenant, String currency, Journal.Side normal, String name) {
+    if (currency == null || normal == null) throw new IllegalArgumentException("MISSING_FIELD");
     if (!Money.SCALES.containsKey(currency)
-        || name == null
+        || !LedgerText.valid(name)
         || name.isBlank()
         || name.length() > 120) throw new IllegalArgumentException("ACCOUNT_INPUT");
     var id = UUID.randomUUID();

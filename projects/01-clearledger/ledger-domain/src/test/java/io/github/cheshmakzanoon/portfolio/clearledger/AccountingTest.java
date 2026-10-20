@@ -8,6 +8,54 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 
 class AccountingTest {
+  @Test
+  void storageTextPreservesValidUnicodeAndRejectsLossyOrUnrepresentableValues() {
+    assertTrue(LedgerText.valid(""));
+    assertTrue(LedgerText.valid("café-支払-\uD83D\uDE00"));
+    assertFalse(LedgerText.valid(null));
+    for (String invalid : List.of("\0first", "middle\0end", "\uD800", "\uDC00"))
+      assertFalse(LedgerText.valid(invalid));
+  }
+
+  @Test
+  void malformedUnicodeCannotCollapseDistinctReferencesIntoOneUtf8Digest() {
+    var lines =
+        List.of(
+            new Journal.Line(A, Journal.Side.DEBIT, BigInteger.ONE),
+            new Journal.Line(B, Journal.Side.CREDIT, BigInteger.ONE));
+    var date = LocalDate.of(2026, 1, 2);
+    for (String invalid : List.of("\uD800", "\uDC00", "before\uD800after", "zero\0byte")) {
+      var error =
+          assertThrows(
+              IllegalArgumentException.class, () -> new Journal(P, date, "CAD", invalid, lines));
+      assertEquals("REFERENCE", error.getMessage());
+    }
+    var accepted = new Journal(P, date, "CAD", "café-支払-\uD83D\uDE00", lines);
+    assertEquals(
+        accepted.digest(), new Journal(P, date, "CAD", accepted.reference(), lines).digest());
+    assertNotEquals(accepted.digest(), new Journal(P, date, "CAD", "?", lines).digest());
+  }
+
+  @Test
+  void requiredJournalFieldsFailExplicitlyBeforePersistence() {
+    var date = LocalDate.of(2026, 1, 2);
+    var lines =
+        List.of(
+            new Journal.Line(A, Journal.Side.DEBIT, BigInteger.ONE),
+            new Journal.Line(B, Journal.Side.CREDIT, BigInteger.ONE));
+    var missing =
+        List.<org.junit.jupiter.api.function.Executable>of(
+            () -> new Journal(null, date, "CAD", "ref", lines),
+            () -> new Journal(P, null, "CAD", "ref", lines),
+            () -> new Journal(P, date, null, "ref", lines),
+            () -> new Journal(P, date, "CAD", "ref", null),
+            () -> new Journal(P, date, "CAD", "ref", Arrays.asList(lines.getFirst(), null)),
+            () -> new Journal.Line(null, Journal.Side.DEBIT, BigInteger.ONE),
+            () -> new Journal.Line(A, null, BigInteger.ONE));
+    for (var invalid : missing)
+      assertEquals(
+          "MISSING_FIELD", assertThrows(IllegalArgumentException.class, invalid).getMessage());
+  }
 
   static final UUID A = UUID.fromString("00000000-0000-0000-0000-000000000011"),
       B = UUID.fromString("00000000-0000-0000-0000-000000000012"),

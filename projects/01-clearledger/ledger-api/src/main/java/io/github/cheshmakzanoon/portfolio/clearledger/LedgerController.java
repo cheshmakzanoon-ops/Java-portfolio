@@ -1,11 +1,22 @@
 package io.github.cheshmakzanoon.portfolio.clearledger;
 
-import java.time.*;
-import java.util.*;
-import org.springframework.http.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LedgerController {
@@ -31,6 +42,8 @@ public class LedgerController {
       UUID period, LocalDate date, String currency, String reference, List<LineInput> lines) {
     Journal journal() {
       if (lines == null || lines.size() > 100) throw new IllegalArgumentException("BATCH_BOUND");
+      if (lines.stream().anyMatch(Objects::isNull))
+        throw new IllegalArgumentException("MISSING_FIELD");
       return new Journal(
           period,
           date,
@@ -169,15 +182,10 @@ public class LedgerController {
     return projector.freshness(tenant(p));
   }
 
-  @ExceptionHandler({IllegalArgumentException.class, NullPointerException.class})
-  ResponseEntity<Map<String, String>> invalid(RuntimeException e) {
+  @ExceptionHandler(IllegalArgumentException.class)
+  ResponseEntity<Map<String, String>> invalid(IllegalArgumentException e) {
     return ResponseEntity.unprocessableContent()
-        .body(
-            Map.of(
-                "code",
-                e instanceof NullPointerException
-                    ? "MISSING_FIELD"
-                    : e.getMessage() == null ? "INVALID_INPUT" : e.getMessage()));
+        .body(Map.of("code", e.getMessage() == null ? "INVALID_INPUT" : e.getMessage()));
   }
 
   @ExceptionHandler(LedgerStore.LedgerException.class)

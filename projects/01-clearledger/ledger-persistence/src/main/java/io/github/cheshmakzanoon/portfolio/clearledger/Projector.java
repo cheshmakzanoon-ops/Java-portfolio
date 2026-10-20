@@ -1,7 +1,9 @@
 package io.github.cheshmakzanoon.portfolio.clearledger;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
 
 /** Per-event membership, never sequence MAX: an earlier allocated ID can commit later. */
 public final class Projector {
@@ -141,20 +143,21 @@ public final class Projector {
   }
 
   public static void main(String[] args) throws Exception {
-    var s =
+    try (var store =
         new LedgerStore(
             System.getenv()
                 .getOrDefault("LEDGER_URL", "jdbc:postgresql://localhost:18101/clearledger"),
             "clearledger_runtime",
-            System.getenv().getOrDefault("LEDGER_PASSWORD", "local-only-clearledger"));
-    var p = new Projector(s);
-    if (args.length > 0 && args[0].equals("replay")) {
-      System.out.println(p.replay());
-      return;
+            System.getenv().getOrDefault("LEDGER_PASSWORD", "local-only-clearledger"))) {
+      var projector = new Projector(store);
+      if (args.length > 0 && args[0].equals("replay")) {
+        System.out.println(projector.replay());
+        return;
+      }
+      while (true) {
+        projector.drain(projector.active());
+        Thread.sleep(500);
+      }
     }
-    do {
-      p.drain(p.active());
-      Thread.sleep(500);
-    } while (true);
   }
 }

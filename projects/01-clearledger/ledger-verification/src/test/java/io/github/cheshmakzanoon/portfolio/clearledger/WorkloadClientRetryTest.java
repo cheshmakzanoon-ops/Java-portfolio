@@ -3,10 +3,57 @@ package io.github.cheshmakzanoon.portfolio.clearledger;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class WorkloadClientRetryTest {
+  @Test
+  void cleanupWaitsForSamplerExitAndPreservesCancellation() throws Exception {
+    var writers = Executors.newSingleThreadExecutor();
+    var sampler = Executors.newSingleThreadScheduledExecutor();
+    var closer = Executors.newSingleThreadExecutor();
+    var started = new CountDownLatch(1);
+    var canceled = new CountDownLatch(1);
+    var release = new CountDownLatch(1);
+    sampler.execute(
+        () -> {
+          started.countDown();
+          try {
+            new CountDownLatch(1).await();
+          } catch (InterruptedException expected) {
+            canceled.countDown();
+            try {
+              release.await();
+            } catch (InterruptedException failure) {
+              Thread.currentThread().interrupt();
+            }
+          }
+        });
+    try {
+      assertTrue(started.await(5, TimeUnit.SECONDS));
+      var finished =
+          closer.submit(
+              () -> {
+                Thread.currentThread().interrupt();
+                Workload.stopExecutors(writers, sampler);
+                return Thread.currentThread().isInterrupted();
+              });
+      assertTrue(canceled.await(5, TimeUnit.SECONDS));
+      assertFalse(finished.isDone(), "cleanup must wait for the sampler's finally path");
+      release.countDown();
+      assertTrue(finished.get(5, TimeUnit.SECONDS));
+      assertTrue(writers.isTerminated());
+      assertTrue(sampler.isTerminated());
+    } finally {
+      release.countDown();
+      writers.shutdownNow();
+      sampler.shutdownNow();
+      closer.shutdownNow();
+      assertTrue(closer.awaitTermination(5, TimeUnit.SECONDS));
+    }
+  }
+
   @Test
   void sameCapturedRequestRecoversWithBoundedBackoff() {
     var outcomes = new Workload.ClientOutcomes();

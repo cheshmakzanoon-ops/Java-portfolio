@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-20T09:29:05.518245+00:00",
+  "scope": "Local lifecycle resource ownership, not Java or PostgreSQL certification",
+  "command": "python3 projects/01-clearledger/scripts/test-lifecycle.py",
+  "result": "PASS",
+  "tests": 16,
+  "failures": 0,
+  "errors": 0,
+  "durationSeconds": 69.48,
+  "sourceFingerprintAlgorithm": "SHA-256 of sorted repository-relative path, NUL, file bytes, NUL",
+  "sourceFingerprint": "5e1f32355bb7538bd2647dcb162b4fefd0d51d8d75f99016479ff978649dc9cf",
+  "files": [
+    {
+      "path": "projects/01-clearledger/scripts/common.sh",
+      "sha256": "637228e685a048d0498616e6e42a36bf273ca322eaddbc150c69a252622c9cbc"
+    },
+    {
+      "path": "projects/01-clearledger/scripts/down.sh",
+      "sha256": "4f49f1240723150ab79850713dd36025303cc66356515329d29bbc4d1e4f68ad"
+    },
+    {
+      "path": "projects/01-clearledger/scripts/runtime-process.py",
+      "sha256": "4bab1930cbeb207f7091d87e29702a0b292e236a8d47d02d3c5e92a82caaf397"
+    },
+    {
+      "path": "projects/01-clearledger/scripts/test-lifecycle.py",
+      "sha256": "0fff230265e74edbc80ceb7393dd7a8f9bd973f48de7f6d5751a32824b0706a3"
+    },
+    {
+      "path": "projects/01-clearledger/scripts/test-runtime-cache.py",
+      "sha256": "c8ed98f4c22e9ca2aebb6c388e148be257db6f4c7f57f0a2561e9e0979e41d70"
+    },
+    {
+      "path": "projects/01-clearledger/scripts/up.sh",
+      "sha256": "e8a29325aada3c29cbe9f858fd1b0a9f0e35f290f0f86e480012fb919e74e374"
+    }
+  ],
+  "logSha256": "e26c3934f8c60777875a1b48170a4399042a3abb6652bd66eb4495d50d68ccc3",
+  "exercised": [
+    "Real child process startup, termination, resistant-child escalation and cancellation",
+    "Kernel PID/start/boot/executable/JAR identity and stale artifact reuse rejection",
+    "Controlled Compose/readiness/seed failures, original running/stopped resources, and retained volume marker",
+    "Repeated startup and shutdown signals, cleanup failure visibility, preserved primary failure",
+    "EACCES/EPERM-only optional later executable observation with mandatory complete argument hash; changed arguments and unrelated errors refuse control"
+  ],
+  "limits": [
+    "Compose and HTTP readiness use controlled adapters; this suite does not start PostgreSQL.",
+    "Current PostgreSQL 18.6 live lifecycle is certified separately.",
+    "No performance or clean-checkout release claim."
+  ],
+  "runtimeCacheRegressions": {
+    "command": "python3 projects/01-clearledger/scripts/test-runtime-cache.py",
+    "result": "PASS",
+    "tests": 6,
+    "durationSeconds": 4.749,
+    "logSha256": "bf11addaad9b5bcd835cdd31e8950513d9da657983153e72532b0e2210d2b0ed",
+    "fixtureCorrection": "Copies the new process helper and permits read-only Compose ownership snapshots; unknown healthy API still refuses all build/resource mutations."
+  }
+}

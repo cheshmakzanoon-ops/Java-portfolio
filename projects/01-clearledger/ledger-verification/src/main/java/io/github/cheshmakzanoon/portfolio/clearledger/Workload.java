@@ -71,6 +71,28 @@ public final class Workload {
     throw new IllegalStateException("CLIENT_RETRY_BOUND");
   }
 
+  static void stopExecutors(ExecutorService writers, ScheduledExecutorService sampler) {
+    writers.shutdownNow();
+    sampler.shutdownNow();
+    boolean interrupted = false;
+    long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
+    try {
+      for (var executor : List.of(writers, sampler)) {
+        while (!executor.isTerminated()) {
+          long remaining = deadline - System.nanoTime();
+          if (remaining <= 0) throw new IllegalStateException("WORKLOAD_EXECUTORS_DID_NOT_STOP");
+          try {
+            executor.awaitTermination(remaining, TimeUnit.NANOSECONDS);
+          } catch (InterruptedException cancellation) {
+            interrupted = true;
+          }
+        }
+      }
+    } finally {
+      if (interrupted) Thread.currentThread().interrupt();
+    }
+  }
+
   public static void main(String[] args) throws Exception {
     int count = args.length > 0 ? Integer.parseInt(args[0]) : 100000;
     int writers = args.length > 1 ? Integer.parseInt(args[1]) : 1;
@@ -240,11 +262,8 @@ public final class Workload {
       try {
         for (var task : tasks) task.get();
       } finally {
-        pool.shutdownNow();
-        sampler.shutdownNow();
         try {
-          if (!pool.awaitTermination(30, TimeUnit.SECONDS))
-            throw new IllegalStateException("WORKLOAD_WORKERS_DID_NOT_STOP");
+          stopExecutors(pool, sampler);
         } finally {
           new ObjectMapper()
               .writerWithDefaultPrettyPrinter()
