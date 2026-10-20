@@ -28,6 +28,51 @@ class TimingImporterTest {
   }
 
   @Test
+  void distinctMethodIdsCannotOverwriteTheSameReportedIdentity() throws Exception {
+    fixture("0\t1\t100\tfalse\n1\t2\t200\tfalse\n");
+    Files.writeString(
+        directory.resolve("methods.tsv"), "methodId\tidentity\n0\ta.method()V\n1\ta.method()V\n");
+    assertThrows(java.io.IOException.class, () -> new TimingImporter().read(directory));
+    Files.writeString(
+        directory.resolve("methods.tsv"), "methodId\tidentity\n0\ta.method()V\n1\ta.other()V\n");
+    var valid = new TimingImporter().read(directory);
+    assertEquals(2, valid.timings().size());
+    assertEquals(2, valid.exits());
+    assertEquals(
+        300,
+        valid.timings().values().stream().mapToLong(ContentionSummary.Timing::totalNanos).sum());
+  }
+
+  @Test
+  void rowLimitStopsAnUnterminatedInputBeforeReadingItsRemainder() throws Exception {
+    java.io.Reader endless =
+        new java.io.Reader() {
+          private int consumed;
+
+          @Override
+          public int read(char[] characters, int offset, int length) {
+            if (++consumed > 512) throw new AssertionError("reader consumed past the row budget");
+            characters[offset] = 'x';
+            return 1;
+          }
+
+          @Override
+          public void close() {}
+        };
+    try (var reader = new java.io.BufferedReader(endless, 1)) {
+      assertThrows(java.io.IOException.class, () -> TimingImporter.readBoundedLine(reader, 128));
+    }
+    try (var reader =
+        new java.io.BufferedReader(new java.io.StringReader("abc\r\ndef\rghi\nlast"))) {
+      assertEquals("abc", TimingImporter.readBoundedLine(reader, 3));
+      assertEquals("def", TimingImporter.readBoundedLine(reader, 3));
+      assertEquals("ghi", TimingImporter.readBoundedLine(reader, 3));
+      assertEquals("last", TimingImporter.readBoundedLine(reader, 4));
+      assertNull(TimingImporter.readBoundedLine(reader, 4));
+    }
+  }
+
+  @Test
   void primitiveTimingReplayPreservesDistributionsAndLosses() throws Exception {
     fixture("0\t123\t100\tfalse\n0\t234\t200\ttrue\n1\t345\t300\tfalse\n");
     Files.writeString(

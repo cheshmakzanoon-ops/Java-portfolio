@@ -1,6 +1,7 @@
 package io.github.cheshmakzanoon.portfolio.threadlens.report;
 
 import io.github.cheshmakzanoon.portfolio.threadlens.analysis.*;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -66,9 +67,10 @@ public final class TimingImporter {
         java.util.HashSet<Integer> ids = new java.util.HashSet<>();
         try (var reader = Files.newBufferedReader(summary, StandardCharsets.UTF_8)) {
           if (!"methodId\texits\texceptionalExits\ttotalNanos\tp50Nanos\tp95Nanos\tp99Nanos"
-              .equals(reader.readLine())) throw new IOException("invalid histogram summary header");
+              .equals(readBoundedLine(reader, 256)))
+            throw new IOException("invalid histogram summary header");
           String line;
-          while ((line = reader.readLine()) != null) {
+          while ((line = readBoundedLine(reader, 256)) != null) {
             if (line.length() > 256) throw new IOException("timing summary row bounds");
             String[] row = line.split("\\t", -1);
             if (row.length != 7 || ids.size() >= 128)
@@ -100,9 +102,9 @@ public final class TimingImporter {
         var histogram = new ContentionSummary(128);
         try (var reader = Files.newBufferedReader(events, StandardCharsets.UTF_8)) {
           if (!"methodId\tstartedMonotonicNanos\tdurationNanos\texceptional"
-              .equals(reader.readLine())) throw new IOException("invalid timing header");
+              .equals(readBoundedLine(reader, 128))) throw new IOException("invalid timing header");
           String line;
-          while ((line = reader.readLine()) != null) {
+          while ((line = readBoundedLine(reader, 128)) != null) {
             if (line.length() > 128) throw new IOException("timing row bounds");
             String[] row = line.split("\\t", -1);
             if (row.length != 4) throw new IOException("invalid timing row");
@@ -222,20 +224,42 @@ public final class TimingImporter {
   private static Map<Integer, String> methods(Path path) throws IOException {
     if (Files.size(path) > 4L * 1024 * 1024) throw new IOException("method registry budget");
     TreeMap<Integer, String> methods = new TreeMap<>();
+    java.util.HashSet<String> identities = new java.util.HashSet<>();
     try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-      if (!"methodId\tidentity".equals(reader.readLine()))
+      if (!"methodId\tidentity".equals(readBoundedLine(reader, 272)))
         throw new IOException("invalid method registry header");
       String line;
-      while ((line = reader.readLine()) != null) {
+      while ((line = readBoundedLine(reader, 272)) != null) {
         String[] row = line.split("\\t", -1);
         if (row.length != 2 || row[1].length() > 256 || methods.size() >= 10_000)
           throw new IOException("method registry bounds");
         int id = Integer.parseInt(row[0]);
         if (id < 0 || id >= 10_000 || methods.putIfAbsent(id, row[1]) != null)
           throw new IOException("duplicate/invalid method id");
+        if (row[1].isBlank() || !identities.add(row[1]))
+          throw new IOException("duplicate/empty method identity");
       }
     }
     return methods;
+  }
+
+  /**
+   * Enforces row limits while reading, before an untrusted line can allocate an unbounded String.
+   */
+  static String readBoundedLine(BufferedReader reader, int limit) throws IOException {
+    StringBuilder line = new StringBuilder(Math.min(limit, 256));
+    int value;
+    while ((value = reader.read()) != -1) {
+      if (value == '\n') return line.toString();
+      if (value == '\r') {
+        reader.mark(1);
+        if (reader.read() != '\n') reader.reset();
+        return line.toString();
+      }
+      if (line.length() == limit) throw new IOException("timing row exceeds character limit");
+      line.append((char) value);
+    }
+    return line.isEmpty() ? null : line.toString();
   }
 
   private static long nonnegative(String value) throws IOException {

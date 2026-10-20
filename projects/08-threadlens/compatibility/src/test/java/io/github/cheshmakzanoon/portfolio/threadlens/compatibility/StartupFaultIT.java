@@ -14,6 +14,32 @@ class StartupFaultIT {
   @TempDir Path directory;
 
   @Test
+  void priorObserverArtifactsDisableCollectionWithoutMixingRunsOrPreventingHostStartup()
+      throws Exception {
+    Path classes = compileHost();
+    for (String artifact :
+        List.of(
+            "observer-status.txt", "methods.tsv", "timing-summary.tsv", "timing-histograms.hlog")) {
+      Path output = Files.createDirectory(directory.resolve(artifact + "-output"));
+      Path previous = output.resolve(artifact);
+      Files.writeString(previous, "retained observation");
+      Path config = directory.resolve(artifact + ".yaml");
+      Files.writeString(
+          config,
+          "allowPackages: [sample.application]\nmethodNames: [unit]\noutputDirectory: "
+              + output
+              + "\n");
+      String stdout = runHost(classes, config);
+      assertTrue(stdout.contains("host-result=50005000"), stdout);
+      assertTrue(stdout.contains("initialization disabled"), stdout);
+      assertEquals("retained observation", Files.readString(previous));
+      try (var files = Files.list(output)) {
+        assertEquals(List.of(previous), files.toList());
+      }
+    }
+  }
+
+  @Test
   void systemExitSealsAdmissionAndReportsPausedProducerAfterConsumerFinishes() throws Exception {
     Path source = directory.resolve("sample/application/ShutdownRaceHost.java");
     Files.createDirectories(source.getParent());

@@ -1,35 +1,24 @@
-# Independent review
+# Review findings
 
-A07 performed a read-only review of agent transformation/handler precedence, safe resource-only frame resolution, bounded aggregation/JFR normalization, escaped reports and timing import.
+The review boundary covers bytecode transformation, resource-only frame resolution, bounded JFR normalization/aggregation, timing import, shutdown behavior and offline report safety. Results apply to the recorded source revision; functional success does not establish acceptable observer overhead.
 
-| ID | Finding | Owner correction | Independent verification |
-| --- | --- | --- | --- |
-| A08-R1 HIGH | Shutdown could abandon already accepted timing entries without reporting loss; importer could omit tail loss | Bounded drain, explicit shutdownDiscarded/incomplete/health and unknown-status propagation | A07 inspected fix and74passing Surefire tests at working-tree fingerprint dbc7e02bed4d1a5d1334e92f35e8a79efe9f175be5b50d9b394da9edab7c52c4 |
-| A08-R2 MEDIUM | Report hardcoded ceilings looked like actual configured limits | Absolute ceiling names plus separate activeCollectionLimits,2-slot/100-ID JSONroundtrip regression | A07 inspected fix/test and74passing tests at same checkpoint |
-
-Both original findings were VERIFIED RESOLVED at that checkpoint. The later bounded-histogram consumer change requires recertification of shutdown conservation/import behavior and final read-only handoff. Performance, mutation, final stress and platform gates are separate; no blanket release approval is implied.
-
-A07 additionally inspected the bounded128-subject HDR consumer, raw-prefix omission versus true loss, and TimingImporter summary preference/overflow propagation before checkpoint4. No new high-severity finding was reported in that bounded source slice. Checkpoint6 passed100tests and core/mutation gates after strengthening supported transformer proof to48cases and final counters/source identity. A07 final read-only follow-up was requested against that frozen source. Full overhead and final stress remain separate runtime acceptance boundaries.
-
-Final A07 bounded artifact verification independently parsed 100 tests with zero failures/errors/skips, matched raw completed-stress SHA256 `99d542390c1f820de7df3725c4019764bce3f0d32a4279a6774adf198bbc522e` to the envelope, confirmed that checkpoint's agent JAR is byte-identical to the stress artifact, and verified 87,210 + 87,449 monitor operations equal 174,659 healthy timings. It confirmed 46,361,673 queue drops and all 900 windows marked incomplete are preserved. No new high issue was found. That review preceded the actual first full overhead failure and subsequent repair; it does not certify changed repair source or settings. Other platforms remain untested.
-
-Owner follow-up found method selection overflow/skips were exported by the agent but omitted by the timing importer/report. The repair adds bounded selection-reason parsing, a separate selection-overflow counter and incomplete selected-method coverage, with a real packaged two-method/one-ID JSON/HTML regression. Root authorized measured-cost repairs after the complete first overhead failure.
-
-A01 independently reviewed the repair's queue/probe shutdown and import semantics. It found four defects, all corrected before repair certification 4:
+## Resolved defects
 
 | Finding | Correction and regression |
 | --- | --- |
-| Missing full summary could make an omitted raw prefix appear complete; producer totals were ignored | Importer compares observed events against accounted full-summary/raw counts, compares accepted reservations against observed plus discarded, and marks missing retained rows incomplete |
-| A healthy truncated status prefix or duplicate recognized fields could hide missing coverage/loss | Version 2 requires every recognized field and a last completion marker; duplicates are rejected, legacy status retains unknown/incomplete coverage |
-| Concurrent recoverable faults could lose increments in a volatile counter | Atomic rare-path counter; six concurrently admitted injected faults preserve six failures |
-| An admitted producer could publish after shutdown finalized output | Bounded producer quiescence followed by atomic queue admission seal; deterministic paused-producer tests and a real System.exit child preserve application result 42 and report unfinished/incomplete observation |
+| Shutdown abandoned accepted timing entries without reporting the lost tail | Bounded drain, explicit discarded/incomplete/health counters and packaged-JVM conservation tests |
+| Absolute ceilings appeared to be actual configured limits | Separate absolute and active limits; a two-slot/100-ID report round trip |
+| A missing histogram summary could make a bounded raw prefix appear complete | Reconcile producer, reservation, observed and discarded totals; missing observations remain incomplete |
+| Truncated or duplicate status fields could hide coverage loss | Versioned complete status, required fields and duplicate rejection |
+| Concurrent recoverable faults lost counter increments | Atomic rare-path accounting and concurrent injected-fault regression |
+| A producer could publish after shutdown finalized output | Bounded producer quiescence and sealed admission; a real `System.exit` child preserves application result 42 while reporting an unfinished exit |
+| Method selection overflow was omitted from reports | Bounded reason parsing and a real two-method/one-ID JSON/HTML test |
+| Distinct imported IDs could overwrite the same displayed method identity | Reject duplicate/empty registry identities before histogram aggregation; preserve distinct valid methods and their totals |
+| Existing status/registry/summary artifacts could be combined with new timing data | Reject nonempty or symbolic-link output directories before installing transformations; independent JVMs verify host progress and unchanged old artifacts |
+| TSV row bounds were checked only after allocating the entire line | Enforce character limits during reading, including unterminated input; retain CR/LF/CRLF compatibility |
 
-A01 reported no remaining source blocker in those four findings after inspecting the fixes and meaningful regressions. That acknowledgment was a bounded source review while certification 4 was still running; it did not claim execution or performance acceptance. The subsequent actual clean run passed 118 methods and strict 256/266 targeted mutations, recorded separately in `evidence/repair-verification-v3.json`. Current source hashes include buffer `17bc2c03…`, probe `5e363356…`, premain `fe1f5f20…`, and importer `d05d6ccd…`.
+The first seven findings have source-bound historical verification in [the v3 certificate](../evidence/repair-verification-v3.json). Current development checks and their precise scope are recorded in [STATUS.md](STATUS.md). Historical mutation survivors remain visible; no blanket equivalence claim is made.
 
-Fresh cause/settings validation subsequently completed at **2026-10-18T07:05:14Z** under the root's all-three-lock quiet reservation: CPU7/7, allocation7/7 and contention7/7, actual outer exit0, all42 producer sidecars verified. The owner inspected actual context/summary/trials/settings/reservation and hashed339 raw files; `evidence/planted-cause-v3.json` preserves the full observed record and current transformation/fault-report references. This is owner evidence publication, not an invented independent performance review. The coordinator separately reported stopped-state checks passing.
+## Performance remains unresolved
 
-The current observer subsequently completed **1,202.66918876 seconds** under root reservation13 at **08:31:25Z**, actual exit0. Accepted and observed timing counts exactly equal 271,396 monitor operations; quiescence, zero timing loss/faults/discards/unfinished exits and zero unaccounted replay timings are recorded. The event queue's 58,999,215 drops and all 900 windows incomplete remain explicit. The owner inspected actual result/context/status/replay and shared-host background records; root independently checked stopped state. `evidence/observer-stress-v3.json` identifies that bounded scope without inventing independent artifact review or performance approval.
-
-A01 also reviewed the scratch preparation/execution helpers before the next full study. It found input-copy certification races, missing bounded process-tree cleanup, and weak per-trial instrumentation lower bounds. Its follow-up found a late-adoptee cleanup race; the final runner uses discovery before emptiness, subreaper ECHILD confirmation, pidfd signals and bounded TERM/KILL cleanup. All three helper findings were closed at source level for runner `3a12303c…` and tests `9b680513…`. Root then actually executed all 13 Python controls successfully in 7.661 seconds, including the deterministic TERM-time escaped-child regression with independent emergency cleanup. The qualification log/reservations and exact helper identities are bound into fresh study9 inputs.
-
-The full 84-JVM remeasurement remains open under **v3-allocation50-park-class-only**. The atomic in-flight fix adds real hot-path accounting; no speedup or release approval is inferred from source review, functional success, short cause tests or long boundedness stress.
+The completed first overhead study failed multiple median limits. Historical cause detection and a 1,202.669-second boundedness run passed under the subsequent declared configuration, while preserving event loss and incomplete windows. Neither establishes overhead acceptance for that configuration. The complete 84-JVM remeasurement remains required; see [performance protocol](PERFORMANCE.md).

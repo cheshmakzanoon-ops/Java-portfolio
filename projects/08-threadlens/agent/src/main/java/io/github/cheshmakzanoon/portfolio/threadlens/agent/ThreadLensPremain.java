@@ -17,6 +17,12 @@ public final class ThreadLensPremain {
     try {
       AgentConfig config = AgentConfig.read(argument);
       Files.createDirectories(config.outputDirectory());
+      if (Files.isSymbolicLink(config.outputDirectory()))
+        throw new java.io.IOException("observer output directory cannot be a symbolic link");
+      try (var entries = Files.list(config.outputDirectory())) {
+        if (entries.findAny().isPresent())
+          throw new java.io.IOException("observer output directory must be empty");
+      }
       if (directoryBytes(config.outputDirectory()) > 256L * 1024 * 1024)
         throw new java.io.IOException("observer directory cannot reserve output budget");
       // Validate output and initialize observer dependencies before installing transformations.

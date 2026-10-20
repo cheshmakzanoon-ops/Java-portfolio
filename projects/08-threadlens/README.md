@@ -1,27 +1,44 @@
 # ThreadLens
 
-ThreadLens collects JVM evidence using JFR and an explicitly selected startup Java agent. It implements bounded normalization, prefix-stack aggregation, event-time windows, weighted allocation summaries, timing histograms, profile comparison and standalone escaped HTML reports. It does not implement a native CPU sampler.
+A JVM diagnostics tool combining JFR recordings with explicitly selected startup instrumentation. ThreadLens normalizes event data, aggregates stack prefixes and event-time windows, summarizes sampled allocations and method timings, and produces standalone HTML/JSON reports. Sampling proportions and selected-method wall times remain separate throughout the pipeline.
 
-Java 25 HotSpot on Linux x86-64 is the full validation target. Maven runs through the repository wrapper. No Docker or external service is required.
+The validated platform is Java 25 HotSpot on Linux x86-64. No Docker, database, credentials or external service is required. The first full overhead study **failed its acceptance limits**; correctness checks and bounded collection do not establish acceptable overhead. See [verification status](docs/STATUS.md) and [measurement protocol](docs/PERFORMANCE.md).
+
+## Build and validate
+
+From the repository root:
+
+```bash
+source scripts/cloud-env.sh
+./mvnw -f projects/08-threadlens/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/A08/m2" -B -ntp -Pintegration verify
+```
+
+The integration profile runs independent JVMs with the packaged instrumentation JAR and bytecode verification enabled. Selected algorithm mutation testing uses `-Pmutation`; the full overhead and 20-minute stress studies run separately from the development test suite.
+
+## Run the demonstration
 
 ```bash
 ./scripts/portfolio.sh up threadlens
 ./scripts/portfolio.sh demo threadlens
 ./scripts/portfolio.sh down threadlens
-# Optional desktop opening after the demo:
-THREADLENS_OPEN_REPORT=1 projects/08-threadlens/scripts/demo.sh
 ```
 
-The demo launches baseline and deliberately regressed CPU, allocation, contention and virtual-thread workloads, asserts actual sampled CPU / allocation / lock evidence, and writes offline differential reports under `target/demo/`. It runs eight short workload JVMs plus analysis; elapsed time depends on host load. Output is diagnostic evidence; the short demo is not the seven-trial overhead acceptance study.
+The demo runs baseline and deliberately regressed CPU, allocation, contention and virtual-thread workloads, checks their observed evidence, and writes differential reports under `target/demo/`. It runs eight short workload JVMs plus analysis. `up` prepares the CLI; there is no background server. Optional desktop opening is available through `THREADLENS_OPEN_REPORT=1 projects/08-threadlens/scripts/demo.sh`.
 
-```bash
-source scripts/cloud-env.sh
-./mvnw -f projects/08-threadlens/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A08/m2 -B -ntp verify
-./mvnw -f projects/08-threadlens/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A08/m2 -B -ntp -Pmutation verify
-projects/08-threadlens/scripts/benchmark.sh  # Full 84-JVM / 126-minute measurement protocol, plus launch cost
-```
+CLI commands:
 
-CLI commands are `capabilities`, `analyze recording.jfr output-directory`, `compare baseline.json candidate.json output.html`, and `benchmark output-directory agent.jar [--smoke]`. The project launcher assembles the runtime classpath with a source-fingerprinted cache. The agent starts as `-javaagent:threadlens-agent-1.0.0-SNAPSHOT.jar=config=threadlens.yaml`; dependencies are shaded.
+| Command | Purpose |
+| --- | --- |
+| `capabilities` | Describe the current JVM's supported event schemas |
+| `analyze recording.jfr output-directory` | Normalize a recording and produce HTML/JSON reports |
+| `analyze recording.jfr output-directory --timings agent-directory` | Include separately collected selected-method timings |
+| `compare baseline.json candidate.json output.html` | Compare profiles with matching declared producer settings |
+| `benchmark output-directory agent.jar [--smoke]` | Run the declared overhead protocol; smoke results are ineligible for acceptance |
+
+## Configure startup instrumentation
+
+Start the application with `-javaagent:threadlens-agent-1.0.0-SNAPSHOT.jar=config=threadlens.yaml`. The packaged JAR includes its dependencies.
 
 ```yaml
 allowPackages: [sample.application]
@@ -31,6 +48,8 @@ queueCapacity: 65536
 outputDirectory: target/observer-run-unique
 ```
 
-Config is a strict, small YAML subset, documented in [operations](docs/OPERATIONS.md). A missing/invalid configuration disables an installed agent with one bounded diagnostic while the host starts. Constructors, initializers, JDK/tool classes, native/abstract methods, named modules and non-system loaders are skipped. Safe byte-resource frame resolution never initializes target classes. Unsupported array frame merges and unresolved metadata skip the entire class.
+Use a dedicated empty output directory for each run. Existing artifacts and symbolic-link output directories disable collection before transformation begins; application startup continues with one bounded diagnostic. Configuration accepts a strict, small YAML subset. See [operations](docs/OPERATIONS.md) for bounds and output semantics.
 
-Read [architecture](docs/ARCHITECTURE.md), [invariants](docs/INVARIANTS.md), [security](docs/SECURITY.md), [performance protocol](docs/PERFORMANCE.md), and the exact observed [status](docs/STATUS.md). Measurements and gates remain unverified unless STATUS links actual evidence. Sampling proportions and selected-method wall timings are distinct; lock acquisition before synchronized bytecode is outside method timings. Virtual-thread execution samples do not reliably attribute all mounted work.
+Constructors, initializers, JDK/tool classes, native/abstract methods, named modules and non-system loaders are skipped. Frame resolution reads class resources without initializing target classes. Unsupported array merges or unresolved metadata skip the affected class. Selected method timings exclude implicit synchronized-method lock acquisition before bytecode execution.
+
+[Architecture](docs/ARCHITECTURE.md) describes module boundaries; [invariants](docs/INVARIANTS.md) and [security](docs/SECURITY.md) describe safety and privacy. JFR execution samples do not provide exact call counts or complete virtual-thread attribution. Raw recordings may contain data outside the normalized export allowlist.

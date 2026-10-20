@@ -43,11 +43,26 @@ public final class ReportWriter {
   }
 
   private static String start(String title) {
-    return "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'\"><title>"
+    return "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'\"><title>"
         + escape(title)
-        + "</title><style>body{font:16px system-ui;max-width:1100px;margin:auto;padding:2rem;background:#fafafa;color:#17222f}table{border-collapse:collapse;width:100%;margin:1rem 0}td,th{border:1px solid #bcc;padding:.4rem;text-align:left}summary{cursor:pointer;background:#ffdba6;margin:2px;padding:.2rem}details{margin-left:1rem}code{overflow-wrap:anywhere}caption{text-align:left;font-weight:bold}nav a{margin-right:1rem}meter{width:100%}</style><body><h1>"
+        + """
+          </title><style>
+          :root{color-scheme:light;--ink:#172b40;--muted:#526478;--line:#d9e2ec;--accent:#2456a6}
+          *{box-sizing:border-box}html{scroll-padding-top:5rem}body{margin:0;background:#f3f6fa;color:var(--ink);font:16px/1.6 system-ui,sans-serif}
+          main{max-width:1200px;margin:2rem auto;padding:2.5rem;background:white;border:1px solid var(--line);border-radius:12px}
+          header{border-bottom:1px solid var(--line);margin-bottom:1.5rem;padding-bottom:1.5rem}.eyebrow{margin:0;color:var(--accent);font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+          h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:.6rem 0 0;overflow-wrap:anywhere}h2{font-size:1.3rem;margin-top:2.5rem}p{max-width:85ch;color:var(--muted)}
+          nav{position:sticky;top:0;z-index:1;display:flex;flex-wrap:wrap;gap:.5rem;padding:.75rem;background:#f3f6fa;border:1px solid var(--line);border-radius:8px}nav a{padding:.35rem .7rem;text-decoration:none;border-radius:4px}nav a:hover{background:#e0eafb}
+          a{color:var(--accent)}:focus-visible{outline:3px solid #2456a6;outline-offset:3px}.skip-link{position:absolute;left:1rem;top:-5rem;padding:.6rem 1rem;background:white;z-index:2}.skip-link:focus{top:1rem}
+          table{border-collapse:collapse;width:100%;margin:1rem 0 2rem;font-size:.9rem;font-variant-numeric:tabular-nums}td,th{border:1px solid var(--line);padding:.65rem;text-align:left;overflow-wrap:anywhere}th{background:#edf2f8}tr:nth-child(even) td{background:#fafbfd}caption{text-align:left;font-weight:650;padding:.5rem 0}
+          summary{cursor:pointer;background:#edf2f8;border:1px solid var(--line);border-radius:4px;margin:3px 0;padding:.4rem .6rem;overflow-wrap:anywhere}details{margin-left:1rem}meter{display:block;width:100%;height:.6rem;accent-color:var(--accent)}
+          code,pre{font: .85rem/1.6 ui-monospace,monospace;overflow-wrap:anywhere}pre{background:#f3f6fa;border:1px solid var(--line);border-radius:8px;padding:1rem;white-space:pre-wrap}
+          @media(max-width:700px){main{margin:0;padding:1rem;border:0;border-radius:0}nav{position:static}td,th{padding:.35rem;font-size:.8rem}details{margin-left:.5rem}}
+          @media print{body,main{background:white}main{margin:0;padding:0;border:0}nav,.skip-link{display:none}h2{break-after:avoid}tr{break-inside:avoid}}
+          </style></head><body><a class="skip-link" href="#report-main">Skip to report</a><main id="report-main" tabindex="-1"><header><p class="eyebrow">ThreadLens / JVM diagnostics</p><h1>
+          """
         + escape(title)
-        + "</h1>";
+        + "</h1></header>";
   }
 
   public static void html(Path path, ReportDocument report) throws IOException {
@@ -158,7 +173,7 @@ public final class ReportWriter {
                             report.aggregationLimits(),
                             "activeCollectionLimits",
                             report.activeCollectionLimits()))))
-        .append("</pre></body></html>");
+        .append("</pre></main></body></html>");
     Files.writeString(path, out, StandardCharsets.UTF_8);
   }
 
@@ -256,7 +271,7 @@ public final class ReportWriter {
                         baseline.lossCounters(),
                         "candidateLoss",
                         candidate.lossCounters()))))
-        .append("</pre></body></html>");
+        .append("</pre></main></body></html>");
     Files.writeString(path, out, StandardCharsets.UTF_8);
   }
 }

@@ -9,4 +9,4 @@
 7. Inject a consumer fault, malformed config or a two-slot queue. Show host progress and bounded evidence without suppressing VM verification.
 8. Make a small live change to window width and predict boundary/test/report changes. Explain the next bottleneck: callback stack conversion, disk emission, bounded histogram cardinality, or JDK decoder allocation.
 
-Third-party mechanisms: OpenJDK JFR consumer/instrumentation APIs, OW2 ASM, HDR Histogram and Jackson under their upstream licenses. Original application/aggregation/selection/reporting code was developed with AI assistance in the repository execution workflow. No employment history, production customers or certification are claimed.
+Third-party mechanisms: OpenJDK JFR consumer/instrumentation APIs, OW2 ASM, HDR Histogram and Jackson under their upstream licenses. Application-specific components cover aggregation, instrumentation scope, privacy filtering and report interpretation. No employment history, production customers or certification are claimed.
