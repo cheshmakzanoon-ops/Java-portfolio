@@ -71,6 +71,7 @@ public final class FakeProvider implements AutoCloseable {
     synchronized (this) {
       record("CALL\t" + key + "\t" + parameter + "\t" + mode);
       if ("reject".equals(mode) || ("transient".equals(mode) && firstRejected.add(key))) {
+        x.getResponseHeaders().set("X-Effect-Outcome", "NOT_APPLIED");
         respond(x, 503, "rejected before effect");
         return;
       }
@@ -86,6 +87,10 @@ public final class FakeProvider implements AutoCloseable {
         effects.put(key, result);
         parameters.put(key, parameter);
       }
+    }
+    if ("error-after-effect".equals(mode)) {
+      respond(x, 500, "effect recorded; acknowledgement failed");
+      return;
     }
     if ("disconnect".equals(mode)) {
       x.close();

@@ -1,26 +1,62 @@
 # DurableFlow
 
-A Java 25 workflow engine with a small deterministic interpreter and PostgreSQL as the durable serialization boundary. It exposes uncertain external effects instead of claiming exactly-once execution.
+DurableFlow is a Java 25 workflow engine for finite, typed execution graphs. A deterministic interpreter makes decisions; PostgreSQL commits history and scheduled work atomically. External effects have explicit retry and uncertainty semantics, so a lost acknowledgement never becomes a claim that nothing happened.
 
-Six Maven modules separate immutable graph definitions, the pure replay interpreter, JDBC persistence, trusted workers, the Spring Boot HTTP adapter, and executable verification. Order fulfilment and media-processing fixtures use synthetic data.
+The order-fulfilment and media-processing examples use synthetic data and a local HTTP provider simulator. This project is a bounded engineering implementation, not a production service or a substitute for an operational workflow platform.
+
+## Build and run
+
+Requirements: JDK 25, the repository Maven wrapper, Docker with Compose, Bash, Python 3, and curl. Run from the repository root. In the managed cloud workspace, source `scripts/cloud-env.sh` first to activate the pinned JDK and trusted Maven proxy configuration.
 
 ```bash
 ./mvnw -f projects/02-durableflow/pom.xml -B -ntp verify
 ./mvnw -f projects/02-durableflow/pom.xml -B -ntp -Pintegration verify
 ./scripts/portfolio.sh up durableflow
 ./scripts/portfolio.sh demo durableflow
-projects/02-durableflow/scripts/benchmark.sh --smoke
 ./scripts/portfolio.sh down durableflow
 ```
 
-Requirements: JDK 25, Maven wrapper network access, Docker Compose, curl, Bash, and Python 3. The local disposable profile binds to loopback on 18200 (API), 18201 (provider), and 18202 (PostgreSQL). `up` builds and starts an API, two scheduler processes, three workers, a durable fake HTTP provider, and PostgreSQL. The full benchmark expands to eight worker processes and submits 10,000 executions with eight activities each, duplicate signals, 20% first-attempt rejection, and 5,000 timers. `reset-demo` deletes only this project's disposable database volume and provider log.
+Ordinary verification runs model, replay, provider, build-artifact, and contract tests. The integration profile additionally starts PostgreSQL containers and exercises durable transactions, real process termination, JWT validation, and HTTP boundaries. The demo exits nonzero when an asserted recovery result fails and writes `projects/02-durableflow/target/demo-result.json`.
 
-For reserved quiet measurements, stop owned runtime and run `projects/02-durableflow/scripts/prepare.sh` first, then export `DURABLEFLOW_PREPARED=1`. Startup validates unchanged source/dependencies, successful verification and all runtime JAR hashes without running Maven. Missing or stale preparation refuses startup. See [operations](docs/OPERATIONS.md). Ordinary and integration commands always execute their tests.
+The disposable runtime starts an API, two schedulers, three workers, PostgreSQL, and the provider simulator. Loopback ports are 18200 (API), 18201 (provider), and 18202 (PostgreSQL). `down` retains state; `./scripts/portfolio.sh reset-demo durableflow` deletes this project's disposable database volume and provider log. Never reset data that is still needed to reconcile an unknown effect.
 
-The asserted demo kills actual worker processes after an independent provider effect is logged, rejects their stale acknowledgements, recovers an idempotent receipt, pauses a non-idempotent unknown outcome, appends an operator resolution, restarts a scheduler during a wait, preserves a pinned definition across upgrade, demonstrates visible compensation failure, and joins parallel media activities. It writes `target/demo-result.json`; failures produce a nonzero exit.
+## Execution guarantees
 
-Guarantees: instance history and scheduling change atomically; logical task IDs remain stable on replay; lease generations fence engine state; signal/timeout races have one serialized winner; non-idempotent dispatch ambiguity stops automatic work. External uniqueness additionally depends on provider idempotency and receipt retention. Compensation is a separate business effect, not rollback.
+- Each instance pins a definition content hash and interpreter semantics version. Upgrading a definition does not change running instances.
+- History, state, and task creation share an instance transaction. Stable logical task IDs prevent replay from inserting duplicate work.
+- Claims carry a lease generation and per-claim credential. Dispatch and completion verify that authorization against database time.
+- Repeatable activities use a stable provider key. Expired non-idempotent calls with recorded dispatch intent stop in `UNKNOWN_OUTCOME` and require reconciliation.
+- Cancellation is cooperative. Compensation follows recorded completion order in reverse and remains a separate, fallible business action.
 
-The runtime carries real scalar values, rather than strings with type labels. For the order fixture, the start body has `"input":{"payload":{"type":"TEXT","data":"order-42"},"context":{"order":{"type":"TEXT","data":"synthetic-42"}}}` alongside its `definitionHash`. INTEGER data must be a JSON integer and BOOLEAN data a JSON boolean; string coercion is rejected. Activities consume their predecessors' recorded outputs. Responses expose VALUE, SKIPPED and TIMED_OUT outcomes. [ADR 002](docs/DECISIONS/002-typed-semantics.md) explains joins, timeouts and the frozen legacy semantics adapter.
+These guarantees assume trusted compiled workers, retained PostgreSQL storage, and an external provider that honors its declared contract. Database fencing protects engine state; it cannot prevent an already authorized external call from taking effect.
 
-See [architecture](docs/ARCHITECTURE.md), [invariants](docs/INVARIANTS.md), [operations](docs/OPERATIONS.md), [security](docs/SECURITY.md), [performance](docs/PERFORMANCE.md), and [current verified status](docs/STATUS.md). Evidence and limitations are recorded after execution; the presence of a command is not a claim that its release gate passed.
+## Code map
+
+| Module | Responsibility |
+| --- | --- |
+| `workflow-model` | Immutable typed values, finite graph validation, canonical definition identity |
+| `workflow-engine` | Pure replay, legal transitions, versioned compatibility adapters |
+| `workflow-persistence` | PostgreSQL transactions, leases, timers, quotas, and operator decisions |
+| `workflow-worker-sdk` | Bounded workers, fixed-destination provider transport, independent effect log |
+| `workflow-api` | Tenant-scoped HTTP endpoints, role checks, and signed-token validation |
+| `workflow-verification` | Contract tests, process-crash scenarios, and workload drivers |
+
+## API and operations
+
+The [OpenAPI contract](contracts/openapi.yaml) describes definition deployment, execution start/history, signal delivery, cancellation, reconciliation, and worker endpoints. Start and signal requests require idempotency keys. The protected profile requires `OIDC_ISSUER`, `OIDC_AUDIENCE`, a tenant claim, and the endpoint's role scope. The explicitly selected `dev` profile uses disposable Basic-auth accounts and refuses non-loopback binding.
+
+Start inputs contain actual typed JSON scalars. For example:
+
+```json
+{
+  "definitionHash": "<deployed definition hash>",
+  "input": {
+    "payload": {"type": "TEXT", "data": "order-42"},
+    "context": {"order": {"type": "TEXT", "data": "synthetic-42"}}
+  }
+}
+```
+
+`INTEGER` requires a JSON integer and `BOOLEAN` requires a JSON boolean. Strings are not coerced. Activities consume recorded predecessor values; responses distinguish `VALUE`, `SKIPPED`, and `TIMED_OUT` outcomes.
+
+Read [architecture](docs/ARCHITECTURE.md) for state and transaction boundaries, [invariants](docs/INVARIANTS.md) for guarantees, [operations](docs/OPERATIONS.md) for recovery procedures, and [security](docs/SECURITY.md) for the trust model. [Verification status](docs/STATUS.md) separates current checks from historical evidence. [Performance](docs/PERFORMANCE.md) describes the workload and its incomplete reference baseline; smoke measurements are not capacity claims.

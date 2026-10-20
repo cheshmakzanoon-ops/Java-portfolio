@@ -46,6 +46,19 @@ class DataTest {
   }
 
   @Test
+  void credentialMarkersRespectUnicodeCaseAndLineSeparators() {
+    for (String marker : List.of("password", "SECRET", "Bearer", "ToKeN", "to\u212Aen")) {
+      for (String separator : List.of("\n", "\r", "\r\n", "\u2028", "\u2029")) {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> Value.text("public" + separator + marker + separator + "private"));
+      }
+    }
+    assertEquals("first\nsecond", Value.text("first\nsecond").data());
+    assertEquals("café\nrésumé", Value.text("café\nrésumé").data());
+  }
+
+  @Test
   void literalGrammarUsesItsDeclaredType() {
     assertEquals(Value.text("yes"), Value.literal(Type.TEXT, "yes"));
     assertEquals(Value.bool(false), Value.literal(Type.BOOLEAN, "false"));

@@ -3,8 +3,6 @@ package io.github.cheshmakzanoon.portfolio.durableflow;
 import io.github.cheshmakzanoon.portfolio.durableflow.Data.*;
 import io.github.cheshmakzanoon.portfolio.durableflow.WorkflowStore.Claim;
 import java.net.URI;
-import java.net.http.*;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,12 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /** Fixed destination and activity registry; caller data cannot supply executable code or URLs. */
 public final class Worker implements AutoCloseable {
   private final WorkflowStore store;
-  private final URI provider;
-  private final HttpClient client =
-      HttpClient.newBuilder()
-          .connectTimeout(Duration.ofSeconds(2))
-          .followRedirects(HttpClient.Redirect.NEVER)
-          .build();
+  private final ProviderClient provider;
   private final ThreadPoolExecutor pool =
       new ThreadPoolExecutor(
           4,
@@ -31,12 +24,8 @@ public final class Worker implements AutoCloseable {
   private final AtomicBoolean running = new AtomicBoolean(true);
 
   public Worker(WorkflowStore store, URI provider) {
-    if (!"http".equals(provider.getScheme())
-        || provider.getHost() == null
-        || !provider.getPath().equals("/effects"))
-      throw new IllegalArgumentException("configured provider endpoint required");
-    this.store = store;
-    this.provider = provider;
+    this.store = Objects.requireNonNull(store, "store");
+    this.provider = new ProviderClient(provider);
   }
 
   public List<Value> execute(Claim claim, String mode) throws Exception {
@@ -76,19 +65,10 @@ public final class Worker implements AutoCloseable {
     }
 
     String key = claim.instance() + ":" + claim.task();
-    HttpRequest request =
-        HttpRequest.newBuilder(provider)
-            .timeout(Duration.ofSeconds(3))
-            .header("Idempotency-Key", key)
-            .header("X-Safety", claim.safety().name())
-            .header("X-Failure-Mode", mode)
-            .POST(HttpRequest.BodyPublishers.ofString(claim.activity() + ":" + claim.parameters()))
-            .build();
-    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-    if (response.statusCode() == 409)
-      throw new IllegalArgumentException("provider parameter conflict");
-    if (response.statusCode() >= 400) throw new ProviderRejectedException();
-    return List.of(Value.text(response.body()));
+    return List.of(
+        Value.text(
+            provider.execute(
+                key, claim.safety(), mode, claim.activity() + ":" + claim.parameters())));
   }
 
   public void run(String tenant, String id) throws InterruptedException {
@@ -147,7 +127,7 @@ public final class Worker implements AutoCloseable {
     running.set(false);
     pool.shutdownNow();
     heartbeats.shutdownNow();
-    client.close();
+    provider.close();
   }
 
   public static final class ProviderRejectedException extends Exception {}

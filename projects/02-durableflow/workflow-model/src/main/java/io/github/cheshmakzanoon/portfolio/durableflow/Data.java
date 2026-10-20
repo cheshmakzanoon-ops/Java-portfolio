@@ -2,9 +2,14 @@ package io.github.cheshmakzanoon.portfolio.durableflow;
 
 import io.github.cheshmakzanoon.portfolio.durableflow.Definition.Type;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /** Restricted immutable data algebra. No string-to-number/boolean coercion is permitted. */
 public final class Data {
+  private static final Pattern SENSITIVE_TEXT =
+      Pattern.compile(
+          "password|secret|bearer|token", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+
   private Data() {}
 
   public static Output activityResult(
@@ -39,9 +44,7 @@ public final class Data {
       if (type == null || data == null) throw new IllegalArgumentException("typed scalar required");
       switch (type) {
         case TEXT -> {
-          if (!(data instanceof String s)
-              || s.length() > 1024
-              || s.toLowerCase(Locale.ROOT).matches(".*(password|secret|bearer|token).*"))
+          if (!(data instanceof String s) || s.length() > 1024 || SENSITIVE_TEXT.matcher(s).find())
             throw new IllegalArgumentException("bounded public TEXT required");
         }
         case BOOLEAN -> {

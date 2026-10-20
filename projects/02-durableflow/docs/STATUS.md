@@ -1,65 +1,50 @@
-# DurableFlow status
+# Verification status
 
-**P02-A5 remains OPEN:** quiet18 attempted the full reference but failed after two complete runs; the third was refused before reset by the unchanged2GiB disk reserve. Three fresh complete runs, measured variability and a numeric reference-machine budget remain required. The standalone lifecycle, both fault-demo rounds and100-execution smoke previously passed. No project release claim is made. No worker Git writes were performed.
+DurableFlow has executable replay, persistence, security, process-crash, and standalone recovery checks. The prescribed three-run performance baseline is incomplete, so no stable capacity budget or production-readiness claim is made.
 
-Previously certified source was `sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187`; root POM is `3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d`. [Its manifest](../evidence/source-manifest.json) lists59entries. The gzip capture candidate is `sha256:5493b24d2999922c49e64ffb6e4d28d07c38f84e8f26fadd87f66485157c1e3d`: only benchmark/summary scripts changed and two capture/reader helpers were added; all57other prior entries, including every Java/SQL/POM/resource, match. Genuine ordinary verification and supported preparation passed on 2026-10-18 at 10:58:22Z and 10:59:44Z: 68 methods, no failures/errors/skips, actual JUnit 6.1.3. All eight runtime JARs and all 276 class entries are byte-identical to the preserved pre-change binaries; current-source integration and a new full study were not run. All19implementation main-source/resource entries remain byte-identical to the independently reviewed semantics3 milestone at a8a4692a. Actual Jupiter/platform is6.1.3; historical6.0.3runs are not relabeled.
+## Current hardening
 
-## Incomplete quiet18 and capture repair
+The provider transport now bounds response buffering, rejects redirects as acknowledgements, validates its fixed endpoint, and decodes receipt bytes as strict UTF-8. Generic HTTP errors remain uncertain; only the configured provider's explicit pre-effect refusal permits a definitive retry. Typed text screening also rejects credential markers across line separators.
 
-Two full runs passed individual workload, independent provider, all-13-role profiling and cleanup checks at962.372049 and1611.414driver seconds. The attempt still exited1 at10:40:32Z: run3 had only1,651,793,920workspace bytes before reset. No third measurement or three-run summary exists. The maintenance watcher made no planned cache/raw mutations; its failures and resume attempts remain recorded separately.
-
-Both closed captures were losslessly archived, physically restored, independently verified by root and only then removed at their exact approved paths. [Recovery/storage evidence](../evidence/quiet18-storage/README.md) records44files/3,912,701,887bytes, durable ignored archives, unchanged original receipts and restoration. Owner attempt/provider logs and the old source/runtime backup remain intact. No old row will be combined with a new study.
-
-The repair compresses exact JFR-print JSON bytes after the measured workload, retains the JFR, propagates producer/compressor failures and keeps failed partials. Readers require exactly one plain or gzip recording and reject ambiguity/corruption. Nineteen pure runner/schema controls and five tiny fake-tool controls pass, including identical three-run summary statistics, CRC/truncation failures and nonoverwrite publication. [Repair envelope](../evidence/gzip-capture-repair.json) records current ordinary/preparation proof and separates synthetic controls, unchanged historical integration evidence and pending actual measurements. Original84ca runner is unchanged; the new orchestrator is `.work/A02/run-full-reference-gzip-v2.py`. Workload dimensions, genuine lease waits, source/environment consistency and CV<=10% remain unchanged.
-
-## Automated correctness evidence
-
-[Verification envelope](../evidence/verification.json), [environment](../evidence/verification-environment.json) and [full log](../evidence/verification-build.log) record the latest full `-Pintegration verify`: PASS, 2026-10-18T02:40:51Z,124 seconds; **68 ordinary methods plus 13 actual PostgreSQL methods**, zero failures/errors/skips. PostgreSQL is pinned to the same18.3 digest as Compose, `sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7`. Reports remain in `.work/A02/final-pinned-reports/` and raw `.work/A02/final-pinned-integration.log`.
-
-Core coverage is model94.20% line/88.70% branch and engine96.34% line/84.76% branch, above unchanged85% line/75% branch checks. Selected Data* mutation ran on a8a4692a at02:03:16Z:41 generated/41 KILLED, zero survivors/timeouts/uncovered;87/88 mutated lines covered. The selected implementation and mutation configuration are unchanged in the current source. This is explicit prior-source proof for the identical selected target, not a claim that PIT reran globally on104e. [All mutants](../evidence/mutations.xml), [log](../evidence/mutation-build.log) and `.work/A02/semantics3-mutation-reports/` retain every result. It is not an engine-wide mutation claim.
-
-The suite covers genuine typed scalar/schema/vector propagation; wrong-type/wrong-length atomic rejection; actual provider predecessor parameters; deterministic recorded results; timers, timeout/skipped/branch/join outcomes; explicit version CAS and killed-before-commit rollback; duplicate delivery; killed workers after independent provider effects; stale dispatch/heartbeat/completion; uncertainty and audited resolution; cancellation/late completion/reverse compensation/failure/retry; signal/timer races and5,000 dormant timers. Fixed-seed reference/property suites run for supported interpreters. Streaming provider recovery verifies one retained receipt from a40MiB log in a32MiB child JVM. Original signed JWT claim-type/missing-claim/time checks, scope, chunked8KiB bounds, RFC9457 and typed HTTP flow pass. OpenAPI route/record/ref drift is checked.
-
-## Compatibility and review
-
-Semantics3 records a bounded typed INTEGER forward-lease observation under the instance lock. Replay rejects terminal FAILED→CANCELLED while preserving cancellation with another leased forward task, late result and compensation. Frozen1/2 interpreters retain their original pins, hashes, histories and worker parameters. [ADR003](DECISIONS/003-cancellation-evidence.md) documents the explicit event/version boundary and legacy ambiguity. Actual PostgreSQL verifies persisted empty-result2 cancellation across deploy3; the3 equivalent records lease count1. Terminal rejection leaves version/history unchanged. Frozen2 normalizes byte-for-byte to the prior interpreter hash `6f741ef514566f4617941b8b4d2df882d3b20d865d207639d92ed2ff6a055888`.
-
-Expanded A01 source/correctness review CLOSED against a8a4692a; prepared-cache review CLOSED against104e after independent recomputation and comparison of all19 main files. Prior repeated non-idempotent dispatch, non-activity compensation, original signed JWT and terminal cancellation findings have tested scoped closure. [REVIEW](REVIEW.md) records fingerprints and limits. The fresh13-PG run now validates the final same-version digest pin; no implementation changed after review.
-
-## Actual standalone evidence
-
-[Lifecycle envelope](../evidence/lifecycle/envelope.json), [step exits](../evidence/lifecycle/steps.jsonl), both demo JSONs, independent provider assertions and raw command logs record **14/14 command steps passing** from02:41:04Z through02:50:06Z. Raw capture `.work/A02/lifecycle-20261018T024104/` remains intact.
-
-- Fresh reset/up passed; repeated up preserved all7 live API/provider/two-scheduler/three-worker process identities.
-- Both real fault demos passed,91 and98 seconds. Each retained both genuine31-second waits after actual30-second worker leases. Each independently logged exactly one idempotent reserve effect despite two dispatches, one non-idempotent charge invocation/effect with visible uncertainty and audited resolution, and four rejected compensation calls with zero compensation effects. Each media workflow completed. Recovery-delay fields measure worker kill to recovered order completion, including scheduler restart/resume work.
-- First down and idle checks passed. Exactly104 instances survived prepared stop/start; real volume reset followed by startup yielded exactly0 instances. Second demo then passed on clean data.
-- Final down, cleanup and independent idle checks passed. No A02 runtime/application container or build remains active; the application slot was released at02:50:06Z. Adopted zombie PIDs explain the measured66-second first and42-second final down latency; they have empty command lines and do not execute.
-
-[Smoke envelope](../evidence/smoke-100/envelope.json) records100 executions/eight activities using2schedulers/8workers:800 completed activities and independently logged unique effects,160 transient first-attempt rejections,100 accepted signals,50 timers, zero lease expirations and empty final queue. Driver elapsed33.877 seconds; command59 seconds. Independent reparse confirms960CALLs/800uniqueEFFECTs/160transient-first CALLs across100instances. This shared finite run is **smoke only**, never a full baseline or budget.
-
-Raw smoke JSON/environment/resources and plain synthetic provider evidence are Git-visible text. Original17MiB JFR/GC/allocation capture remains at `target/performance/20261018T024329-100-309440/`; compressed copies remain ignored under `.work/A02/`. The small envelope publishes exact paths/hashes/sizes. JFR is statistical worker1 allocation evidence; GC logs cover process lifetime, including startup and the preceding demo for this smoke. No whole-cluster exact allocation claim is made.
-
-## Prepared quiet protocol and remaining work
-
-[Preparation evidence](../evidence/preparation-verification.json) records successful ordinary68-method verification and9 internal CLI refusal cases. Preparation refuses any owned live executable process before Maven and stamping, including missing PID files, then binds unchanged source/root POM, six module JARs, two executable JARs and successful verification log. Explicit `DURABLEFLOW_PREPARED=1` validates before Compose/workers and performs no Maven. Default startup and explicit ordinary/integration commands always execute their real tests. That source-bound receipt validated after final integration and runtime lifecycle. The gzip variant now has separate genuine ordinary verification/preparation under its new fingerprint; the old proof remains preserved.
-
-The remaining mandatory measurement must receive an explicitly quiet host reservation, with all competing builds/stress/services stopped. Do not infer authorization from an empty docker ps. `.work/A02/FULL_RUN_PROTOCOL.md` specifies the exact no-Maven protocol and raw provider-log preservation before reset. The gzip variant now has a verified prepared receipt; use its new frozen runner and fresh reservation. Never invoke prepare while the coordinator holds all build locks.
-
-For each of three independent full runs, reset data, start prepared services, run the full benchmark and stop. Assert10,000completed executions,80,000activities/unique provider effects,16,000first-attempt rejections,10,000signals,5,000business timers and empty queue. Preserve result/environment/RSS/CPU/GC/JFR, stdout/exit and provider CALL/EFFECT logs before the next reset. Run the actual three-run summarizer, report variability and establish a same-environment25%-above-slowest reference tolerance only when declaredCV<=10% holds. No numeric budget exists yet. Regenerate source identity and rerun affected gates only if an actual defect requires source changes; obtain review for changed invariants.
+Current verification passed on **2026-10-20**: **74 ordinary methods and 14 PostgreSQL integration methods**, with zero failures, errors, or skips. The build completed at `2026-10-20T07:31:38Z`. Its checks include formatting, coverage thresholds, actual process-crash recovery, and the new HTTP boundary regressions. A provider effect followed by HTTP 500 reaches manual review with exactly one effect and no successor claim.
 
 ```bash
 source scripts/cloud-env.sh
-export DURABLEFLOW_PREPARED=1
-./scripts/portfolio.sh reset-demo durableflow
-./scripts/portfolio.sh up durableflow
-projects/02-durableflow/scripts/benchmark.sh
-./scripts/portfolio.sh down durableflow
-# Repeat the complete reset/up/full/down sequence three times; preserve each raw capture.
-projects/02-durableflow/scripts/summarize-performance.py RUN1 RUN2 RUN3
+./mvnw -f projects/02-durableflow/pom.xml \
+  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A02/m2 -B -ntp \
+  com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify
 ```
 
-## Retained development failures
+The five new transport tests exercise actual fixed-length and chunked responses, redirect refusal, valid and malformed Unicode, endpoint validation, and explicit refusal classification. The additional model regression covers multiline markers; the additional PostgreSQL regression verifies non-idempotent uncertainty after a server error. The standalone lifecycle and full reference workload were not rerun for this change.
 
-Historical initial integration ran7 actual-PG methods with1failure/2errors under one-second active leases and severe build contention. Tests now use60-second active claims plus explicit database expiry injection; live demos retained real30-second expiry. Early typed builds failed unchanged coverage thresholds before focused Data tests and rejected an invalid single-input parallel fixture, now corrected. First typed PG passed11/12 and exposed bearer-filter problem-response drift; explicit bearer/Basic RFC9457 handlers fixed it without weakened assertions. Invalid old cancellation fixtures and later terminal FAILED replay mismatch received legal histories and explicit semantics3 compatibility respectively. Queue-canceled invocations were scheduling changes, not test passes. Raw historical logs/reports remain in `.work/A02/`.
+## Historical correctness evidence
 
-A02→A03 read-only reviews closed snapshot-transfer, unknown-mutation-identity and checker-state findings with tested owner fingerprints; the detached-process follow-up found no new serious issue in bounded zombie/ownership/independent-controller recovery. No other project was written.
+The retained [verification envelope](../evidence/verification.json), [environment](../evidence/verification-environment.json) record a successful integration build on 2026-10-18: **68 ordinary methods and 13 PostgreSQL methods**, with no failures, errors, or skips. PostgreSQL 18.3 uses the same digest as Compose. Source identity and exact commands are recorded in the evidence files.
+
+That suite exercises:
+
+- Typed scalar/schema validation, vector cardinality, predecessor propagation, and fixed-seed replay properties.
+- Atomic history/scheduling, explicit version checks, killed-before-commit rollback, duplicate delivery, and signal/timer races.
+- Stale dispatch, heartbeat, and completion; worker termination after independently recorded provider effects; uncertain outcomes and audited resolution.
+- Cancellation, late completion, reverse compensation, failed compensation, and authorized retry.
+- JWT signatures and original claim types, tenant/scope enforcement, chunked body limits, problem responses, and OpenAPI drift.
+- Streaming recovery of a retained provider receipt from a 40 MiB log in a 32 MiB child JVM.
+
+The historical model coverage was 94.20% lines / 88.70% branches; engine coverage was 96.34% / 84.76%, against 85% / 75% thresholds. The selected `Data*` mutation run killed 41 of 41 generated mutants. [Mutation results](../evidence/mutations.xml) retain the full denominator. These figures describe their recorded source revision; they are not current or engine-wide mutation claims.
+
+## Standalone recovery and performance
+
+The [lifecycle evidence](../evidence/lifecycle/envelope.json) records 14 successful command steps, including two fault-demo rounds, retained data across stop/start, reset to an empty database, and independent stopped checks. The demos observed one idempotent effect despite repeated dispatch, one non-idempotent effect with visible uncertainty and reconciliation, failed compensation without an invented rollback, and a pinned definition across upgrade.
+
+The [100-execution smoke run](../evidence/smoke-100/envelope.json) completed 800 activities and unique provider effects, 160 first-attempt rejections, 100 accepted signals, and 50 timers with an empty final queue. Driver elapsed time was 33.877 seconds on the recorded shared environment. This checks the workload machinery; it is not a full capacity baseline.
+
+A subsequent full reference attempt completed two 10,000-execution runs in 962.372049 and 1611.414379 driver seconds. The third was refused before reset because available workspace storage was below the unchanged 2 GiB reserve. The attempt therefore failed. [Storage evidence](../evidence/quiet18-storage/README.md) preserves the archive/recovery accounting for 44 files and 3,912,701,887 bytes. The two results must not be combined with a later run to claim a complete study.
+
+The [gzip capture repair](../evidence/gzip-capture-repair.json) records post-measurement compression and reader controls. It does not change workload dimensions or certify a new full run. Three fresh complete runs, same-environment variability checks, and a declared regression budget remain required; see [performance protocol](PERFORMANCE.md).
+
+## Remaining validation
+
+- Run the complete three-round reference workload on an exclusive measurement host with adequate retained-storage capacity.
+- Verify clean-checkout restoration and the hosted release/security pipelines independently of local build success.
+
+Earlier failures remain recorded in the evidence. Review scopes are described in [the review record](REVIEW.md); successful tests do not close unrelated operational or performance requirements.

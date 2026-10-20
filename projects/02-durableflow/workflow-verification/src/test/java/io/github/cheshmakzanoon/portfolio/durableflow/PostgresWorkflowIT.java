@@ -183,6 +183,23 @@ class PostgresWorkflowIT {
   }
 
   @Test
+  void serverFailureAfterNonIdempotentEffectRequiresReconciliation() throws Exception {
+    UUID id = instance(one(Safety.NON_IDEMPOTENT));
+    WorkflowStore.Claim claim = claim();
+    Path log = Files.createTempDirectory("durableflow-ambiguous-error").resolve("effects.log");
+    try (FakeProvider provider = new FakeProvider(0, log);
+        Worker worker =
+            new Worker(store, URI.create("http://127.0.0.1:" + provider.port() + "/effects"))) {
+      assertThrows(java.io.IOException.class, () -> worker.execute(claim, "error-after-effect"));
+      store.fail(claim, false, "provider response was ambiguous");
+      assertEquals(1, provider.effectCount());
+      assertEquals(State.MANUAL_REVIEW, store.get(tenant, id).state());
+      assertTrue(store.claim(tenant, "successor", 1, 60).isEmpty());
+      assertEquals(1, provider.effectCount());
+    }
+  }
+
+  @Test
   void killedTransactionLeavesNeitherHistoryNorScheduling() throws Exception {
     String hash = store.deploy(tenant, one(Safety.PURE));
     Path marker = Files.createTempDirectory("durableflow-crash").resolve("before-commit");

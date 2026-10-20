@@ -1,23 +1,72 @@
-# Workload and measurement
+# Performance protocol
 
-The prescribed full command is `projects/02-durableflow/scripts/benchmark.sh`; `--smoke` selects 100 executions. Both use actual PostgreSQL and the independently logged HTTP provider. Full dimensions: 10,000 seeded executions, eight activities each, exactly every fifth logical activity rejected before effect on its first attempt (20%), duplicate approval signals, 5,000 one-second durable timers, two scheduler processes and eight worker processes. Each worker owns four bounded activity slots. Synthetic run/ordinal values make transient-failure selection reproducible.
+DurableFlow does not yet have a complete reference baseline or a numeric capacity budget. The workload is executable, and finite smoke results are retained, but two completed runs from a failed three-run attempt do not establish repeatable performance.
 
-Stop owned runtime with `down durableflow`, run `scripts/prepare.sh` before the quiet host reservation, then export `DURABLEFLOW_PREPARED=1` for launcher and benchmark commands. Prepared startup validates source/root-POM, successful verification log and actual JAR hashes; it performs no Maven while the coordinator holds build locks. Reset and startup between full runs retain the receipt but always recheck its content bindings. Independent refusal regressions cover missing receipts, stale source/dependencies, changed/deleted JARs and verification evidence. Ordinary and integration gates are never cached by this mode.
+## Workload
 
-The driver submits starts/signals through the JDBC application boundary and workers call the provider over HTTP. This is a closed-loop workload: submission cost and offered rate can hide delay through coordinated omission. Do not interpret it as an open-loop HTTP SLA. Raw output includes completion progress, wall duration, completion latency and schedule-to-start p50/p95/p99, timer lateness percentiles, attempts per logical task, final queue depth, driver heap and database size. Database size includes previous runs; reset-demo before isolated measurements. Recovery delays and rejected stale work are measured by the separate fault demo; they are not inferred from normal-run latency.
+Run `projects/02-durableflow/scripts/benchmark.sh` for the full workload, or append `--smoke` for 100 executions. Both use PostgreSQL and the provider's independent effect log.
 
-A numeric regression budget is not yet established. It must follow three isolated measured reference runs with the source fingerprint, CPU/RAM/JDK, JVM limits, host contention, seed, startup/warmup and container sharing recorded. Shared-agent measurements are labeled as such; no fabricated throughput or reference-host threshold is reported. See STATUS and evidence files for the commands actually completed.
+| Parameter | Full workload |
+| --- | ---: |
+| Seeded executions | 10,000 |
+| Activities per execution | 8 |
+| First-attempt rejections before effect | 20% of logical activities |
+| Accepted approval signals | 10,000, with duplicate delivery attempts |
+| Durable one-second timers | 5,000 |
+| Scheduler processes | 2 |
+| Worker processes | 8 |
+| Activity slots per worker | 4 |
+| Warm-up executions | 0 |
 
-The driver asserts the observed rejected-attempt count equals exactly 20% of logical tasks and that the final queue is empty; it reports observed lease expirations, sampled queue depth, and actual database size delta. `target/resource-samples.jsonl` samples API/provider/scheduler/worker RSS and process CPU ticks once per second. These are process samples, not a claim of peak heap or allocation profiling. There are zero warmup executions in the first baseline; record this cold-start limitation when comparing runs.
+The fixed ordinal rule rejects every fifth logical activity on its first attempt. A successful run must observe 80,000 completed activities and unique effects, 16,000 first-attempt rejections, 10,000 accepted signals, 5,000 timers, and an empty final queue. A failed assertion preserves a nonzero command exit and cannot publish a successful result.
 
-Every benchmark invocation preserves its exit code, environment, measurements, process samples and per-process unified GC logs under `target/performance/<UTC>-<executions>-<pid>/`. Failed runs retain their raw evidence and cannot produce a successful workload artifact. Unified logs provide collection counts, pause times and heap occupancy; they do not by themselves measure allocation rate. Source fingerprints include NUL-delimited relative paths and bytes. `up` restores missing service processes without changing the JARs of an existing API; use `down` followed by `up` after source changes.
+The driver submits through the JDBC application boundary; workers call the provider over HTTP. This is a closed-loop workload, so submission cost and offered rate can hide delay through coordinated omission. It does not measure an open-loop HTTP service-level objective. Zero warm-up also means results include a cold-start component.
 
-The workload also records a JFR profile on worker 1, retaining `worker-1.jfr`, its event summary, and exact JSON `jdk.ObjectAllocationSample` bytes in `allocation-samples.json.gz`. Compression runs after the measured workload; it changes storage, not JFR settings or workload dimensions. Producer and compressor must both succeed before nonoverwrite publication; failures retain partial evidence and the JFR. Readers require exactly one plain legacy or gzip recording and verify gzip EOF/CRC. Allocation samples are statistical estimates for that worker; they are not exact whole-cluster allocation totals. Per-process GC logs and RSS samples cover the rest of the process set. JFR startup must succeed before the workload begins.
+## Prepare an exclusive measurement window
 
-After three independently reset full runs on a quiet reference host, `scripts/summarize-performance.py RUN1 RUN2 RUN3` validates actual workload dimensions, consistent source/root-POM/JDK/environment identity and profiling artifacts. It reports sample variability, observed throughput, RSS/CPU, GC pauses and worker allocation samples. The proposed same-host regression policy is25% above the slowest reference duration and p95 completion/scheduling latency; it remains unestablished if those three-run coefficients of variation exceed10%. This policy is a comparison tolerance, not an invented achieved throughput or a CI microsecond target. The gzip-aware helper has passed tiny synthetic equivalence/rejection controls; an actual complete three-run summary is still pending.
+Stop this project's runtime, then run `projects/02-durableflow/scripts/prepare.sh` before reserving the measurement host. Preparation runs ordinary verification and binds the source, root POM, verification log, six module JARs, and two executable JARs. It refuses owned live processes, including those whose PID files are missing.
 
-`ScheduleToStartMs` measures task creation to its first authorized dispatch (generation1); retries are separately reflected in attempts-per-task and rejected/expired attempt counts. It does not mix retry backoff into initial queue delay. The environment manifest records the effective JVM CPU settings as well as host-visible cores, cgroup limits, root-POM fingerprint and actual Git revision.
+Export `DURABLEFLOW_PREPARED=1` for startup and workload execution. Prepared mode rechecks the receipt before creating services and runs no Maven. Missing receipts, changed inputs, modified or missing artifacts, and changed verification evidence all refuse startup. Ordinary and integration test commands remain uncached.
 
-Actual finite smoke100 passed on2026-10-18; see [the smoke envelope](../evidence/smoke-100/envelope.json). It observed800 unique effects,160 transient rejections,50 timers and empty queue in33.877 driver seconds under shared finite verification load. It does not establish the required full baseline. Unified GC logs cover each process lifetime and can include startup/earlier demo work; JFR covers the benchmark invocation and driver elapsed covers application submission-to-completion. These boundaries are retained explicitly. Heavy raw recordings remain ignored; the small envelope records their paths, hashes and sizes.
+Run three complete reset/start/measure/stop rounds under the same verified source and environment. Preserve the result, provider log, profiling files, stdout, and command exit before resetting the next round. Reset removes disposable state; never run it against data needed for unresolved-effect reconciliation.
 
-Quiet18 is a retained failed reference attempt: two full runs individually passed at962.372049 and1611.414driver seconds, then the third was refused before reset by the unchanged2GiB workspace admission reserve. The two uncompressed allocation JSON files occupied3,848,127,471bytes. [Lossless archive/recovery evidence](../evidence/quiet18-storage/README.md) preserves both complete captures and original receipts after independently verified physical restoration. No three-run CV or numeric budget is derived from these two rows. The gzip repair passed separate genuine ordinary verification and supported preparation with all eight runtime JARs and 276 class entries unchanged. Three fresh full runs remain required; historical rows are never combined across source identities.
+```bash
+source scripts/cloud-env.sh
+export DURABLEFLOW_PREPARED=1
+./scripts/portfolio.sh reset-demo durableflow
+./scripts/portfolio.sh up durableflow
+projects/02-durableflow/scripts/benchmark.sh
+./scripts/portfolio.sh down durableflow
+# Repeat the complete sequence twice more, preserving each capture first.
+projects/02-durableflow/scripts/summarize-performance.py RUN1 RUN2 RUN3
+```
+
+## Interpret the measurements
+
+| Measurement | Boundary and limitation |
+| --- | --- |
+| Driver elapsed time and completion latency | Application submission to completion; includes closed-loop behavior |
+| `ScheduleToStartMs` | Task creation to first authorized dispatch, generation 1; retry backoff is separate |
+| Timer lateness | Due time to recorded firing; database clock changes can affect scheduling latency |
+| Attempts, expirations, queue depth | Observed retry and scheduling behavior, with final empty-queue assertions |
+| Database growth | Actual size delta; isolate runs with reset because total database size can include prior data |
+| RSS and process CPU ticks | One-second samples for API, provider, schedulers, and workers; not exact peak heap or allocation |
+| Unified GC logs | Process-lifetime collection counts, pause time, and heap occupancy; may include startup or earlier demo work |
+| Worker 1 JFR | Statistical allocation samples for one worker; not exact whole-cluster allocation |
+| Fault-demo recovery delay | Measured separately under worker/scheduler failure, not inferred from ordinary latency |
+
+Record JDK, JVM limits, effective CPU settings, cgroup limits, RAM, source/root-POM fingerprints, Git revision, seed, host contention, and container sharing. An idle container list alone does not establish an exclusive host. Keep unrelated builds, services, stress tests, and profilers stopped throughout the reserved measurement window.
+
+## Capture integrity and comparison policy
+
+Every invocation retains its exit code, environment, results, process samples, and per-process GC logs under `target/performance/<UTC>-<executions>-<pid>/`. JFR startup must succeed before the workload begins. The original recording and summary remain available; exact `jdk.ObjectAllocationSample` JSON bytes are compressed into `allocation-samples.json.gz` after measurement. Producer and compressor must both succeed before non-overwriting publication. Failures retain partial output and the original recording.
+
+Readers require exactly one plain legacy or gzip recording and verify gzip EOF and CRC. The summarizer validates actual workload dimensions, source/JDK/environment identity, and profiling artifacts across all three runs before reporting variability, throughput, resource samples, and latency. The proposed same-host regression tolerance is 25% above the slowest reference duration and p95 completion/scheduling latency. It can be established only when all three-run coefficients of variation are at most 10%; no such budget is currently established.
+
+## Retained results
+
+The [100-execution smoke envelope](../evidence/smoke-100/envelope.json) records 800 unique effects, 160 transient rejections, 50 timers, and an empty queue in 33.877 driver seconds under shared verification load. It validates the workload machinery, not the full baseline.
+
+The failed reference attempt completed two full runs in 962.372049 and 1611.414379 driver seconds. A third was refused before reset because free workspace storage was below the unchanged 2 GiB admission reserve. Two uncompressed allocation JSON exports occupied 3,848,127,471 bytes. [Archive/recovery evidence](../evidence/quiet18-storage/README.md) retains their exact manifests and restoration accounting. No three-run variability result or numeric budget follows from these two measurements.
+
+The [gzip capture repair](../evidence/gzip-capture-repair.json) passed separate controls and verification while preserving the previously built runtime bytes. It changes storage after measurement, not workload dimensions or JFR settings. Three fresh full runs remain required; historical rows are never mixed across source identities.
