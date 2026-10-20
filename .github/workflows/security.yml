@@ -56,7 +56,8 @@ jobs:
           distribution: temurin
           java-version: '25.0.4.1+1'
           cache: maven
-      - run: ./mvnw -B -ntp org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom
+      - name: Refresh library inventory and scan using the current Trivy database
+        run: ./scripts/security-scan.sh
       - name: Dependency vulnerability scan
         run: ./mvnw -B -ntp org.owasp:dependency-check-maven:13.0.0:aggregate -DfailBuildOnCVSS=7
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
@@ -66,6 +67,8 @@ jobs:
           path: |
             target/bom.*
             target/dependency-check-report.*
+            .work/security/dependency-scan.json
+          include-hidden-files: true
   source:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
