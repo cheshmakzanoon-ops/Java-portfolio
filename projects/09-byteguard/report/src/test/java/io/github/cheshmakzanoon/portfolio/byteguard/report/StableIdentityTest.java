@@ -38,7 +38,27 @@ class StableIdentityTest {
   }
 
   @Test
+  void structuredHashesRetainIndependentPublishedTupleVectors() {
+    // Generated independently with Python struct: NUL, u16 ASCII domain length,
+    // domain bytes, i32 field count, then i32 UTF-16 unit length + UTF-16BE fields.
+    assertEquals(
+        "40730ca2450575b0704ac85c8dd0a7fc41a1b0657eb40d248c34fb8a9ce55f86",
+        StableIdentity.method("C.read\uD800()V"));
+    assertEquals(
+        "5762c2571ac1d196f835befe03d04fcb6fbc126260abc4379f34a1b3d5cf54d9",
+        StableIdentity.finding(
+            "BG-SQL-TEXT", new InstructionId("C.s()I@0|X()V", 0), new InstructionId("Y.t()V", 0)));
+  }
+
+  @Test
   void loneUtf16CodeUnitsRemainDistinctInFindingAndExplanationNames() {
+    String supplementary = "C.read\uD83D\uDE00()V";
+    assertEquals(
+        BoundedJarReader.sha(supplementary.getBytes(StandardCharsets.UTF_8)),
+        StableIdentity.method(supplementary));
+    assertNotEquals(
+        StableIdentity.method("C.read\uDC00()V"), StableIdentity.method("C.read\uD800()V"));
+    assertNotEquals(StableIdentity.method("\uD800"), StableIdentity.method("\uD801"));
     String first = "C.read\uD800()V", second = "C.read\uD801()V";
     assertArrayEquals(
         first.getBytes(StandardCharsets.UTF_8),
