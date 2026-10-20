@@ -23,6 +23,25 @@ The [architecture guide](architecture.md) compares decision and acknowledgment b
 
 ## Verification policy
 
+The isolated clean clone passed **839 ordinary Java test cases** using an initially empty Maven cache. Project-specific database, broker, TLS, HTTP, and packaged-process runs passed another **114 integration cases**. All reported cases completed without failures, errors, or skips. Property-generated examples and simulation actions are not counted as additional test cases.
+
+| Project | Ordinary cases | Integration cases | Strict mutation kills / viable mutants |
+| --- | ---: | ---: | ---: |
+| ClearLedger | 45 | 22 | 137 / 141 |
+| DurableFlow | 96 | 22 | 250 / 254 |
+| QuorumKV | 69 | 7 | 325 / 421 |
+| PulseStream | 37 | 11 | 209 / 219 |
+| TenantShield | 41 | 15 | 271 / 276 |
+| MatchCore | 43 | 2 | 458 / 514 |
+| IndexForge | 194 | 4 | 1,901 / 2,450 |
+| ThreadLens | 157 | 7 | 593 / 680 |
+| ByteGuard | 106 | 2 | 557 / 757 |
+| RouteWeaver | 51 | 22 | 82 / 82 |
+
+Mutation scopes differ by project; the table does not imply whole-codebase mutation coverage. Every selected module passed its own declared threshold. The packets preserve separate source-bound campaigns where unchanged modules were reused, as well as earlier failed attempts. The formerly heap-exhausting IndexForge scoring-loop mutation is killed in its complete replacement query campaign.
+
+The shared tools passed 48 Python cases. Another 64 launcher and cache cases passed and are included in project CI jobs; DurableFlow's 19 subprocess cases run through its ordinary Maven suite. Source and compiled architecture checks found no violations. After the cold build, one additional ByteGuard identity assertion and CI launcher wiring were verified separately; production code and Maven inputs remained unchanged. The [execution record](execution/engineering-review-20261020.json) identifies both tested revisions and report hashes.
+
 Ordinary and integration checks require fresh, nonempty reports for every selected module. Test-case totals must agree with suite totals; failures, errors, and skipped tests fail the check. Database and broker integration uses actual pinned containers; process tests exercise actual JVMs and sockets.
 
 Mutation results use **killed mutants only** in the numerator. Surviving, uncovered, and timed-out viable mutants remain in the denominator; runner, memory, and unknown states fail. Every selected module must meet its declared threshold, with a minimum of 70%. Project packets identify targeted classes and non-killed results. Mutation coverage does not establish correctness outside those scopes.

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "baselineCommit": "871067a87e401bff556bcb802af95ab06cd3e940",
   "scope": "Ten independent project implementations and shared build/security boundaries",
-  "status": "IN_PROGRESS",
+  "status": "CORRECTNESS_MUTATION_INTERFACES_PASS_RELEASE_LIMITS_OPEN",
   "verificationPolicy": {
     "ordinary": "Per-module fresh, nonempty, consistent test-case reports; no failures/errors/skips",
     "integration": "Each selected integration module must execute actual dependency/process tests",
@@ -14,9 +14,51 @@
     "independentGateReview": "Current POM conventions and per-module threshold/freshness behavior reviewed; namespace-based compiled dependency evasion closed",
     "scannerObservations": "docs/dependencies/security.json",
     "dependencyScanValidation": "Exact complete graph/PURL coverage, nonempty license values, generated-output freshness, unchanged pre-generation POM manifest; independent review closed stale-BOM and empty-license cases",
-    "securityInventory": "Fresh complete177-package resolved SBOM scan passed with0HIGH/CRITICAL library findings;113external components have nonempty published licenses and SHA256; runtime-image findings remain separate/open"
+    "securityInventory": "Regenerated complete 177-package inventory passed with zero HIGH/CRITICAL library findings; all 113 external components have nonempty published licenses and SHA-256 hashes; runtime-image findings remain separate and open",
+    "runtimeCiCoverage": {
+      "cases": 64,
+      "clearledgerCache": 6,
+      "clearledgerOwnership": 16,
+      "pulsestreamOwnership": 23,
+      "tenantshieldOwnership": 6,
+      "routeweaverRuntime": 8,
+      "byteguardCache": 5,
+      "durableflowSubprocessCasesInsideMaven": 19,
+      "logs": {
+        "ci-byteguard-cache.log": "fb35bf14996986672189977bb10f55e78618cd714f3401a3800605236cda21c3",
+        "ci-clearledger-cache.log": "db9540127117eabfe4c1f44a21a6e8292962b36e6676b26a1585399e13114534",
+        "ci-clearledger-lifecycle.log": "3e809697ef4d1685bfa1736c703d36a0254810e814033b8622289a2958a34778",
+        "ci-pulsestream-lifecycle.log": "dd904805894710dbca13975f4f91555dce76f700abe1b8ed7e9d17907286c711",
+        "ci-routeweaver-lifecycle.log": "a2f28a7780582eac4ec7b409b7cc00cc20154ffbdace27b99ac7c9f9989e4ebd",
+        "ci-tenantshield-lifecycle.log": "15346bb943c49cf03071b3668aa7bf831b986d2225859b3f6625afadd2a7a1ca"
+      }
+    }
   },
   "projects": {
+    "clearledger": {
+      "evidence": "projects/01-clearledger/evidence/engineering-verification-2026-10-20.json",
+      "demoEvidence": "projects/01-clearledger/evidence/engineering-demo-2026-10-20.json",
+      "lifecycleEvidence": "projects/01-clearledger/evidence/lifecycle-ownership-2026-10-20.json",
+      "commit": "6a3fb5d",
+      "ordinary": 45,
+      "integration": 22,
+      "strictMutationKills": 137,
+      "viableMutants": 141,
+      "lifecycleRegressions": 16,
+      "preparationRegressions": 6,
+      "limits": "Three survivors and one timeout retained; targeted domain/transaction/CSV mutation; fresh-cluster PostgreSQL18.6 lifecycle, no existing-volume transplant or new capacity result"
+    },
+    "durableflow": {
+      "evidence": "projects/02-durableflow/evidence/runtime-hardening-2026-10-20.json",
+      "commit": "f10c449",
+      "ordinary": 96,
+      "integration": 22,
+      "strictMutationKills": 250,
+      "viableMutants": 254,
+      "lifecycleRegressions": 10,
+      "preparationRegressions": 9,
+      "limits": "Four current-interpreter survivors retained; SQL/concurrency/worker lifecycle and frozen interpreters have deterministic integration regressions rather than PIT certification; restricted managed procfs makes already-running repeat-up fail closed, down\u2192up is supported"
+    },
     "quorumkv": {
       "evidence": "projects/03-quorumkv/evidence/deep-verification.json",
       "commit": "ab708e2",
@@ -24,7 +66,19 @@
       "integration": 7,
       "strictMutationKills": 325,
       "viableMutants": 421,
-      "limits": "82 survivors,9uncovered,5timeouts; targeted classes only"
+      "limits": "82 survivors, 9 uncovered outcomes, and 5 timeouts; targeted classes only"
+    },
+    "pulsestream": {
+      "evidence": "projects/04-pulsestream/evidence/engineering-verification-2026-10-20.json",
+      "mutationEvidence": "projects/04-pulsestream/evidence/engineering-mutation-2026-10-20.json",
+      "runtimeEvidence": "projects/04-pulsestream/evidence/engineering-lifecycle-2026-10-20.json",
+      "commit": "77a6629",
+      "ordinary": 37,
+      "integration": 11,
+      "strictMutationKills": 209,
+      "viableMutants": 219,
+      "lifecycleRegressions": 23,
+      "limits": "Six survivors and four timeouts retained; earlier failed combined integration preserved; final isolated real-service integration passed; no new capacity measurement"
     },
     "tenantshield": {
       "evidence": "projects/05-tenantshield/evidence/current-verification.json",
@@ -37,6 +91,48 @@
       "viableMutants": 276,
       "limits": "Five survivors; fresh-cluster PostgreSQL baseline, no data-volume transplant or production authorization certification"
     },
+    "matchcore": {
+      "evidence": "projects/06-matchcore/evidence/deep-verification.json",
+      "mutationEvidence": "projects/06-matchcore/evidence/deep-mutation-outcomes.json",
+      "runtimeEvidence": "projects/06-matchcore/evidence/deep-demo.json",
+      "commit": "e440469",
+      "ordinary": 43,
+      "integration": 2,
+      "strictMutationKills": 458,
+      "viableMutants": 514,
+      "limits": "47 survivors and 9 uncovered outcomes retained; forced channel calls and retained-storage process crashes do not establish hardware power-loss recovery; state-only checkpoints require original-command authority for historical retries"
+    },
+    "indexforge": {
+      "evidence": "projects/07-indexforge/evidence/maintenance-deep-20261020.json",
+      "commit": "9646d0b",
+      "ordinary": 194,
+      "integration": 4,
+      "strictMutationKills": 1901,
+      "viableMutants": 2450,
+      "limits": "Separate unchanged upstream, evaluation and final query scopes; survivors/uncovered/timeouts retained; earlier memory-error query failed; complete replacement query passes and kills original fault; no new ranking study, relevance guard remains unmet, structural catalogs require rebuild and reindex"
+    },
+    "threadlens": {
+      "evidence": "projects/08-threadlens/evidence/mobile-report-verification.json",
+      "mutationEvidence": "projects/08-threadlens/evidence/deep-mutation-survivors.json",
+      "browserEvidence": "projects/08-threadlens/evidence/mobile-report-browser.json",
+      "commit": "3a90529",
+      "ordinary": 157,
+      "integration": 7,
+      "strictMutationKills": 593,
+      "viableMutants": 680,
+      "limits": "72 survivors, 12 uncovered outcomes, and 3 timeouts retained across 19 targeted sources; managed file navigation blocked, four loopback-served desktop/mobile cases passed; historical failed observer-overhead result remains failed"
+    },
+    "byteguard": {
+      "evidence": "projects/09-byteguard/evidence/runtime-hardening-2026-10-20.json",
+      "independentCliEvidence": "projects/09-byteguard/evidence/independent-cli-2026-10-20.json",
+      "commit": "0ec6dcc",
+      "ordinary": 106,
+      "integration": 2,
+      "strictMutationKills": 557,
+      "viableMutants": 757,
+      "preparationRegressions": 5,
+      "limits": "106 survivors and 94 uncovered outcomes in selected core targets; report scope killed 30 of 30; evaluator tests do not enter core-unit PIT; object-insensitive and shell-model approximations, partial JVM verification, and filesystem-race assumptions remain explicit; no new benchmark"
+    },
     "routeweaver": {
       "evidence": "projects/10-routeweaver/evidence/deep-hardening-current.json",
       "commit": "785a7e7",
@@ -44,47 +140,11 @@
       "integration": 22,
       "strictMutationKills": 82,
       "viableMutants": 82,
-      "interfaceVerification": "Real desktop and 390px Chromium, strict CSP, keyboard vehicle selection, partial-plan status, stale responses and SIGKILL restart; root inspected real screenshots",
+      "interfaceVerification": "Desktop and 390px Chromium, strict CSP, keyboard vehicle selection, partial-plan status, stale responses, and SIGKILL restart; screenshots visually inspected",
       "limits": "Targeted Validator mutation only; upstream gosu findings remain unresolved; no new performance measurement"
-    },
-    "clearledger": {
-      "evidence": "projects/01-clearledger/evidence/engineering-verification-2026-10-20.json",
-      "demoEvidence": "projects/01-clearledger/evidence/engineering-demo-2026-10-20.json",
-      "lifecycleEvidence": "projects/01-clearledger/evidence/lifecycle-ownership-2026-10-20.json",
-      "commit": "c0f84af",
-      "ordinary": 45,
-      "integration": 22,
-      "strictMutationKills": 137,
-      "viableMutants": 141,
-      "lifecycleRegressions": 16,
-      "preparationRegressions": 6,
-      "limits": "Three survivors and one timeout retained; targeted domain/transaction/CSV mutation; fresh-cluster PostgreSQL18.6 lifecycle, no existing-volume transplant or new capacity result"
-    },
-    "durableflow": {
-      "evidence": "projects/02-durableflow/evidence/runtime-hardening-2026-10-20.json",
-      "commit": "269fc5a",
-      "ordinary": 96,
-      "integration": 22,
-      "strictMutationKills": 250,
-      "viableMutants": 254,
-      "lifecycleRegressions": 10,
-      "preparationRegressions": 9,
-      "limits": "Four current-interpreter survivors retained; SQL/concurrency/worker lifecycle and frozen interpreters have deterministic integration regressions rather than PIT certification; restricted managed procfs makes already-running repeat-up fail closed, down\u2192up is supported"
-    },
-    "threadlens": {
-      "evidence": "projects/08-threadlens/evidence/deep-verification.json",
-      "mutationEvidence": "projects/08-threadlens/evidence/deep-mutation-survivors.json",
-      "browserEvidence": "projects/08-threadlens/evidence/deep-browser.json",
-      "commit": "f97ff3f",
-      "ordinary": 157,
-      "integration": 7,
-      "strictMutationKills": 593,
-      "viableMutants": 680,
-      "limits": "72survivors,12uncovered,3timeouts retained across19 targeted sources; hosted browser file navigation blocked, four loopback-served desktop/mobile cases passed; historical failed observer-overhead result remains failed"
     }
   },
   "independentReview": {
-    "root": "Workflow scheduler version fence and recoverable/terminal storage split; QuorumKV snapshot/WAL/owner cleanup; ClearLedger SQL/post-commit handling; TenantShield quota and typed authorization client; IndexForge archive/generation ownership; MatchCore journal/gateway; actual RouteWeaver desktop UI",
     "closedFollowups": [
       "Stale workflow scheduler deferral must compare observed version",
       "Database schema/contract failures must not loop as transient worker outages",
@@ -94,12 +154,371 @@
       "Partial-plan dispatch facts must be visible beside publication controls",
       "ThreadLens callback self-close, duplicate-agent installation, path traversal and hidden-subtree budgets",
       "Generated dependency inventory cannot reuse old Maven output or accept empty published license objects",
-      "Root architecture/security/operations documentation independently compared with code and current evidence; Kafka OS/package wording corrected"
-    ]
+      "Root architecture/security/operations documentation independently compared with code and current evidence; Kafka OS/package wording corrected",
+      "Native/opaque/array-length taint counterexamples, malformed archive/member inputs and surrogate findings verified independently through packaged CLI",
+      "Mobile full-width epoch timestamps checked through actual 19-digit DOM measurements",
+      "Escaped high and low UTF16 command fields round-trip through MatchCore HTTP decoding, journal and restart without changing original command equality"
+    ],
+    "crossProjectReview": "Workflow scheduler version fence and recoverable/terminal storage split; QuorumKV snapshot/WAL/owner cleanup; ClearLedger SQL/post-commit handling; TenantShield quota and typed authorization client; IndexForge archive/generation ownership; MatchCore journal/gateway; actual RouteWeaver desktop UI"
   },
   "limits": [
     "Hosted CI and native Windows/macOS outcomes are separate and unestablished in this environment",
     "Current upstream runtime-image vulnerability findings remain unresolved",
-    "Historical relevance and observer-overhead failures are not converted into passes by these correctness changes"
-  ]
+    "Historical relevance and observer-overhead failures are not converted into passes by these correctness changes",
+    "All 20 outstanding historical release criteria remain outstanding; a correctness pass does not certify long performance, relevance, or observer-overhead acceptance.",
+    "Local raw artifacts under .work and /tmp are not included in a fresh checkout; project and root packets retain their scopes and hashes."
+  ],
+  "recordedAtUtc": "2026-10-20T10:05:43.093629+00:00",
+  "summary": {
+    "ordinaryJavaCases": 839,
+    "integrationJavaCases": 114,
+    "strictTargetedMutationKills": 4783,
+    "viableTargetedMutants": 5794,
+    "sharedPythonCases": 48,
+    "dedicatedCiRuntimeCases": 64,
+    "historicalReleaseCriteriaOutstanding": 20
+  },
+  "cleanCheckout": {
+    "status": "PASS_ORDINARY_AND_SHARED_CHECKS",
+    "coldTestedCommit": "95c279fdac5dd5192c6fe7bfb2e48d979ce87074",
+    "initialMavenCache": "Empty",
+    "command": "source scripts/cloud-env.sh; ./scripts/portfolio.sh verify all",
+    "coordination": "An outer original-checkout FIFO slot bounds Maven concurrency across both independent clones",
+    "finishedAtUtc": "2026-10-20T10:02:36.310997+00:00",
+    "ordinaryCases": 839,
+    "projects": {
+      "clearledger": {
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "durableflow": {
+        "tests": 96,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "quorumkv": {
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "pulsestream": {
+        "tests": 37,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "tenantshield": {
+        "tests": 41,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "matchcore": {
+        "tests": 43,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "indexforge": {
+        "tests": 194,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "threadlens": {
+        "tests": 157,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "byteguard": {
+        "tests": 106,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "routeweaver": {
+        "tests": 51,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "rawReportSha256": {
+      "projects/01-clearledger/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.RequestJsonTest.xml": "4166a0e2602e6c09313cd225ffbfec23f675da6e62ef196ad041dc3909c127aa",
+      "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.AccountingProperties.xml": "200141102ca1e5b70d067d26193f17244f9261f8a968ee6b9a2998f7c308dfb1",
+      "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.AccountingTest.xml": "de4145b42f2af578406f01fe43939958e9adaab6e2536987c2e8d74456428925",
+      "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.DomainArchitectureTest.xml": "e67aa21ad3ec4a0803d5e69b57a03c74db645a1579c1f631bd35e474bb215ec2",
+      "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.ReconciliationTest.xml": "a75eea1b540d3ca0ee83885384e4dad80007251941e20d89091b7cb763bb6712",
+      "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.RetryBackoffTest.xml": "fcb8912ee1d8822798be1599781deba91fd89b1e2b584b7e4c84837df03f5e50",
+      "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.TransactionRetryTest.xml": "7c696f6d7c06b87bf41e6783884ea2c5ee319e9bf9ecf076e330d064a84b74e5",
+      "projects/01-clearledger/ledger-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.WorkloadClientRetryTest.xml": "05cacb9c4e8ea569eae18a57433778b5eeb3fd41285fd7e00eaf20c0bf5e0f8f",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.InterpreterTest.xml": "aaa118c7dcf7f335a77a60491b4ed331486984dbe774c4fc832703db62dc934c",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyInterpreterV1Test.xml": "34764d1e743d7963a6af38d4c80372c8f6659f64135594d296ef29de3c159e85",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyInterpreterV2Test.xml": "518e49b8eca76a9d29e086bca2a14b5241e3162a74b53007d46e76943fd35591",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyReplayPropertyTest.xml": "0b5f472b2289557b32e50ffc517ab4f8d7e767be3d8bf8332d37521fd2bd438d",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyTypedReplayV2PropertyTest.xml": "a3ee37b8d4f7c334199ce44989ad35200675aed9535d75c8b414a0e6c3527768",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyTypedReplayV2Test.xml": "c89a88d474d1b987af0d6ff7ecf643ab57b1c7066e086b34ea71073135267075",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ReplayPropertyTest.xml": "098e3d4e4401c9b7a39af16be01b7c9582798ba7c5282cef81b82d444542ce29",
+      "projects/02-durableflow/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.TypedReplayTest.xml": "65349efffef8464a7efaca4a56ac0f46964965f21d52be804c363e6f0bfe1fa8",
+      "projects/02-durableflow/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.DataTest.xml": "da85f0884b8727456318aa6988788fc8cba5f29f52bcb86a05553a5674f69a20",
+      "projects/02-durableflow/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.DefinitionTest.xml": "ff6473d2eddfd993d3a46a311e890bd21f8b8db721c2430a6063e9096d55925d",
+      "projects/02-durableflow/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.LegacyDefinitionV1Test.xml": "53eb0de1f191cb9db07c1fb01d5fbe973f84002a6d0f3a6314bcc784bb410572",
+      "projects/02-durableflow/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ActivityFailureTest.xml": "f1b0b79e20fbe4664498cef804708596650c87d2d6a1ec8d326087d9e3f8d9e4",
+      "projects/02-durableflow/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.JdbcTransactionsTest.xml": "9f21f3397dae9c60e1d24332beea5ea2e80efdb3ee4b0a14f81c7b7e28297a1e",
+      "projects/02-durableflow/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.PersistenceFailureTest.xml": "383beaa36ce0a12d678beb976376b0b85eb625c439f904639fb9d119959c7286",
+      "projects/02-durableflow/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.WorkflowReplayTest.xml": "7252a5d9daa178cd4feacb0675af27e40a218494a9d1b37db444a94a4a9b3234",
+      "projects/02-durableflow/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ArchitectureTest.xml": "4a8c029b3bd47b8aca04475f2dcbc1e3bfcbbe385b53e849acec7dc9cd5a1eb3",
+      "projects/02-durableflow/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ContractTest.xml": "b4f31747a94c416e4c5089c22cb274a41147cffba2471275d47fca6c127733b2",
+      "projects/02-durableflow/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.PreparedBuildTest.xml": "387d3e14e5c15966a5bcf7c19cbb42d5423ba7602c41ddd3c248212232750738",
+      "projects/02-durableflow/workflow-worker-sdk/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.FakeProviderTest.xml": "8ebcd154bb8e816e32c6ee7052f1aa652231e48463fce37ae4f836e23c8387a7",
+      "projects/02-durableflow/workflow-worker-sdk/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.durableflow.ProviderClientTest.xml": "2b9d85a871a162a7876ba8d0572aecfe4103b93a21b18caa3e4e3ab214da0d5c",
+      "projects/03-quorumkv/kv-client/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.MutationIdentityTest.xml": "fcb6a42ce7139e76507d67ad11701d9db04ad030d23f7d7790f0a3ed821f6097",
+      "projects/03-quorumkv/kv-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.NodeExecutorTest.xml": "2eab0100a0fdd988719a1c8607c5adbb04a33ca31ba226cfe3e74843a694c59a",
+      "projects/03-quorumkv/kv-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.NodeMainLifecycleTest.xml": "6bd47a0f7635bff49dcb0c3235a0a8c8bb1d9adefda56a8c95db060c8340b6af",
+      "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.CodecTest.xml": "ecfe9c590039c3c51b9ef42cbab6de6612ed679dadecbf04876cf4e606c2fdd5",
+      "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.RaftTest.xml": "fbabce514cf79744891485f9405cc43630c68f757d9e5dd5f07bfdc7cc0cfc02",
+      "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.RegistersPropertyTest.xml": "a71084fb4d3beadc81051adc8f261a671962caf5c7dffc12618cd6c6e49d1831",
+      "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.SimulationTest.xml": "7b21e833faab80ec0a71751ee5182251f56a1f8e4522ec3348fdf3ca2be7f8e0",
+      "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.SnapshotAssemblerTest.xml": "3f343e1acdfa9bb5555ad1edd86418252d88c82ce5fd0ae89828511b660e0ca4",
+      "projects/03-quorumkv/raft-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.SnapshotTransferTest.xml": "c987b81dab21c3609fd107acb66e109ff589347856a0e5dab65dee02ad457516",
+      "projects/03-quorumkv/raft-storage/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.JournalTest.xml": "c8588f7d784594cd9b9ac85be857d9414da831600c8a049af506ccf4df17781e",
+      "projects/03-quorumkv/raft-transport/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.BinaryTest.xml": "91fa24f4f9676fc0e8d08bdf5166bba88b31ecc6e39192025d0ac7337528ccb0",
+      "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.BoundaryTest.xml": "5ba27830751468fdba68ad0461e7da9081439fd9288676545acb5b22a31dfdbb",
+      "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.HistoryCheckerTest.xml": "c4a8b972be0fd0cd721437ab084adf6f9e46ae3f29da17323a009f377344d435",
+      "projects/03-quorumkv/raft-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.quorumkv.LocalTlsIdentityTest.xml": "ee1951d8649b9214528adcfd14118b1830961b506331ec3a8c299517499aab49",
+      "projects/04-pulsestream/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EnginePropertyTest.xml": "349714fee52b06777dc0c39532d88003c32b671d539aac14ecd23b519510351c",
+      "projects/04-pulsestream/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EngineTest.xml": "b7b547901393f83cbb290b987ccc05c41cac2f576591929f087375210ddddea9",
+      "projects/04-pulsestream/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.EventCodecTest.xml": "17575f6c99e402569d469bb874084cb64ef76e849ef53f4ef6d2e601d4a696ee",
+      "projects/04-pulsestream/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.KafkaPumpLifecycleTest.xml": "95954f9ad6b1c1be86453c1d21d58fe83f0d02131a3b92371f4449ba09ea6308",
+      "projects/04-pulsestream/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.ThreadTerminationTest.xml": "86b427c4fcbb56a30f0414a92ba7b7457d299c84ef876679a7352f4385ef6e52",
+      "projects/04-pulsestream/postgres-store/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.RetentionTest.xml": "0bb250deb78b42eed3e29940a26c8ed6d78461f505f479ca483db296841d22ea",
+      "projects/04-pulsestream/postgres-store/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.SnapshotCodecTest.xml": "ec07c274c58755f37b7a5485acbaf677f9c9353b7798675383de2b7f5c63a319",
+      "projects/04-pulsestream/postgres-store/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.SqlTransactionsTest.xml": "a74b99279725f2af67a384de07f571c34df8eace03b296650d7523e10b71239b",
+      "projects/04-pulsestream/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.QueryReadinessTest.xml": "f8258961bc834fc67852e63bb68f34b443f377bf69de2f69b00893979138c563",
+      "projects/04-pulsestream/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.SchedulePropertyTest.xml": "f72f7cd9c344f622188311ddb234bc42f4f6b44a02e001f12a5d01b460535fe7",
+      "projects/04-pulsestream/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.pulsestream.WorkloadOracleTest.xml": "17517e7a87d6b93803834286811fd808a4446de79dcda172761ae5ca9320288f",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.CompiledPoliciesTest.xml": "5709b34ec2150236a7ea5272dad356cfffc2a89aa71b2d1d97cf72af42a213bf",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.JsonConfigurationTest.xml": "0a41b301c9a6005438a33e9cac80a59ca8b559f310ff00891cc3a981d80f376d",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.JwtSecurityTest.xml": "db36d99287cf56965b2e5947e7cdf3c6e305dc1ebcd5332de88a4026102bfaf4",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.PublicationPreconditionsTest.xml": "85fa48d8716240078f83143d5ddf4314dad10809331eb3330dc91c6d57e9bc62",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.RequestBoundsTest.xml": "33d45ea802c4c999692de66d1d677139db6188e8d90e57494e44b61a3496ae8b",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.SnapshotAuthorizationTest.xml": "6d63a170a12456518db7c77bdf9bb304da97015c87e3c2b919ba1492a47a6d1e",
+      "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.TenantAdmissionTest.xml": "76bc47c0cc5841daf9c2e015d606633c215147e60a70c422ee9159b13b8f3d39",
+      "projects/05-tenantshield/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.DocumentAuthorizationTest.xml": "f7b51a2fb5984120f5a685c2edf18f4df90e44eb77f01020822fd7838c5218cb",
+      "projects/05-tenantshield/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.ProtectedClaimsTest.xml": "5beabdeb3b311a27cf6fe2ee6b2fa2b063dadac72f2ca9f8444e32a5ce2752d5",
+      "projects/05-tenantshield/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.ArchitectureTest.xml": "4f6d19344754295ef903f3a90180ab59e497d3ef8e45fd1ba1f5c220ca375b49",
+      "projects/05-tenantshield/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest.xml": "9a05ba7bf5d97ca7f724bc0170714ea2c58bd78dc2d653558d3cc015faac6b72",
+      "projects/06-matchcore/benchmarks/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.SeededHistoryTest.xml": "6dda8ea186a5f1ba4042fdf2c1be2f32228502dcde9d7f45545bcd6e65f02658",
+      "projects/06-matchcore/gateway/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.GatewayTest.xml": "3f61e135bcb3d964705b01ea322dae311dc3dc6137c7fbd94e950731153dd362",
+      "projects/06-matchcore/gateway/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.HttpApiTest.xml": "b6d88cf3c5b5c8fece39b65136f44da506d2782b64cb79c59cfcaa793a74d217",
+      "projects/06-matchcore/journal/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.JournalTest.xml": "9964bc5046d78692ec9fe24c0c33ba7c6bde4c326ab09dd2d8718995c50adccb",
+      "projects/06-matchcore/matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpointTest.xml": "06686d94846b458128d1ff8ef0d9ccad3c3aa5acd74fbdd100e602e3ae844912",
+      "projects/06-matchcore/matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.BookTest.xml": "90be7ddcd0cb10f04746ab399a7c225a06c9e29ba4364e943f1144a7672764fe",
+      "projects/06-matchcore/matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.InvariantsTest.xml": "bbf4b60fa7bc33c58149f38c5549c44c0b4fcef6218bb543bda10af6461346de",
+      "projects/06-matchcore/simulator/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.AgreementPropertyTest.xml": "24514fdacb30c93fa83815c975131e16267b622b1b27afde70dc63d9d254a57b",
+      "projects/06-matchcore/simulator/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.AgreementTest.xml": "573e27bf1ac8bac4edb11d7badc3e5497f357fdeca9ae8e61ffaebb5a8a36ee9",
+      "projects/07-indexforge/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CliArgumentsTest.xml": "dc2d5242d3b9a30fcc5dc2881b4b2c3f3a5a813fbaf84fc3c1ce7cf90165822f",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationFingerprintTest.xml": "7896d0d00a53750538ef861ecaa8482ac7e7740d8298e4f16cbe6abe7931c306",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationJudgmentsTest.xml": "7adf14dcf9e3785c18eb2402c3b6c04011beb102a7c1a47f2dc4daf97d6abe63",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationSealTest.xml": "a02bedf29dd6e3474c2623adee78c61dbdb006aace83c418f5010783eb38370f",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.PairwiseTrainingTest.xml": "c66828cebe2002e52690ddddacaedc6dcb50fdf97cfe317500b1b5b4e70e90bc",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RelevanceMetricsTest.xml": "e0014ac176bbcb057b3c34069406a1503de7c3466a762378f2978d6f52216698",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceFeaturePacketTest.xml": "6c6451e7f4daeef445fbc4647d610776761c8cfb8afe4054f4060853332a7039",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourcePairwiseSelectionTest.xml": "43d9b719fca0da21122d8bcc8d08ca1ef6735da6c02150afd6af768d35820d5a",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceStudyBoundaryTest.xml": "52a840f39c27aa2698e6ad8c6495d1134425eed52e5608ab07f7883719050800",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceWave3StudyTest.xml": "2968c30fd0671386b8cc0e64484f17c7b6cefa5e27a14168c74df6897077564e",
+      "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.Wave2ProtocolTest.xml": "7d1732d38c7dc674e6c552924c35089e059c2dd70860648cf68c054f6953d3c0",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CodeFeaturesTest.xml": "e7460ef7224b563dbab6685988d14ca0a73c4aafc6f4464f60d4ea7e165d22b6",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.DeclarationScannerTest.xml": "2bf5877160f2a90a641da16d3dd3dd888854b1ad3e9bf8ab9243f760b9267a46",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.GenerationLifecycleTest.xml": "53dd532b6a4a40ab4d4e63fa78251ad92f0cad995dd0243fa9ce760791106e12",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IdentifierTermBoundaryTest.xml": "580e94f058218637a04fbc2526b78003b56c8f01b574dc433ef91bd921b27206",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceCatalogTest.xml": "0cf2d1677d5e5c5d2ab07f4813cf456a0c69b13e3afd788a08c38f8220c8eaa1",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceGenerationTest.xml": "7d4610e4574f3120ccbcbad684014a6e2d39a96abe7a66561a74baf79cb01456",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceKernelBoundaryTest.xml": "4bd80fa743704dafbebd3e328f09c54c74c566ae0a6e08af5c8d5b09a41056da",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceParserTest.xml": "f9f396ad4e1afccf31bff98e06259415df8c4d57dcf22526efeac816654c47fa",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceRelationsTest.xml": "14c97fcc70871ff0097beab94592a6adcf14ce017c3339c427b88f845cb7f393",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceRepositoryFactsTest.xml": "ca46733175cfc6dfcb6db3dcb24a464f7e0cdd4efba37f4a9a5dbeeccef706fe",
+      "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceSymbolGraphTest.xml": "a4180423061309e1d23f26d413a96ae9ea4c617095998627cad1e9aae94928bf",
+      "projects/07-indexforge/ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.ArchiveDirectoryTest.xml": "d9aaec6c9ba729d2767b4f5149159a81aeea8ce19a8f58a3e4049d18a515b007",
+      "projects/07-indexforge/ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IngestionSafetyTest.xml": "b1279b7e0baa6c7858cf2920db6d0c4043a5ea45d7fe99f214812c2ea927d118",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CursorCacheLifetimeTest.xml": "8a927c231f159b228165008a627d752faebff4078ef3af003493ecc2f98955a9",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EngineLifecycleTest.xml": "fd597630b1f0c8b9d11a86ea5e53879d9b4e123d62acb654211b74f34ec781c7",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingCodeIdentityTest.xml": "aa7606adc78db2f3efc07d3a9e2655949ae7756ffb283ad88dac31eca284d478",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingIdentityRestartTest.xml": "0ec214272ef22accfa63cb7b3cc5a2e3f65c7db0c30d599a21a6860457b568ac",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingWave2Test.xml": "4f96c52b5d3e8b1f99408d93134f8852bdceb2047a5189f635d44fb21a2d7343",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SearchRequestIdentityTest.xml": "93467f8abf7eb020955dc8e0b2d6f15028297537de42d1ea833d64915d640216",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SearchSecurityTest.xml": "8d255ac98f4aaea95b61a4b790a7a4f6d909d935dfff540882df588271f40e05",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SnippetBuilderTest.xml": "fdf5466fe54085163534b2fc747a75f32ae550750109b6e40a37533621d7136c",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceServingTest.xml": "f0e39886fd167b19c4b73e16e30755a23a85ea4605b190755f430eb5f0f33108",
+      "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceUsageRankerTest.xml": "f9df4d958278b53e6d8e3c5d84604aff6b51af2fa097809b45b6cafb9c16b497",
+      "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IssuerLifecycleTest.xml": "0b5c63c5e04d680193a6b3e3db4dbb4bd98f3c1614a358d5c3987eae1e7c7c32",
+      "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingConfigurationTest.xml": "3b6e531c55af01ec08cf183b2ecbce674130bec6b51be4105a85201f4be29eec",
+      "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TenantMetricsTest.xml": "5a5c3a2ced75b69d0f706a0a9cbe11abba188d06feedc27b4e177388252dd16d",
+      "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TokenValidationTest.xml": "bce480bab44b8aa6228d6af15393e9f2ae3d758230dede8560560feda6d19450",
+      "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.agent.AgentConfigTest.xml": "f09e07958c63e5998587bb6b2818e5d8a16618dfb16e4622d7feed34d5442ae4",
+      "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.agent.SafeHierarchyTest.xml": "68ccf60175c920c60e3625f5d885775a2b2a4afb32c16c759659792ada039f08",
+      "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.agent.TimingSessionTest.xml": "ace023a4093cd01b677321acf22b47ee7670fab501709334f11ddbd29428fe2a",
+      "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.agent.TimingStatisticsTest.xml": "3f64a66cfa593d360fac6b195a680c68af2c8ec8e86981ded8880d32ee52d461",
+      "projects/08-threadlens/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.TransformationTest.xml": "257831e38fafa6d27637f8ddc6116d9934980b8582d4fc7bf9c81d5f3993c282",
+      "projects/08-threadlens/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.analysis.AggregationTest.xml": "a00f2df876c26c5cd800620d8171d3d1dbc3beede22b438d37359f65d2a94c29",
+      "projects/08-threadlens/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.analysis.LimitsTest.xml": "9cae28949d78da0b3a9fc9cedb876d758f50ac85286573ade9fbd03df75669aa",
+      "projects/08-threadlens/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.analysis.StatisticalOracleTest.xml": "21b5684ad859c66fc7bc476f75867241a4d78667369410962cb0ac58c008c17a",
+      "projects/08-threadlens/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.cli.ChildJvmTest.xml": "5ed50874fa3ddce432cb6b8895b89e6640422d5e652ebed832c9054e8adc948c",
+      "projects/08-threadlens/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.cli.ObserverStressTest.xml": "dffe53cd2e552e72425240e27d9095c44b418b434ad1586a7edcfa2d3afcc8b3",
+      "projects/08-threadlens/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.cli.SettingsManifestTest.xml": "42dff8b5db2e3a8f4f8e9e69c4f0ae5b7a305d6cc701193ac1aec046d77db675",
+      "projects/08-threadlens/compatibility/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.CollectionSettingsTest.xml": "4db167838a76604d546b434b648fbeec557abfe8bd3a1c7c7f1ecd338ba063e3",
+      "projects/08-threadlens/compatibility/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.compatibility.WorkloadLifecycleTest.xml": "36fef44a4f7e50f0e76b405777e015c88974cc9368c3137531cc58f7f6105d89",
+      "projects/08-threadlens/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.jfr.CollectionTest.xml": "6fc32e651d5a4a5a832bcbe00e487924aff95307d9e0e817c3a197c8b29134cf",
+      "projects/08-threadlens/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.jfr.EventProcessorTest.xml": "cd0ab8b37b8d3856ac3db6173d77a15b23d4664c447f61fc167dd4f1c2248cea",
+      "projects/08-threadlens/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.jfr.PrivacyTest.xml": "8dc46668f1bdfcc4da45adabbcd01ac120714b7241063cc0b37de870b6f036a7",
+      "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.PrimitiveDrainTest.xml": "2b5c3d10c8d691b6493fc8ab14f3669d20803982df663f70fd7ff77e2b4171e7",
+      "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.ProbeLimitsTest.xml": "79ca7a3aceb48dbda5c6ac9fe494b690e13a40f9ef3dfd1203e357eb0d538fbe",
+      "projects/08-threadlens/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.probe.ProbeTest.xml": "f37340cd9394b9823e6e6e207194c95e580110631a754cf3ac8b1bfc57437de2",
+      "projects/08-threadlens/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.report.ReportTest.xml": "3fa23827a9738944f3afc13fe7a616ba81123d5177385cbe011a4f743b0b3d3e",
+      "projects/08-threadlens/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.report.ReportValidationTest.xml": "da10c89e41071002541ee71d876d06d10df6fac21233086cfeef53bf7a4b217d",
+      "projects/08-threadlens/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.threadlens.report.TimingImporterTest.xml": "f9049bfee5eb63699ceb25556375e13943d992087adcdedbc6563a6cfc1f165d",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.ArchiveIntegrityTest.xml": "500ca6d2d45c607b5c594646ffab2820cba471dd7340e2a577d6dff61056c617",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.DescriptorBudgetTest.xml": "9a28f6639caf6a7a825214a736ce40bae3dc261de590312e5ac44aea392b612b",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.EngineTest.xml": "dd7456cc5286fbe212f182c649905fee7a4dadb0130eb8eda50d2a25d7d6d164",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.InvocationSemanticsTest.xml": "cc7751c1f9a7c988f636ee1523504ed7856201213edcbcc4682676f91842abc4",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.LatticePropertiesTest.xml": "a25a15121cdd5727cb8a857b219ed3c417e9931849a71811ae692d2a911c54ae",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.MethodSummaryContractTest.xml": "58a4a6ec942a920d38dcc2c511053487da1a3084a35117e03e82ccc1898018c8",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.OpcodeTest.xml": "37302670d898f413b0bdbcc181c7c27bc7c39a01e38ab660b63d5dc35260684a",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.StructuralCoverageTest.xml": "312602433f83b413dbd8c160853d1a0ad64f7a2f09fa2a091fbd66b8cf01bfa6",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.VerifierFramesTest.xml": "633071a343f92146a328dcde8b42bcb78f7b36f46a761977da4918d8ce5db70a",
+      "projects/09-byteguard/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.dataflow.InvocationEffectsTest.xml": "30a51d05eabafcd1ceba1f4ebd9ec96b82620745140d3ab52608c2657707ef79",
+      "projects/09-byteguard/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.evaluation.BoundaryTest.xml": "e22f04132db00747354dad00cf2b7d820920aa7535a254d9b6115701d4d22ddb",
+      "projects/09-byteguard/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.evaluation.CorpusTest.xml": "760ec203a7e24cbee2b3a9dc44ab707781bf7a32b9987d9426a02bf2bce9e7c1",
+      "projects/09-byteguard/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.evaluation.OutputSafetyTest.xml": "032b5d36535045d5f6f2aa4fb28e5fd60eb3dba7f92edbe81af8dee8813507b0",
+      "projects/09-byteguard/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.report.ExplanationOwnershipTest.xml": "953ee36f97f86620e96a8a052603ab7d97be516ae56c25934b0b5927b12fe925",
+      "projects/09-byteguard/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.byteguard.report.StableIdentityTest.xml": "ab5bb3f88f7f61d39f6141b0af63ee67e7224841c77980b203b96c5648b7eed7",
+      "projects/10-routeweaver/routeweaver-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.DomainBoundsTest.xml": "6215f6a90bcc66e865a9bf92fe3b7dab577dbe152e8887fb1c88b8a191a306cd",
+      "projects/10-routeweaver/routeweaver-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.ModelTest.xml": "95e818867c3b896231c2f8aab6462b370576b77730500aaf90b8764eb1ff9ae3",
+      "projects/10-routeweaver/routeweaver-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.CancellationFailureTest.xml": "5e7b75c123fcdce1d63d3dad84982e3ee03d2fff6c17b5169184246678187870",
+      "projects/10-routeweaver/routeweaver-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.PlanningTest.xml": "30c8b2c7ad176eb2ae07ecd3cf77e989c7ab0cf9e7a25e2c5c2a9033dabe9b22",
+      "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.CancellationPollTest.xml": "ef68f7f144c75e2e027bb4c69233995d74fa28af61fc73b5672065e8e8b540d0",
+      "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.HttpInputTest.xml": "9a11c6b6f07deda5b7e5257da5b57c0ffa5de42630b79b5028a94a9bbf33bb77",
+      "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.OidcTest.xml": "ff7351d6b6fc2b6720cb476821f6bfc7700d14d5fc610ecc43ba5b56e86022d2",
+      "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.SecurityTest.xml": "6bceb8ac96c318485c9a7454b8e4af2687cb87864f0db08aba7e0d336034c5ac",
+      "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.TransactionTest.xml": "bd9d11ca5487d7666584b95da0a35821d461414a55d4858b4c78cb408faa6d65",
+      "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.ArchitectureTest.xml": "8655f74b4312b34a716861bc64d73ce34516745a53ea1b1860fc26b4487ac153",
+      "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.DriverInputTest.xml": "9658d47d9c92b296629cd68d04b323feb836117578073f63800459f26fe8ea07",
+      "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.OracleConcurrencyTest.xml": "17176f234ab9e5b421a3932abf34ffb55ec7cbfd976ae345a778f575da7ec5cc",
+      "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.VerificationPropertiesTest.xml": "bcaf008661286ec7ff53f20b63962a1ffae54edc0e593c298592b8b4b3a54b3d",
+      "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.VerificationTest.xml": "dcc8a6b04a1aa64e99a999559d138349ee598176f5cb2980ed89aca9d4510441"
+    },
+    "followUpTestedCommit": "9646d0bda4756a6a172358fd1caa94f121853057",
+    "followUpCommand": "./scripts/portfolio.sh verify byteguard; python3 scripts/check-architecture.py --bytecode byteguard",
+    "followUpFinishedAtUtc": "2026-10-20T10:04:09.165433+00:00",
+    "followUpReason": "One low-surrogate assertion was added after the cold-clone start; CI additionally wires existing launcher suites. Production code, POMs, and wrapper are unchanged. All 64 CI runtime cases were executed separately against identical scripts.",
+    "compiledArchitecture": "All project ordinary-build origins checked with JDK jdeps; zero violations; affected ByteGuard check repeated",
+    "trackedCheckoutAfterVerification": "Clean",
+    "finalNonDocumentationInputsMatchVerifiedClone": {
+      "algorithm": "SHA256 of sorted repository-relative UTF8 path + NUL + lowercase file-SHA256 ASCII + LF",
+      "scope": "Tracked non-Markdown files outside docs/evidence directories; LICENSE/NOTICE excluded",
+      "fileCount": 1045,
+      "fingerprint": "0373cdd03dea66e3760af660a5934a8f590a0313d13cca335a6d24ef0af2d291",
+      "groups": {
+        "shared": {
+          "fileCount": 37,
+          "fingerprint": "eab3a87c5a3d81c4639f438699978d68a5eb862cd9284e402d2edfb95f468dc7"
+        },
+        "projects/01-clearledger": {
+          "fileCount": 66,
+          "fingerprint": "acf60e8f324f9cfe382d3266fbb9e8d6250cf764617f503f1475ac670a8905a1"
+        },
+        "projects/02-durableflow": {
+          "fileCount": 81,
+          "fingerprint": "701355b9b5b9b4f276bff30b2eb6ef9eacafc634033103c6d1c1d871879cc923"
+        },
+        "projects/03-quorumkv": {
+          "fileCount": 49,
+          "fingerprint": "0d12c007e26ac7d30ec36cb3113923929869a6928a767cdd056d687730872782"
+        },
+        "projects/04-pulsestream": {
+          "fileCount": 56,
+          "fingerprint": "36d3c868635ab713afe306ead13bfb240eae64c3fbc2d75fdda4bb74b7914b64"
+        },
+        "projects/05-tenantshield": {
+          "fileCount": 60,
+          "fingerprint": "d5d122d51e5b70c1b46ed3ae95407b9d2127e539f81d915499d60d3989d8d649"
+        },
+        "projects/06-matchcore": {
+          "fileCount": 47,
+          "fingerprint": "b0e7ae2f83d490ce6768e63d8bd0a0f67434ae01428c25d1736f522806425214"
+        },
+        "projects/07-indexforge": {
+          "fileCount": 179,
+          "fingerprint": "dddd7fd6e533523fcae05f9762414d9b0843cdcbec107b71299b31292e0dd4bc"
+        },
+        "projects/08-threadlens": {
+          "fileCount": 79,
+          "fingerprint": "45cc335dde70f21dade2018730748ec77068d2fa0b11a41b64ab004db6d3d562"
+        },
+        "projects/09-byteguard": {
+          "fileCount": 325,
+          "fingerprint": "49c12a4ea4600277c5a1703f7286d5dfd0d553e0d56c0429a5083cd7b3cda5c6"
+        },
+        "projects/10-routeweaver": {
+          "fileCount": 66,
+          "fingerprint": "2aaa8655fa441a5606c7229d272a4c5de6053039d2f04bdf84fb9a930b106dee"
+        }
+      }
+    },
+    "localLogSha256": {
+      "clean-driver.log": "64941b512cbdd68e150ca48fc0a7383938ca619ff5633d7142a1fcb56054d706",
+      "clean-tooling-tests.log": "578c70d26dfbfec0f2a7676f62329c3c3b10352e7c42af1b2a24146a05f0a914",
+      "clean-byteguard-cache-tests.log": "391fed63fb2dadfcb86fb280b25b76d6bc285e55e8460ab1bf6cff2ff951480e",
+      "clean-doc-links.log": "f110aa5064df4c816169a0f6c4b4fccec7db878a4c220b1a4248016df8dc1835",
+      "clean-source-architecture.log": "c7caa6c54a4ca1ceece7cb733d5e31427a87f6218ed0dd2065153bce935d0555",
+      "clean-container-inventory.json": "62f115f349f595e6acef16d119b87cb0a3eb318d845122b0370d28157492f84b",
+      "clean-verify-all.log": "217e48d5f065c11226a559c2411ce4cde0152e750a9adf2dbead6205de370e40",
+      "clean-compiled-architecture.log": "c7caa6c54a4ca1ceece7cb733d5e31427a87f6218ed0dd2065153bce935d0555",
+      "affected-driver.log": "255c6f9d588860c38f65d038297d55b5d10776e2bdd4c0475d158d42649cc28b",
+      "clean-final-byteguard-verify.log": "f8ee19f61defe7ff42fcfe4f0028b88401c6367a971d11848fd8345d212904fa",
+      "clean-final-byteguard-architecture.log": "c7caa6c54a4ca1ceece7cb733d5e31427a87f6218ed0dd2065153bce935d0555"
+    },
+    "scopeLimit": "No cold-clone real-service integration, performance study, hosted CI, or native Windows/macOS certification is inferred."
+  },
+  "finalChecks": {
+    "documentationLinks": {
+      "documents": 199,
+      "unresolved": 0,
+      "logSha256": "f110aa5064df4c816169a0f6c4b4fccec7db878a4c220b1a4248016df8dc1835"
+    },
+    "sourceArchitecture": {
+      "violations": 0,
+      "logSha256": "c7caa6c54a4ca1ceece7cb733d5e31427a87f6218ed0dd2065153bce935d0555"
+    },
+    "containerInventory": {
+      "pinnedImages": 4,
+      "logSha256": "62f115f349f595e6acef16d119b87cb0a3eb318d845122b0370d28157492f84b"
+    },
+    "libraryInventory": {
+      "scannedPackages": 177,
+      "externalComponents": 113,
+      "highCriticalFindings": 0,
+      "logSha256": "14205669c94623c74c5c92bf72e946b8d866daa3bf40e3f45a15bb42f2a12365"
+    },
+    "teardown": {
+      "allTenProjectsStopped": true,
+      "additionalFreshClearLedgerNamespaceStopped": true,
+      "namedVolumesRetained": true,
+      "logSha256": "e5e6865b4ab2f837e0e6afa0f3dd6946eaf830e4d31f00419dd771312a2807d4"
+    },
+    "historicalReleaseAudit": {
+      "exitCode": 1,
+      "mandatoryCriteria": 63,
+      "outstandingCriteria": 20,
+      "outcome": "EXPECTED_OPEN_LIMITS_RETAINED",
+      "logSha256": "be223916af34b5cf374347490f97c1251bf84ee7e3a4b8f873f33f440fb7fd1a"
+    },
+    "whitespace": "PASS",
+    "finishedAtUtc": "2026-10-20T10:07:57.727836+00:00"
+  }
 }
