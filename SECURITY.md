@@ -21,3 +21,13 @@ Project-specific guides document authorization, tenant isolation, parser limits,
 ## Validation scope
 
 Regression tests cover specific failure modes; they are not a penetration test. Historical security evidence applies to the identified source and environment. See the [acceptance matrix](docs/acceptance-matrix.md) for repository-wide checks and each project's status page for current limits.
+
+## Security checks and dependency updates
+
+Run `./scripts/security-scan.sh` to resolve the current reactor inventory and scan libraries with the current Trivy database. The command verifies the scanner distribution and fails on HIGH/CRITICAL findings or unavailable data. [Technology baseline](docs/technology-baseline.md) records explicit dependency overrides and their upstream sources. [Dependency metadata](docs/dependencies/evidence.json) binds the committed inventory to its POM inputs.
+
+The hosted security workflow also runs OWASP Dependency-Check, pinned-image scans and CodeQL with an explicit source severity gate. Those checks cover different inputs and have separate results. Report feed failures and scanner execution errors as incomplete validation, retain the original finding, and rerun after applying a fix. Do not reduce severity thresholds, disable TLS, exclude a dependency or silently count an unavailable scan as successful.
+
+For changes to durable state or authorization, review both the normal path and the failure boundary: a lost response after commit, a stale lease after restart, malformed authoritative metadata, tenant-scoped cache reuse and interrupted shutdown. Include a regression at the boundary where the previous behavior failed. Local fixture credentials and synthetic attacks must remain isolated from real services and data.
+
+The [2026-10-20 scanner observations](docs/dependencies/security.json) retain the original findings and selected replacement image results. Application library findings were corrected by explicit version overrides. The selected PostgreSQL 18.6 image still has 25 HIGH/CRITICAL Go standard-library findings in its upstream `gosu` binary; the Kafka 4.2.2 image still has seven HIGH findings across bundled Java libraries and the OS package `libexpat`. Keycloak and Ryuk had none at those severities in the observed database. These image findings remain unresolved release failures. Local-only exposure and an unused vulnerable feature do not replace an upstream fix or a documented reachability assessment.

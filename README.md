@@ -46,8 +46,8 @@ For a service project, use its documented configuration and lifecycle:
 
 The portfolio favors explicit state transitions, checked integer arithmetic, bounded inputs, independent oracles, and tests at actual persistence and process boundaries. Frameworks provide infrastructure; the domain algorithms remain visible in project-local modules. [Architecture](docs/architecture.md) describes these boundaries.
 
-Project status pages distinguish implementation, executed checks, and outstanding work. Historical benchmark packets identify the source and workload they measured; a later code change does not inherit those measurements. Repository-wide release validation, hosted CI, and vulnerability-feed access have separate requirements in the [acceptance matrix](docs/acceptance-matrix.md). There is no blanket production-readiness claim.
+Project status pages distinguish implementation, executed checks, and outstanding work. Historical benchmark packets identify the source and workload they measured; a later code change does not inherit those measurements. Repository-wide release validation, hosted CI, and vulnerability-feed access have separate requirements in the [acceptance matrix](docs/acceptance-matrix.md). Project checks and repository release criteria have separate outcomes.
 
-The [latest quality review](docs/quality-review.md) summarizes the current hardening changes, test results, interface checks, and remaining validation limits.
+The [engineering review](docs/quality-review.md) records the transaction, recovery, concurrency, parser and interface changes, their executed checks, and remaining limits. [Architecture](docs/architecture.md#where-decisions-live) compares each system's decision and acknowledgment boundaries.
 
 Use synthetic data and local demo credentials only. Start with the [security policy](SECURITY.md) before exposing a service. Dependency licenses and algorithm attribution are documented in [third-party components](THIRD_PARTY.md). Contributions follow the [engineering guide](CONTRIBUTING.md); the source is licensed under [Apache 2.0](LICENSE).

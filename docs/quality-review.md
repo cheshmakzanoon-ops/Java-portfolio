@@ -1,36 +1,44 @@
-# Quality and security review — 2026-10-20
+# Engineering review — 2026-10-20
 
-This review covers all ten project implementations, their public guides, and the shared build checks. Changes address concrete input, persistence, transport, reporting, and browser boundaries. They introduce no new dependency or toolchain version.
+This review follows the [earlier boundary-hardening pass](execution/quality-review-20261020.json). It examines all ten implementations at their transaction, concurrency, recovery, resource-ownership, and analysis boundaries. Changes include smaller components with explicit responsibilities, compatible persistence changes, adversarial regressions, and operating procedures.
 
-## Changes and observed verification
+The [execution record](execution/engineering-review-20261020.json) identifies the baseline, project evidence, test policy, and remaining limits. Individual verification packets retain source identities, executed commands, and unsuccessful attempts. Historical measurements retain the source they measured.
 
-All counts below are executed test methods, including property-test methods; they are not counts of generated property examples. Every listed run completed with zero failures, errors, or skipped tests.
+## Implementation changes
 
-| Project | Main change | Ordinary | Integration |
-| --- | --- | ---: | ---: |
-| ClearLedger | Strict UTF-8/NUL rejection before imports; rollback preserves the primary failure | 27 | 17 PostgreSQL |
-| DurableFlow | Bounded provider responses; ambiguous effects remain uncertain; Unicode/multiline marker checks | 74 | 14 PostgreSQL |
-| QuorumKV | Snapshot/session/WAL invariants and malformed transfer refusal | 43 | 3 TLS-process |
-| PulseStream | Explicit record types must be strings; malformed events quarantine without poisoning retries/recovery | 17 | 9 Kafka/PostgreSQL |
-| TenantShield | Canonical publication preconditions; duplicate/trailing JSON rejection | 21 | 10 PostgreSQL/Keycloak |
-| MatchCore | Shared strict command decoding; unambiguous query parameters; validation before durable append/recovery | 23 | 1 process-crash |
-| IndexForge | Enum override semantics and Unicode parser/query quota consistency | 165 | 4 packaged CLI/HTTP |
-| ThreadLens | Unique timing identities, bounded line reads, and clean per-run output ownership | 115 | 6 packaged JVM |
-| ByteGuard | Lossless JVM identities, class-entry accounting, protected output paths, and transactional report writes | 70 | 2 packaged CLI |
-| RouteWeaver | Local browser-origin checks, early request validation, strict CSP, and accessible dispatch UI | 41 | 14 PostgreSQL |
+| Project | Failure or ambiguity addressed | Resulting design |
+| --- | --- | --- |
+| [ClearLedger](../projects/01-clearledger/docs/REVIEW.md) | Retrying after an acknowledged commit can duplicate an operation; reconciliation can reuse consumed postings. | Phase-aware serializable transactions distinguish commit from cleanup, immutable CSV preparation precedes retries, posting validation precedes receipt lookup, and matching excludes consumed entries. |
+| [DurableFlow](../projects/02-durableflow/docs/REVIEW.md) | A poisoned workflow can stop unrelated scheduling; stale failure handling can overwrite newer state. | Replay, SQL, transactions, and scheduler batches have separate responsibilities. Deferrals compare observed versions, terminal storage failures propagate, and recoverable claims use bounded retries. External-effect uncertainty remains explicit. |
+| [QuorumKV](../projects/03-quorumkv/docs/REVIEW.md) | Delayed snapshot chunks can prevent progress; invalid WAL replacement or premature owner release can compromise recovery. | Snapshot correlation remains stable until acknowledgment, assembly is bounded and idempotent, persisted protocol invariants are checked, and shutdown retains journal ownership until the writer stops. |
+| [PulseStream](../projects/04-pulsestream/docs/REVIEW.md) | A dequeue-to-in-flight gap understates backlog; premature shutdown can release an owner while work still runs. | Admission tracks outstanding work atomically. Engine and poller termination precede publisher and owner release; SQL transactions preserve acknowledged outcomes, and snapshots validate ownership and bounds. |
+| [TenantShield](../projects/05-tenantshield/docs/REVIEW.md) | Mutable authorization inputs, invalid grants, or evicted live quota windows can change a decision's meaning. | Verified immutable plans and grants are constructed once, membership precedes callbacks, typed client responses are bounded, and quota windows retain ownership through admitted requests. RLS checks cover all protected tables and administrative role assumptions. |
+| [MatchCore](../projects/06-matchcore/docs/REVIEW.md) | Damaged journals must stop admission; caller cancellation must not control shared work; checkpoints must agree with history. | Journal I/O failure is terminal, futures are isolated per caller, callbacks run outside admission locks, and checkpoint ancestry includes independently reconstructed balances and positions. Durability tests observe real channel-force calls and independently encoded frames. |
+| [IndexForge](../projects/07-indexforge/docs/REVIEW.md) | Reader ownership can race publication; archives can allocate before limits; cached signed cursors can expire before cached content. | Generation admission closes before reader teardown, archive structure is bounded before expansion, and cached cursor content is signed afresh for each response. Compiler bindings, ranking, ingestion, and request identity are separate components. |
+| [ThreadLens](../projects/08-threadlens/docs/REVIEW.md) | Callback closure can deadlock, duplicate agents can disable an existing session, and partial report inputs can bypass quotas. | Event processing, instrumentation sessions, child JVM ownership, and report validation have explicit lifecycles. Closure is coordinated, duplicate installation preserves the first session, and quotas cover complete directory traversal. |
+| [ByteGuard](../projects/09-byteguard/docs/REVIEW.md) | Native calls, mutable returns, malformed frames, ambiguous identities, and corrupt archives can hide uncertainty or lose a flow. | Invocation effects, typed frames, control-flow validation, archive preflight, unfinished-method reporting, and owned report output enforce separate contracts. Analysis never executes the target program. |
+| [RouteWeaver](../projects/10-routeweaver/docs/REVIEW.md) | Durable job authority can drift from candidate input; publication and asynchronous responses can show conflicting state. | Separate repositories preserve locked job authority and fencing. The dispatch page places feasibility beside publication, filters map and timeline by vehicle, and rejects stale responses. |
 
-**676 Java test methods** passed across the project reactors. QuorumKV also completed its 1,000-seed simulation. Shared tooling passed **28 Python tests**; architecture boundaries, pinned-container inventory, local documentation targets/anchors, and whitespace checks passed.
+The [architecture guide](architecture.md) compares decision and acknowledgment boundaries. Project architecture, invariants, security, and operations documents explain lock ordering, failure outcomes, compatibility, and recovery beside the implementation.
 
-The independent source review identified and closed additional Unicode case-folding, textual JSON coercion, profile-dependency, and symlink-plus-parent-traversal cases before this handoff. The [validation summary](execution/quality-review-20261020.json) captures final source and test-report digests.
+## Verification policy
 
-## Interfaces and documentation
+Ordinary and integration checks require fresh, nonempty reports for every selected module. Test-case totals must agree with suite totals; failures, errors, and skipped tests fail the check. Database and broker integration uses actual pinned containers; process tests exercise actual JVMs and sockets.
 
-RouteWeaver's dispatch page now has keyboard navigation, responsive layout, explicit action states, serialized polling, stale-response isolation, readable route/score/unassigned-demand views, and safe text rendering. Isolated Chromium checks enforce the actual CSP; a live 60-job PostgreSQL-backed lifecycle covered solve/publication and teardown. MatchCore's asserted recovery demo and IndexForge's 2,000-document lifecycle also passed.
+Mutation results use **killed mutants only** in the numerator. Surviving, uncovered, and timed-out viable mutants remain in the denominator; runner, memory, and unknown states fail. Every selected module must meet its declared threshold, with a minimum of 70%. Project packets identify targeted classes and non-killed results. Mutation coverage does not establish correctness outside those scopes.
 
-ThreadLens's offline report gained semantic navigation, responsive/print styling, and structural checks. Its headless screenshot attempts timed out; this review does not claim completed visual verification for that report.
+Shared checks exercise the verification tools themselves, dependency inventories, documentation links, pinned images, and source and compiled architecture boundaries. The compiled check inspects every origin namespace, including fully qualified dependencies that an import-only check would miss. Executed counts and source receipts are recorded in the [verification packet](execution/engineering-review-20261020.json).
 
-The root and project guides now describe setup, module boundaries, failure semantics, security assumptions, and verification scope directly. Obsolete scheduling checkpoints, execution directives, and scratch-source snapshots were removed from the current tree. Substantive historical measurement records, failed outcomes, third-party licenses, and model limitations remain traceable to their recorded source. The [release contract](release.md) retains all 63 acceptance identifiers.
+## Interfaces and operation
 
-## Limits
+RouteWeaver's PostgreSQL-backed dispatch workflow was exercised in Chromium at desktop and 390px widths, including strict CSP, keyboard controls, partial plans, delayed responses, publication, and forced-restart recovery. ThreadLens's generated normal and differential reports were exercised at both widths through a temporary loopback server, including navigation, literal hostile identifiers, table scrolling, and privacy checks. Direct file navigation was blocked by managed browser policy; that failed attempt is retained separately.
 
-This was a project-by-project hardening review, not a production certification. A clean-clone/full-reactor release reproduction, current mutation campaigns, long stress/performance studies, vulnerability-feed scans, hosted CI, and native Windows/macOS execution were not repeated. Historical benchmark/relevance/overhead failures remain failures. New source does not inherit old performance claims. The repository release audit still reports 20 incomplete or failed historical release criteria; ordinary project verification does not override them.
+Lifecycle scripts prepare artifacts before acquiring services, bind reusable artifacts to their inputs, preserve preexisting containers on failed startup, and stop only processes for which they hold identity evidence. Project packets state the precise identity mechanism and platform limits. Fresh PostgreSQL clusters validate the selected Alpine baseline; they do not establish compatibility for transplanting existing volumes between libc implementations.
+
+## Dependencies and remaining limits
+
+Dependency changes patch observed vulnerable Jackson, Tomcat, and LZ4 versions. The [security observations](dependencies/security.json) distinguish application libraries from container contents and preserve earlier findings. The scanner regenerates the aggregate SBOM, checks unchanged POM inputs and complete package coverage, and rejects HIGH or CRITICAL findings without suppressions.
+
+The selected PostgreSQL image still has findings in its upstream `gosu` executable; Kafka still has findings in bundled libraries and an OS package. These remain release failures. Application dependency overrides do not replace broker-owned libraries. The [technology baseline](technology-baseline.md) records versions, digests, and scope.
+
+Historical relevance, observer-overhead, and performance failures remain failures. This pass establishes no new throughput, latency, capacity, or overhead result. Hosted CI, hosted CodeQL, OWASP feed access, and native Windows/macOS execution have separate outcomes. The [release contract](release.md) retains all 63 acceptance identifiers; passing correctness checks does not override outstanding release criteria.

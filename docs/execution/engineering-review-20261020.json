@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "871067a87e401bff556bcb802af95ab06cd3e940",
+  "scope": "Ten independent project implementations and shared build/security boundaries",
+  "status": "IN_PROGRESS",
+  "verificationPolicy": {
+    "ordinary": "Per-module fresh, nonempty, consistent test-case reports; no failures/errors/skips",
+    "integration": "Each selected integration module must execute actual dependency/process tests",
+    "mutation": "KILLED only; surviving, uncovered and timed-out viable mutants stay in denominator; each selected module meets its declared threshold, at least 70%; runner/memory/unknown states fail",
+    "performance": "Historical source-bound results preserved; no new quiet-host study or performance improvement inferred"
+  },
+  "shared": {
+    "toolingTests": 48,
+    "independentGateReview": "Current POM conventions and per-module threshold/freshness behavior reviewed; namespace-based compiled dependency evasion closed",
+    "scannerObservations": "docs/dependencies/security.json",
+    "dependencyScanValidation": "Exact complete graph/PURL coverage, nonempty license values, generated-output freshness, unchanged pre-generation POM manifest; independent review closed stale-BOM and empty-license cases",
+    "securityInventory": "Fresh complete177-package resolved SBOM scan passed with0HIGH/CRITICAL library findings;113external components have nonempty published licenses and SHA256; runtime-image findings remain separate/open"
+  },
+  "projects": {
+    "quorumkv": {
+      "evidence": "projects/03-quorumkv/evidence/deep-verification.json",
+      "commit": "ab708e2",
+      "ordinary": 69,
+      "integration": 7,
+      "strictMutationKills": 325,
+      "viableMutants": 421,
+      "limits": "82 survivors,9uncovered,5timeouts; targeted classes only"
+    },
+    "tenantshield": {
+      "evidence": "projects/05-tenantshield/evidence/current-verification.json",
+      "runtimeEvidence": "projects/05-tenantshield/evidence/current-runtime.json",
+      "demoEvidence": "projects/05-tenantshield/evidence/current-demo.json",
+      "commit": "14c25bc",
+      "ordinary": 41,
+      "integration": 15,
+      "strictMutationKills": 271,
+      "viableMutants": 276,
+      "limits": "Five survivors; fresh-cluster PostgreSQL baseline, no data-volume transplant or production authorization certification"
+    },
+    "routeweaver": {
+      "evidence": "projects/10-routeweaver/evidence/deep-hardening-current.json",
+      "commit": "785a7e7",
+      "ordinary": 51,
+      "integration": 22,
+      "strictMutationKills": 82,
+      "viableMutants": 82,
+      "interfaceVerification": "Real desktop and 390px Chromium, strict CSP, keyboard vehicle selection, partial-plan status, stale responses and SIGKILL restart; root inspected real screenshots",
+      "limits": "Targeted Validator mutation only; upstream gosu findings remain unresolved; no new performance measurement"
+    },
+    "clearledger": {
+      "evidence": "projects/01-clearledger/evidence/engineering-verification-2026-10-20.json",
+      "demoEvidence": "projects/01-clearledger/evidence/engineering-demo-2026-10-20.json",
+      "lifecycleEvidence": "projects/01-clearledger/evidence/lifecycle-ownership-2026-10-20.json",
+      "commit": "c0f84af",
+      "ordinary": 45,
+      "integration": 22,
+      "strictMutationKills": 137,
+      "viableMutants": 141,
+      "lifecycleRegressions": 16,
+      "preparationRegressions": 6,
+      "limits": "Three survivors and one timeout retained; targeted domain/transaction/CSV mutation; fresh-cluster PostgreSQL18.6 lifecycle, no existing-volume transplant or new capacity result"
+    },
+    "durableflow": {
+      "evidence": "projects/02-durableflow/evidence/runtime-hardening-2026-10-20.json",
+      "commit": "269fc5a",
+      "ordinary": 96,
+      "integration": 22,
+      "strictMutationKills": 250,
+      "viableMutants": 254,
+      "lifecycleRegressions": 10,
+      "preparationRegressions": 9,
+      "limits": "Four current-interpreter survivors retained; SQL/concurrency/worker lifecycle and frozen interpreters have deterministic integration regressions rather than PIT certification; restricted managed procfs makes already-running repeat-up fail closed, down\u2192up is supported"
+    },
+    "threadlens": {
+      "evidence": "projects/08-threadlens/evidence/deep-verification.json",
+      "mutationEvidence": "projects/08-threadlens/evidence/deep-mutation-survivors.json",
+      "browserEvidence": "projects/08-threadlens/evidence/deep-browser.json",
+      "commit": "f97ff3f",
+      "ordinary": 157,
+      "integration": 7,
+      "strictMutationKills": 593,
+      "viableMutants": 680,
+      "limits": "72survivors,12uncovered,3timeouts retained across19 targeted sources; hosted browser file navigation blocked, four loopback-served desktop/mobile cases passed; historical failed observer-overhead result remains failed"
+    }
+  },
+  "independentReview": {
+    "root": "Workflow scheduler version fence and recoverable/terminal storage split; QuorumKV snapshot/WAL/owner cleanup; ClearLedger SQL/post-commit handling; TenantShield quota and typed authorization client; IndexForge archive/generation ownership; MatchCore journal/gateway; actual RouteWeaver desktop UI",
+    "closedFollowups": [
+      "Stale workflow scheduler deferral must compare observed version",
+      "Database schema/contract failures must not loop as transient worker outages",
+      "QuorumKV transport cleanup must preserve primary failure and always attempt writer barrier",
+      "Failed QuorumKV port bind must release owned networking and journal lock",
+      "Compiled architecture must inspect all origin namespaces",
+      "Partial-plan dispatch facts must be visible beside publication controls",
+      "ThreadLens callback self-close, duplicate-agent installation, path traversal and hidden-subtree budgets",
+      "Generated dependency inventory cannot reuse old Maven output or accept empty published license objects",
+      "Root architecture/security/operations documentation independently compared with code and current evidence; Kafka OS/package wording corrected"
+    ]
+  },
+  "limits": [
+    "Hosted CI and native Windows/macOS outcomes are separate and unestablished in this environment",
+    "Current upstream runtime-image vulnerability findings remain unresolved",
+    "Historical relevance and observer-overhead failures are not converted into passes by these correctness changes"
+  ]
+}

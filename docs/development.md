@@ -25,7 +25,7 @@ Run commands from the repository root. For example:
 ./scripts/portfolio.sh mutation matchcore
 ```
 
-The ordinary gate compiles the project, runs unit/property/architecture tests, generates coverage reports, and checks formatting. The integration profile adds Failsafe `*IT` tests; a missing required dependency must fail visibly. Mutation testing is a separate, more expensive check of selected core behavior. The launcher's report checks reject empty, failed, skipped, or stale test runs.
+The ordinary gate compiles the project, runs unit/property/architecture tests, generates coverage reports, and checks formatting. The integration profile adds Failsafe `*IT` tests; a missing required dependency must fail visibly. Mutation testing is a separate, more expensive check of selected core behavior. Each selected module must independently meet its declared threshold, with a repository minimum of 70%; a strong module cannot mask a weak one. Only `KILLED` is a confirmed kill. Survivors, uncovered mutations and timeouts stay in the denominator; runner and memory errors fail verification. The launcher's report checks reject empty, failed, skipped, malformed or stale test runs. Reports must contain test cases whose outcomes agree with the suite counters. Every selected module containing conventionally named tests needs a fresh report; each integration module needs fresh Failsafe execution. The cutoff records fractional Unix time before Maven starts. A report left by an earlier run cannot certify a module that Maven did not execute.
 
 To use a separate Maven cache or run a project directly:
 
@@ -61,7 +61,35 @@ Generated classes and reports live under module `target/`; local state lives und
 python3 -m unittest discover -s scripts -p 'test_*.py' -v
 python3 scripts/check-links.py
 python3 scripts/check-architecture.py
+# After the selected project has been compiled:
+python3 scripts/check-architecture.py --bytecode matchcore
 python3 scripts/container-images.py
 ```
 
 CI runs project reactors independently. Security, mutation, integration, benchmarks, and release checks have separate workflows and outcomes. A successful ordinary build does not establish that those other gates passed.
+
+## Dependency security
+
+```bash
+./scripts/security-scan.sh
+```
+
+The Linux x86-64 command verifies the pinned Trivy archive and executable, regenerates the actual aggregate CycloneDX inventory, updates the vulnerability database and fails on HIGH or CRITICAL library findings. Results are written to `.work/security/dependency-scan.json`; the SBOM is `target/bom.json`. The validator requires every resolved package to appear in the scan, a complete dependency graph, published license/hash metadata and unchanged POM inputs throughout generation/scanning. Old generated inventories and scan outputs are cleared before their replacement commands run. A failed download or unavailable feed is a failed check. Keep the SBOM and scanner result together when assessing a finding.
+
+The inventory includes compile, runtime, provided and system dependencies. It excludes test dependencies, Maven plugin dependencies and container contents. The security workflow separately runs OWASP Dependency-Check, scans every pinned dependency image, and builds Java for CodeQL analysis. Their results remain separate; a clean library scan does not establish a clean container or source scan. See the [technology baseline](technology-baseline.md) for explicit security overrides.
+
+## Diagnosing a failed gate
+
+Start with the failing module's Surefire, Failsafe, JaCoCo or PIT report rather than a reactor-wide total. Integration tests need their actual dependency services and must not silently skip when Docker or credentials are absent. A test failure followed by a successful narrower command does not certify the original command. Preserve the failure while correcting its cause, then rerun the affected full gate.
+
+The report checkers understand the repository's standard Maven module declarations, `integration`/`mutation` profiles and conventional Java test names. When introducing custom source roots, nonstandard test names, includes/excludes or profile activation, update the checker and its failure fixtures alongside the build. The checkers validate execution evidence; they do not prove that every production path has a useful assertion.
+
+After a successful current scan, refresh the committed inventory and license table explicitly:
+
+```bash
+python3 scripts/dependency-inventory.py \
+  --pom-inputs .work/security/pom-inputs.json --publish \
+  target/bom.json .work/security/dependency-scan.json
+```
+
+The publisher records current POM hashes and exact inventory/scan digests. It rejects POM changes made after generation began. Review the resulting dependency and license changes before committing them.
