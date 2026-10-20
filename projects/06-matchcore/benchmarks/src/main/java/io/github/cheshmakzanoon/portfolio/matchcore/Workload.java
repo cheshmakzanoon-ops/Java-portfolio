@@ -37,7 +37,7 @@ public final class Workload {
     Book book = mode.equals("core") ? new Book() : null;
     Gateway gateway =
         mode.equals("durable") ? new Gateway(path, "benchmark", 256, 1_100_000) : null;
-    try {
+    try (Gateway ownedGateway = gateway) {
       for (int a = 0; a < 64; a++) {
         Command c = init(a);
         if (book != null) book.apply(++sequence, c);
@@ -144,8 +144,6 @@ public final class Workload {
           "recoveryBoundary", "Gateway constructor only; digest comparison and close excluded");
       output.put("finalDigest", digest);
       System.out.println(new ObjectMapper().writeValueAsString(output));
-    } finally {
-      if (gateway != null) gateway.close();
     }
   }
 

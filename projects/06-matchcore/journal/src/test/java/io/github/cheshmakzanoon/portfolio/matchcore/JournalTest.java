@@ -100,6 +100,343 @@ class JournalTest {
   }
 
   @Test
+  void everyAdmittedStorageFaultPoisonsFurtherWritesUntilRecovery() throws Exception {
+    for (String boundary :
+        java.util.List.of("BEFORE_APPEND", "DURING_FRAME", "BEFORE_FORCE", "AFTER_FORCE")) {
+      Path path = dir.resolve("poison-" + boundary);
+      IOException injected = new IOException("injected " + boundary);
+      try (Journal journal =
+          new Journal(
+              path,
+              "run",
+              current -> {
+                if (current.equals(boundary)) throw injected;
+              })) {
+        assertSame(
+            injected, assertThrows(IOException.class, () -> journal.appendAndForce(1, command)));
+        byte[] failedBytes = Files.readAllBytes(path);
+        IOException refused =
+            assertThrows(IOException.class, () -> journal.appendAndForce(1, command));
+        assertSame(injected, refused.getCause());
+        assertThrows(IOException.class, journal::snapshot);
+        assertArrayEquals(failedBytes, Files.readAllBytes(path));
+      }
+      try (Journal recovered = new Journal(path, "run")) {
+        int expected = boundary.equals("BEFORE_APPEND") || boundary.equals("DURING_FRAME") ? 0 : 1;
+        assertEquals(expected, recovered.entries().size());
+        recovered.appendAndForce(
+            expected + 1,
+            new Command("next", "alice", Type.INIT, null, null, 0, 0, null, false, 0, 0));
+      }
+    }
+  }
+
+  @Test
+  void closeFailureCannotHideRecoveryFailureOrRetainTheWriterLock() throws Exception {
+    Path path = dir.resolve("failed-recovery");
+    Files.write(path, new byte[Journal.HEADER]);
+    IOException cleanup = new IOException("close fault");
+    IOException recovery =
+        assertThrows(
+            IOException.class,
+            () ->
+                new Journal(
+                    path,
+                    "run",
+                    boundary -> {
+                      if (boundary.equals("BEFORE_CLOSE")) throw cleanup;
+                    }));
+    assertTrue(recovery.getMessage().contains("corrupt frame header"));
+    assertArrayEquals(new Throwable[] {cleanup}, recovery.getSuppressed());
+    Files.delete(path);
+    try (Journal reopened = new Journal(path, "run")) {
+      reopened.appendAndForce(1, command);
+    }
+    Journal closed =
+        new Journal(
+            path,
+            "run",
+            boundary -> {
+              if (boundary.equals("BEFORE_CLOSE")) throw cleanup;
+            });
+    assertSame(cleanup, assertThrows(IOException.class, closed::close));
+    closed.close();
+    assertThrows(IOException.class, () -> closed.appendAndForce(2, command));
+    try (Journal reopened = new Journal(path, "run")) {
+      assertEquals(1, reopened.entries().size());
+    }
+  }
+
+  @Test
+  void malformedInputAndSequencePreconditionsDoNotPoisonAnOpenJournal() throws Exception {
+    Path path = dir.resolve("preconditions");
+    try (Journal journal = new Journal(path, "run")) {
+      assertThrows(IllegalArgumentException.class, () -> journal.appendAndForce(2, command));
+      Command oversized =
+          new Command(
+              "large",
+              "alice",
+              Type.INIT,
+              "x".repeat(Journal.MAX_PAYLOAD),
+              null,
+              0,
+              0,
+              null,
+              false,
+              0,
+              0);
+      assertThrows(IOException.class, () -> journal.appendAndForce(1, oversized));
+      assertEquals(0, Files.size(path));
+      journal.appendAndForce(1, command);
+    }
+  }
+
+  @Test
+  void simultaneousDirectAppendsCannotInterleaveFrames() throws Exception {
+    Path path = dir.resolve("concurrent");
+    var entered = new java.util.concurrent.CountDownLatch(1);
+    var release = new java.util.concurrent.CountDownLatch(1);
+    try (Journal journal =
+            new Journal(
+                path,
+                "run",
+                boundary -> {
+                  if (boundary.equals("BEFORE_APPEND")) {
+                    entered.countDown();
+                    try {
+                      if (!release.await(5, java.util.concurrent.TimeUnit.SECONDS))
+                        throw new IOException("test deadline");
+                    } catch (InterruptedException interrupted) {
+                      Thread.currentThread().interrupt();
+                      throw new IOException(interrupted);
+                    }
+                  }
+                });
+        var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+      var first =
+          executor.submit(
+              () -> {
+                journal.appendAndForce(1, command);
+                return true;
+              });
+      assertTrue(entered.await(5, java.util.concurrent.TimeUnit.SECONDS));
+      var second =
+          executor.submit(
+              () -> {
+                journal.appendAndForce(1, command);
+                return true;
+              });
+      release.countDown();
+      assertTrue(first.get(5, java.util.concurrent.TimeUnit.SECONDS));
+      var failure =
+          assertThrows(
+              java.util.concurrent.ExecutionException.class,
+              () -> second.get(5, java.util.concurrent.TimeUnit.SECONDS));
+      assertInstanceOf(IllegalArgumentException.class, failure.getCause());
+      assertEquals(1, journal.entries().size());
+    } finally {
+      release.countDown();
+    }
+    try (Journal recovered = new Journal(path, "run")) {
+      assertEquals(1, recovered.entries().size());
+    }
+  }
+
+  @Test
+  void checkpointsBindResultsAndBalancesToTheJournalWithoutReplayingMatching() throws Exception {
+    var json = CommandJson.create();
+    for (Side takerSide : Side.values()) {
+      Path path = dir.resolve("ledger-" + takerSide);
+      Book book = new Book();
+      java.util.List<Command> commands =
+          java.util.List.of(
+              new Command("init", "buyer", Type.INIT, null, null, 0, 0, null, false, 1000, 0),
+              new Command("init", "seller", Type.INIT, null, null, 0, 0, null, false, 0, 10),
+              new Command(
+                  "maker",
+                  takerSide == Side.BUY ? "seller" : "buyer",
+                  Type.NEW,
+                  "m",
+                  takerSide == Side.BUY ? Side.SELL : Side.BUY,
+                  10,
+                  5,
+                  Tif.GTC,
+                  false,
+                  0,
+                  0),
+              new Command(
+                  "taker",
+                  takerSide == Side.BUY ? "buyer" : "seller",
+                  Type.NEW,
+                  "t",
+                  takerSide,
+                  10,
+                  2,
+                  Tif.GTC,
+                  false,
+                  0,
+                  0));
+      try (Journal journal = new Journal(path, "run")) {
+        for (int index = 0; index < commands.size(); index++) {
+          journal.appendAndForce(index + 1, commands.get(index));
+          book.apply(index + 1, commands.get(index));
+        }
+        journal.snapshot(book.checkpoint());
+        Book different = new Book();
+        different.apply(1, command);
+        assertThrows(
+            IllegalArgumentException.class, () -> journal.snapshot(different.checkpoint()));
+      }
+      try (Journal recovered = new Journal(path, "run")) {
+        assertTrue(recovered.validSnapshot());
+        assertEquals(book.checkpoint(), recovered.recoveredCheckpoint());
+      }
+      Path snapshotPath = path.resolveSibling(path.getFileName() + ".snapshot");
+      Journal.SnapshotEnvelope envelope =
+          json.readValue(Files.readAllBytes(snapshotPath), Journal.SnapshotEnvelope.class);
+      Journal.Snapshot snapshot = json.readValue(envelope.payload(), Journal.Snapshot.class);
+      for (String invalid :
+          java.util.List.of(
+              envelope.payload().replace("\"cash\":980", "\"cash\":1980"),
+              envelope.payload().replace("\"lots\":2", "\"lots\":3"),
+              envelope
+                  .payload()
+                  .replace(
+                      "\"commandHash\":\"" + book.view().results().get("buyer:init").commandHash(),
+                      "\"commandHash\":\"" + "0".repeat(64)),
+              envelope.payload().replace("\"INITIALIZED\"", "\"ACCOUNT_EXISTS\""))) {
+        assertNotEquals(envelope.payload(), invalid, "fixture must change checkpoint bytes");
+        Files.write(
+            snapshotPath,
+            json.writeValueAsBytes(new Journal.SnapshotEnvelope(invalid, sha(invalid))));
+        try (Journal recovered = new Journal(path, "run")) {
+          assertFalse(recovered.validSnapshot());
+          assertNull(recovered.recoveredCheckpoint());
+          assertEquals(4, recovered.entries().size());
+        }
+      }
+      assertEquals(4, snapshot.lastSequence());
+    }
+  }
+
+  @Test
+  void independentGoldenFramesAndObservedForcesCoverDurabilityAndPartialIo() throws Exception {
+    Path path = dir.resolve("golden");
+    var observed = new java.util.HashMap<Path, ObservedChannel>();
+    Journal.Channels channels =
+        (file, options) -> {
+          var channel = new ObservedChannel(java.nio.channels.FileChannel.open(file, options));
+          channel.chunk = 3;
+          observed.put(file.toAbsolutePath(), channel);
+          return channel;
+        };
+    try (Journal journal = new Journal(path, "run", ignored -> {}, channels)) {
+      journal.appendAndForce(1, command);
+      assertEquals(
+          1, observed.get(path.toAbsolutePath()).forces, "complete journal frame must be forced");
+      byte[] bytes = Files.readAllBytes(path);
+      assertEquals(
+          checksum(bytes, 20), ByteBuffer.wrap(bytes).getInt(20), "independent header CRC");
+      int length = ByteBuffer.wrap(bytes).getInt(16);
+      byte[] payload = java.util.Arrays.copyOfRange(bytes, Journal.HEADER, Journal.HEADER + length);
+      assertEquals(
+          checksum(payload, length),
+          ByteBuffer.wrap(bytes).getInt(Journal.HEADER + length),
+          "independent payload CRC");
+      Book book = new Book();
+      book.apply(1, command);
+      journal.snapshot(book.checkpoint());
+      assertEquals(1, observed.get(dir.resolve("golden.snapshot.tmp").toAbsolutePath()).forces);
+      assertEquals(1, observed.get(dir.toAbsolutePath()).forces);
+      var json = CommandJson.create();
+      var envelope =
+          json.readValue(
+              Files.readAllBytes(dir.resolve("golden.snapshot")), Journal.SnapshotEnvelope.class);
+      var snapshot = json.readValue(envelope.payload(), Journal.Snapshot.class);
+      assertEquals(sha("run|1:" + command.hash()), snapshot.prefixDigest());
+      View view = book.view();
+      Checkpoint invalidHolds =
+          new Checkpoint(
+              new View(
+                  1,
+                  java.util.Map.of("alice", new Balance(1000, 100, 1, 0)),
+                  view.orders(),
+                  view.executions(),
+                  view.results()),
+              java.util.Set.of());
+      assertThrows(IllegalArgumentException.class, () -> journal.snapshot(invalidHolds));
+    }
+    assertEquals(1, observed.get(path.toAbsolutePath()).releases);
+    assertEquals(1, observed.get(path.toAbsolutePath()).closes);
+    try (Journal recovered = new Journal(path, "run", ignored -> {}, channels)) {
+      assertEquals(
+          command, recovered.entries().getFirst().command(), "partial reads preserve framing");
+    }
+    byte[] body =
+        "{\"runId\":\"run\",\"command\":{\"clientCommandId\":\"init\",\"accountId\":\"alice\",\"type\":\"INIT\",\"priceTicks\":0,\"quantityLots\":0,\"postOnly\":false,\"initialCash\":1000,\"initialLots\":100}}"
+            .getBytes(StandardCharsets.UTF_8);
+    ByteBuffer external = ByteBuffer.allocate(Journal.HEADER + body.length + 4);
+    external.putInt(0x4d434f52).putInt(1).putLong(1).putInt(body.length);
+    external.putInt(checksum(external.array(), 20)).put(body).putInt(checksum(body, body.length));
+    Path independent = dir.resolve("external-frame");
+    Files.write(independent, external.array());
+    try (Journal recovered = new Journal(independent, "run")) {
+      assertEquals(command, recovered.entries().getFirst().command());
+    }
+    Files.write(path, new byte[] {1}, StandardOpenOption.APPEND);
+    try (Journal recovered = new Journal(path, "run", ignored -> {}, channels)) {
+      assertEquals(1, recovered.entries().size());
+      assertEquals(
+          1, observed.get(path.toAbsolutePath()).forces, "torn-tail repair must be forced");
+    }
+  }
+
+  @Test
+  void channelAcquisitionForceAndCleanupFaultsPreserveOwnershipAndPrimaryErrors() throws Exception {
+    Path path = dir.resolve("io-faults");
+    for (boolean noLock : new boolean[] {false, true}) {
+      var channel =
+          new ObservedChannel(
+              java.nio.channels.FileChannel.open(
+                  path,
+                  StandardOpenOption.CREATE,
+                  StandardOpenOption.READ,
+                  StandardOpenOption.WRITE));
+      channel.noLock = noLock;
+      channel.lockFailure = noLock ? null : new IOException("tryLock fault");
+      assertThrows(
+          IOException.class,
+          () -> new Journal(path, "run", ignored -> {}, (file, options) -> channel));
+      assertEquals(1, channel.closes);
+    }
+    var channel =
+        new ObservedChannel(
+            java.nio.channels.FileChannel.open(
+                path, StandardOpenOption.READ, StandardOpenOption.WRITE));
+    IOException force = new IOException("force acknowledgement lost");
+    channel.forceFailure = force;
+    try (Journal journal = new Journal(path, "run", ignored -> {}, (file, options) -> channel)) {
+      assertSame(force, assertThrows(IOException.class, () -> journal.appendAndForce(1, command)));
+      assertSame(
+          force,
+          assertThrows(IOException.class, () -> journal.appendAndForce(1, command)).getCause());
+    }
+    var closing =
+        new ObservedChannel(
+            java.nio.channels.FileChannel.open(
+                path, StandardOpenOption.READ, StandardOpenOption.WRITE));
+    closing.releaseFailure = new IOException("release acknowledgement lost");
+    closing.closeFailure = new IOException("close acknowledgement lost");
+    Journal journal = new Journal(path, "run", ignored -> {}, (file, options) -> closing);
+    IOException failure = assertThrows(IOException.class, journal::close);
+    assertSame(closing.releaseFailure, failure);
+    assertArrayEquals(new Throwable[] {closing.closeFailure}, failure.getSuppressed());
+    try (Journal recovered = new Journal(path, "run")) {
+      assertEquals(1, recovered.entries().size());
+    }
+  }
+
+  @Test
   void snapshotsLockAndRunIsolation() throws Exception {
     Path p = dir.resolve("journal");
     try (Journal j = new Journal(p, "run")) {

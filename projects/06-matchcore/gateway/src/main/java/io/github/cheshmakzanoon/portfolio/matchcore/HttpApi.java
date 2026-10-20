@@ -106,6 +106,12 @@ public final class HttpApi implements AutoCloseable {
         send(x, 403, Map.of("code", "SCOPE_REQUIRED"));
         return;
       }
+      Map<String, String> parameters =
+          query(
+              x,
+              path.equals("/book")
+                  ? Set.of("depth", "minimumSequence")
+                  : path.equals("/executions") ? Set.of("offset", "limit") : Set.of());
       if (path.equals("/commands") && write) {
         byte[] body = x.getRequestBody().readNBytes(65537);
         if (body.length > 65536) {
@@ -135,7 +141,7 @@ public final class HttpApi implements AutoCloseable {
         Result r = gateway.result(identity, id);
         send(x, r == null ? 404 : 200, r == null ? Map.of("code", "NOT_FOUND") : r);
       } else if (path.equals("/book") && method.equals("GET")) {
-        Map<String, String> q = query(x, Set.of("depth", "minimumSequence"));
+        Map<String, String> q = parameters;
         int depth = boundedInt(q, "depth", 20, 1, 100);
         long minimum = Long.parseLong(q.getOrDefault("minimumSequence", "0"));
         if (minimum < 0) throw new IllegalArgumentException("negative minimum sequence");
@@ -161,7 +167,7 @@ public final class HttpApi implements AutoCloseable {
                 "balance",
                 v.accounts().getOrDefault(identity, new Balance(0, 0, 0, 0))));
       } else if (path.equals("/executions") && method.equals("GET")) {
-        Map<String, String> q = query(x, Set.of("offset", "limit"));
+        Map<String, String> q = parameters;
         int offset = boundedInt(q, "offset", 0, 0, Integer.MAX_VALUE),
             limit = boundedInt(q, "limit", 20, 1, 100);
         View v = gateway.view();
@@ -226,6 +232,7 @@ public final class HttpApi implements AutoCloseable {
   private void send(HttpExchange x, int status, Object body) throws IOException {
     byte[] bytes = json.writeValueAsBytes(body);
     x.getResponseHeaders().set("Content-Type", "application/json");
+    x.getResponseHeaders().set("Cache-Control", "no-store");
     x.sendResponseHeaders(status, bytes.length);
     x.getResponseBody().write(bytes);
   }
@@ -236,6 +243,10 @@ public final class HttpApi implements AutoCloseable {
   }
 
   public static void main(String[] args) throws Exception {
+    // The owned CLI configures the JDK server before its first initialization. Embedders
+    // retain ownership of this JVM-wide policy and explicit -D values take precedence.
+    System.getProperties().putIfAbsent("sun.net.httpserver.maxReqTime", "5");
+    System.getProperties().putIfAbsent("sun.net.httpserver.maxRspTime", "5");
     PathConfig config = PathConfig.parse(args);
     try (Gateway gateway = new Gateway(config.path(), config.runId(), 256, 1_100_000);
         HttpApi api =

@@ -33,6 +33,7 @@ public final class Book {
   private final Set<String> used = new HashSet<>();
   private final Map<String, Account> accounts = new TreeMap<>();
   private final Map<String, Result> results = new TreeMap<>();
+  private final Map<String, Command> commandAuthority = new HashMap<>();
   private final List<Execution> trades = new ArrayList<>();
   private long seq, totalCash, totalLots;
   private final int maxOpen;
@@ -48,8 +49,12 @@ public final class Book {
 
   public Result lookup(Command c) {
     Result r = results.get(c.key());
-    if (r != null && !r.commandHash().equals(c.hash()))
-      return new Result(r.sequence(), "CONFLICT", c.hash(), List.of());
+    if (r != null) {
+      Command original = commandAuthority.get(c.key());
+      if (original == null)
+        throw new IllegalStateException("historical retry requires original command authority");
+      if (!original.equals(c)) return new Result(r.sequence(), "CONFLICT", c.hash(), List.of());
+    }
     return r;
   }
 
@@ -68,6 +73,7 @@ public final class Book {
     }
     Result r = new Result(seq, code, c.hash(), fills);
     results.put(c.key(), r);
+    commandAuthority.put(c.key(), c);
     return r;
   }
 
@@ -235,9 +241,51 @@ public final class Book {
     return new Checkpoint(view(), used);
   }
 
+  /** Restore business state; historical retry lookup requires the authority overload. */
   public void restore(Checkpoint checkpoint) {
+    restore(checkpoint, List.of());
+  }
+
+  /** Original commands must be the complete checkpoint prefix, in sequence order. */
+  public void restore(Checkpoint checkpoint, List<Command> authority) {
     if (seq != 0 || !accounts.isEmpty())
       throw new IllegalStateException("restore requires empty book");
+    Book restored = new Book(maxOpen);
+    try {
+      BookCheckpoint.validate(checkpoint, maxOpen);
+      restored.restoreValidated(checkpoint);
+      Objects.requireNonNull(authority, "command authority");
+      if (!authority.isEmpty()) {
+        if (authority.size() != restored.seq)
+          throw new IllegalArgumentException("command authority count");
+        for (int index = 0; index < authority.size(); index++) {
+          Command original = authority.get(index);
+          original.validate();
+          Result result = restored.results.get(original.key());
+          if (result == null
+              || result.sequence() != index + 1L
+              || !result.commandHash().equals(original.hash())
+              || restored.commandAuthority.putIfAbsent(original.key(), original) != null)
+            throw new IllegalArgumentException("command authority identity");
+        }
+      }
+    } catch (RuntimeException invalid) {
+      throw new IllegalArgumentException("invalid checkpoint state", invalid);
+    }
+    accounts.putAll(restored.accounts);
+    bids.putAll(restored.bids);
+    asks.putAll(restored.asks);
+    index.putAll(restored.index);
+    used.addAll(restored.used);
+    results.putAll(restored.results);
+    commandAuthority.putAll(restored.commandAuthority);
+    trades.addAll(restored.trades);
+    seq = restored.seq;
+    totalCash = restored.totalCash;
+    totalLots = restored.totalLots;
+  }
+
+  private void restoreValidated(Checkpoint checkpoint) {
     View v = checkpoint.view();
     v.accounts()
         .forEach(

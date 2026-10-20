@@ -1,16 +1,52 @@
 # HTTP v1
 
-All endpoints bind loopback by default, port 18600 (`MATCHCORE_PORT`). Except health, requests require a valid protected bearer token or explicit `trusted-local-demo` with `X-Demo-Account`. Audience: `matchcore`; subject: account ID. Identifiers match `[a-zA-Z0-9_-]{1,64}`. POST JSON <=65536 bytes. Enum fields require string names; scalar coercion, explicit null primitives, fractional integers, duplicate keys, unknown fields and trailing documents return 400. Query names/values are URL-decoded once; duplicate decoded names and unknown keys return 400. `minimumSequence` and `offset` must be nonnegative.
+The standalone server binds `127.0.0.1:18600` by default (`MATCHCORE_PORT`). Protected mode requires a bearer token with issuer verification, audience `matchcore`, original string subject, valid required `exp`/`iat`, and endpoint scopes. Subject is the account identity. The explicit `trusted-local-demo` profile instead trusts `X-Demo-Account`; it refuses non-loopback binding and supplies all demo scopes. Health is public.
 
-- `POST /commands`: Model.Command JSON. NEW, CANCEL, REPLACE, INIT. `clientCommandId`, `accountId`, `type`, `orderId`, `side`, integral `priceTicks`, integral `quantityLots`, `timeInForce` GTC/IOC/FOK, `postOnly`, initialCash/initialLots. In REPLACE, `quantityLots` means **new remaining lots**, never total lifetime quantity; zero cancels. Side changes reject. INITIALIZATION requires admin. Tick size 0.01; unpriced market orders excluded.
-- `GET /commands/{id}`: authenticated subject's immutable durable outcome, including sequence, code, canonical payload hash and that command's executions. Unknown/other-owner IDs return 404.
-- `GET /book?depth=20&minimumSequence=0`: immutable aggregate depth with lastAppliedSequence. Depth 1..100; wait up to two seconds for a minimum sequence.
-- `GET /account`: subject's immutable cash/lots/reservations and applied sequence.
-- `GET /executions?offset=0&limit=20`: only subject's executions; limit 1..100, nonnegative offset, tagged applied sequence.
-- `GET /health`: 200 healthy or 503 recovery required.
+| Method and path | Scope | Response |
+| --- | --- | --- |
+| `POST /commands` | `matchcore:write`; INIT also `matchcore:admin` | Durable result with sequence, code, canonical hash and executions |
+| `GET /commands/{id}` | `matchcore:read` | Subject's durable result; absent/other-account ID returns 404 |
+| `GET /book?depth=20&minimumSequence=0` | `matchcore:read` | Aggregate bid/ask depth and applied sequence; waits at most two seconds |
+| `GET /account` | `matchcore:read` | Subject's cash, lots, reservations and applied sequence |
+| `GET /executions?offset=0&limit=20` | `matchcore:read` | Subject's maker/taker executions and applied-sequence cutoff |
+| `GET /health` | Public | 200 healthy or 503 recovery required |
 
-Business rejections are sequenced durable outcomes with HTTP 200 (RISK, OVERFLOW, POST_ONLY, FOK_UNFILLED, TERMINAL, NOT_FOUND, ORDER_ID_USED, SIDE_CHANGE, OPEN_ORDER_CAP). Identical retries return the original sequence/result; changed payload under the same identity gives 409 CONFLICT. Malformed input 400; body limit 413; authentication 401; ownership/scope 403; pre-admission overload/run cap 429; failed writer 503. Waiting timeout 202 OUTCOME_UNKNOWN_QUERY_STABLE_ID. Timeout is never proof of cancellation. Prices and quantity products must fit signed 64-bit integers.
+Commands always require subject/account equality, including admin INIT. Cancel/replace order lookup uses the command's account. Read responses contain immutable sequence-tagged state; execution pagination excludes fills above its returned sequence.
 
-Replacement preserves the resting GTC policy. An existing order's positive-quantity replacement with IOC or FOK returns durable `TIF_CHANGE` and leaves the original untouched; submit a new order ID after cancellation to change policy. Zero remains cancellation. Protected tokens require both `exp` and `iat`; future issued-at values outside the 60-second skew reject. Saturated HTTP dispatch returns 429 `OVERLOADED_RETRYABLE` using bounded workers, a 64-task queue and a four-handler permit gate.
+## Commands
 
-HTTP REPLACE uses the required field `newRemainingQtyLots`, with `quantityLots` rejected as ambiguous. The adapter normalizes that explicit remaining quantity into the internal deterministic command representation; CLI/internal records continue using `quantityLots` with the documented remaining semantics. Example: `{"clientCommandId":"r-1","accountId":"alice","type":"REPLACE","orderId":"a-1","side":"BUY","priceTicks":10200,"newRemainingQtyLots":2,"timeInForce":"GTC"}`.
+Identifiers match `[a-zA-Z0-9_-]{1,64}`. Body size is at most 65,536 bytes. Type is INIT, NEW, CANCEL or REPLACE; side is BUY or SELL; time-in-force is GTC, IOC or FOK. Prices are integral ticks of 0.01 quote units, quantities are integral lots, and checked products must fit signed 64-bit integers. Unpriced market orders are excluded.
+
+| Type | Required business fields |
+| --- | --- |
+| INIT | `clientCommandId`, `accountId`, `type`, nonnegative `initialCash` and `initialLots` |
+| NEW | Identity fields, `orderId`, `side`, positive `priceTicks` and `quantityLots`, `timeInForce`; `postOnly` |
+| CANCEL | Identity fields and `orderId` |
+| REPLACE | Identity fields, `orderId`, `side`, positive `priceTicks`, nonnegative `newRemainingQtyLots`, `timeInForce`; `postOnly` |
+
+All primitive fields must be present, including zero/false values for fields unused by the selected type: `priceTicks`, `quantityLots` (or REPLACE's `newRemainingQtyLots`), `postOnly`, `initialCash` and `initialLots`. Missing or explicit null primitives are rejected; reference/enum fields unused by the type may be omitted. Floating-point numbers in integer fields, text/boolean/numeric coercions, enum ordinals, duplicate keys, unknown properties and trailing documents return 400. NEW with zero quantity is invalid; REPLACE with zero remaining quantity cancels. Positive replacement cannot change side or resting GTC policy; IOC/FOK replacement returns durable `TIF_CHANGE` with the old order unchanged. Post-only is valid only with GTC.
+
+HTTP REPLACE requires `newRemainingQtyLots` and rejects `quantityLots` to prevent confusing remaining quantity with lifetime total. The adapter normalizes it to the internal journal command's `quantityLots`; this does not alter the v1 journal format.
+
+```json
+{"clientCommandId":"r-1","accountId":"alice","type":"REPLACE","orderId":"a-1","side":"BUY","priceTicks":10200,"newRemainingQtyLots":2,"timeInForce":"GTC","postOnly":false,"initialCash":0,"initialLots":0}
+```
+
+## Queries and outcomes
+
+Query names/values are URL-decoded once. Book accepts only `depth` (1..100) and `minimumSequence` (nonnegative); executions accepts only `offset` (nonnegative signed int) and `limit` (1..100); commands, result lookup and account accept no query parameters. Unknown names and repeated decoded names return 400. Scope checks precede query diagnostics.
+
+| Status | Meaning |
+| --- | --- |
+| 200 | Durable business success or rejection, such as RISK, OVERFLOW, POST_ONLY, FOK_UNFILLED, TERMINAL, NOT_FOUND, ORDER_ID_USED, SIDE_CHANGE, TIF_CHANGE or OPEN_ORDER_CAP |
+| 202 | `OUTCOME_UNKNOWN_QUERY_STABLE_ID`: command response or minimum-sequence wait timed out |
+| 400 / 413 | Invalid request / body limit |
+| 401 / 403 | Missing/invalid identity / scope or account ownership failure |
+| 404 | Unknown route or subject's result ID absent |
+| 409 | CONFLICT: an existing account/command identity has a different payload |
+| 429 | Pre-admission overload or finite run cap; retain the stable identity |
+| 503 | Writer recovery required, interrupted processing or service unavailable |
+
+Identical retries compare the complete decoded command and return the original sequence and result. The v1 result hash remains unchanged for compatibility; hash equality alone cannot authorize a retry. A timeout, disconnect or admitted failure has unknown outcome: query/retry the same ID and payload. It never proves cancellation. Malformed input, authorization failure and pre-admission overload allocate no sequence. Queue saturation permits backoff and retry. Once the finite run cap is exhausted, existing IDs remain queryable/retryable; new commands require a separate run rather than indefinite retries. The current error body uses `OVERLOADED_RETRYABLE` for both admission limits. All responses set `Cache-Control: no-store` and return stable error codes without stack traces.
+
+Dispatch uses four workers, a 64-task queue and four active-handler permits; excess dispatched requests receive retryable overload. Standalone startup sets five-second JDK request/response defaults before server initialization, preserving explicit `-Dsun.net.httpserver.maxReqTime` and `maxRspTime` overrides. These are JVM-wide periodic JDK limits; embedded hosts must configure policy before their first server. A separate-process test fills all four handlers with incomplete bodies and verifies permit recovery. TLS, connection-rate policy and production identity provisioning remain deployment responsibilities.

@@ -174,4 +174,49 @@ class InvariantsTest {
         IllegalArgumentException.class,
         () -> order("x", "a", "x", Side.BUY, 1, 1, Tif.IOC, true).validate());
   }
+
+  @Test
+  void publicDigestIsStableAcrossMapOrderAndSensitiveToState() {
+    Map<String, Balance> forward = new LinkedHashMap<>();
+    forward.put("a", new Balance(100, 10, 0, 0));
+    forward.put("b", new Balance(200, 20, 0, 0));
+    Map<String, Balance> reverse = new LinkedHashMap<>();
+    reverse.put("b", forward.get("b"));
+    reverse.put("a", forward.get("a"));
+    Result first = new Result(1, "INITIALIZED", sha("first"), List.of());
+    Result second = new Result(2, "INITIALIZED", sha("second"), List.of());
+    View baseline =
+        new View(2, forward, List.of(), List.of(), Map.of("a:init", first, "b:init", second));
+    View reordered =
+        new View(2, reverse, List.of(), List.of(), Map.of("b:init", second, "a:init", first));
+    assertEquals(baseline.digest(), reordered.digest());
+    assertTrue(baseline.digest().matches("[a-f0-9]{64}"));
+    assertNotEquals(
+        baseline.digest(), new View(3, forward, List.of(), List.of(), baseline.results()).digest());
+    reverse.put("a", new Balance(99, 10, 0, 0));
+    assertNotEquals(
+        baseline.digest(), new View(2, reverse, List.of(), List.of(), baseline.results()).digest());
+    assertNotEquals(
+        baseline.digest(),
+        new View(
+                2,
+                forward,
+                List.of(new Order("a", "bid", Side.BUY, 1, 1, 2, 0)),
+                List.of(),
+                baseline.results())
+            .digest());
+    assertNotEquals(
+        baseline.digest(),
+        new View(
+                2,
+                forward,
+                List.of(),
+                List.of(new Execution(2, "a", "ask", "b", "bid", 1, 1)),
+                baseline.results())
+            .digest());
+    assertNotEquals(
+        baseline.digest(),
+        new View(2, forward, List.of(), List.of(), Map.of("a:init", first)).digest());
+    assertEquals(100, baseline.accounts().get("a").cash());
+  }
 }

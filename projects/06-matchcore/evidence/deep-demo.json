@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "project": "matchcore",
+  "observedAtUtc": "2026-10-20T09:45:30.265663+00:00",
+  "sourceFingerprint": "385404601a15385beaf36830dd0ce4628038164f21ef6fdcfd5bcbb061ea13fb",
+  "commands": [
+    "./scripts/portfolio.sh up matchcore",
+    "./scripts/portfolio.sh demo matchcore",
+    "./scripts/portfolio.sh down matchcore"
+  ],
+  "runtimeDirectory": ".work/A06/deep-demo",
+  "demoExitCode": 0,
+  "actual": {
+    "executions": 4,
+    "lots": 8,
+    "aliceCash": 19200,
+    "aliceLots": 8,
+    "openOrders": 0,
+    "results": 12,
+    "digest": "4e226aa11dbed09f79d746c5df50ac857e30804a2e43d3ccf39893d656f959e3"
+  },
+  "artifactPreparation": "Successful current full integration/mutation verification; runtime-artifacts.py write/check and matching source stamp; supported demo reused the byte-verified artifacts.",
+  "artifactManifest": "deep-runtime-artifacts.json",
+  "boundArtifactCount": 72,
+  "rawLog": ".work/A06/deep-final-demo.log",
+  "rawLogSha256": "abb84d86009d2ad45600cf5a69962e44db6cda370ce5f0e45a71b56e0792c098",
+  "limits": [
+    "CLI injected storage-failure demonstration; actual SIGKILL and HTTP deadline checks are separate integration tests.",
+    "Current shared workspace, not clean-checkout or performance evidence.",
+    "No background process/container resources are created by this CLI lifecycle."
+  ]
+}

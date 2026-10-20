@@ -1,14 +1,28 @@
 # Engineering review
 
-## Current boundary hardening
+## Current state, recovery and ownership review
 
-The HTTP and journal mappers previously accepted numeric enum ordinals and scalar coercion despite the typed command contract. Both use the same `CommandJson` factory, which rejects enum ordinals, scalar coercion in either direction, null primitives, fractional integers, duplicate keys, unknown fields, and trailing documents. Text fields explicitly reject integer, floating-point, and boolean input shapes; disabling the general scalar-coercion feature alone does not cover those conversions. Journal regressions construct frames with correct header and payload CRCs but invalid JSON types, demonstrating that checksum validity cannot bypass schema validation. A checksum-valid JSON null payload is rejected as an I/O decoding failure rather than escaping as a null dereference.
+The production review covers every matching/model/checkpoint, journal/decoder, gateway/HTTP/identity, reference/demo/crash and workload/benchmark class. [Architecture](ARCHITECTURE.md) maps the fourteen production classes to their responsibilities. The six module POMs now use conventional XML formatting without changing dependency versions or coverage/mutation thresholds.
 
-The public journal append method now validates commands before writing. Its regression submits an invalid initial balance, confirms the file and entry list remain empty, then appends a valid command at the same sequence and recovers it successfully.
+| Priority and finding | Correction | Regression |
+| --- | --- | --- |
+| High: v1 record-text hashes can collide for unequal nullable text, so changed retries could receive an old success | Exact command authority for pending/live/recovered receipts, retaining v1 bytes and hash values | Null vs literal-null pending/committed/checkpoint restart; state-only restore fails closed; exact retries succeed |
+| High: direct journal callers could append after an incomplete frame or unknown force outcome | Explicit fail-stop OPEN/FAILED/CLOSED lifecycle; all admitted append faults poison the instance | Every append boundary, lost real force acknowledgement, reopen repair and stable retry |
+| High: externally constructed/checksum-valid checkpoints could publish invalid or partially restored business state | Atomic private restore with domain invariants; result/command and initialized-supply/execution ledger binding | Invalid balance/order/result/history matrix; positive cash minting and CRC-valid snapshot tampering; valid generated round trips |
+| Medium: caller cancellation/completion changed a shared pending response | Keep durable authority private and return dependent future copies | Cancel, forge success and fail three callers while another observes the genuine committed result |
+| Medium: applied but unacknowledged commands were counted twice at the run cap | Count each successfully queued admission once | AFTER_APPLY barrier accepts the final legal command and rejects the next |
+| Medium: cleanup failure could replace the primary recovery/replay failure | Preserve cause and suppressed cleanup errors; attempt both lock release and channel close | Real file-channel acquisition/release/close faults and invalid replay cleanup |
+| Medium: completion callbacks could execute while holding admission ownership | Complete success/failure futures outside the synchronized monitor | Callback lock assertion and concurrent retry/admission barriers |
+| Medium: four incomplete request bodies could retain every HTTP handler indefinitely | Standalone JDK request/response deadline defaults before first server initialization | Separate server process, four partial uploads, subsequent successful durable command |
+| Medium: query validation differed across authenticated routes | Explicit route allowlists after scope checks; no-store responses | Unknown query on writes/private reads rejects without admission; missing scope stays 403 |
+| Verification gap: CRC producer/consumer mutations could agree, and SIGKILL alone did not prove force calls | Independent frame bytes/CRC checks and observed real channel adapter | External valid frame, partial reads/writes, journal/snapshot/directory/tail-repair force counts |
+| Verification gap: restored private indexes and pagination lacked direct observations | Assert restored results/retries and maker/taker execution windows | Real two-maker fill history, offset/limit/account/cutoff and checkpoint reopen |
 
-HTTP query parsing previously overwrote repeated names and ignored encoded parameter names. It now decodes names and values once, rejects unknown or duplicate decoded names, and rejects negative minimum sequences. The HTTP regression checks ambiguous encoded aliases, repeated pagination values, negative bounds, valid encoded values, and non-admission of ill-typed commands.
+Strict command decoding still rejects both directions of scalar coercion, enum ordinals, null primitives, fractional integers, duplicate keys, unknown fields and trailing input. Checksum-valid malformed frames demonstrate independent schema enforcement. Protected identity tests verify original signed claim types after signature verification, preventing coercion into authority.
 
-Current execution results are recorded in [verification status](STATUS.md). Historical benchmark and artifact identities below apply to their original source, not to subsequent hardening.
+Snapshot validation preserves the optimization contract: every journal frame is decoded, structural state is validated privately, and a lightweight ledger checks supply/transfers and result identities. Matching executes only the suffix. Consistency checks and prefix hashes do not authenticate storage against an attacker who can rewrite the journal and its hashes. No v1 format migration or journal pruning was introduced.
+
+[Verification status](STATUS.md) records the exact current source and test/mutation outcomes. Surviving mutants remain explicit; numerical threshold success does not imply equivalence. Historical measurements and failures below retain their original scope and identities.
 
 ## Historical source review
 

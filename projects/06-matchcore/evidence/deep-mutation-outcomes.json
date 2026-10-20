@@ -1,0 +1,515 @@
+{
+  "sourceFingerprint": "385404601a15385beaf36830dd0ce4628038164f21ef6fdcfd5bcbb061ea13fb",
+  "outcomes": {
+    "KILLED": 458,
+    "SURVIVED": 47,
+    "NO_COVERAGE": 9
+  },
+  "remainingMutations": [
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "apply",
+      "line": 63,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "restore",
+      "line": 263,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Model$Command::validate"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 141,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 114,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long subtraction with addition"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 114,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long subtraction with addition"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 102,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 113,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 185,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Book",
+      "method": "transition",
+      "line": 98,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Book::remove"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "account",
+      "line": 143,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 35,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 37,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 44,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 47,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 91,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 106,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 35,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 36,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 37,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 38,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 42,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 68,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 72,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "matching-core",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpoint",
+      "method": "validate",
+      "line": 106,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/BookCheckpoint::require"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "<init>",
+      "line": 82,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Journal::closeAfterFailure"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "appendAndForce",
+      "line": 184,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "appendAndForce",
+      "line": 187,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "appendAndForce",
+      "line": 198,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 325,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 326,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 340,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 340,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 321,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional"
+    },
+    {
+      "module": "journal",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 318,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator",
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/matchcore/Journal::matchesPrefix"
+    },
+    {
+      "module": "journal",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 327,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator",
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/matchcore/Journal::matchesPrefix"
+    },
+    {
+      "module": "journal",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 340,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator",
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/matchcore/Journal::matchesPrefix"
+    },
+    {
+      "module": "journal",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 344,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator",
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/matchcore/Journal::matchesPrefix"
+    },
+    {
+      "module": "journal",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "matchesPrefix",
+      "line": 346,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.returns.BooleanTrueReturnValsMutator",
+      "description": "replaced boolean return with true for io/github/cheshmakzanoon/portfolio/matchcore/Journal::matchesPrefix"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "readFully",
+      "line": 177,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "recover",
+      "line": 126,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "recover",
+      "line": 141,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "recover",
+      "line": 141,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "recover",
+      "line": 145,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator",
+      "description": "Replaced long subtraction with addition"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "recover",
+      "line": 159,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Model$Command::validate"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "requireOpen",
+      "line": 114,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator",
+      "description": "negated conditional"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "snapshot",
+      "line": 243,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "validateSnapshot",
+      "line": 275,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "journal",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Journal",
+      "method": "validateSnapshot",
+      "line": 286,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "gateway",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "<init>",
+      "line": 39,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "gateway",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "<init>",
+      "line": 56,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Journal::discardSnapshot"
+    },
+    {
+      "module": "gateway",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "<init>",
+      "line": 79,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to io/github/cheshmakzanoon/portfolio/matchcore/Gateway::closeAfterReplayFailure"
+    },
+    {
+      "module": "gateway",
+      "outcome": "NO_COVERAGE",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "close",
+      "line": 229,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/lang/Thread::interrupt"
+    },
+    {
+      "module": "gateway",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "read",
+      "line": 167,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator",
+      "description": "changed conditional boundary"
+    },
+    {
+      "module": "gateway",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "run",
+      "line": 150,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/Map::clear"
+    },
+    {
+      "module": "gateway",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "run",
+      "line": 151,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/util/concurrent/BlockingQueue::clear"
+    },
+    {
+      "module": "gateway",
+      "outcome": "SURVIVED",
+      "class": "io.github.cheshmakzanoon.portfolio.matchcore.Gateway",
+      "method": "run",
+      "line": 152,
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator",
+      "description": "removed call to java/lang/Object::notifyAll"
+    }
+  ],
+  "interpretation": "All non-killed outcomes remain explicit. Survivors are not presumed equivalent; numeric gate denominators and per-module counts are in deep-verification.json."
+}

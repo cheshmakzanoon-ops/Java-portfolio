@@ -14,13 +14,16 @@ import java.util.concurrent.*;
 public final class Gateway implements AutoCloseable {
   private record Pending(Command command, CompletableFuture<Result> response) {}
 
+  private record Committed(Command command, Result result) {}
+
   private final Book book = new Book();
-  private final ConcurrentMap<String, Result> committed = new ConcurrentHashMap<>();
+  private final ConcurrentMap<String, Committed> committed = new ConcurrentHashMap<>();
   private final ConcurrentLinkedQueue<Execution> executions = new ConcurrentLinkedQueue<>();
   private final Journal journal;
   private final BlockingQueue<Pending> queue;
   private final Map<String, Pending> pending = new HashMap<>();
   private final int maxCommands;
+  private int admitted;
   private final Thread writer;
   private final Journal.Fault fault;
   private volatile View view;
@@ -40,46 +43,74 @@ public final class Gateway implements AutoCloseable {
     queue = new ArrayBlockingQueue<>(capacity);
     journal = new Journal(path, runId, fault);
     try {
+      List<Journal.Entry> recovered = journal.entries();
       Checkpoint checkpoint = journal.recoveredCheckpoint();
       if (checkpoint != null) {
-        book.restore(checkpoint);
-        committed.putAll(checkpoint.view().results());
+        try {
+          book.restore(
+              checkpoint,
+              recovered.subList(0, Math.toIntExact(checkpoint.view().sequence())).stream()
+                  .map(Journal.Entry::command)
+                  .toList());
+        } catch (IllegalArgumentException invalidCheckpoint) {
+          journal.discardSnapshot();
+          checkpoint = null;
+        }
+      }
+      if (checkpoint != null) {
         executions.addAll(checkpoint.view().executions());
       }
       long restored = checkpoint == null ? 0 : checkpoint.view().sequence();
-      for (Journal.Entry entry : journal.entries())
-        if (entry.sequence() > restored) {
-          Result r = book.apply(entry.sequence(), entry.command());
-          committed.put(entry.command().key(), r);
-          executions.addAll(r.executions());
+      for (Journal.Entry entry : recovered) {
+        Result result;
+        if (entry.sequence() <= restored)
+          result = checkpoint.view().results().get(entry.command().key());
+        else {
+          result = book.apply(entry.sequence(), entry.command());
+          executions.addAll(result.executions());
         }
+        committed.put(entry.command().key(), new Committed(entry.command(), result));
+      }
     } catch (RuntimeException e) {
-      journal.close();
-      throw new IOException("invalid replay", e);
+      IOException failure = new IOException("invalid replay", e);
+      closeAfterReplayFailure(failure);
+      throw failure;
+    } catch (Error failure) {
+      closeAfterReplayFailure(failure);
+      throw failure;
     }
+    admitted = journal.entries().size();
     view = book.publicView();
     writer = Thread.ofPlatform().name("matchcore-single-writer").start(this::run);
+  }
+
+  private void closeAfterReplayFailure(Throwable primary) {
+    try {
+      journal.close();
+    } catch (IOException | RuntimeException | Error cleanup) {
+      if (cleanup != primary) primary.addSuppressed(cleanup);
+    }
   }
 
   public synchronized CompletableFuture<Result> submit(String identity, Command c) {
     c.validate();
     if (!Objects.equals(identity, c.accountId()))
       throw new SecurityException("account ownership required");
-    Result previous = committed.get(c.key());
+    Committed previous = committed.get(c.key());
     if (previous != null)
       return CompletableFuture.completedFuture(
-          previous.commandHash().equals(c.hash())
-              ? previous
-              : new Result(previous.sequence(), "CONFLICT", c.hash(), List.of()));
+          previous.command().equals(c)
+              ? previous.result()
+              : new Result(previous.result().sequence(), "CONFLICT", c.hash(), List.of()));
     Pending existing = pending.get(c.key());
     if (existing != null)
-      return existing.command().hash().equals(c.hash())
-          ? existing.response()
+      return existing.command().equals(c)
+          ? existing.response().copy()
           : CompletableFuture.completedFuture(new Result(0, "CONFLICT", c.hash(), List.of()));
     if (!accepting)
       return CompletableFuture.failedFuture(
           new IllegalStateException("RECOVERY_REQUIRED_OR_CLOSED", failure));
-    if (committed.size() + pending.size() >= maxCommands)
+    if (admitted >= maxCommands)
       return CompletableFuture.failedFuture(new RejectedExecutionException("RUN_CAP"));
     if (pending.size() >= queue.remainingCapacity() + queue.size())
       return CompletableFuture.failedFuture(new RejectedExecutionException("OVERLOADED_RETRYABLE"));
@@ -88,8 +119,8 @@ public final class Gateway implements AutoCloseable {
     if (!queue.offer(next)) {
       pending.remove(c.key());
       next.response().completeExceptionally(new RejectedExecutionException("OVERLOADED_RETRYABLE"));
-    }
-    return next.response();
+    } else admitted++;
+    return next.response().copy();
   }
 
   private void run() {
@@ -100,30 +131,30 @@ public final class Gateway implements AutoCloseable {
         long sequence = view.sequence() + 1;
         journal.appendAndForce(sequence, next.command());
         Result result = book.apply(sequence, next.command());
-        committed.put(next.command().key(), result);
+        committed.put(next.command().key(), new Committed(next.command(), result));
         executions.addAll(result.executions());
         view = book.publicView();
         fault.at("AFTER_APPLY");
         synchronized (this) {
           pending.remove(next.command().key());
-          next.response().complete(result);
           notifyAll();
         }
+        next.response().complete(result);
       }
     } catch (Throwable e) {
+      List<Pending> failed;
       synchronized (this) {
         failure = e;
         accepting = false;
-        pending
-            .values()
-            .forEach(
-                p ->
-                    p.response()
-                        .completeExceptionally(new IllegalStateException("RECOVERY_REQUIRED", e)));
+        failed = List.copyOf(pending.values());
         pending.clear();
         queue.clear();
         notifyAll();
       }
+      failed.forEach(
+          p ->
+              p.response()
+                  .completeExceptionally(new IllegalStateException("RECOVERY_REQUIRED", e)));
     }
   }
 
@@ -142,7 +173,8 @@ public final class Gateway implements AutoCloseable {
   }
 
   public Result result(String identity, String commandId) {
-    return committed.get(identity + ":" + commandId);
+    Committed value = committed.get(identity + ":" + commandId);
+    return value == null ? null : value.result();
   }
 
   public View view() {
@@ -176,12 +208,16 @@ public final class Gateway implements AutoCloseable {
 
   public void snapshot() throws IOException {
     synchronized (this) {
+      if (!healthy())
+        throw new IllegalStateException("snapshot requires a healthy gateway", failure);
       if (!pending.isEmpty()) throw new IllegalStateException("snapshot requires idle gateway");
       journal.snapshot(book.checkpoint());
     }
   }
 
   public void close() throws IOException {
+    if (Thread.currentThread() == writer)
+      throw new IllegalStateException("writer cannot close itself");
     synchronized (this) {
       accepting = false;
       closed = true;

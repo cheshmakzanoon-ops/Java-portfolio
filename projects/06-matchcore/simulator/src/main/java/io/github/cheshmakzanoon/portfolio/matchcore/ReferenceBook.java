@@ -11,6 +11,7 @@ public final class ReferenceBook {
   private final Map<String, long[]> balances = new TreeMap<>();
   private final Set<String> identities = new HashSet<>();
   private final Map<String, Result> outcomes = new TreeMap<>();
+  private final Map<String, Command> originalCommands = new HashMap<>();
   private final List<Execution> executions = new ArrayList<>();
   private long sequence;
   private final int cap;
@@ -27,7 +28,7 @@ public final class ReferenceBook {
     c.validate();
     Result prior = outcomes.get(c.key());
     if (prior != null)
-      return prior.commandHash().equals(c.hash())
+      return originalCommands.get(c.key()).equals(c)
           ? prior
           : new Result(prior.sequence(), "CONFLICT", c.hash(), List.of());
     sequence++;
@@ -40,6 +41,7 @@ public final class ReferenceBook {
     }
     Result r = new Result(sequence, code, c.hash(), newTrades);
     outcomes.put(c.key(), r);
+    originalCommands.put(c.key(), c);
     return r;
   }
 

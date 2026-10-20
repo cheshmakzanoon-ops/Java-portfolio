@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "project": "matchcore",
+  "observedAtUtc": "2026-10-20T09:44:32.798234+00:00",
+  "sourceFingerprint": "385404601a15385beaf36830dd0ce4628038164f21ef6fdcfd5bcbb061ea13fb",
+  "rootPomSha256": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+  "sourceIdentityMethod": "scripts/source-fingerprint.py covers executable source, tests, project/shared POMs, wrapper and runtime scripts; documentation/evidence excluded.",
+  "command": "./mvnw -f projects/06-matchcore/pom.xml -Dmaven.repo.local=\"$PWD/.work/A06/m2\" -B -ntp -Pintegration,mutation verify",
+  "exitCode": 0,
+  "testReportGate": {
+    "counts": {
+      "tests": 45,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": [
+      {
+        "module": "matching-core",
+        "counts": {
+          "surefire": {
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "journal",
+        "counts": {
+          "surefire": {
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "gateway",
+        "counts": {
+          "surefire": {
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "simulator",
+        "counts": {
+          "surefire": {
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "benchmarks",
+        "counts": {
+          "surefire": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ],
+    "failures": []
+  },
+  "suites": [
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.SeededHistoryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/benchmarks/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.SeededHistoryTest.xml",
+      "sha256": "5fa31660434e5bdc2cf0f3c60a80ab7a6955951ed4e4d2088350d2c2537351a7"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.GatewayTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/gateway/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.GatewayTest.xml",
+      "sha256": "169c20443e8814e0403d710e31d6d1b2b906bf16ad58c46c01adeef8aea24304"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.HttpApiTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/gateway/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.HttpApiTest.xml",
+      "sha256": "d185098f780c2e0866f0408959519e004d0ded963cf295d0da136f95131e4303"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.JournalTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/journal/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.JournalTest.xml",
+      "sha256": "fc96b9a0df07e9797d57c6e17723b0f75901e38da73945bfc410eb43d7e3a92a"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpointTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.BookCheckpointTest.xml",
+      "sha256": "c596039333eabea2539b672f79201cc2cc9a3a0dd5d13c26cd1f1ea65f64abe9"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.BookTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.BookTest.xml",
+      "sha256": "2dedeae6c4d075c654eb53a3ef55d534776552a8c457c8cddcb9f1649f452277"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.InvariantsTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.InvariantsTest.xml",
+      "sha256": "5bffc060d1042cb8b6d3d608778ebe74cc23691284df618b492f0bf4d2adc3ce"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.CrashIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/simulator/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.CrashIT.xml",
+      "sha256": "8da6c0e5faa1f7a7151ad4994600160448876a34abfaf6416a45194b3ce680be"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.HttpDeadlineIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/simulator/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.HttpDeadlineIT.xml",
+      "sha256": "56cc5fc7f708d3ccfea77fc2b275194d43d2183343f896b5dc157e7b0661c726"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.AgreementPropertyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/simulator/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.AgreementPropertyTest.xml",
+      "sha256": "bda5bc569aa7ee77b74283550d59184c57ddb3e555fab9d9657dce719c5c3296"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.matchcore.AgreementTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/06-matchcore/simulator/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.matchcore.AgreementTest.xml",
+      "sha256": "045e3b168ce4624cabc6c9b84e766c4d5ccfa40ecccca188047c5de1402e30c6"
+    }
+  ],
+  "mutationReportGate": {
+    "modules": [
+      {
+        "module": "matching-core",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 259,
+          "SURVIVED": 24
+        },
+        "killedPercent": 91.51943462897526,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "journal",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 126,
+          "SURVIVED": 18,
+          "NO_COVERAGE": 6
+        },
+        "killedPercent": 84.0,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "gateway",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 73,
+          "SURVIVED": 5,
+          "NO_COVERAGE": 3
+        },
+        "killedPercent": 90.12345679012346,
+        "requiredKilledPercent": 70
+      }
+    ],
+    "outcomes": {
+      "KILLED": 458,
+      "SURVIVED": 47,
+      "NO_COVERAGE": 9
+    },
+    "failures": []
+  },
+  "mutationReportIdentities": [
+    {
+      "report": "projects/06-matchcore/matching-core/target/pit-reports/mutations.xml",
+      "sha256": "6106d5c1a3c649c0dab529ca1fff951ffbdf35697c95228223aefd43059629b5"
+    },
+    {
+      "report": "projects/06-matchcore/journal/target/pit-reports/mutations.xml",
+      "sha256": "5537a24cde26bf788abf8f7ef2bc747bc7b618015b2ede158600275e3a0e3ff6"
+    },
+    {
+      "report": "projects/06-matchcore/gateway/target/pit-reports/mutations.xml",
+      "sha256": "66e471a249c5d14d5197da7439b686df0afb37946f494e6d7fe83993027d67f5"
+    }
+  ],
+  "coverage": {
+    "matching-core": {
+      "BRANCH": {
+        "covered": 303,
+        "missed": 29
+      },
+      "LINE": {
+        "covered": 402,
+        "missed": 3
+      }
+    },
+    "journal": {
+      "BRANCH": {
+        "covered": 111,
+        "missed": 37
+      },
+      "LINE": {
+        "covered": 247,
+        "missed": 14
+      }
+    },
+    "gateway": {
+      "BRANCH": {
+        "covered": 149,
+        "missed": 53
+      },
+      "LINE": {
+        "covered": 296,
+        "missed": 68
+      }
+    },
+    "simulator": {
+      "BRANCH": {
+        "covered": 139,
+        "missed": 21
+      },
+      "LINE": {
+        "covered": 216,
+        "missed": 27
+      }
+    },
+    "benchmarks": {
+      "BRANCH": {
+        "covered": 44,
+        "missed": 144
+      },
+      "LINE": {
+        "covered": 79,
+        "missed": 375
+      }
+    }
+  },
+  "crashBoundaries": [
+    "BEFORE_APPEND",
+    "DURING_FRAME",
+    "BEFORE_FORCE",
+    "AFTER_FORCE",
+    "AFTER_APPLY"
+  ],
+  "independentOracle": {
+    "histories": 120,
+    "transitionsPerHistory": 350,
+    "additionalConservationTransitions": 12000
+  },
+  "rawLog": ".work/A06/deep-final-integration-mutation.log",
+  "rawLogSha256": "bfd30d0f8b5cd90a3a54b59ce62efc04c626d8fc85b274cba60bc0c4b7ba3ba8",
+  "limits": [
+    "Process crashes on retained local storage, not hardware power-loss or disk-loss recovery.",
+    "Checksums, prefix digests and semantic checkpoint validation are consistency checks, not authenticity against storage writers.",
+    "No new benchmark or performance study was run; reference-20261018 remains historical.",
+    "Shared Linux workspace; this receipt does not establish clean-checkout or production deployment evidence."
+  ]
+}

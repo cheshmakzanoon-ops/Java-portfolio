@@ -169,6 +169,14 @@ class HttpApiTest {
                   token(key, url, "matchcore", "alice", "matchcore:write", future),
                   null)
               .statusCode());
+      assertEquals(
+          403,
+          request(
+                  api.port(),
+                  "/book?unknown=1",
+                  token(key, url, "matchcore", "alice", "matchcore:write", future),
+                  null)
+              .statusCode());
       Command c = new Command("init", "alice", Type.INIT, null, null, 0, 0, null, false, 1000, 10);
       assertEquals(
           200, request(api.port(), "/commands", valid, json.writeValueAsString(c)).statusCode());
@@ -307,6 +315,14 @@ class HttpApiTest {
         assertTrue(response.body().contains("INVALID_REQUEST"));
       }
       assertEquals(0, gateway.view().sequence(), "invalid commands must not enter the journal");
+      assertEquals(400, trustedRequest(api.port(), "/commands?unknown=1", body).statusCode());
+      assertEquals(0, gateway.view().sequence(), "query validation must precede admission");
+      assertEquals(
+          "no-store",
+          trustedRequest(api.port(), "/account", null)
+              .headers()
+              .firstValue("Cache-Control")
+              .orElse(""));
       for (String path :
           List.of(
               "/book?depth=1&depth=2",
@@ -315,7 +331,9 @@ class HttpApiTest {
               "/book?unknown=1",
               "/executions?limit=1&limit=2",
               "/executions?offset=-1",
-              "/executions?depth=1"))
+              "/executions?depth=1",
+              "/account?unknown=1",
+              "/commands/new?unknown=1"))
         assertEquals(400, trustedRequest(api.port(), path, null).statusCode(), path);
       assertEquals(200, trustedRequest(api.port(), "/book?%64epth=%32", null).statusCode());
       assertEquals(

@@ -10,11 +10,11 @@ Use JDK 25, Bash, and the repository Maven wrapper. No Docker, database, or exte
 
 ```bash
 ./mvnw -f projects/06-matchcore/pom.xml -B -ntp verify
-./mvnw -f projects/06-matchcore/pom.xml -B -ntp -Pintegration verify
+./mvnw -f projects/06-matchcore/pom.xml -B -ntp -Pintegration,mutation verify
 ./scripts/portfolio.sh demo matchcore
 ```
 
-For a dedicated local dependency cache, add `-Dmaven.repo.local="$PWD/.work/A06/m2"`. Ordinary verification runs matching, reservation, reference-model, journal, gateway, and HTTP tests. The integration profile adds `CrashIT`, which SIGKILLs actual child JVMs before append, during a frame, after force, and after application.
+For a dedicated local dependency cache, add `-Dmaven.repo.local="$PWD/.work/A06/m2"`. Ordinary verification runs matching, reservation, reference-model, journal, gateway, and HTTP tests. The integration profile adds real child-JVM SIGKILL checks before append, during a frame, before force, after force and after application, plus four slow HTTP uploads that must release handler capacity. The mutation profile covers matching/model/checkpoint, journal and gateway code.
 
 The CLI demo asserts FIFO allocation, priority-preserving reduction, priority-losing increase, retry deduplication, and recovery after an unacknowledged cancellation. Final state must contain four executions, eight lots traded, Alice cash 19,200, inventory eight, no open orders, twelve command results, and the same reference/replay digest. The ordinary demo injects a storage fault; it does not claim to perform the separate process-kill test.
 
@@ -25,9 +25,11 @@ The CLI demo asserts FIFO allocation, priority-preserving reduction, priority-lo
 | Matching | Best price, then admission sequence; execution at the resting maker's price; GTC, IOC, FOK and post-only GTC |
 | Replacement | Reduction preserves priority; increased quantity or a new price loses priority; rejection leaves the existing order and holds unchanged |
 | Risk | Cash-only balances, no borrowing or short sales, checked reservations, explicit incoming self-trade prevention |
-| Admission | Bounded queue, stable account/command identity, identical-retry coalescing, conflicting-payload rejection |
+| Admission | Bounded queue, exact run admission count, stable account/command identity, retry coalescing with caller-owned futures, conflicting-payload rejection |
 | Durability | Force the complete command before apply, publish, or response; retained local storage must honor `FileChannel.force(true)` |
-| Recovery | Validate every complete journal record; truncate only an incomplete final frame; optional snapshots cannot bypass journal validation |
+| Recovery | Fail-stop journal after admitted I/O failure; validate complete records; truncate only an incomplete final frame; atomically validate optional checkpoints against state and prefix ledger |
+
+Retry decisions compare exact commands, including after restart; persisted v1 hash values remain compatibility metadata. Standalone `Book.restore(checkpoint)` restores state and fails closed on historical retry lookup; the overload accepting the ordered original prefix restores that authority. Gateway supplies it from retained journal records without rematching the prefix.
 
 Well-formed business rejections are durable sequenced results. Malformed input, unauthorized requests, and pre-admission overload do not allocate a sequence. A timeout has an unknown outcome: query or retry the same stable command ID rather than issuing a new identity.
 
@@ -39,7 +41,7 @@ projects/06-matchcore/scripts/serve.sh
 
 The default `trusted-local-demo` mode binds to `127.0.0.1:18600` and trusts `X-Demo-Account: alice`. This header is not authentication. Keep this mode local. Setting `MATCHCORE_ISSUER` selects protected mode with RS256/JWKS verification, issuer/audience/time validation, scopes, and subject/account ownership.
 
-Command enums must use their documented string values; scalar coercion, fractional integers, null primitives, duplicate JSON keys, and trailing input are rejected. Query names are URL-decoded before validation; duplicate or unknown parameters and negative sequence/pagination bounds return 400. HTTP REPLACE uses `newRemainingQtyLots` to avoid ambiguous total-versus-remaining quantity.
+Command enums must use their documented string values; scalar coercion, fractional integers, null primitives, duplicate JSON keys, and trailing input are rejected. Query names are URL-decoded before validation; duplicate or unknown parameters and negative sequence/pagination bounds return 400. HTTP REPLACE uses `newRemainingQtyLots` to avoid ambiguous total-versus-remaining quantity. Responses prevent caching. The standalone server defaults request/response time budgets to five seconds; explicit JVM settings override these global JDK defaults, and embedded hosts own that policy.
 
 ## Design and evidence
 

@@ -14,7 +14,9 @@ class CrashIT {
   @Test
   void sigkillEveryProcessBoundary() throws Exception {
     for (String boundary :
-        new String[] {"BEFORE_APPEND", "DURING_FRAME", "AFTER_FORCE", "AFTER_APPLY"}) {
+        new String[] {
+          "BEFORE_APPEND", "DURING_FRAME", "BEFORE_FORCE", "AFTER_FORCE", "AFTER_APPLY"
+        }) {
       Path journal = dir.resolve(boundary + ".log"), signal = dir.resolve(boundary + ".signal");
       Process process =
           new ProcessBuilder(
@@ -43,9 +45,19 @@ class CrashIT {
         process.destroyForcibly();
         assertTrue(process.waitFor(5, TimeUnit.SECONDS));
       } finally {
-        if (process.isAlive()) process.destroyForcibly();
+        if (process.isAlive()) {
+          process.destroyForcibly();
+          process.waitFor(5, TimeUnit.SECONDS);
+        }
       }
       int durable = boundary.equals("AFTER_FORCE") || boundary.equals("AFTER_APPLY") ? 12 : 11;
+      if (boundary.equals("BEFORE_FORCE")) {
+        try (Journal recovered = new Journal(journal, "demo")) {
+          durable = recovered.entries().size();
+          assertTrue(
+              durable == 11 || durable == 12, "an unforced complete frame has an unknown outcome");
+        }
+      }
       ReferenceBook reference = new ReferenceBook();
       for (var c : Demo.fixture().subList(0, durable)) reference.apply(c);
       try (Gateway recovered = new Gateway(journal, "demo", 64, 1000)) {
