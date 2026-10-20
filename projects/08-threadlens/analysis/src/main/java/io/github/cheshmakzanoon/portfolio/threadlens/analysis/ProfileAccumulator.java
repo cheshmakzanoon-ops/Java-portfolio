@@ -47,11 +47,15 @@ public final class ProfileAccumulator {
 
   public Profile snapshot() {
     if (stacks.overflow() > 0
+        || stacks.missingStacks() > 0
         || windows.overflow() > 0
         || allocations.overflow() > 0
         || monitors.overflow() > 0
         || parks.overflow() > 0
-        || timings.overflow() > 0) windows.markIncomplete();
+        || timings.overflow() > 0
+        || monitors.clipped() > 0
+        || parks.clipped() > 0
+        || timings.clipped() > 0) windows.markIncomplete();
     Map<String, Long> counters = new TreeMap<>();
     counters.put("jfrDataLossBytes", loss);
     counters.put("stackOverflow", stacks.overflow());

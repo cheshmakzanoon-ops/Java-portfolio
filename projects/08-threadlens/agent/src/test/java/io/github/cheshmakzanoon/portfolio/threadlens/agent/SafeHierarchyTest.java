@@ -8,6 +8,49 @@ import org.junit.jupiter.api.Test;
 import org.objectweb.asm.*;
 
 class SafeHierarchyTest {
+  @Test
+  void metadataIdentityAndByteBudgetsPreventUnsafeFrameResolution() {
+    byte[] wrong = bytes("sample/Wrong", "java/lang/Object", new String[0], 0);
+    ClassLoader wrongIdentity =
+        new ClassLoader() {
+          public InputStream getResourceAsStream(String name) {
+            return new ByteArrayInputStream(wrong);
+          }
+        };
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new SafeHierarchy(wrongIdentity, target()).common("sample/Expected", "sample/Other"));
+    java.util.concurrent.atomic.AtomicInteger read =
+        new java.util.concurrent.atomic.AtomicInteger();
+    ClassLoader oversized =
+        new ClassLoader() {
+          public InputStream getResourceAsStream(String name) {
+            return new InputStream() {
+              public int read() {
+                read.incrementAndGet();
+                return 0;
+              }
+            };
+          }
+        };
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new SafeHierarchy(oversized, target()).common("sample/A", "sample/B"));
+    assertEquals(2 * 1024 * 1024 + 1, read.get());
+    var policy = new InstrumentationPolicy(List.of("sample.application"));
+    assertNull(
+        new TimingTransformer(
+                policy, new io.github.cheshmakzanoon.portfolio.threadlens.probe.MethodRegistry(1))
+            .transform(
+                null,
+                ClassLoader.getSystemClassLoader(),
+                "sample/application/Large",
+                null,
+                null,
+                new byte[4 * 1024 * 1024 + 1]));
+    assertEquals(1, policy.reasons().get("oversizedClass"));
+  }
+
   private static ClassReader target() {
     return new ClassReader(bytes("sample/Target", "java/lang/Object", new String[0], 0));
   }

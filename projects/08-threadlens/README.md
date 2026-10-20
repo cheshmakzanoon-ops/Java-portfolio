@@ -16,6 +16,8 @@ source scripts/cloud-env.sh
 
 The integration profile runs independent JVMs with the packaged instrumentation JAR and bytecode verification enabled. Selected algorithm mutation testing uses `-Pmutation`; the full overhead and 20-minute stress studies run separately from the development test suite.
 
+The current source passed 157 ordinary test methods and seven packaged-JVM integration methods. Strict mutation checks cover 19 critical production files across six modules. Standard and differential reports were exercised in Chromium at desktop and mobile sizes, including keyboard navigation and escaped hostile content. [Verification status](docs/STATUS.md) records exact outcomes, source identities and remaining limits.
+
 ## Run the demonstration
 
 ```bash
@@ -48,7 +50,7 @@ queueCapacity: 65536
 outputDirectory: target/observer-run-unique
 ```
 
-Use a dedicated empty output directory for each run. Existing artifacts and symbolic-link output directories disable collection before transformation begins; application startup continues with one bounded diagnostic. Configuration accepts a strict, small YAML subset. See [operations](docs/OPERATIONS.md) for bounds and output semantics.
+Use a dedicated empty output directory for each run. Existing artifacts and symbolic-link output ancestry disable collection before transformation begins; application startup continues with one bounded diagnostic. One startup attempt owns the process-wide probe: repeated agent declarations are ignored, and correcting a failed configuration requires a JVM restart. Configuration accepts a strict, small YAML subset. See [operations](docs/OPERATIONS.md) for bounds and output semantics.
 
 Constructors, initializers, JDK/tool classes, native/abstract methods, named modules and non-system loaders are skipped. Frame resolution reads class resources without initializing target classes. Unsupported array merges or unresolved metadata skip the affected class. Selected method timings exclude implicit synchronized-method lock acquisition before bytecode execution.
 

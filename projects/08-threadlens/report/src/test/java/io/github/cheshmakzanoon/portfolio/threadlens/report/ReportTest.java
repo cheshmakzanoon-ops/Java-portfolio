@@ -12,6 +12,57 @@ class ReportTest {
   @TempDir Path directory;
 
   @Test
+  void representativeOfflineReportsExposeEveryNavigationTargetAndSafeText() throws Exception {
+    ProfileAccumulator accumulator = new ProfileAccumulator(100, 1_000_000_000L, 20);
+    for (int i = 0; i < 30; i++)
+      accumulator.accept(
+          new NormalizedEvent(
+              NormalizedEvent.Kind.SAMPLE,
+              i * 100_000_000L,
+              1,
+              "sample",
+              List.of(
+                  "safe.application.Root.run()V",
+                  "safe.application." + "LongMethod".repeat(20) + "()V",
+                  "<img src=x onerror=alert('unsafe')>")));
+    for (var kind :
+        List.of(
+            NormalizedEvent.Kind.ALLOCATION,
+            NormalizedEvent.Kind.MONITOR,
+            NormalizedEvent.Kind.PARK,
+            NormalizedEvent.Kind.TIMING))
+      accumulator.accept(
+          new NormalizedEvent(
+              kind, 100_000_000, 123456789, "safe.application.Work.handle()V", List.of()));
+    ReportDocument document =
+        ReportDocument.create(
+            "offline-browser-fixture",
+            accumulator.snapshot(),
+            Map.of("jdk.ExecutionSample#period", "20 ms"),
+            Map.of(),
+            Map.of("queueDrops", 0L));
+    Path output = Path.of("target", "ui-fixture");
+    Files.createDirectories(output);
+    ReportWriter.json(output.resolve("report.json"), document);
+    ReportWriter.html(output.resolve("report.html"), document);
+    ReportWriter.comparison(output.resolve("comparison.html"), document, document);
+    for (String file : List.of("report.html", "comparison.html")) {
+      String html = Files.readString(output.resolve(file));
+      assertFalse(html.contains("<img"));
+      assertFalse(html.contains("<script"));
+      assertTrue(html.contains("&lt;img"));
+      assertTrue(html.contains("class=\"table-scroll\""));
+      var links = java.util.regex.Pattern.compile("href=\"#([^\"]+)\"").matcher(html);
+      int count = 0;
+      while (links.find()) {
+        assertTrue(html.contains("id=\"" + links.group(1) + "\""));
+        count++;
+      }
+      assertTrue(count >= 5);
+    }
+  }
+
+  @Test
   void hostileIdentifiersAreEscapedAndJsonRoundTripsDeterministically() throws Exception {
     var a = new ProfileAccumulator(20, 1_000_000_000, 20);
     a.accept(

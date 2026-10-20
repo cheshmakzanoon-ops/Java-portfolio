@@ -7,7 +7,6 @@ import io.github.cheshmakzanoon.portfolio.threadlens.jfr.EventCapabilities;
 import java.nio.file.*;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Full protocol is 84 fresh JVMs × (30 s warmup + 60 s measurement), randomized within paired
@@ -134,14 +133,14 @@ public final class BenchmarkRunner {
                   .redirectErrorStream(true)
                   .redirectOutput(run.resolve("process.log").toFile())
                   .start();
-          if (!process.waitFor(warmup + seconds + 60L, TimeUnit.SECONDS)) {
-            process.destroyForcibly();
-            throw new IllegalStateException("workload timed out: " + id);
+          try {
+            ChildJvm.await(process, warmup + seconds + 60L, "workload " + id);
+          } finally {
+            item.put("exitCode", process.isAlive() ? null : process.exitValue());
+            item.put("ended", Instant.now().toString());
+            JSON.writerWithDefaultPrettyPrinter()
+                .writeValue(directory.resolve("run-order.json").toFile(), order);
           }
-          item.put("exitCode", process.exitValue());
-          item.put("ended", Instant.now().toString());
-          if (process.exitValue() != 0)
-            throw new IllegalStateException("workload failed: " + id + "; inspect process.log");
           JsonNode observation = JSON.readTree(output.toFile());
           if (observation.path("warmupSeconds").asInt() != warmup
               || observation.path("actualMeasurementSeconds").asDouble() < seconds)

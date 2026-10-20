@@ -1,15 +1,91 @@
-# Operations
+# Operations and recovery
 
-`up` builds and checks capabilities. This CLI project has no listener, database or daemon. `demo` runs foreground child JVMs under 30-second per-process timeouts; `down` preserves reports and stops no unrelated process. `reset-demo` removes only this project's `target/demo` generated fixtures. Launcher caches hash sources, POMs, scripts, wrapper and shared build inputs.
+ThreadLens is a local CLI and optional startup agent. It has no service listener, credentials, database or Docker dependency. The verified platform is Java 25 HotSpot on Linux x86-64. Bash launchers use the repository wrapper and pinned JDK; other operating systems remain unverified.
 
-The agent accepts `config=path`. Configuration is at most 16 KiB, with unique keys: `allowPackages` (required inline list of explicit dotted packages), `methodNames` (optional exact method-name inline list; empty means all supported methods), `maxMethods` (1..10,000), `queueCapacity` (2..65,536), `outputDirectory`. It accepts no arbitrary YAML features, interpolation or secrets. Each run requires a dedicated empty output directory. Startup rejects an existing artifact or a symbolic-link directory before installing transformations; individual files also use CREATE_NEW. This prevents a partial previous run from supplying a stale registry, summary or healthy status to new observations.
+## Build and preserve evidence
 
-The agent writes canonical `timing-summary.tsv` and compressed HDR `timing-histograms.hlog` for at most 128 method subjects, plus `methods.tsv` and `observer-status.txt`. `timings.tsv` contains only the first 10,000 accepted exits as a labelled raw prefix; later accepted exits still enter the full histogram. `rawTimingRowsOmitted` counts omitted raw-prefix rows, not lost histogram observations. The importer prefers the complete summary and retains true queue/shutdown/unknown-status loss separately. Monotonic start times are process-local and must not be compared as absolute event time across JVMs. Method timings remain separate from JFR sample proportions. Implicit synchronized-method acquisition occurs before injected bytecode and is excluded; waiting at an explicit synchronized block inside the method is inside its timing boundary. Check `queueDrops`, `probeFailures`, `methodOverflow` and skip reasons before interpreting timings. Agent output and histogram cardinality are bounded; disk failures disable collection. Shutdown drains accepted events within 2 seconds or exports shutdownDiscarded/incomplete. Missing observer status is unknown/incomplete, never zero loss.
+From the repository root:
 
-Live JFR retention is 15 minutes / 256 MiB. JFR applies retention at chunk granularity, so the size is not an exact per-byte maximum and the oldest retained chunk may straddle the age boundary. A 512-MiB observer directory budget reserves 256 MiB for a final recording and shuts collection down when the reserve becomes unavailable. Directory walks are depth/entry bounded and ignore symlink target sizes. External writers can race any periodic directory check; use a dedicated directory and OS disk quota for a hard shared-filesystem limit.
+~~~bash
+source scripts/cloud-env.sh
+export PORTFOLIO_TEST_RUN_STARTED=$(date +%s)
+./mvnw -f projects/08-threadlens/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/A08/m2" -B -ntp -Pintegration,mutation verify
+python3 projects/08-threadlens/scripts/evidence.py --integration --mutation \
+  --output .work/A08/certificate-new.json
+~~~
 
-Offline importer verifies JFR parseability, never deserializes Java objects, never attaches to a process, and reads only the explicitly chosen recording. Producer settings cannot be reconstructed reliably from event schema: supply a sibling `recording.jfr.settings.json` manifest, otherwise reports declare them unknown. Comparison rejects differing manifests. Analyzer runtime metadata is labelled separately from unverified producer identity.
+Choose a new certificate filename. The collector refuses replacement, requires the run-start environment variable and delegates to the repository gates that reject stale, absent, failed or skipped reports. Historical certificates remain source-specific.
 
-All output is local. Recordings may contain private data collected by other tools even when ThreadLens's own minimal configuration avoids it. Keep raw recordings in ignored target directories or restricted artifacts. There is no remote backup feature; copy approved normalized reports according to local retention policy.
+The integration profile starts independent JVMs with the packaged agent and bytecode verification. The mutation profile checks critical probe, aggregation, event lifecycle, transformation, report-validation and child-process logic at unchanged 70% strict module thresholds. Timeouts and uncovered/surviving mutants remain in the denominator.
 
-Timing import rejects duplicate numeric IDs and duplicate/empty method identities. TSV row limits are enforced during reading, before an unterminated row can allocate a large string. Summary rows are limited to 256 characters, raw rows to 128, and registry rows to 272; file-size and subject-count limits remain separate.
+~~~bash
+./scripts/portfolio.sh up threadlens
+./scripts/portfolio.sh demo threadlens
+./scripts/portfolio.sh down threadlens
+~~~
+
+Up prepares the CLI and verifies capabilities; there is no background server. The demo uses a fresh generated directory and foreground child JVMs. Down preserves observations and does not terminate unrelated processes. Reset-demo removes only this project's generated target/demo fixtures. Source/cache fingerprints exclude generated bytecode and include build inputs.
+
+## Startup instrumentation
+
+Pass one agent declaration per JVM: -javaagent:threadlens-agent-1.0.0-SNAPSHOT.jar=config=threadlens.yaml.
+
+~~~yaml
+allowPackages: [sample.application]
+methodNames: [handleRequest, calculate]
+maxMethods: 100
+queueCapacity: 65536
+outputDirectory: target/observer-run-unique
+~~~
+
+Configuration is strict UTF-8 and at most 16 KiB while reading. Its five keys are unique; unknown keys, arbitrary YAML features and interpolation reject. Package lists require explicit dotted application packages. Exact method selection is optional; an empty method list selects all supported methods. Method IDs are limited to 1–10,000 and queue capacity to 2–65,536.
+
+Use a dedicated empty output directory. Existing artifacts or a symbolic-link directory disable startup collection before transformation; created artifacts use CREATE_NEW. Only the first premain attempt owns this JVM. A repeated declaration is ignored and cannot replace or disable that owner. Restart the application to apply a corrected/different configuration after a failed first attempt.
+
+The timing consumer writes:
+
+| Artifact | Interpretation |
+| --- | --- |
+| methods.tsv | At most 10,000 unique stable method IDs/signatures |
+| timing-summary.tsv | Canonical count/total/quantile summaries for up to 128 retained subjects |
+| timing-histograms.hlog | Corresponding two-significant-digit HDR distributions |
+| timings.tsv | First 10,000 accepted exits only; a diagnostic prefix |
+| observer-status.txt | Completion, active limits, selection skips, loss and shutdown accounting |
+
+Raw rows omitted after the prefix still enter retained histograms. Histogram-subject overflow, queue loss, probe failures, shutdown discards and unknown producer totals are distinct. Import prefers the canonical summary and reconciles accepted reservations, observed exits, overflow and discarded work. Missing, incomplete or inconsistent status never establishes zero loss.
+
+Shutdown disables new exits, waits at most two seconds for admitted probe exits, seals reservations and gives the consumer a two-second drain budget plus a bounded join. Unfinished exits remain explicit. If a consumer fails to terminate, its mutable statistics are unavailable rather than read concurrently; the status is incomplete. Disk/consumer failures disable collection and produce a bounded diagnostic.
+
+Selected timings use process-local monotonic clocks. Their collection interval is separate from an imported JFR recording; do not calculate invocation rates using that recording's duration. Implicit synchronized-method monitor acquisition precedes injected bytecode and is excluded. An explicit synchronized block inside the method is included.
+
+## Live JFR and offline reports
+
+RecordingController owns a live stream and single analysis consumer. Retention is 15 minutes / 256 MiB; JFR applies it at chunk boundaries. A 512-MiB directory budget reserves 256 MiB for a final dump. Scans reject excessive entries or unvisited depth-eight subtrees. The root must resolve without symbolic-link ancestry, and dumps accept a direct child only. An existing destination remains unchanged.
+
+Close seals ingress, drains accepted events and exposes incomplete/discarded tails. A stalled observer causes a termination failure; release/correct it and retry close before requesting a profile. A callback may initiate close itself; a subsequent external close joins the consumer. Profile snapshots require that consumer to have terminated. Stop-and-dump attempts cleanup even if the destination is invalid or the write fails.
+
+| Failure | Response |
+| --- | --- |
+| Malformed configuration, unavailable output or installation failure | Host startup continues; collector remains disabled, owned resources are rolled back and one diagnostic identifies the failure |
+| Duplicate agent declaration | First startup owner remains authoritative; restart to change configuration |
+| Full queue, method/trie/histogram/window limit or missing stack | Counters expose the affected bound; retained coverage is incomplete |
+| Callback/consumer failure or failed shutdown deadline | Collection stops or close fails explicitly; no mutable-state snapshot is published |
+| Failed dump or full/unavailable directory | Preserve existing evidence; close/drain still runs; diagnose the original and suppressed cleanup failures |
+| Interrupted experiment | Owned child JVMs and workload threads are stopped; interrupt status and primary failure remain visible |
+| Invalid report JSON or mismatched settings | Validation/comparison fails before presenting measurements |
+
+Analyze a stopped, immutable recording into a selected output directory. A sibling recording.jfr.settings.json file contains declared producer settings; absent settings remain unknown, and comparison rejects unknown/different declarations. Manifests are not authenticated attestations. JDK/OS fields describe the analyzer, not the original producer.
+
+JSON input has a 32-MiB envelope and structural/numeric checks. Offline HTML has no JavaScript or external resources. It supports keyboard skip links, fragment navigation, native expandable stacks and locally scrollable wide tables. Optional browser validation requires Python Playwright and system Chromium:
+
+~~~bash
+python3 projects/08-threadlens/scripts/check-report-ui.py \
+  --output .work/A08/browser-check-new
+~~~
+
+Run the report tests first to generate target/ui-fixture. The checker serves only that fixture directory on an ephemeral loopback port, validates desktop/mobile navigation and rendering, and removes its server/browser on exit.
+
+Use a dedicated directory and an OS disk quota for a hard shared-filesystem limit; external writers can race periodic checks. Raw recordings may include private data requested by other JVM tooling. Keep them in ignored/restricted storage and share only reviewed normalized exports.
+
+The full overhead and 20-minute stress protocols remain separate from development checks. Workload/stress durations reject invalid bounds, experiment outputs preserve earlier trials, and parent interruption cleans owned processes. Historical study outcomes and current limitations are in [STATUS](STATUS.md) and [performance methodology](PERFORMANCE.md).

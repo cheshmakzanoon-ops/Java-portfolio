@@ -38,12 +38,21 @@ public record AgentConfig(
     if (argument == null || !argument.startsWith("config=") || argument.length() > 4096)
       throw new IllegalArgumentException("use config=path");
     Path path = Path.of(argument.substring(7));
-    if (Files.size(path) > 16_384) throw new IOException("configuration exceeds 16 KiB");
+    byte[] bytes;
+    try (var input = Files.newInputStream(path)) {
+      bytes = input.readNBytes(16_385);
+    }
+    if (bytes.length > 16_384) throw new IOException("configuration exceeds 16 KiB");
+    String contents =
+        java.nio.charset.StandardCharsets.UTF_8
+            .newDecoder()
+            .decode(java.nio.ByteBuffer.wrap(bytes))
+            .toString();
     List<String> packages = new ArrayList<>(), methods = new ArrayList<>();
     int limit = 100, capacity = 65_536;
     Path output = Path.of("threadlens-output");
     Set<String> seen = new java.util.HashSet<>();
-    for (String line : Files.readAllLines(path)) {
+    for (String line : contents.lines().toList()) {
       line = line.strip();
       if (line.isEmpty() || line.startsWith("#")) continue;
       String[] pair = line.split(":", 2);

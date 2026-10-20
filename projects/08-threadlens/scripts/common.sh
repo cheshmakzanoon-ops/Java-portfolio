@@ -9,7 +9,7 @@ threadlens_fingerprint() {
 import hashlib,sys
 from pathlib import Path
 project,root=map(Path,sys.argv[1:]); files=[root/'pom.xml',root/'mvnw',*sorted((root/'.mvn').rglob('*'))]
-files += [p for p in project.rglob('*') if p.is_file() and ('src' in p.parts or p.name=='pom.xml' or 'scripts' in p.parts)]
+files += [p for p in project.rglob('*') if p.is_file() and 'target' not in p.parts and '__pycache__' not in p.parts and ('src' in p.parts or p.name=='pom.xml' or 'scripts' in p.parts)]
 h=hashlib.sha256()
 for p in sorted(set(files)):
  if p.is_file(): h.update(str(p.relative_to(root)).encode());h.update(p.read_bytes())

@@ -14,9 +14,19 @@ public final class SettingsManifest {
   private SettingsManifest() {}
 
   public static Map<String, String> read(Path path) throws IOException {
-    if (Files.size(path) > 65536) throw new IOException("settings manifest exceeds64KiB");
+    byte[] bytes;
+    try (var input = Files.newInputStream(path)) {
+      bytes = input.readNBytes(65537);
+    }
+    if (bytes.length > 65536) throw new IOException("settings manifest exceeds 64 KiB");
+    var factory =
+        com.fasterxml.jackson.core.JsonFactory.builder()
+            .enable(com.fasterxml.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            .build();
     Map<String, String> settings =
-        new ObjectMapper().readValue(path.toFile(), new TypeReference<Map<String, String>>() {});
+        new ObjectMapper(factory).readValue(bytes, new TypeReference<Map<String, String>>() {});
+    if (settings == null || settings.isEmpty())
+      throw new IOException("settings manifest must declare producer settings");
     for (var entry : settings.entrySet()) {
       String[] key = entry.getKey().split("#", -1);
       String value = entry.getValue();
@@ -34,6 +44,6 @@ public final class SettingsManifest {
           };
       if (!valid) throw new IOException("invalid declared JFR setting");
     }
-    return settings;
+    return Map.copyOf(settings);
   }
 }

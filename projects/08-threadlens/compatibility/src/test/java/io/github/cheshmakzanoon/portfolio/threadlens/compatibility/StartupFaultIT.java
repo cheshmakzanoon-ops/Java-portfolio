@@ -14,6 +14,38 @@ class StartupFaultIT {
   @TempDir Path directory;
 
   @Test
+  void duplicateAgentStartupCannotDisableOrReplaceTheFirstObserversSink() throws Exception {
+    Path classes = compileHost();
+    for (boolean same : new boolean[] {true, false}) {
+      Path firstOutput = directory.resolve("first-" + same),
+          secondOutput = directory.resolve("second-" + same);
+      Path first = directory.resolve("first-" + same + ".yaml"),
+          second = directory.resolve("second-" + same + ".yaml");
+      Files.writeString(
+          first,
+          "allowPackages: [sample.application]\nmethodNames: [unit]\nqueueCapacity: 65536\noutputDirectory: "
+              + firstOutput
+              + "\n");
+      Files.writeString(
+          second,
+          "allowPackages: [sample.application]\nmethodNames: [unit]\noutputDirectory: "
+              + (same ? firstOutput : secondOutput)
+              + "\n");
+      String stdout = runHost(classes, List.of(first, second));
+      assertTrue(stdout.contains("host-result=50005000"), stdout);
+      assertTrue(stdout.contains("duplicate startup ignored"), stdout);
+      var timing =
+          new io.github.cheshmakzanoon.portfolio.threadlens.report.TimingImporter()
+              .read(firstOutput);
+      assertEquals(10000, timing.exits());
+      assertEquals(0, timing.queueDrops());
+      assertTrue(timing.collectionHealthy());
+      assertTrue(timing.statusComplete());
+      assertFalse(Files.exists(secondOutput));
+    }
+  }
+
+  @Test
   void priorObserverArtifactsDisableCollectionWithoutMixingRunsOrPreventingHostStartup()
       throws Exception {
     Path classes = compileHost();
@@ -252,24 +284,33 @@ class StartupFaultIT {
   }
 
   private String runHost(Path classes, Path config) throws Exception {
+    return runHost(classes, List.of(config));
+  }
+
+  private String runHost(Path classes, List<Path> configs) throws Exception {
     Path agent =
         Path.of("..", "agent", "target", "threadlens-agent-1.0.0-SNAPSHOT.jar").toAbsolutePath();
     assertTrue(Files.isRegularFile(agent), agent.toString());
-    var process =
-        new ProcessBuilder(
+    List<String> command =
+        new ArrayList<>(
+            List.of(
                 Path.of(System.getProperty("java.home"), "bin", "java").toString(),
-                "-Xverify:all",
-                "-javaagent:" + agent + "=config=" + config,
-                "-cp",
-                classes.toString(),
-                "sample.application.Host")
-            .redirectErrorStream(true)
-            .start();
-    assertTrue(process.waitFor(30, TimeUnit.SECONDS));
-    String text =
-        new String(
-            process.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
-    assertEquals(0, process.exitValue(), text);
-    return text;
+                "-Xverify:all"));
+    configs.forEach(config -> command.add("-javaagent:" + agent + "=config=" + config));
+    command.addAll(List.of("-cp", classes.toString(), "sample.application.Host"));
+    var process = new ProcessBuilder(command).redirectErrorStream(true).start();
+    try {
+      assertTrue(process.waitFor(30, TimeUnit.SECONDS));
+      String text =
+          new String(
+              process.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+      assertEquals(0, process.exitValue(), text);
+      return text;
+    } finally {
+      if (process.isAlive()) {
+        process.destroyForcibly();
+        process.waitFor(5, TimeUnit.SECONDS);
+      }
+    }
   }
 }

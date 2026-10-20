@@ -18,7 +18,7 @@ public final class EventQueue {
   private final AtomicReferenceArray<NormalizedEvent> values;
   private final AtomicLong tail = new AtomicLong();
   private final LongAdder drops = new LongAdder();
-  private long head;
+  private volatile long head;
 
   public EventQueue(int capacity) {
     this(capacity, DEFAULT_BYTES);
@@ -41,6 +41,7 @@ public final class EventQueue {
   }
 
   public boolean offer(NormalizedEvent event) {
+    if (tail.get() < 0) return false;
     long weight = weight(event);
     boolean reserved = false;
     for (int i = 0; i < 3; i++) {
@@ -58,6 +59,10 @@ public final class EventQueue {
     }
     for (int i = 0; i < 3; i++) {
       long position = tail.get();
+      if (position < 0) {
+        retainedBytes.addAndGet(-weight);
+        return false;
+      }
       int slot = (int) (position % capacity);
       if (sequence.get(slot) != position) break;
       if (!tail.compareAndSet(position, position + 1)) continue;
@@ -90,5 +95,15 @@ public final class EventQueue {
 
   public long peakBytes() {
     return peakBytes.get();
+  }
+
+  /** Stop new reservations; a producer already holding a slot may still publish it. */
+  public long seal() {
+    return tail.getAndUpdate(position -> position | Long.MIN_VALUE) & Long.MAX_VALUE;
+  }
+
+  /** Exact after producers and the single consumer have stopped. */
+  public long pending() {
+    return (tail.get() & Long.MAX_VALUE) - head;
   }
 }

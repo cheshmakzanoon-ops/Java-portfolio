@@ -18,9 +18,10 @@ public final class BoundedStress {
   private BoundedStress() {}
 
   public static void main(String[] args) throws Exception {
+    if (args.length != 2) throw new IllegalArgumentException("seconds output-json");
     int seconds = Integer.parseInt(args[0]);
     Path output = Path.of(args[1]);
-    if (seconds < 1) throw new IllegalArgumentException("positive seconds");
+    if (seconds < 1 || seconds > 3600) throw new IllegalArgumentException("seconds 1..3600");
     EventQueue queue = new EventQueue(65_536);
     ProfileAccumulator accumulator = new ProfileAccumulator(10_000, 1_000_000_000L, 900);
     long started = System.nanoTime(),
@@ -30,6 +31,8 @@ public final class BoundedStress {
         peakHeap = 0;
     String wallStart = Instant.now().toString();
     while (System.nanoTime() < deadline) {
+      if (Thread.currentThread().isInterrupted())
+        throw new InterruptedException("bounded stress interrupted");
       for (int n = 0; n < 1000; n++) {
         long id = produced++;
         queue.offer(

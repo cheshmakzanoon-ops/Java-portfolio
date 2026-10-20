@@ -7,6 +7,62 @@ import org.junit.jupiter.api.Test;
 
 class LimitsTest {
   @Test
+  void profileSnapshotsPreserveSortedWindowsAndCannotBeMutatedByCallers() {
+    ProfileAccumulator accumulator = new ProfileAccumulator(4, 10, 4);
+    accumulator.accept(
+        new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 21, 1, "sample", List.of("b")));
+    accumulator.accept(
+        new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 1, 1, "sample", List.of("a")));
+    Profile snapshot = accumulator.snapshot();
+    assertEquals(List.of(0L, 20L), new ArrayList<>(snapshot.windows().keySet()));
+    assertThrows(UnsupportedOperationException.class, () -> snapshot.methods().clear());
+    assertThrows(UnsupportedOperationException.class, () -> snapshot.windows().clear());
+    assertThrows(UnsupportedOperationException.class, () -> snapshot.flame().children().clear());
+    accumulator.accept(
+        new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 31, 1, "sample", List.of("c")));
+    assertEquals(2, snapshot.sampleCount());
+    assertEquals(2, snapshot.methods().size());
+  }
+
+  @org.junit.jupiter.api.Test
+  void trieSaturationCannotHideAKnownLeafsMethodSamples() {
+    StackAggregator aggregate = new StackAggregator(3);
+    aggregate.accept(java.util.List.of("root", "hotspot"));
+    aggregate.accept(java.util.List.of("new-root", "unretained", "hotspot"));
+    assertEquals(new StackAggregator.MethodSamples(2, 2), aggregate.methods().get("hotspot"));
+    assertEquals(2, aggregate.snapshot().inclusive());
+    assertEquals(3, aggregate.nodes());
+    assertTrue(aggregate.overflow() > 0);
+  }
+
+  @org.junit.jupiter.api.Test
+  void missingSampleStacksAndClippedDurationsMarkCoverageIncomplete() {
+    for (NormalizedEvent event :
+        java.util.List.of(
+            new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 1, 1, "sample", java.util.List.of()),
+            new NormalizedEvent(
+                NormalizedEvent.Kind.MONITOR,
+                1,
+                3_600_000_000_001L,
+                "monitor",
+                java.util.List.of()),
+            new NormalizedEvent(
+                NormalizedEvent.Kind.PARK, 1, 3_600_000_000_001L, "park", java.util.List.of()),
+            new NormalizedEvent(
+                NormalizedEvent.Kind.TIMING,
+                1,
+                3_600_000_000_001L,
+                "timing",
+                java.util.List.of()))) {
+      ProfileAccumulator accumulator = new ProfileAccumulator(4, 10, 2);
+      accumulator.accept(event);
+      assertTrue(
+          accumulator.snapshot().windows().values().stream()
+              .allMatch(WindowAccumulator.Window::incomplete));
+    }
+  }
+
+  @Test
   void boundedWindowOverflowAndExactBoundary() {
     var windows = new WindowAccumulator(10, 2);
     windows.accept(new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 0, 1, "a", List.of()));

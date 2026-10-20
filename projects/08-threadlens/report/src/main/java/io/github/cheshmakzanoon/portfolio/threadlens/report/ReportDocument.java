@@ -79,7 +79,7 @@ public record ReportDocument(
                     ? "; parked class attribution only, producer park stacks disabled"
                     : ""),
             "timing",
-            "selected observed invocations, wall nanoseconds inside injected bytecode; implicit synchronized-method monitor acquisition before bytecode excluded",
+            "selected observed invocations, wall nanoseconds inside injected bytecode; implicit synchronized-method monitor acquisition before bytecode excluded; collection interval is separate from the imported recording",
             "timeline",
             "fixed one-second event-start-time buckets; duration assigned to start bucket"),
         profile.counters().getOrDefault("timingIncomplete", 0L) > 0

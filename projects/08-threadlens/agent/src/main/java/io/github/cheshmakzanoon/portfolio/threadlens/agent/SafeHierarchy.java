@@ -11,6 +11,8 @@ import org.objectweb.asm.Opcodes;
 
 /** Reads class bytes only. Never Class.forName, reflective loading, or target initialization. */
 final class SafeHierarchy {
+  private static final int MAX_RESOURCE_BYTES = 2 * 1024 * 1024;
+
   record Type(String name, String parent, String[] interfaces, boolean isInterface) {}
 
   private final ClassLoader loader;
@@ -37,7 +39,12 @@ final class SafeHierarchy {
     if (cache.size() >= 256) throw new IllegalArgumentException("hierarchy metadata budget");
     try (InputStream stream = loader.getResourceAsStream(name + ".class")) {
       if (stream == null) throw new IllegalArgumentException("missing safe hierarchy resource");
-      Type type = parse(new ClassReader(stream));
+      byte[] bytes = stream.readNBytes(MAX_RESOURCE_BYTES + 1);
+      if (bytes.length > MAX_RESOURCE_BYTES)
+        throw new IllegalArgumentException("hierarchy resource byte budget");
+      Type type = parse(new ClassReader(bytes));
+      if (!type.name().equals(name))
+        throw new IllegalArgumentException("hierarchy resource identity mismatch");
       cache.put(name, type);
       return type;
     } catch (IOException e) {

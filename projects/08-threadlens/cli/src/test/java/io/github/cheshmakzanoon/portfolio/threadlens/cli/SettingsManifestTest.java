@@ -7,6 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class SettingsManifestTest {
+  @Test
+  void duplicateAndEmptySettingsCannotMasqueradeAsAProducerDeclaration() throws Exception {
+    Path path = directory.resolve("ambiguous.json");
+    for (String json :
+        java.util.List.of(
+            "{}",
+            "null",
+            "{\"jdk.ExecutionSample#enabled\":\"true\",\"jdk.ExecutionSample#enabled\":\"false\"}")) {
+      Files.writeString(path, json);
+      assertThrows(java.io.IOException.class, () -> SettingsManifest.read(path));
+    }
+  }
+
   @TempDir Path directory;
 
   @Test

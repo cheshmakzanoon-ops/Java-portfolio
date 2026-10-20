@@ -74,10 +74,30 @@ class StatisticalOracleTest {
     assertEquals(3_600_000_000_000L, healthy.monitors().get("lock").totalNanos());
     assertEquals(3_600_000_000_001L, healthy.parks().get("park").totalNanos());
     assertEquals(2, healthy.counters().get("durationClipped"));
-    assertTrue(healthy.windows().values().stream().noneMatch(WindowAccumulator.Window::incomplete));
+    assertTrue(healthy.windows().values().stream().allMatch(WindowAccumulator.Window::incomplete));
     a.accept(new NormalizedEvent(NormalizedEvent.Kind.LOSS, 240, 1, "loss", List.of()));
     assertTrue(
         a.snapshot().windows().values().stream().allMatch(WindowAccumulator.Window::incomplete));
+  }
+
+  @Test
+  void finiteInputsCannotSilentlyProduceNaNOrInfiniteStatisticalEvidence() {
+    var tiny =
+        ProfileComparator.paired(
+            new double[] {Double.MIN_VALUE, Double.MIN_VALUE},
+            new double[] {2 * Double.MIN_VALUE, 2 * Double.MIN_VALUE});
+    assertEquals(100, tiny.meanPercent(), 1e-9);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            ProfileComparator.paired(
+                new double[] {Double.MIN_VALUE, Double.MIN_VALUE},
+                new double[] {Double.MAX_VALUE, Double.MAX_VALUE}));
+    var extremeReduction =
+        ProfileComparator.paired(
+            new double[] {Double.MAX_VALUE, Double.MAX_VALUE},
+            new double[] {Double.MIN_VALUE, Double.MIN_VALUE});
+    assertEquals(-100, extremeReduction.medianPercent());
   }
 
   @Test

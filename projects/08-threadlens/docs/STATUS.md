@@ -4,7 +4,9 @@ ThreadLens has functional, transformation, privacy and boundedness evidence on J
 
 ## Current development validation
 
-The current review hardens timing imports against duplicate method identities and oversized unterminated rows, and prevents startup instrumentation from mixing old output artifacts with a new run. A real packaged-JVM regression checks host survival and preservation of existing observations. Offline reports now provide keyboard navigation, semantic page structure, responsive tables and print styling. The full build/integration run passed on 2026-10-20 at 07:38:10 UTC: **121 methods, zero failures, errors or skips**, including six independent packaged-JVM integration methods. [Validation evidence](../evidence/quality-validation.json) binds source hashes, command, suite results and log identity. Report validation includes generated HTML structure/fragment checks and the existing escaping and deterministic round-trip tests.
+The current implementation separates live event processing, startup instrumentation ownership, child-JVM termination and report validation into explicit components. Regressions cover sealed admission, bounded drain, callback-triggered shutdown, failed startup rollback, duplicate agent declarations, directory-budget escapes, incomplete observations, immutable aggregation and adversarial report input. [Architecture](ARCHITECTURE.md) links all 36 production classes; [review findings](REVIEW.md) describes the concrete failure schedules and corrections.
+
+The final build/integration run passed on **2026-10-20 at 09:27:08 UTC: 164 test methods, comprising 157 Surefire methods and seven packaged-JVM integration methods; zero failures, errors or skips**. The latter include real startup failure, duplicate-agent and host-survival checks. [Current verification](../evidence/deep-verification.json) binds source/build hashes, commands, test suites, strict mutation outcomes and log identities.
 
 ```bash
 source scripts/cloud-env.sh
@@ -12,12 +14,29 @@ source scripts/cloud-env.sh
   -Dmaven.repo.local="$PWD/.work/A08/m2" -B -ntp -Pintegration verify
 ```
 
-Current-source mutation, long stress, planted-cause and full overhead studies have not been rerun. The historical results below certify only their recorded implementation and settings.
+The combined integration/mutation campaign passed at **09:22:14 UTC**. Its 19 targeted production source files and six mutation reports were hash-checked unchanged after the final report-rendering rebuild. Strict results count only killed mutations as successes; surviving, uncovered and timed-out mutations remain in the denominator. Existing 70% module gates are unchanged.
+
+| Module | Killed / generated | Strict killed percentage |
+| --- | ---: | ---: |
+| probe | 81 / 91 | 89.01% |
+| analysis | 173 / 179 | 96.65% |
+| jfr | 125 / 152 | 82.24% |
+| agent | 115 / 135 | 85.19% |
+| report | 85 / 109 | 77.98% |
+| cli | 14 / 14 | 100.00% |
+| Total | 593 / 680 | 87.21% |
+
+The [non-killed mutation inventory](../evidence/deep-mutation-survivors.json) preserves 72 survivors, 12 uncovered mutations and three timeouts. These outcomes are limitations of the selected tests, not evidence of equivalence or complete fault detection.
+
+The rebuilt standard and differential reports also passed actual Chromium checks at 1280×960 and 390×844. All four cases verified fragment navigation, skip-link focus, literal rendering of hostile identifiers, local mobile table scrolling, no viewport overflow and no console errors or remote requests. Native stack expansion and keyboard table scrolling were exercised. [Browser receipt](../evidence/deep-browser.json) identifies the generated HTML and screenshots; the reproducible harness is documented in [operations](OPERATIONS.md#live-jfr-and-offline-reports).
+
+Long stress, planted-cause and full overhead studies were not rerun. The historical results below certify only their recorded implementation and settings.
 
 ## Recorded correctness and boundedness evidence
 
 | Scope | Recorded outcome | Evidence |
 | --- | --- | --- |
+| Earlier development validation, 2026-10-20 07:38 UTC | 121 methods, including six packaged-JVM integration methods; zero failures/errors/skips | [Validation](../evidence/quality-validation.json) |
 | Repair verification, 2026-10-18 | 118 methods: 113 Surefire and five packaged-JVM integration methods; zero failures/errors/skips | [Verification](../evidence/repair-verification-v3.json) |
 | Selected mutations from that run | 256 killed / 266 total (96.24%); ten survivors; zero uncovered, timeout, error or nonviable outcomes | [Verification and source identities](../evidence/repair-verification-v3.json) |
 | Transformation preservation | 48 supported cases, including wide returns, recursion, handler precedence and same-object exceptions; child JVM verification enabled | [Compatibility](../evidence/compatibility.json) |

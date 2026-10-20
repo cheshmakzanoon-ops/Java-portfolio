@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "browser": "/usr/bin/chromium",
+  "observations": [
+    {
+      "viewport": "desktop",
+      "report": "report.html",
+      "html_sha256": "2706f6b10bcab5f1abc90031ef3aa0deed14f908ce05fb6b1d64ebb87079f852",
+      "navigation_targets": 5,
+      "tables": 6,
+      "global_overflow": false,
+      "local_table_scroll": false,
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "4ce38ca2821f6d180bb6e5c297a17eccaa00ea0b90811eec7dbe75d85f611a3f"
+    },
+    {
+      "viewport": "desktop",
+      "report": "comparison.html",
+      "html_sha256": "50efaf3d1e115bc903d93697679a47425ac644925f5f900180eee2f74699f113",
+      "navigation_targets": 4,
+      "tables": 1,
+      "global_overflow": false,
+      "local_table_scroll": false,
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "b6296e24145d696dc873fbe1485f826a2cc198c2ef0f3b64a1b341fe35b05d00"
+    },
+    {
+      "viewport": "mobile",
+      "report": "report.html",
+      "html_sha256": "2706f6b10bcab5f1abc90031ef3aa0deed14f908ce05fb6b1d64ebb87079f852",
+      "navigation_targets": 5,
+      "tables": 6,
+      "global_overflow": false,
+      "local_table_scroll": true,
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "f4296717e8408d87f305c4439608878b4696799b5c4d1ae35caa01e4ca713dad"
+    },
+    {
+      "viewport": "mobile",
+      "report": "comparison.html",
+      "html_sha256": "50efaf3d1e115bc903d93697679a47425ac644925f5f900180eee2f74699f113",
+      "navigation_targets": 4,
+      "tables": 1,
+      "global_overflow": false,
+      "local_table_scroll": true,
+      "console_errors": [],
+      "remote_requests": [],
+      "screenshot_sha256": "681ad0ab90170180dddbf7213c0ca394014141a22e4f267bd3b2637e10e781d9"
+    }
+  ],
+  "schemaVersion": 1,
+  "project": "threadlens",
+  "sourceFingerprint": "3d9062b72d0f23fea80975b08d6fcaf0dfbf91a2061d893129e11d0d86f6d849",
+  "browserVersion": "Chromium 154.0.8037.57 (Debian 13)",
+  "fixtureSource": "report/src/test/java/io/github/cheshmakzanoon/portfolio/threadlens/report/ReportTest.java",
+  "command": "timeout 100s python3 projects/08-threadlens/scripts/check-report-ui.py --output .work/A08/deep-browser-final",
+  "harnessSha256": "5b717342ba69a797f1894ca16473f3aadca2559234e556bc91d83742022be11d",
+  "transport": "Ephemeral loopback HTTP server serving only the generated fixture directory; no external service",
+  "checked": [
+    "Fragment targets and actual navigation",
+    "Keyboard skip-link focus",
+    "Literal hostile identifiers with no script/img/iframe/form elements",
+    "Column-header scope and local table scrolling",
+    "Keyboard ArrowRight scrolling on mobile",
+    "No document viewport overflow",
+    "Native stack details toggle",
+    "No console/page errors",
+    "No remote requests"
+  ],
+  "artifactRetention": "Generated HTML and screenshots are local ignored build artifacts; hashes identify this run and the committed harness reproduces the checks.",
+  "localArtifactsDirectory": ".work/A08/deep-browser-final",
+  "earlierAttempt": {
+    "transport": "file URL",
+    "outcome": "Managed Chromium rejected local-file navigation with ERR_BLOCKED_BY_ADMINISTRATOR; not counted as a pass",
+    "log": ".work/A08/deep-browser.log",
+    "logSha256": "6e8927aa7f57067513ad07e5324083f23b3b8323ad2bdd916a972f6c2ed6ddff"
+  }
+}

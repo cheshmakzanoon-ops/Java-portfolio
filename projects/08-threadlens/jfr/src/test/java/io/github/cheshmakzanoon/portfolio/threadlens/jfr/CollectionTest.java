@@ -13,6 +13,70 @@ class CollectionTest {
   @TempDir Path directory;
 
   @Test
+  void depthBoundCannotHideUnvisitedDiskUsageAndDirectDotSpellingStillDumps() throws Exception {
+    Path nested = directory;
+    for (int i = 0; i < 9; i++) nested = Files.createDirectory(nested.resolve("level"));
+    try (var file = new java.io.RandomAccessFile(nested.resolve("hidden.bin").toFile(), "rw")) {
+      file.setLength(300L * 1024 * 1024);
+    }
+    assertThrows(java.io.IOException.class, () -> RecordingController.directoryBytes(directory));
+    Path output = directory.resolve("./direct");
+    try (var controller = new RecordingController(output, 2)) {
+      controller.start();
+      controller.stopAndDump(output.resolve("recording.jfr"));
+      assertTrue(Files.size(output.resolve("recording.jfr")) > 0);
+    }
+  }
+
+  @Test
+  void observerMayCloseItsOwnControllerAndExternalCloseCanJoinTheDrain() throws Exception {
+    var controller = new RecordingController(directory, 65_536);
+    java.util.concurrent.CountDownLatch closedFromCallback =
+        new java.util.concurrent.CountDownLatch(1);
+    controller.observer(
+        event -> {
+          if (event.subject().equals("sample")) {
+            controller.close();
+            closedFromCallback.countDown();
+          }
+        });
+    try {
+      controller.start();
+      assertTrue(
+          controller.publish(
+              new NormalizedEvent(
+                  NormalizedEvent.Kind.SAMPLE, 1, 1, "sample", List.of("safe.Frame"))));
+      assertTrue(closedFromCallback.await(5, java.util.concurrent.TimeUnit.SECONDS));
+      controller.close();
+      assertTrue(controller.profile().sampleCount() >= 1);
+      assertFalse(
+          controller.publish(
+              new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 1, 1, "sample", List.of())));
+    } finally {
+      controller.close();
+    }
+  }
+
+  @Test
+  void dumpCannotUseSymlinkDotDotTraversalOrASymlinkedObserverDirectory() throws Exception {
+    Path output = Files.createDirectory(directory.resolve("output"));
+    Path external = Files.createDirectory(directory.resolve("external"));
+    Path child = Files.createDirectory(external.resolve("child"));
+    Files.createSymbolicLink(output.resolve("link"), child);
+    try (var controller = new RecordingController(output, 2)) {
+      controller.start();
+      assertThrows(
+          java.io.IOException.class, () -> controller.dump(output.resolve("link/../escaped.jfr")));
+      assertFalse(Files.exists(external.resolve("escaped.jfr")));
+    }
+    Path alias = directory.resolve("alias");
+    Files.createSymbolicLink(alias, external);
+    try (var controller = new RecordingController(alias.resolve("nested"), 2)) {
+      assertThrows(java.io.IOException.class, controller::start);
+    }
+  }
+
+  @Test
   void queueDropsWithoutBlockingAndKeepsSlotsReusable() {
     var queue = new EventQueue(2);
     var event = new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 1, 1, "s", List.of("frame"));
@@ -87,6 +151,24 @@ class CollectionTest {
     }
     try (var controller = new RecordingController(directory, 2)) {
       assertThrows(java.io.IOException.class, controller::start);
+    }
+  }
+
+  @Test
+  void failedDumpStillClosesAndDrainsAndDoesNotReplaceExistingEvidence() throws Exception {
+    Path retained = directory.resolve("retained.jfr");
+    Files.writeString(retained, "retained evidence");
+    try (var controller = new RecordingController(directory, 2)) {
+      controller.start();
+      assertThrows(IllegalStateException.class, controller::start);
+      assertThrows(java.io.IOException.class, () -> controller.stopAndDump(retained));
+      assertEquals("retained evidence", Files.readString(retained));
+      assertEquals("closed", controller.stopReason());
+      assertFalse(
+          controller.publish(
+              new NormalizedEvent(NormalizedEvent.Kind.SAMPLE, 1, 1, "s", List.of())));
+      assertNotNull(controller.profile());
+      assertThrows(IllegalStateException.class, controller::start);
     }
   }
 

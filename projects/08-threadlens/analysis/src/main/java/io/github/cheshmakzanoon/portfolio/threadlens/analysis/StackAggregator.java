@@ -7,7 +7,11 @@ import java.util.TreeMap;
 
 /** Bounded prefix trie: inclusive counts per prefix; self counts only at the observed leaf. */
 public final class StackAggregator {
-  public record Flame(String frame, long inclusive, long self, List<Flame> children) {}
+  public record Flame(String frame, long inclusive, long self, List<Flame> children) {
+    public Flame {
+      children = List.copyOf(children);
+    }
+  }
 
   public record MethodSamples(long inclusive, long self) {}
 
@@ -43,7 +47,26 @@ public final class StackAggregator {
       missingStacks++;
       return;
     }
+    recordMethods(stack);
     Node node = root;
+    for (String frame : stack) {
+      Node next = node.children.get(frame);
+      if (next == null) {
+        if (nodes >= limit) {
+          overflow++;
+          return;
+        }
+        next = new Node(frame);
+        node.children.put(frame, next);
+        nodes++;
+      }
+      next.inclusive++;
+      node = next;
+    }
+    node.self++;
+  }
+
+  private void recordMethods(List<String> stack) {
     HashSet<String> seen = new HashSet<>();
     for (int i = 0; i < stack.size(); i++) {
       String frame = stack.get(i);
@@ -61,20 +84,7 @@ public final class StackAggregator {
         long[] counts = methods.get(frame);
         if (counts != null) counts[1]++;
       }
-      Node next = node.children.get(frame);
-      if (next == null) {
-        if (nodes >= limit) {
-          overflow++;
-          return;
-        }
-        next = new Node(frame);
-        node.children.put(frame, next);
-        nodes++;
-      }
-      next.inclusive++;
-      node = next;
     }
-    node.self++;
   }
 
   public Flame snapshot() {

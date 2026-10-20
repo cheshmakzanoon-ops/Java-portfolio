@@ -29,6 +29,10 @@ public final class TimingTransformer implements ClassFileTransformer {
       byte[] bytes) {
     if (redefining != null || !policy.selectClass(module, loader, name)) return null;
     try {
+      if (bytes.length > 4 * 1024 * 1024) {
+        policy.skip("oversizedClass");
+        return null;
+      }
       ClassReader reader = new ClassReader(bytes);
       if ((reader.getAccess()
               & (Opcodes.ACC_INTERFACE | Opcodes.ACC_ANNOTATION | Opcodes.ACC_MODULE))

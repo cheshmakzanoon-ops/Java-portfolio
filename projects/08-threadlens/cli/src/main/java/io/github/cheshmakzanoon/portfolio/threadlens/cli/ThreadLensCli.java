@@ -44,7 +44,7 @@ public final class ThreadLensCli {
         losses.put("unsupportedFields", imported.unsupportedFields());
         losses.put("truncatedStacks", imported.truncatedStacks());
         losses.put("clippedStrings", imported.clippedStrings());
-        // Event schemas do not prove which settings the producer used. A manifest supplies verified
+        // Event schemas do not prove which settings the producer used. A manifest supplies declared
         // settings.
         Path manifest = input.resolveSibling(input.getFileName() + ".settings.json");
         Map<String, String> settings =
@@ -80,7 +80,7 @@ public final class ThreadLensCli {
         System.out.println(Path.of(args[3]).toAbsolutePath());
       }
       case "benchmark" -> {
-        if (args.length < 3 || args.length > 4)
+        if (args.length < 3 || args.length > 4 || args.length == 4 && !args[3].equals("--smoke"))
           throw new IllegalArgumentException("benchmark output-directory agent.jar [--smoke]");
         BenchmarkRunner.run(
             Path.of(args[1]), Path.of(args[2]), args.length == 4 && args[3].equals("--smoke"));

@@ -49,7 +49,7 @@ public final class ProfileComparator {
           || !Double.isFinite(baseline[i])
           || !Double.isFinite(candidate[i]))
         throw new IllegalArgumentException("finite positive observations");
-      log[i] = Math.log(candidate[i] / baseline[i]);
+      log[i] = Math.log(candidate[i]) - Math.log(baseline[i]);
       sum += log[i];
     }
     double mean = sum / log.length, variance = 0;
@@ -62,11 +62,18 @@ public final class ProfileComparator {
         log.length % 2 == 0
             ? (log[log.length / 2 - 1] + log[log.length / 2]) / 2
             : log[log.length / 2];
-    return new PairedEstimate(
-        log.length,
-        Math.expm1(mean) * 100,
-        Math.expm1(median) * 100,
-        Math.expm1(mean - half) * 100,
-        Math.expm1(mean + half) * 100);
+    PairedEstimate result =
+        new PairedEstimate(
+            log.length,
+            Math.expm1(mean) * 100,
+            Math.expm1(median) * 100,
+            Math.expm1(mean - half) * 100,
+            Math.expm1(mean + half) * 100);
+    if (!Double.isFinite(result.meanPercent())
+        || !Double.isFinite(result.medianPercent())
+        || !Double.isFinite(result.lower95Percent())
+        || !Double.isFinite(result.upper95Percent()))
+      throw new IllegalArgumentException("paired estimate exceeds finite percentage range");
+    return result;
   }
 }

@@ -204,7 +204,8 @@ public final class TimingImporter {
               || discarded > 0
               || unknown > 0
               || selectionOverflow > 0
-              || overflow > 0,
+              || overflow > 0
+              || clipped > 0,
           rawOmitted,
           clipped,
           completeStatus,
