@@ -153,6 +153,22 @@ public final class Interpreter {
         throw new IllegalArgumentException("unknown task");
       if (outputs.containsKey(event.task()))
         throw new IllegalArgumentException("task already settled");
+      if (undo) {
+        List<String> reverse = new ArrayList<>(completionOrder);
+        Collections.reverse(reverse);
+        String expected =
+            reverse.stream()
+                .filter(
+                    id ->
+                        nodes.containsKey(id)
+                            && nodes.get(id).compensation() != null
+                            && !outputs.containsKey("comp-" + id))
+                .map(id -> "comp-" + id)
+                .findFirst()
+                .orElseThrow();
+        if (!expected.equals(event.task()))
+          throw new IllegalArgumentException("compensation must follow reverse completion order");
+      }
       if (!undo && !enabled(node, outputs))
         throw new IllegalArgumentException("out-of-order task event");
       if (!undo && node.when() != null && !guard(node, outputs))
@@ -352,7 +368,10 @@ public final class Interpreter {
       Map<String, Instant> times,
       Instant start) {
     boolean changed;
+    int remainingPasses = definition.nodes().size() + 1;
     do {
+      if (--remainingPasses < 0)
+        throw new IllegalStateException("derived workflow state failed to converge");
       changed = false;
       for (Node node : definition.nodes()) {
         if (outputs.containsKey(node.id()) || !enabled(node, outputs)) continue;

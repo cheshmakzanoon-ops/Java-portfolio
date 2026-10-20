@@ -61,8 +61,10 @@ public final class FakeProvider implements AutoCloseable {
     String key = x.getRequestHeaders().getFirst("Idempotency-Key"),
         safety = x.getRequestHeaders().getFirst("X-Safety"),
         mode = x.getRequestHeaders().getFirst("X-Failure-Mode");
-    byte[] body = x.getRequestBody().readNBytes(4097);
-    if (body.length > 4096 || key == null || !key.matches("[a-zA-Z0-9:-]{1,128}")) {
+    byte[] body = x.getRequestBody().readNBytes(WorkflowLimits.PROVIDER_REQUEST_BYTES + 1);
+    if (body.length > WorkflowLimits.PROVIDER_REQUEST_BYTES
+        || key == null
+        || !key.matches("[a-zA-Z0-9:-]{1,128}")) {
       respond(x, 400, "bounds");
       return;
     }

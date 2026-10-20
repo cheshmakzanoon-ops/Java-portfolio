@@ -1,6 +1,7 @@
 package io.github.cheshmakzanoon.portfolio.durableflow;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import static io.github.cheshmakzanoon.portfolio.durableflow.WorkflowSql.*;
+
 import com.fasterxml.jackson.databind.*;
 import io.github.cheshmakzanoon.portfolio.durableflow.Data.*;
 import io.github.cheshmakzanoon.portfolio.durableflow.Definition.*;
@@ -16,8 +17,9 @@ public final class WorkflowStore implements AutoCloseable {
   private final String url, user, password;
   private final ObjectMapper json =
       new ObjectMapper().enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-  private final Interpreter interpreter = new Interpreter();
-  private final Runnable beforeCommit;
+  private final WorkflowReplay replay = new WorkflowReplay(json);
+  private final WorkflowHistory history = new WorkflowHistory(json);
+  private final JdbcTransactions transactions;
 
   public record Claim(
       UUID instance,
@@ -50,7 +52,6 @@ public final class WorkflowStore implements AutoCloseable {
     this.url = url;
     this.user = user;
     this.password = password;
-    this.beforeCommit = beforeCommit;
     var configuration = new com.zaxxer.hikari.HikariConfig();
     configuration.setJdbcUrl(url);
     configuration.setUsername(user);
@@ -61,6 +62,7 @@ public final class WorkflowStore implements AutoCloseable {
     configuration.setValidationTimeout(3000);
     configuration.setPoolName("durableflow-db");
     pool = new com.zaxxer.hikari.HikariDataSource(configuration);
+    transactions = new JdbcTransactions(pool, beforeCommit);
   }
 
   public void migrate() {
@@ -71,41 +73,8 @@ public final class WorkflowStore implements AutoCloseable {
         .migrate();
   }
 
-  private interface Work<T> {
-    T run(Connection c) throws Exception;
-  }
-
-  private <T> T tx(Work<T> work) {
-    try (Connection c = pool.getConnection()) {
-      c.setAutoCommit(false);
-      try {
-        T result = work.run(c);
-        beforeCommit.run();
-        c.commit();
-        return result;
-      } catch (Exception e) {
-        c.rollback();
-        throw e;
-      }
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new IllegalStateException("database operation failed", e);
-    }
-  }
-
-  private static PreparedStatement statement(Connection c, String sql, Object... params)
-      throws SQLException {
-    PreparedStatement s = c.prepareStatement(sql);
-    s.setQueryTimeout(15);
-    for (int i = 0; i < params.length; i++) s.setObject(i + 1, params[i]);
-    return s;
-  }
-
-  private static int update(Connection c, String sql, Object... params) throws SQLException {
-    try (PreparedStatement s = statement(c, sql, params)) {
-      return s.executeUpdate();
-    }
+  private <T> T tx(JdbcTransactions.Work<T> work) {
+    return transactions.execute(work);
   }
 
   private String encode(Object object) throws Exception {
@@ -191,7 +160,8 @@ public final class WorkflowStore implements AutoCloseable {
             }
             body = encode(legacy);
           } else throw new IllegalStateException("unsupported pinned semantics");
-          if (body.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 4096)
+          if (body.getBytes(java.nio.charset.StandardCharsets.UTF_8).length
+              > WorkflowLimits.EXECUTION_INPUT_BYTES)
             throw new IllegalArgumentException("input byte cap");
           String request = hash + ":" + body;
           try (PreparedStatement s =
@@ -288,69 +258,17 @@ public final class WorkflowStore implements AutoCloseable {
 
   private void append(Connection c, UUID id, EventType type, String task, String value)
       throws Exception {
-    append(c, id, type, task, value, List.of());
+    history.append(c, id, type, task, value);
   }
 
   private void append(
       Connection c, UUID id, EventType type, String task, String value, List<Value> result)
       throws Exception {
-    String typed = encode(result);
-    if (typed.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 4096)
-      throw new IllegalArgumentException("result byte cap");
-    if (value == null) value = "";
-    if (value.length() > 1024
-        || value.toLowerCase(Locale.ROOT).matches(".*(password|secret|bearer|token).*"))
-      throw new IllegalArgumentException("result contains forbidden secret field or exceeds cap");
-    long expectedVersion;
-    try (PreparedStatement s =
-            statement(c, "SELECT version FROM workflow_instance WHERE id=?", id);
-        ResultSet r = s.executeQuery()) {
-      if (!r.next()) throw new NoSuchElementException("execution missing");
-      expectedVersion = r.getLong(1);
-    }
-    if (expectedVersion >= 10000) throw new IllegalArgumentException("history cap");
-    long seq;
-    try (PreparedStatement s =
-            statement(
-                c,
-                "UPDATE workflow_instance SET version=version+1 WHERE id=? AND version=? RETURNING version",
-                id,
-                expectedVersion);
-        ResultSet r = s.executeQuery()) {
-      if (!r.next())
-        throw new java.sql.SQLTransactionRollbackException("instance version changed", "40001");
-      seq = r.getLong(1);
-    }
-    update(
-        c,
-        "INSERT INTO workflow_history(instance_id,sequence,type,task,value,result) VALUES(?,?,?,?,?,?)",
-        id,
-        seq,
-        type.name(),
-        task,
-        value,
-        typed);
+    history.append(c, id, type, task, value, result);
   }
 
   private List<Event> history(Connection c, UUID id) throws Exception {
-    List<Event> events = new ArrayList<>();
-    try (PreparedStatement s =
-            statement(
-                c,
-                "SELECT sequence,type,task,value,at,result FROM workflow_history WHERE instance_id=? ORDER BY sequence",
-                id);
-        ResultSet r = s.executeQuery()) {
-      while (r.next())
-        events.add(
-            new Event(
-                r.getLong(1),
-                EventType.valueOf(r.getString(2)),
-                r.getString(3),
-                r.getString(4),
-                r.getTimestamp(5).toInstant(),
-                json.readValue(r.getString(6), new TypeReference<List<Value>>() {})));
-    }
-    return events;
+    return history.read(c, id);
   }
 
   public List<Event> history(String tenant, UUID id) {
@@ -375,90 +293,8 @@ public final class WorkflowStore implements AutoCloseable {
       input = r.getString(3);
       semantics = r.getString(4);
     }
-    Result result;
-    if (Interpreter.SEMANTICS.equals(semantics))
-      result =
-          interpreter.replay(
-              definition(c, tenant, hash),
-              history(c, id),
-              json.readValue(input, ExecutionInput.class));
-    else if (semantics.equals("2")) {
-      var old =
-          new LegacyInterpreterV2()
-              .replay(
-                  definition(c, tenant, hash),
-                  history(c, id).stream()
-                      .map(
-                          e ->
-                              new LegacyInterpreterV2.Event(
-                                  e.sequence(),
-                                  LegacyInterpreterV2.EventType.valueOf(e.type().name()),
-                                  e.task(),
-                                  e.value(),
-                                  e.at(),
-                                  e.result()))
-                      .toList(),
-                  json.readValue(input, ExecutionInput.class));
-      result =
-          new Result(
-              State.valueOf(old.state().name()),
-              old.decisions().stream()
-                  .map(
-                      d ->
-                          new Decision(
-                              d.id(),
-                              d.kind(),
-                              d.activity(),
-                              d.safety(),
-                              d.compensation(),
-                              d.due(),
-                              d.signal(),
-                              d.input(),
-                              d.outputType()))
-                  .toList(),
-              old.values());
-    } else if (semantics.equals("1")) {
-      LegacyDefinitionV1 legacy =
-          json.readValue(deployment(c, tenant, hash).body(), LegacyDefinitionV1.class);
-      List<LegacyInterpreterV1.Event> events =
-          history(c, id).stream()
-              .map(
-                  e ->
-                      new LegacyInterpreterV1.Event(
-                          e.sequence(),
-                          LegacyInterpreterV1.EventType.valueOf(e.type().name()),
-                          e.task(),
-                          e.value(),
-                          e.at()))
-              .toList();
-      var old =
-          new LegacyInterpreterV1()
-              .replay(
-                  legacy,
-                  events,
-                  json.readValue(input, new TypeReference<Map<String, String>>() {}));
-      Map<String, Output> values = new LinkedHashMap<>();
-      old.values().forEach((key, value) -> values.put(key, Output.of(List.of(Value.text(value)))));
-      TaskInput parameters =
-          new TaskInput(
-              ExecutionInput.textContext(Map.of()), List.of(Value.text("legacy")), Map.of());
-      List<Decision> decisions =
-          old.decisions().stream()
-              .map(
-                  d ->
-                      new Decision(
-                          d.id(),
-                          Kind.valueOf(d.kind().name()),
-                          d.activity(),
-                          d.safety() == null ? null : Safety.valueOf(d.safety().name()),
-                          d.compensation(),
-                          d.due(),
-                          d.signal(),
-                          parameters,
-                          Type.TEXT))
-              .toList();
-      result = new Result(State.valueOf(old.state().name()), decisions, values);
-    } else throw new IllegalStateException("unsupported pinned semantics");
+    Result result =
+        replay.replay(semantics, deployment(c, tenant, hash).body(), history(c, id), input);
     // Cancellation waits for all in-flight leases to settle before selecting reverse-order undo.
     if (result.state() == State.COMPENSATING
         || result.state() == State.CANCELLED
@@ -517,7 +353,11 @@ public final class WorkflowStore implements AutoCloseable {
       }
     }
     for (Decision choice : result.decisions()) {
-      if (choice.kind() == Kind.ACTIVITY)
+      if (choice.kind() == Kind.ACTIVITY) {
+        String parameters = semantics.equals("1") ? input : encode(choice.input());
+        if (parameters.getBytes(java.nio.charset.StandardCharsets.UTF_8).length
+            > WorkflowLimits.TASK_INPUT_BYTES)
+          throw new IllegalArgumentException("task input byte cap");
         update(
             c,
             "INSERT INTO activity_task(instance_id,logical_id,activity,safety,parameters,status,due_at,output_type) VALUES(?,?,?,?,?,'READY',?,?) ON CONFLICT DO NOTHING",
@@ -525,9 +365,10 @@ public final class WorkflowStore implements AutoCloseable {
             choice.id(),
             choice.activity(),
             choice.safety().name(),
-            semantics.equals("1") ? input : encode(choice.input()),
+            parameters,
             Timestamp.from(choice.due()),
             choice.outputType().name());
+      }
       if (choice.kind() == Kind.TIMER || choice.kind() == Kind.SIGNAL)
         update(
             c,
@@ -571,7 +412,7 @@ public final class WorkflowStore implements AutoCloseable {
           try (PreparedStatement eligible =
                   statement(
                       c,
-                      "SELECT i.id FROM workflow_instance i WHERE i.tenant=? AND i.state IN ('RUNNING','COMPENSATING') AND EXISTS(SELECT 1 FROM activity_task t WHERE t.instance_id=i.id AND t.status='READY' AND t.due_at<=clock_timestamp()) ORDER BY i.id FOR UPDATE SKIP LOCKED LIMIT ?",
+                      "SELECT i.id FROM workflow_instance i WHERE i.tenant=? AND i.scheduler_retry_at<=clock_timestamp() AND i.state IN ('RUNNING','COMPENSATING') AND EXISTS(SELECT 1 FROM activity_task t WHERE t.instance_id=i.id AND t.status='READY' AND t.due_at<=clock_timestamp()) ORDER BY i.id FOR UPDATE SKIP LOCKED LIMIT ?",
                       tenant,
                       batch);
               ResultSet rows = eligible.executeQuery()) {
@@ -817,32 +658,33 @@ public final class WorkflowStore implements AutoCloseable {
       boolean definitive,
       String reason)
       throws Exception {
+    ActivityFailure decision =
+        ActivityFailure.decide(id, task, safety, attempt, dispatched, definitive, reason);
     update(
         c,
         "UPDATE activity_attempt SET completed_at=clock_timestamp(),outcome=? WHERE instance_id=? AND logical_id=? AND generation=(SELECT generation FROM activity_task WHERE instance_id=? AND logical_id=?)",
-        definitive ? "REJECTED" : reason.equals("lease expired") ? "LEASE_EXPIRED" : "UNCERTAIN",
+        decision.attemptOutcome(),
         id,
         task,
         id,
         task);
-    if (task.startsWith("comp-")
-        && ((safety == Safety.NON_IDEMPOTENT && dispatched && !definitive) || attempt >= 4))
+    if (task.startsWith("comp-") && decision.disposition() != ActivityFailure.Disposition.RETRY)
       update(
           c,
           "UPDATE compensation_obligation SET status=? WHERE instance_id=? AND logical_id=?",
-          safety == Safety.NON_IDEMPOTENT && dispatched && !definitive
+          decision.disposition() == ActivityFailure.Disposition.UNKNOWN_OUTCOME
               ? "UNKNOWN_OUTCOME"
               : "FAILED",
           id,
           task.substring(5));
-    if (safety == Safety.NON_IDEMPOTENT && dispatched && !definitive) {
+    if (decision.disposition() == ActivityFailure.Disposition.UNKNOWN_OUTCOME) {
       update(
           c,
           "UPDATE activity_task SET status='UNKNOWN_OUTCOME' WHERE instance_id=? AND logical_id=?",
           id,
           task);
       append(c, id, EventType.UNKNOWN_OUTCOME, task, "external result uncertain");
-    } else if (attempt >= 4) {
+    } else if (decision.disposition() == ActivityFailure.Disposition.FAILED) {
       update(
           c,
           "UPDATE activity_task SET status='FAILED' WHERE instance_id=? AND logical_id=?",
@@ -850,68 +692,62 @@ public final class WorkflowStore implements AutoCloseable {
           task);
       append(c, id, EventType.FAILED, task, reason);
     } else {
-      long backoff = (1L << attempt);
-      long jitter = Math.floorMod(Objects.hash(id, task, attempt, 42), 1000);
       update(
           c,
           "UPDATE activity_task SET status='READY',due_at=clock_timestamp()+(? * interval '1 millisecond') WHERE instance_id=? AND logical_id=?",
-          backoff * 100 + jitter,
+          decision.retryDelayMillis(),
           id,
           task);
     }
   }
 
+  public record SchedulerFailure(UUID instance, String category) {}
+
+  public record SchedulerReport(int processed, List<SchedulerFailure> failures) {
+    public SchedulerReport {
+      failures = List.copyOf(failures);
+    }
+  }
+
   public int tick(int limit) {
-    if (limit < 1 || limit > 1000) throw new IllegalArgumentException("tick bounds");
-    return tx(
-        c -> {
-          List<UUID> ids = new ArrayList<>();
-          try (PreparedStatement s =
-                  statement(
-                      c,
-                      "SELECT id FROM workflow_instance WHERE id IN (SELECT instance_id FROM timer WHERE status='WAITING' AND due_at<=clock_timestamp() UNION SELECT instance_id FROM activity_task WHERE status='LEASED' AND lease_until<=clock_timestamp()) ORDER BY id FOR UPDATE SKIP LOCKED LIMIT ?",
-                      limit);
-              ResultSet r = s.executeQuery()) {
-            while (r.next()) ids.add(r.getObject(1, UUID.class));
-          }
-          for (UUID id : ids) {
-            try (PreparedStatement s =
-                    statement(
-                        c,
-                        "SELECT logical_id FROM timer WHERE instance_id=? AND status='WAITING' AND due_at<=clock_timestamp() FOR UPDATE",
-                        id);
-                ResultSet r = s.executeQuery()) {
-              while (r.next()) {
-                String task = r.getString(1);
-                update(
-                    c,
-                    "UPDATE timer SET status='FIRED' WHERE instance_id=? AND logical_id=?",
-                    id,
-                    task);
-                append(c, id, EventType.TIMER_FIRED, task, "timeout");
-              }
-            }
-            try (PreparedStatement s =
-                    statement(
-                        c,
-                        "SELECT logical_id,safety,attempt,dispatch_intent FROM activity_task WHERE instance_id=? AND status='LEASED' AND lease_until<=clock_timestamp() FOR UPDATE",
-                        id);
-                ResultSet r = s.executeQuery()) {
-              while (r.next())
-                failure(
-                    c,
-                    id,
-                    r.getString(1),
-                    Safety.valueOf(r.getString(2)),
-                    r.getInt(3),
-                    r.getBoolean(4),
-                    false,
-                    "lease expired");
-            }
-            schedule(c, id);
-          }
-          return ids.size();
-        });
+    return tickReport(limit).processed();
+  }
+
+  public SchedulerReport tickReport(int limit) {
+    return new SchedulerBatch(transactions, this::expireDueWork).tick(limit);
+  }
+
+  private void expireDueWork(Connection c, UUID id) throws Exception {
+    try (PreparedStatement s =
+            statement(
+                c,
+                "SELECT logical_id FROM timer WHERE instance_id=? AND status='WAITING' AND due_at<=clock_timestamp() FOR UPDATE",
+                id);
+        ResultSet r = s.executeQuery()) {
+      while (r.next()) {
+        String task = r.getString(1);
+        update(c, "UPDATE timer SET status='FIRED' WHERE instance_id=? AND logical_id=?", id, task);
+        append(c, id, EventType.TIMER_FIRED, task, "timeout");
+      }
+    }
+    try (PreparedStatement s =
+            statement(
+                c,
+                "SELECT logical_id,safety,attempt,dispatch_intent FROM activity_task WHERE instance_id=? AND status='LEASED' AND lease_until<=clock_timestamp() FOR UPDATE",
+                id);
+        ResultSet r = s.executeQuery()) {
+      while (r.next())
+        failure(
+            c,
+            id,
+            r.getString(1),
+            Safety.valueOf(r.getString(2)),
+            r.getInt(3),
+            r.getBoolean(4),
+            false,
+            "lease expired");
+    }
+    schedule(c, id);
   }
 
   public boolean signal(String tenant, UUID id, String key, String signal, String payload) {

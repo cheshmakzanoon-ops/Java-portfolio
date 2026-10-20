@@ -4,6 +4,9 @@ info:
   version: 1.2.0
   description: Finite typed workflow control plane; semantics 3 uses validated typed
     root/context values and predecessor dataflow. Existing semantics 1 and 2 remain pinned; semantics 3 cancellation records an INTEGER forward-lease count.
+    Public requests are limited to 8192 UTF-8 bytes. Dispatch, heartbeat, complete,
+    and fail requests accept at most 540672 bytes to echo an issued claim, including
+    JSON escaping overhead. All worker claim attributes are checked against the current lease.
 servers:
 - url: http://127.0.0.1:18200
 security:
@@ -15,6 +18,8 @@ paths:
       responses:
         '200':
           description: Process readiness
+        '503':
+          description: Workflow storage unavailable
   /v1/definitions:
     post:
       description: Deployer scope; immutable name/version. Returns content hash; conflicting
@@ -55,9 +60,7 @@ paths:
       description: Viewer scope in authenticated tenant.
       responses:
         '200':
-          description: Pinned definition hash
-          semantic version: null
-          current state/version and derived values: null
+          description: Pinned definition hash, semantic version, current state/version, and derived values
         '404':
           description: Missing in authenticated tenant
   /v1/executions/{id}/history:
@@ -137,9 +140,7 @@ paths:
               $ref: '#/components/schemas/ClaimRequest'
       responses:
         '200':
-          description: Claims with task identity
-          attempt: null
-          generation and unguessable credential: null
+          description: Claims with task identity, attempt, generation, and unguessable credential
   /v1/worker/dispatch:
     post:
       description: Worker scope; verifies a complete Claim object then commits intent
@@ -183,8 +184,7 @@ paths:
         reason. A timeout is not definitive rejection.
       responses:
         '200':
-          description: Retry
-          failure or uncertainty recorded: null
+          description: Retry, failure, or uncertainty recorded
         '409':
           $ref: '#/components/responses/Stale'
       requestBody:
@@ -273,7 +273,8 @@ components:
           - NON_IDEMPOTENT
         parameters:
           type: string
-          maxLength: 4096
+          maxLength: 262144
+          description: Exact issued task-input JSON, at most 262144 UTF-8 bytes before outer JSON string escaping
         generation:
           type: integer
           minimum: 1

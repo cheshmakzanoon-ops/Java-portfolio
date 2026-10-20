@@ -78,6 +78,249 @@ class InterpreterTest {
   }
 
   @Test
+  void replayRejectsOutOfOrderCompensationRatherThanTrustingPersistedTaskNames() {
+    Definition definition =
+        new Definition(
+            "ordered-undo",
+            1,
+            List.of(
+                node("root", Kind.ACTIVITY, List.of(), "release"),
+                node("a", Kind.ACTIVITY, List.of("root"), "refund"),
+                node("b", Kind.ACTIVITY, List.of("root"), "unpublish"),
+                node("wait", Kind.SIGNAL, List.of("a", "b"), null)));
+    List<Event> prefix =
+        List.of(
+            event(1, EventType.STARTED, ""),
+            event(2, EventType.COMPLETED, "root"),
+            event(3, EventType.COMPLETED, "b"),
+            event(4, EventType.COMPLETED, "a"),
+            event(5, EventType.CANCELLED, ""));
+    Interpreter interpreter = new Interpreter();
+    for (EventType invalid :
+        List.of(
+            EventType.COMPLETED,
+            EventType.DISPATCHED,
+            EventType.FAILED,
+            EventType.UNKNOWN_OUTCOME)) {
+      List<Event> corrupted = new ArrayList<>(prefix);
+      corrupted.add(event(6, invalid, "comp-b"));
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> interpreter.replay(definition, corrupted, Map.of()));
+    }
+    List<Event> legal = new ArrayList<>(prefix);
+    for (String undo : List.of("comp-a", "comp-b", "comp-root")) {
+      assertEquals(
+          undo, interpreter.replay(definition, legal, Map.of()).decisions().getFirst().id());
+      legal.add(event(legal.size() + 1, EventType.COMPLETED, undo));
+    }
+    assertEquals(State.CANCELLED, interpreter.replay(definition, legal, Map.of()).state());
+    assertTrue(interpreter.replay(definition, legal, Map.of()).decisions().isEmpty());
+  }
+
+  @Test
+  void failedTasksAndCompensationRequireTheirExactRetryAuthority() {
+    Definition definition =
+        new Definition(
+            "retry-undo",
+            1,
+            List.of(
+                node("root", Kind.ACTIVITY, List.of(), "release"),
+                node("wait", Kind.SIGNAL, List.of("root"), null)));
+    Interpreter interpreter = new Interpreter();
+    List<Event> forwardFailed =
+        new ArrayList<>(
+            List.of(event(1, EventType.STARTED, ""), event(2, EventType.FAILED, "root")));
+    for (EventType type :
+        List.of(EventType.COMPLETED, EventType.OPERATOR_RETRY, EventType.DISPATCHED)) {
+      List<Event> invalid = new ArrayList<>(forwardFailed);
+      invalid.add(event(3, type, "root"));
+      assertThrows(
+          IllegalArgumentException.class, () -> interpreter.replay(definition, invalid, Map.of()));
+    }
+    List<Event> undo =
+        new ArrayList<>(
+            List.of(
+                event(1, EventType.STARTED, ""),
+                event(2, EventType.COMPLETED, "root"),
+                event(3, EventType.CANCELLED, "")));
+    List<Event> premature = new ArrayList<>(undo);
+    premature.add(event(4, EventType.OPERATOR_RETRY, "comp-root"));
+    assertThrows(
+        IllegalArgumentException.class, () -> interpreter.replay(definition, premature, Map.of()));
+    undo.add(event(4, EventType.FAILED, "comp-root"));
+    List<Event> unapproved = new ArrayList<>(undo);
+    unapproved.add(event(5, EventType.COMPLETED, "comp-root"));
+    assertThrows(
+        IllegalArgumentException.class, () -> interpreter.replay(definition, unapproved, Map.of()));
+    undo.add(event(5, EventType.OPERATOR_RETRY, "comp-root"));
+    assertEquals(State.COMPENSATING, interpreter.replay(definition, undo, Map.of()).state());
+    undo.add(event(6, EventType.COMPLETED, "comp-root"));
+    assertEquals(State.CANCELLED, interpreter.replay(definition, undo, Map.of()).state());
+  }
+
+  @Test
+  void activityFailuresCannotBeAttachedToSignalsAndSignalResultsKeepTheirDeclaredType() {
+    Definition signal =
+        new Definition("signal-kinds", 1, List.of(node("root", Kind.SIGNAL, List.of(), null)));
+    for (EventType type : List.of(EventType.UNKNOWN_OUTCOME, EventType.FAILED))
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              new Interpreter()
+                  .replay(
+                      signal,
+                      List.of(event(1, EventType.STARTED, ""), event(2, type, "root")),
+                      Map.of()));
+    Definition integer =
+        new Definition(
+            "signal-types",
+            1,
+            List.of(
+                new Node(
+                    "root",
+                    Kind.SIGNAL,
+                    List.of(),
+                    null,
+                    null,
+                    null,
+                    Type.TEXT,
+                    Type.INTEGER,
+                    10,
+                    "number",
+                    null,
+                    null)));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new Interpreter()
+                .replay(
+                    integer,
+                    List.of(event(1, EventType.STARTED, ""), event(2, EventType.SIGNAL, "root")),
+                    Map.of()));
+  }
+
+  @Test
+  void mixedJoinPropagatesTimeoutAndDecisionsRetainPredecessorEvidence() {
+    Definition definition =
+        new Definition(
+            "mixed-join",
+            1,
+            List.of(
+                node("root", Kind.ACTIVITY, List.of(), null),
+                node("signal", Kind.SIGNAL, List.of("root"), null),
+                node("other", Kind.ACTIVITY, List.of("root"), null),
+                node("join", Kind.PARALLEL_ALL, List.of("signal", "other"), null)));
+    Interpreter interpreter = new Interpreter();
+    List<Event> history =
+        new ArrayList<>(
+            List.of(event(1, EventType.STARTED, ""), event(2, EventType.COMPLETED, "root")));
+    var next = interpreter.replay(definition, history, Map.of());
+    assertTrue(
+        next.decisions().stream()
+            .allMatch(
+                decision ->
+                    decision
+                        .input()
+                        .predecessors()
+                        .equals(Map.of("root", Data.Output.of(List.of(Data.Value.text("ok")))))));
+    history.add(event(3, EventType.TIMER_FIRED, "signal"));
+    history.add(event(4, EventType.COMPLETED, "other"));
+    var finished = interpreter.replay(definition, history, Map.of());
+    assertEquals(Data.Output.timedOut(), finished.values().get("join"));
+    assertEquals(State.COMPLETED, finished.state());
+  }
+
+  @Test
+  void valueAndStatusExpressionsCanEvaluateFalseWithoutBeingSkipped() {
+    Definition value =
+        new Definition(
+            "value-false",
+            1,
+            List.of(
+                node("root", Kind.ACTIVITY, List.of(), null),
+                new Node(
+                    "check",
+                    Kind.BRANCH,
+                    List.of("root"),
+                    null,
+                    null,
+                    null,
+                    Type.TEXT,
+                    Type.BOOLEAN,
+                    0,
+                    null,
+                    "value.root==different",
+                    null)));
+    var history = List.of(event(1, EventType.STARTED, ""), event(2, EventType.COMPLETED, "root"));
+    assertEquals(
+        Data.Output.of(List.of(Data.Value.bool(false))),
+        new Interpreter().replay(value, history, Map.of()).values().get("check"));
+    Definition status =
+        new Definition(
+            "status-false",
+            1,
+            List.of(
+                node("root", Kind.SIGNAL, List.of(), null),
+                new Node(
+                    "check",
+                    Kind.BRANCH,
+                    List.of("root"),
+                    null,
+                    null,
+                    null,
+                    Type.TEXT,
+                    Type.BOOLEAN,
+                    0,
+                    null,
+                    "status.root==VALUE",
+                    null)));
+    assertEquals(
+        Data.Output.of(List.of(Data.Value.bool(false))),
+        new Interpreter()
+            .replay(
+                status,
+                List.of(event(1, EventType.STARTED, ""), event(2, EventType.TIMER_FIRED, "root")),
+                Map.of())
+            .values()
+            .get("check"));
+  }
+
+  @Test
+  void maximumReverseDeclaredPureDagConvergesAtTheDefinedPassBoundary() {
+    List<Node> nodes = new ArrayList<>();
+    for (int index = 0; index < 128; index++) {
+      String previous = "n" + (index - 1);
+      nodes.add(
+          new Node(
+              "n" + index,
+              Kind.BRANCH,
+              index == 0 ? List.of() : List.of(previous),
+              null,
+              null,
+              null,
+              Type.BOOLEAN,
+              Type.BOOLEAN,
+              0,
+              null,
+              index == 0 ? "input.flag==true" : "value." + previous + "==true",
+              null));
+    }
+    Collections.reverse(nodes);
+    Definition definition = new Definition("reverse-dag", 1, nodes, Map.of("flag", Type.BOOLEAN));
+    var input =
+        new Data.ExecutionInput(Data.Value.bool(true), Map.of("flag", Data.Value.bool(true)));
+    Result result =
+        new Interpreter().replay(definition, List.of(event(1, EventType.STARTED, "")), input);
+    assertEquals(State.COMPLETED, result.state());
+    assertTrue(result.decisions().isEmpty());
+    assertEquals(128, result.values().size());
+    assertTrue(
+        result.values().values().stream()
+            .allMatch(output -> output.equals(Data.Output.of(List.of(Data.Value.bool(true))))));
+  }
+
+  @Test
   void unknownRequiresRecordedOperatorDecision() {
     Definition d = new Definition("one", 1, List.of(node("root", Kind.ACTIVITY, List.of(), null)));
     List<Event> h =
@@ -213,6 +456,72 @@ class InterpreterTest {
                         3, EventType.OPERATOR_RESOLVED, "root", "NOT_APPLIED", Instant.EPOCH)),
                 Map.of())
             .state());
+  }
+
+  @Test
+  void cancellationAfterFailureDependsOnRealUnfulfilledCompensation() {
+    Interpreter interpreter = new Interpreter();
+    for (String compensation : Arrays.asList(null, "release")) {
+      Definition definition =
+          new Definition(
+              "failed-with-obligation",
+              1,
+              List.of(
+                  node("root", Kind.ACTIVITY, List.of(), compensation),
+                  node("later", Kind.ACTIVITY, List.of("root"), null)));
+      List<Event> failed =
+          List.of(
+              event(1, EventType.STARTED, ""),
+              event(2, EventType.COMPLETED, "root"),
+              event(3, EventType.FAILED, "later"),
+              event(4, EventType.CANCELLED, ""));
+      if (compensation == null)
+        assertThrows(
+            IllegalArgumentException.class, () -> interpreter.replay(definition, failed, Map.of()));
+      else {
+        Result result = interpreter.replay(definition, failed, Map.of());
+        assertEquals(State.COMPENSATING, result.state());
+        assertEquals(List.of("comp-root"), result.decisions().stream().map(Decision::id).toList());
+      }
+    }
+  }
+
+  @Test
+  void pausedForwardWorkRejectsNewDispatchButRecordsAnAlreadyAuthorizedCompletion() {
+    Definition definition =
+        new Definition(
+            "pause-forward",
+            1,
+            List.of(
+                node("root", Kind.ACTIVITY, List.of(), null),
+                node("left", Kind.ACTIVITY, List.of("root"), null),
+                node("right", Kind.ACTIVITY, List.of("root"), null)));
+    Interpreter interpreter = new Interpreter();
+    for (Event pause :
+        List.of(
+            event(3, EventType.FAILED, "left"),
+            new Event(
+                3,
+                EventType.CANCELLED,
+                "",
+                "cancelled",
+                Instant.ofEpochSecond(3),
+                List.of(Data.Value.integer(1))))) {
+      List<Event> prefix =
+          List.of(event(1, EventType.STARTED, ""), event(2, EventType.COMPLETED, "root"), pause);
+      List<Event> newDispatch = new ArrayList<>(prefix);
+      newDispatch.add(event(4, EventType.DISPATCHED, "right"));
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> interpreter.replay(definition, newDispatch, Map.of()));
+      List<Event> acknowledged = new ArrayList<>(prefix);
+      acknowledged.add(event(4, EventType.COMPLETED, "right"));
+      Result result = interpreter.replay(definition, acknowledged, Map.of());
+      assertEquals(
+          pause.type() == EventType.CANCELLED ? State.CANCELLED : State.FAILED, result.state());
+      assertEquals(Data.Output.of(List.of(Data.Value.text("ok"))), result.values().get("right"));
+      assertTrue(result.decisions().isEmpty());
+    }
   }
 
   @Test

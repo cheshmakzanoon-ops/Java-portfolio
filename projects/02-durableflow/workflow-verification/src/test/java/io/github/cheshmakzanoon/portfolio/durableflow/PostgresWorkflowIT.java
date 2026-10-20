@@ -26,7 +26,7 @@ class PostgresWorkflowIT {
     pg =
         new PostgreSQLContainer(
             DockerImageName.parse(
-                    "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7")
+                    "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
                 .asCompatibleSubstituteFor("postgres"));
     pg.start();
     store = new WorkflowStore(pg.getJdbcUrl(), pg.getUsername(), pg.getPassword());
@@ -643,6 +643,20 @@ class PostgresWorkflowIT {
             client
                 .send(oversized, java.net.http.HttpResponse.BodyHandlers.ofString())
                 .statusCode());
+        WorkerEnvelopeFixture.verify(store, client, base, workerToken, tenant);
+        context.getBean(WorkflowStore.class).close();
+        var unavailable =
+            client.send(
+                java.net.http.HttpRequest.newBuilder(java.net.URI.create(base + "/health"))
+                    .GET()
+                    .build(),
+                java.net.http.HttpResponse.BodyHandlers.ofString());
+        assertEquals(503, unavailable.statusCode());
+        var problem = new ObjectMapper().readTree(unavailable.body());
+        assertEquals(503, problem.path("status").asInt());
+        assertEquals("Workflow storage unavailable", problem.path("title").asText());
+        assertFalse(unavailable.body().contains(pg.getPassword()));
+        assertFalse(unavailable.body().contains("HikariDataSource"));
       }
     } finally {
       if (context != null) context.close();

@@ -28,7 +28,7 @@ public class Application {
     tools.jackson.core.StreamReadConstraints.overrideDefaultStreamReadConstraints(
         tools.jackson.core.StreamReadConstraints.builder()
             .maxNestingDepth(32)
-            .maxStringLength(4096)
+            .maxStringLength(WorkflowLimits.TASK_INPUT_BYTES)
             .maxNumberLength(32)
             .build());
   }
@@ -120,8 +120,17 @@ public class Application {
           protected void doFilterInternal(
               HttpServletRequest request, HttpServletResponse response, FilterChain chain)
               throws IOException, ServletException {
-            byte[] bytes = request.getInputStream().readNBytes(8193);
-            if (bytes.length > 8192) {
+            int limit =
+                Set.of(
+                            "/v1/worker/dispatch",
+                            "/v1/worker/heartbeat",
+                            "/v1/worker/complete",
+                            "/v1/worker/fail")
+                        .contains(request.getServletPath())
+                    ? WorkflowLimits.WORKER_REQUEST_BYTES
+                    : WorkflowLimits.PUBLIC_REQUEST_BYTES;
+            byte[] bytes = request.getInputStream().readNBytes(limit + 1);
+            if (bytes.length > limit) {
               writeProblem(response, 413, "Payload limit exceeded");
               return;
             }
@@ -309,6 +318,14 @@ public class Application {
   public void fail(@RequestBody Failure f) {
     check(f.claim());
     store.fail(f.claim(), f.definitive(), f.reason());
+  }
+
+  @ExceptionHandler(PersistenceFailure.class)
+  public ResponseEntity<ProblemDetail> storageProblem(PersistenceFailure failure) {
+    ProblemDetail problem = ProblemDetail.forStatus(503);
+    problem.setTitle("Workflow storage unavailable");
+    problem.setDetail("Retry with the same idempotency key after storage recovers");
+    return ResponseEntity.status(503).body(problem);
   }
 
   @ExceptionHandler({

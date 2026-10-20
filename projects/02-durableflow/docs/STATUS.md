@@ -2,24 +2,29 @@
 
 DurableFlow has executable replay, persistence, security, process-crash, and standalone recovery checks. The prescribed three-run performance baseline is incomplete, so no stable capacity budget or production-readiness claim is made.
 
-## Current hardening
+## Current verification
 
-The provider transport now bounds response buffering, rejects redirects as acknowledgements, validates its fixed endpoint, and decodes receipt bytes as strict UTF-8. Generic HTTP errors remain uncertain; only the configured provider's explicit pre-effect refusal permits a definitive retry. Typed text screening also rejects credential markers across line separators.
-
-Current verification passed on **2026-10-20**: **74 ordinary methods and 14 PostgreSQL integration methods**, with zero failures, errors, or skips. The build completed at `2026-10-20T07:31:38Z`. Its checks include formatting, coverage thresholds, actual process-crash recovery, and the new HTTP boundary regressions. A provider effect followed by HTTP 500 reaches manual review with exactly one effect and no successor claim.
+The full PostgreSQL **18.6** integration build passed on **2026-10-20 at 09:18:01 UTC**: **96 ordinary Java test methods and 22 PostgreSQL integration methods**, with zero failures, errors, or skips. Ordinary verification also executes **ten real-JVM/fake-Compose lifecycle cases** and nine preparation/refusal cases. The lifecycle cases require no Docker. The final ordinary preparation build passed at 09:34:56 UTC and produced a source/artifact-bound runtime receipt.
 
 ```bash
 source scripts/cloud-env.sh
 ./mvnw -f projects/02-durableflow/pom.xml \
-  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A02/m2 -B -ntp \
-  com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify
+  -Dmaven.repo.local=.work/A02/m2 -B -ntp spotless:apply -Pintegration verify
 ```
 
-The five new transport tests exercise actual fixed-length and chunked responses, redirect refusal, valid and malformed Unicode, endpoint validation, and explicit refusal classification. The additional model regression covers multiline markers; the additional PostgreSQL regression verifies non-idempotent uncertainty after a server error. The standalone lifecycle and full reference workload were not rerun for this change.
+The expanded checks cover isolated scheduler transactions, full-history failure, locked-row skipping, restart-persisted deferral, and a deterministic rollback → successful cancellation → rejected stale deferral interleaving. Worker and scheduler tests inject transient storage outages, recover without speculative dispatch, interrupt claim backoff, and expose permanent SQL failures. A provider receipt barrier checks interrupted shutdown while a committed external effect still awaits acknowledgement. The authenticated maximum-size claim test verifies authoritative claim matching, dispatch, actual provider delivery/deduplication, and persisted completion; public requests retain their 8 KiB bound.
+
+Replay tests enforce reverse compensation identity and bounded fixed-point convergence. Transport tests bound fixed/chunked responses, reject redirect acknowledgements, preserve Unicode receipts, distinguish explicit pre-effect refusal from uncertainty, and exercise the derived provider request bound. The PostgreSQL process-crash and non-idempotent uncertainty cases remain part of the integration gate.
+
+The final pure-component mutation build passed at **08:41:19 UTC** on the same production Java sources and patched dependency baseline: **41 / 41** generated `Data*` mutants killed, **158 / 162** current-interpreter mutants killed, and **51 / 51** selected persistence-policy/transaction/replay/classification mutants killed. All generated mutants are included in those denominators. The four interpreter survivors concern duplicate defensive validation, a bounded-loop counter direction, and a redundant guard; no generated mutants lacked coverage or timed out. The unchanged threshold is 70%. This scope does **not** mutation-certify JDBC SQL, scheduler concurrency, worker shutdown, frozen interpreters, or shell scripts; their evidence comes from the deterministic ordinary/integration/lifecycle checks.
+
+The initial final-image build failed in a newly added lifecycle regression before PostgreSQL startup: procfs could report a live stat and then an empty command line while that process exited. A second start/state snapshot now distinguishes that exit without authorizing an empty or mismatched command line; the deterministic regression and the full rerun passed. Earlier source-specific failures and successful runs remain distinct from the final results.
+
+The current standalone PostgreSQL18.6 lifecycle passed the five-scenario fault demo at 09:25:05 UTC, then stopped all seven runtime roles, restarted from prepared artifacts, retained all four workflow instances, and stopped again. No volume was deleted. The [hardening evidence](../evidence/runtime-hardening-2026-10-20.json) records commands, exact test/mutation denominators, source/receipt identities, image pin, observed demo outcomes and local log digests. A final diagnostic-only script change makes restricted listener ownership actionable; it does not relax the failure policy.
 
 ## Historical correctness evidence
 
-The retained [verification envelope](../evidence/verification.json), [environment](../evidence/verification-environment.json) record a successful integration build on 2026-10-18: **68 ordinary methods and 13 PostgreSQL methods**, with no failures, errors, or skips. PostgreSQL 18.3 uses the same digest as Compose. Source identity and exact commands are recorded in the evidence files.
+The retained [verification envelope](../evidence/verification.json), [environment](../evidence/verification-environment.json) record a successful integration build on 2026-10-18: **68 ordinary methods and 13 PostgreSQL methods**, with no failures, errors, or skips. That historical build used PostgreSQL 18.3; current Compose and integration tests pin PostgreSQL 18.6. Source identity and exact commands are recorded in the evidence files.
 
 That suite exercises:
 

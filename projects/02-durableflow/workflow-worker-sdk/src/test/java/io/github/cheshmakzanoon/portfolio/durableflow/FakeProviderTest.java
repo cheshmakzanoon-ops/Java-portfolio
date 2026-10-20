@@ -90,6 +90,43 @@ class FakeProviderTest {
   }
 
   @Test
+  void maximumProviderBodyIsAcceptedAndOversizeCannotCreateAnEffect(
+      @org.junit.jupiter.api.io.TempDir Path directory) throws Exception {
+    Path log = directory.resolve("bounded-effects.log");
+    String parameters = "x".repeat(WorkflowLimits.PROVIDER_REQUEST_BYTES);
+    String receipt;
+    try (HttpClient client = HttpClient.newHttpClient()) {
+      try (FakeProvider provider = new FakeProvider(0, log)) {
+        var accepted =
+            client.send(
+                request(provider.port(), "maximum", parameters, "normal", 10000),
+                HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, accepted.statusCode());
+        receipt = accepted.body();
+        assertEquals(1, provider.effectCount());
+        assertEquals(
+            400,
+            client
+                .send(
+                    request(provider.port(), "oversize", parameters + "x", "normal", 10000),
+                    HttpResponse.BodyHandlers.ofString())
+                .statusCode());
+        assertEquals(1, provider.effectCount());
+      }
+      try (FakeProvider restarted = new FakeProvider(0, log)) {
+        assertEquals(
+            receipt,
+            client
+                .send(
+                    request(restarted.port(), "maximum", parameters, "normal", 10000),
+                    HttpResponse.BodyHandlers.ofString())
+                .body());
+        assertEquals(1, restarted.effectCount());
+      }
+    }
+  }
+
+  @Test
   void restartStreamsALogLargerThanTheProviderHeap(@org.junit.jupiter.api.io.TempDir Path directory)
       throws Exception {
     Path log = directory.resolve("large-effects.log"),

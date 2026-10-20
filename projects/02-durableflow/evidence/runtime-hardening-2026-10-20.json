@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "project": "durableflow",
+  "recordedAt": "2026-10-20T09:35:56.533132+00:00",
+  "source": {
+    "sourceFingerprint": "sha256:3fb69d506e84b69d72b75bef93891ab217ef356101e549ef8708de1adb9842be",
+    "rootPomSha256": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8"
+  },
+  "verification": {
+    "integrationCommand": "./mvnw -f projects/02-durableflow/pom.xml -Dmaven.repo.local=.work/A02/m2 -B -ntp spotless:apply -Pintegration verify",
+    "integrationFinishedAt": "2026-10-20T09:18:01Z",
+    "ordinaryJavaMethods": 96,
+    "postgresqlIntegrationMethods": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "postgresqlImage": "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873",
+    "lifecycleSubprocessCases": 10,
+    "preparationSubprocessCases": 9
+  },
+  "mutation": {
+    "finishedAt": "2026-10-20T08:41:19Z",
+    "thresholdPercent": 70,
+    "data": {
+      "killed": 41,
+      "generated": 41
+    },
+    "currentInterpreter": {
+      "killed": 158,
+      "generated": 162,
+      "survived": 4,
+      "noCoverage": 0,
+      "timeouts": 0
+    },
+    "selectedPersistence": {
+      "killed": 51,
+      "generated": 51
+    },
+    "scope": [
+      "Data*",
+      "CurrentInterpreter",
+      "WorkflowReplay",
+      "ActivityFailure",
+      "JdbcTransactions",
+      "PersistenceFailure"
+    ],
+    "excludesCertificationOf": [
+      "SQL/concurrent scheduling",
+      "worker lifecycle",
+      "frozen interpreters",
+      "shell scripts"
+    ],
+    "productionJavaUnchangedAfterThisRun": true
+  },
+  "lifecycle": {
+    "faultDemo": {
+      "project": "durableflow",
+      "mediaId": "ac7b94be-f076-476b-83a0-0c4ab05688b3",
+      "timeline": [
+        {
+          "recoveryDelaySeconds": 52.524265965,
+          "event": "killed-worker-and-restarted-scheduler-idempotent-recovery",
+          "elapsedSeconds": 61.002397707,
+          "effectCount": 1
+        },
+        {
+          "elapsedSeconds": 110.523056886,
+          "effectCount": 1,
+          "event": "unknown-outcome-paused-and-audited-resolution"
+        },
+        {
+          "event": "compensation-failed-visibly",
+          "elapsedSeconds": 114.300791589
+        }
+      ],
+      "orderId": "74117df9-dbfa-454e-97a7-dc5d9ebc6a28",
+      "schemaVersion": 1,
+      "workload": "asserted-fault-demo-v1",
+      "compensationId": "b26025e7-a6da-45ea-9df1-79f885485a26",
+      "timestamp": "2026-10-20T09:25:05.525731605Z",
+      "assertions": {
+        "failed": 0,
+        "scenarios": 5
+      },
+      "unsafeId": "23d5ee68-09b6-4e06-b6f9-67d68b6441a2"
+    },
+    "retainedInstancesBefore": 4,
+    "retainedInstancesAfter": 4,
+    "runtimeProcessesStopped": true,
+    "runningComposeContainers": 0,
+    "volumesDeleted": false,
+    "restartReceiptSourceFingerprint": "sha256:791b5cbe614cc4200f6c23043d867ff20f480a246443f55756cecd28f80c2cfb",
+    "subsequentScriptChange": "Actionable refusal message for restricted listener procfs; same failure/ownership policy. Covered by the ten-case subprocess suite."
+  },
+  "limits": [
+    "Three-run reference workload remains incomplete; no fresh benchmark was run.",
+    "Managed procfs may hide orphan listener FDs. Repeated up fails closed, preserving existing resources; down then up is supported.",
+    "Prior failed/source-specific runs are retained separately; this record does not supersede historical benchmark identities."
+  ],
+  "localLogDigests": {
+    ".work/A02/deep-final-postgres18.6-integration-2.log": "d665585bffae7c42eb54507ae0fcea194975802d3c272d6036f17fb93a13b958",
+    ".work/A02/deep-final-ordinary-mutation.log": "721554638f34128dcd1bbcb121f8b407f3228068444b80d6d17899b3904ccf2c",
+    ".work/A02/lifecycle-ownership-tests-final-restricted-procfs.log": "fcf5dca5289d42bcf16412be605ff579d4a6c44f321a7cd9fbfd71dbfefcaa6b",
+    ".work/A02/deep-final-runtime-up.log": "d3b259dd6f548677859aa6ee727eaaa7ad3e3bc759dc6dbd16d74d2c27a0283e",
+    ".work/A02/deep-final-runtime-demo.log": "36f9a948111c05cdcc45f19108797d27aa211078771d8c16d2cc3cad6918193f",
+    ".work/A02/deep-final-runtime-down.log": "531acc00f2222b41393987124b119f57b2a6e819dff8198140aee45ee68b0bba",
+    ".work/A02/deep-final-runtime-prepare-restricted-procfs.log": "2ffc6cb7945ed5083dd669f6f880a3af76217e88f4132b6c923bfc770f9443de",
+    ".work/A02/deep-final-runtime-restart.log": "0f97cab3b5ec64286f7066967f8a80f9e73dad4c1ef73c6fb0bfca979e69c623",
+    ".work/A02/deep-final-runtime-down-restricted-procfs.log": "531acc00f2222b41393987124b119f57b2a6e819dff8198140aee45ee68b0bba",
+    ".work/A02/deep-final-runtime-stopped.txt": "ef9336e494f38ef3fad0b9480b66292bb52974b17e6b95cc64b98694db4da90a",
+    ".work/A02/deep-final-running-containers.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".work/A02/deep-final-runtime-prepare-actionable-error.log": "be70c25adced6d3f756630b103501968a4d45c4ec50b7dc6f59c33246ebc1f48"
+  },
+  "finalPreparation": {
+    "timestamp": "2026-10-20T09:34:56.962304+00:00",
+    "sourceFingerprint": "sha256:3fb69d506e84b69d72b75bef93891ab217ef356101e549ef8708de1adb9842be",
+    "rootPomSha256": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+    "artifacts": {
+      "workflow-model/target/durableflow-workflow-model-1.0.0-SNAPSHOT.jar": "ee9bdd155e6b66038d20c86908cee2ccaaeac5738cc18b5ec19debbaf1c63fe5",
+      "workflow-engine/target/durableflow-workflow-engine-1.0.0-SNAPSHOT.jar": "3b67f0e0d26b9cc49824ddf5d538a9f5285be42797af04dbc5a4b5f1bc370dd4",
+      "workflow-persistence/target/durableflow-workflow-persistence-1.0.0-SNAPSHOT.jar": "a59d0a80cae56fc10a9ea8e529b603ac017d3c8293435106dc3dd14f19098586",
+      "workflow-worker-sdk/target/durableflow-workflow-worker-sdk-1.0.0-SNAPSHOT.jar": "0b8eb030d3b07af95218b990bc6f7b35c422a239139db729ff3e1842705ced6b",
+      "workflow-api/target/durableflow-workflow-api-1.0.0-SNAPSHOT.jar": "ac8655b72cae37dca47ab34e931e5e4873ee95e0703614dad89e15ccbdb3f819",
+      "workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT.jar": "17b567f9c6589968e57899d8a504dfee98d5f7a6a1982545dc98c871fcd3304d",
+      "workflow-api/target/durableflow-workflow-api-1.0.0-SNAPSHOT-exec.jar": "9b74e05482c941ace19c1399c217654efe75731ea3617cb511bf4cd7a0059f24",
+      "workflow-verification/target/durableflow-workflow-verification-1.0.0-SNAPSHOT-exec.jar": "12fd01c13bebae0c2d737bad7d10541d3120415d215a4283d80b091878709013"
+    },
+    "verification": {
+      "command": "./mvnw -f projects/02-durableflow/pom.xml -Dmaven.repo.local=.work/A02/m2 -B -ntp verify",
+      "exitCode": 0,
+      "logSha256": "86dcfdc0203f0fc487bec261cc322d43b5775526e96e80940fda81739ffc6735"
+    },
+    "ordinaryJavaMethods": 96,
+    "lifecycleSubprocessCases": 10,
+    "preparationSubprocessCases": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

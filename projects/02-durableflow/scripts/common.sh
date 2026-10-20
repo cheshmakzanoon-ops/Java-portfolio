@@ -20,14 +20,13 @@ build() {
 }
 launch() {
   local name=$1 main=$2; shift 2
-  local pid_file="$PROJECT/target/runtime/$name.pid"
-  if [[ -f "$pid_file" ]]; then
-    local existing; existing=$(cat "$pid_file")
-    if [[ "$existing" =~ ^[0-9]+$ ]] && kill -0 "$existing" 2>/dev/null; then
-      local command_line; command_line=$(ps -p "$existing" -o args= || true)
-      if [[ "$command_line" == *"$JAR"* && "$command_line" == *"$main"* && "$command_line" == *"-Ddurableflow.process.name=$name "* ]]; then return 0; fi
-    fi
-  fi
-  nohup java -Xmx128m "-Ddurableflow.process.name=$name" "-Xlog:gc*:file=$PROJECT/target/runtime/$name-gc.log:time,uptime,level,tags" -Dloader.main="$main" -cp "$JAR" org.springframework.boot.loader.launch.PropertiesLauncher "$@" > "$PROJECT/target/runtime/$name.log" 2>&1 & echo $! > "$pid_file"
+  [[ "$main" == io.github.cheshmakzanoon.portfolio.durableflow.RuntimeMain ]] || { echo 'Unsupported runtime main' >&2; return 2; }
+  case "$name" in
+    provider) [[ "$*" == provider ]] || return 2 ;;
+    scheduler-*) [[ "$*" == scheduler ]] || return 2 ;;
+    worker-*) [[ "$#" == 2 && "$1" == worker && "$2" == "$name" ]] || return 2 ;;
+    *) echo 'Unsupported runtime role' >&2; return 2 ;;
+  esac
+  python3 "$PROJECT/scripts/lifecycle.py" launch "$name"
 }
 run_main() { (cd "$PROJECT" && java -Xmx512m "-Xlog:gc*:file=$PROJECT/target/runtime/$1-gc.log:time,uptime,level,tags" -Dloader.main="io.github.cheshmakzanoon.portfolio.durableflow.$1" -cp "$JAR" org.springframework.boot.loader.launch.PropertiesLauncher "${@:2}"); }

@@ -9,6 +9,27 @@ import org.junit.jupiter.api.Test;
 
 class PreparedBuildTest {
   @Test
+  void launcherPreservesOwnershipAndRollsBackOnlyItsStartupAcquisitions() throws Exception {
+    Process process =
+        new ProcessBuilder("python3", Path.of("..", "scripts", "test-lifecycle.py").toString())
+            .redirectErrorStream(true)
+            .start();
+    try {
+      assertTrue(
+          process.waitFor(60, TimeUnit.SECONDS), "lifecycle ownership regressions timed out");
+      String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+      assertEquals(0, process.exitValue(), output);
+      assertTrue(output.contains("Ran 10 tests"), output);
+      assertFalse(output.contains("ResourceWarning"), output);
+    } finally {
+      if (process.isAlive()) {
+        process.destroyForcibly();
+        assertTrue(process.waitFor(5, TimeUnit.SECONDS), "lifecycle probe failed to stop");
+      }
+    }
+  }
+
+  @Test
   void preparedRuntimeAcceptsOnlyMatchingSourceArtifactsAndSuccessfulReceipt() throws Exception {
     Process process =
         new ProcessBuilder("python3", Path.of("..", "scripts", "test-prepared-build.py").toString())
