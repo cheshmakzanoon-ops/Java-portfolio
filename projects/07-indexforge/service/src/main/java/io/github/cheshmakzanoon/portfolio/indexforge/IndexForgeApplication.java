@@ -68,19 +68,24 @@ public class IndexForgeApplication {
       throw new IllegalArgumentException("disposable development issuer requires loopback binding");
     LocalOidcIssuer issuer =
         new LocalOidcIssuer(Integer.parseInt(env.getProperty("indexforge.issuer-port", "18701")));
-    Path data = Path.of(env.getProperty("indexforge.data", ".runtime/indexforge"));
-    Files.createDirectories(data);
-    DurableFiles.atomicWrite(
-        data.resolve("dev-token"),
-        issuer
-            .token("alice", "demo", Instant.now().plusSeconds(3600), "indexforge")
-            .getBytes(java.nio.charset.StandardCharsets.UTF_8));
     try {
-      Files.setPosixFilePermissions(
+      Path data = Path.of(env.getProperty("indexforge.data", ".runtime/indexforge"));
+      Files.createDirectories(data);
+      DurableFiles.atomicWrite(
           data.resolve("dev-token"),
-          java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"));
-    } catch (UnsupportedOperationException ignored) {
+          issuer
+              .token("alice", "demo", Instant.now().plusSeconds(3600), "indexforge")
+              .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      try {
+        Files.setPosixFilePermissions(
+            data.resolve("dev-token"),
+            java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"));
+      } catch (UnsupportedOperationException ignored) {
+      }
+      return issuer;
+    } catch (IOException | RuntimeException | Error failure) {
+      issuer.close();
+      throw failure;
     }
-    return issuer;
   }
 }

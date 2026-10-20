@@ -25,42 +25,62 @@ public final class GenerationPublisher implements AutoCloseable {
   private final Path root;
   private final Map<String, Handle> handles = new HashMap<>();
   private String current;
-  private boolean closed;
+  private boolean closed, closing;
   private boolean publicationUncertain;
 
-  public GenerationPublisher(Path root) throws IOException {
-    this.root = root;
-    Files.createDirectories(root.resolve("generations"));
-    Files.createDirectories(root.resolve("quarantine"));
-    Files.createDirectories(root.resolve("staging"));
-    recover();
-    if (current == null) {
-      try (var generations = Files.list(root.resolve("generations"))) {
-        if (generations.findAny().isPresent())
-          throw new IOException("no valid generation pointer; preserve files for recovery");
-      }
-    }
-    pruneFiles();
+  @FunctionalInterface
+  interface RecoveryRepair {
+    void write(Path pointer, byte[] value) throws IOException;
   }
 
-  private void recover() throws IOException {
+  public GenerationPublisher(Path root) throws IOException {
+    this(root, DurableFiles::atomicWrite);
+  }
+
+  GenerationPublisher(Path root, RecoveryRepair repair) throws IOException {
+    this.root = root;
+    try {
+      Files.createDirectories(root.resolve("generations"));
+      Files.createDirectories(root.resolve("quarantine"));
+      Files.createDirectories(root.resolve("staging"));
+      recover(repair);
+      if (current == null) {
+        try (var generations = Files.list(root.resolve("generations"))) {
+          if (generations.findAny().isPresent())
+            throw new IOException("no valid generation pointer; preserve files for recovery");
+        }
+      }
+      pruneFiles();
+    } catch (IOException | RuntimeException | Error failure) {
+      try {
+        close();
+      } catch (IOException cleanup) {
+        failure.addSuppressed(cleanup);
+      }
+      throw failure;
+    }
+  }
+
+  private void recover(RecoveryRepair repair) throws IOException {
     for (String pointer : List.of("CURRENT", "PREVIOUS")) {
       Path p = root.resolve(pointer);
       if (!Files.exists(p)) continue;
+      Handle recovered;
       try {
-        String id = readPointer(p);
-        Handle h = open(id);
-        handles.put(id, h);
-        current = id;
-        if (pointer.equals("PREVIOUS"))
-          DurableFiles.atomicWrite(root.resolve("CURRENT"), pointer(id));
-        break;
-      } catch (IOException | IllegalArgumentException ignored) {
+        recovered = open(readPointer(p));
+      } catch (IOException | IllegalArgumentException invalid) {
         Files.move(
             p,
             root.resolve("quarantine").resolve(pointer + "-" + UUID.randomUUID()),
             StandardCopyOption.ATOMIC_MOVE);
+        continue;
       }
+      // Once validation succeeds, a failed pointer repair is an operational failure. It must not
+      // quarantine the valid fallback or expose a reader without its durable CURRENT pointer.
+      handles.put(recovered.id, recovered);
+      if (pointer.equals("PREVIOUS")) repair.write(root.resolve("CURRENT"), pointer(recovered.id));
+      current = recovered.id;
+      break;
     }
     try (var staged = Files.list(root.resolve("staging"))) {
       for (Path p : staged.toList())
@@ -164,14 +184,24 @@ public final class GenerationPublisher implements AutoCloseable {
     if (publicationUncertain)
       throw new IOException("publication outcome requires restart recovery");
     Path destination = root.resolve("generations").resolve(built.id());
-    Files.move(built.path(), destination, StandardCopyOption.ATOMIC_MOVE);
-    DurableFiles.syncDirectory(destination.getParent());
-    fault.at(GenerationBuilder.Boundary.AFTER_RENAME);
-    Handle next = open(built.id());
+    if (!built.id().matches("[a-f0-9-]{36}")
+        || !built
+            .path()
+            .toAbsolutePath()
+            .normalize()
+            .equals(root.resolve("staging").resolve(built.id()).toAbsolutePath().normalize())
+        || Files.exists(destination, LinkOption.NOFOLLOW_LINKS))
+      throw new IOException("unowned or existing publication destination");
+    Handle next = null;
     String old = current;
-    boolean installed = false;
+    boolean installed = false, moved = false;
     Throwable primary = null;
     try {
+      Files.move(built.path(), destination, StandardCopyOption.ATOMIC_MOVE);
+      moved = true;
+      DurableFiles.syncDirectory(destination.getParent());
+      fault.at(GenerationBuilder.Boundary.AFTER_RENAME);
+      next = open(built.id());
       if (old != null) DurableFiles.atomicWrite(root.resolve("PREVIOUS"), pointer(old));
       fault.at(GenerationBuilder.Boundary.BEFORE_POINTER);
       DurableFiles.atomicWrite(root.resolve("CURRENT"), pointer(built.id()));
@@ -184,7 +214,7 @@ public final class GenerationPublisher implements AutoCloseable {
       primary = failure;
       // atomic rename can succeed before its directory fsync reports failure. Reconcile the
       // actual pointer before allowing a subsequent writer to supersede an unknown outcome.
-      if (!installed) {
+      if (!installed && next != null) {
         try {
           if (built.id().equals(readPointer(root.resolve("CURRENT")))) {
             handles.put(built.id(), next);
@@ -201,8 +231,19 @@ public final class GenerationPublisher implements AutoCloseable {
     } finally {
       try {
         if (!installed) {
-          next.reader.close();
-          next.directory.close();
+          if (next != null) {
+            try {
+              next.reader.close();
+            } finally {
+              next.directory.close();
+            }
+          }
+          if (moved && !publicationUncertain) {
+            try (var paths = Files.walk(destination)) {
+              for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) Files.delete(path);
+            }
+            DurableFiles.syncDirectory(destination.getParent());
+          }
         } else {
           if (old != null) {
             Handle previous = handles.get(old);
@@ -308,18 +349,44 @@ public final class GenerationPublisher implements AutoCloseable {
   }
 
   private void ensureOpen() {
-    if (closed) throw new IllegalStateException("publisher closed");
+    if (closed || closing) throw new IllegalStateException("publisher closed");
+  }
+
+  public synchronized void requireNoActiveLeases() throws IOException {
+    if (handles.values().stream().anyMatch(handle -> handle.leases != 0))
+      throw new IOException("active leases");
+  }
+
+  /** Freeze admission before a multi-publisher shutdown; a rejected shutdown can reopen it. */
+  public synchronized void prepareClose() throws IOException {
+    if (closed) return;
+    requireNoActiveLeases();
+    closing = true;
+  }
+
+  public synchronized void cancelClose() {
+    if (!closed) closing = false;
   }
 
   @Override
   public synchronized void close() throws IOException {
-    for (Handle h : handles.values()) {
-      if (h.leases != 0) throw new IOException("active leases");
-      h.reader.close();
-      h.directory.close();
+    if (closed) return;
+    requireNoActiveLeases();
+    closed = true;
+    IOException failure = null;
+    for (Handle handle : handles.values()) {
+      for (AutoCloseable resource : List.of(handle.reader, handle.directory)) {
+        try {
+          resource.close();
+        } catch (Exception close) {
+          IOException next = close instanceof IOException io ? io : new IOException(close);
+          if (failure == null) failure = next;
+          else failure.addSuppressed(next);
+        }
+      }
     }
     handles.clear();
-    closed = true;
+    if (failure != null) throw failure;
   }
 
   public static final class RetiredGeneration extends IllegalStateException {

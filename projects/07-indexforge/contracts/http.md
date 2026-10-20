@@ -1,15 +1,71 @@
 # HTTP contract
 
-The Boot service binds `127.0.0.1:18700` by default. Request body limit65536 raw bytes;32 concurrent admitted requests;16 Tomcat workers; ingestion2 workers and8 queued tasks. Bounded search text512 Java characters/64 lexical tokens/depth8; pageSize1–100; candidate window500; suggestions20. All v1 routes require RS256 bearer JWT, issuer/audience/expiry/subject/typed tenant/search scope, and a server-side principal mapping. Writes additionally require ingest scope; reindex/metrics require server-side administration.
+The Boot service binds `127.0.0.1:18700` by default and accepts JSON. The [operations guide](../docs/OPERATIONS.md#authenticated-http-example) provides a complete executable workflow. Route definitions and application errors are implemented by [SearchController](../service/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/SearchController.java) and [ErrorResponses](../service/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/ErrorResponses.java).
 
-- `GET /health` → `{status:UP}`.
-- `POST /v1/ingestions` body `{repository, revision, idempotencyKey, path, archive, complete, deletions}`. Tenant comes from authenticated server context. Returns202 `{id,state}` after immutable registration and bounded queue admission. Paths are resolved only beneath `indexforge.sources/TENANT/REPOSITORY`, with tenant and repository authorized before any source open; binding symlinks are rejected.
-- `GET /v1/ingestions/{id}` → authorized durable registration/completion and local queue state.
-- `POST /v1/ingestions/{id}/resume` →202 through the same bounded queue, using persisted immutable manifest/CAS without requiring original source files.
-- `DELETE /v1/ingestions/{id}` → authorized cooperative cancellation.
-- `POST /v1/search` body `{text,pageSize,cursor,filters}`. Typed filter keys repository/language/kind/coordinates/version. Response `{generationId,scoringVersion,totalHits,relation,results,facets,cursor}`; each hit carries key/path/repository/digest/score/plain snippet/explanation (authorized matching-feature summary capped at4096 characters; raw Lucene collection statistics omitted).
-- `POST /v1/suggest` body `{prefix}` → authorized identifier completions.
-- `POST /v1/reindexes` → requires administrator; returns202 and rebuilds tenant index through the same bounded queue and committed-generation path, preserving each source revision.
-- `GET /v1/metrics` → administrator-only operation counts and queued work.
+## Authentication and limits
 
-Errors:400 invalid request/query/cursor;401 token invalid;403 authorization denied;409 reused key with different immutable manifest;410 retired generation;413 raw body too large;422 source/storage failure;429 request or queue capacity. Error envelopes do not contain source names or exception messages. Snippets/explanations are JSON strings, intended to be rendered as text; there is no HTML UI.
+Every `/v1` route requires an RS256 bearer token with the configured issuer, audience `indexforge`, expiry, string subject, typed tenant and `search` scope. The subject must also have a server-side principal mapping. Mutating routes require `ingest` scope; reindex and metrics additionally require server-side tenant administration. Tenant and repository permissions come from the authenticated server context.
+
+| Boundary | Limit |
+| --- | ---: |
+| Raw request body, before JSON conversion | 65,536 bytes |
+| Concurrent admitted requests / Tomcat workers | 32 / 16 |
+| Background ingestion workers / queued tasks | 2 / 8 |
+| Search text / lexical tokens / syntax depth | 512 UTF-16 units / 64 / 8 |
+| Page size / candidate window / suggestions | 1–100 / 500 / 20 |
+| Typed filters / value length | 8 / 256 UTF-16 units |
+
+Source acquisition happens before background queue admission and has separate file, archive and aggregate-byte quotas. See the [security model](../docs/SECURITY.md) for those boundaries and the administrator-controlled source-root assumption.
+
+## Routes
+
+| Method and path | Request and response |
+| --- | --- |
+| `GET /health` | Public liveness response: `{"status":"UP"}`. It does not scan index integrity. |
+| `POST /v1/ingestions` | Body shown below. Returns `202` with `{"id":"…","state":"…"}` after immutable registration and queue admission. |
+| `GET /v1/ingestions/{id}` | Returns the authorized job's `id` and `state`. Durable completion takes precedence over local queue state. |
+| `POST /v1/ingestions/{id}/resume` | No body. Returns `202` through the same bounded queue; uses the immutable manifest and CAS without requiring the original source files. |
+| `DELETE /v1/ingestions/{id}` | Requests authorized cooperative cancellation and returns `id` and local `state`. It cannot reverse a committed generation. |
+| `POST /v1/search` | Body and response described below. |
+| `POST /v1/suggest` | `{"prefix":"atom"}` returns an array of authorized identifier completions. |
+| `POST /v1/reindexes` | No body. Requires tenant administration and returns `202`. Rebuilds the tenant through the same publication path, preserving source revisions. |
+| `GET /v1/metrics` | Requires tenant administration. Returns `searches`, `jobFailures` and `queuedJobs` for that tenant. Counters reset on process restart; the queue count is a point-in-time gauge. |
+
+### Ingestion
+
+```json
+{"repository":"public","revision":"example-v1","idempotencyKey":"http-example-v1","path":"example","archive":false,"complete":false,"deletions":[]}
+```
+
+The repository identifier is 1–64 ASCII letters, digits, underscores or hyphens. Revision and idempotency key are nonblank and at most 128 UTF-16 units; path is nonblank and at most 4,096 units. Omitted/null `archive` and `complete` mean false; omitted/null `deletions` means an empty set. Directory ingestion supports partial snapshots and explicit deletions. Archive ingestion uses the archive's bounded snapshot representation.
+
+The server resolves `path` beneath `indexforge.sources/TENANT/REPOSITORY`, authorizes the binding before opening source and rejects binding symlinks. A client cannot select a different tenant or configured repository root. A reused key with different immutable input returns `409`.
+
+Poll the job until `COMPLETE`, `FAILED` or `CANCELLED`. `QUEUED` and `RUNNING` describe this process's work; after restart or local status eviction an incomplete durable registration can appear as `REGISTERED` and be resumed. Queue rejection returns `429` while retaining the registered job. A successful commit remains complete even if a cancellation races its publication.
+
+### Search and pagination
+
+```json
+{"text":"atomic","pageSize":1,"cursor":null,"filters":{"repository":"public"}}
+```
+
+Filter keys are `repository`, `language`, `kind`, `coordinates` and `version`. Query syntax supports terms, quoted phrases, parentheses, `AND`, `OR`, `NOT`, and the fields `content`, `symbol`, `path`, `repository`, `language`, `kind`, `coordinates` and `version`. Adjacent terms imply `OR`. Wildcard, fuzzy and range syntax are rejected.
+
+The response contains `generationId`, `scoringVersion`, `totalHits`, `relation`, `results`, `facets` and nullable `cursor`. Each result contains `key`, `path`, `repository`, `sha256`, `score`, `snippet` and `explanation`. The explanation is an authorized matching-feature summary capped at 4,096 UTF-16 units; it omits raw Lucene collection statistics. Render snippets and explanations as plain text.
+
+Pass the returned cursor with identical text, filters and page size. A cursor binds principal, permission version, request, scoring identity and generation; each returned continuation expires after five minutes. Cached content receives a fresh continuation, while an expired token remains invalid. A generation retired before continuation returns `410`; start a new search. The candidate window bounds pagination independently of `totalHits`.
+
+## Errors
+
+| Status | Meaning / application code |
+| --- | --- |
+| `400` | Invalid request, query or cursor: `INVALID_REQUEST` |
+| `401` | Missing or invalid bearer token; handled by the resource-server authentication layer |
+| `403` | Server-side authorization denied: `ACCESS_DENIED` |
+| `409` | Key reused with different immutable input: `IDEMPOTENCY_CONFLICT` |
+| `410` | Cursor generation retired: `GENERATION_RETIRED` |
+| `413` | Raw body exceeds its quota: `BODY_TOO_LARGE` |
+| `422` | Source acquisition or storage failure: `SOURCE_OR_STORAGE_FAILURE` |
+| `429` | Request admission exhausted: `REQUEST_CAPACITY`; background queue exhausted: `QUEUE_FULL` |
+
+Application error bodies use `{"error":"CODE"}` and omit source names and exception messages. Authentication errors follow the resource-server response. There is no browser UI.

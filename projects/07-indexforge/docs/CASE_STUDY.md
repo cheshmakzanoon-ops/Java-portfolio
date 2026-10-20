@@ -12,6 +12,10 @@ A concurrency regression showed why the lock boundary matters. Holding the engin
 
 A job could publish its pointer, fail before recording completion, and later retry after another job had published. Without durable identity reconciliation, the retry could overwrite the newer snapshot. Committed metadata now records immutable job and manifest identity. Before another writer publishes, the current identity is reconciled into a checksummed completion receipt. Regressions exercise live retry and restart after pointer and retirement faults, requiring the newer generation to survive.
 
+Failure ownership matters before the first successful pointer as well. An exception after the staging rename could leave a committed directory without a pointer, causing the next startup to refuse recovery. The publisher now removes its exact uninstalled destination when the outcome is known; ambiguous outcomes remain preserved and block later writes. A validated fallback is also kept separate from pointer repair: repair failure must fail startup without quarantining valid recovery data.
+
+Closing a multi-tenant engine is another transaction. Checking leases and then closing readers leaves a race for new acquisitions, and closing one tenant before discovering another tenant's lease leaves a partially destroyed engine. Shutdown now freezes every publisher's admission before closing any reader, rolls back freezes on rejection, and retains the OS ownership lock until resources can close. Latch-controlled tests also require admitted writers to complete before ownership is released.
+
 Input identity has similar consequences. A full snapshot and a later single-file selection must identify `src/Foo.java` by the same key. Paths remain relative to the configured repository root, avoiding duplicate records caused by rebasing a selected file to `Foo.java`. Canonical manifest order also aligns hashing, deserialization, equality, and retry behavior.
 
 ## Authorization needs more than final-hit filtering
@@ -23,6 +27,8 @@ Review found two less obvious leaks. Raw Lucene explanations exposed collection 
 ## Source features must abstain when uncertain
 
 Source parsing never executes submitted code or claims compiler attribution. Work, output, memory, and child lifetime are bounded. Two regressions strengthen that boundary: enum constant-specific overrides prevent exact virtual binding, and supplementary Unicode identifiers use code-point tokenization while retaining the wire format's UTF-16 quota. Unsupported cases remain unknown rather than becoming misleading usage counts.
+
+An offline feature export must describe the policy the service actually runs. The source audit previously applied usage reranking in ablation modes where serving bypassed it. A shared ranking pipeline now owns candidate retrieval, feature extraction and usage admission; a regression compares actual exported and served orders across those modes. The legacy evaluator also filters split prefixes before interpreting query text or grades, so a development run cannot parse poisoned held-out payloads before the final seal. These are correctness changes, not evidence of better relevance.
 
 ## A failed relevance experiment is still useful evidence
 

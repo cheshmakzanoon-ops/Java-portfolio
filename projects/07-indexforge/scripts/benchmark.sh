@@ -4,10 +4,11 @@ source "$(dirname "$0")/common.sh"
 require_build
 mkdir -p "$project_dir/.runtime"
 run_data=$(mktemp -d "$project_dir/.runtime/benchmark-XXXXXX")
+run_output="$project_dir/evidence/performance/$(basename "$run_data")"
 export INDEXFORGE_TIMEOUT="${INDEXFORGE_TIMEOUT:-1800}"
-run_cli benchmark "$run_data" "$project_dir/evidence/performance" "${INDEXFORGE_DOCUMENTS:-100000}" "${INDEXFORGE_SECONDS:-30}"
+run_cli benchmark "$run_data" "$run_output" "${INDEXFORGE_DOCUMENTS:-100000}" "${INDEXFORGE_SECONDS:-30}"
 
-python3 - "$project_dir/evidence/performance/summary.json" "${INDEXFORGE_DOCUMENTS:-100000}" "${INDEXFORGE_SECONDS:-30}" <<'PY_GATE'
+python3 - "$run_output/summary.json" "${INDEXFORGE_DOCUMENTS:-100000}" "${INDEXFORGE_SECONDS:-30}" <<'PY_GATE'
 import json,sys
 from pathlib import Path
 path=Path(sys.argv[1]);documents=int(sys.argv[2]);seconds=int(sys.argv[3]);report=json.loads(path.read_text())

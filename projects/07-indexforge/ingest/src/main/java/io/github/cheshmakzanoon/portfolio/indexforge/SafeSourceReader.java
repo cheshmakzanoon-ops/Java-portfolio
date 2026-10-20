@@ -75,7 +75,7 @@ public final class SafeSourceReader {
     Path archive = resolve(selected);
     long compressed = Files.size(archive);
     if (compressed > limits.totalBytes()) throw new IOException("archive quota");
-    int expectedEntries = archiveEntryCount(archive, cancelled);
+    ArchiveDirectory expected = ArchiveDirectory.read(archive, limits.entries(), cancelled);
     List<SnapshotManifest.Entry> entries = new ArrayList<>();
     Set<String> names = new HashSet<>();
     long total = 0;
@@ -93,8 +93,12 @@ public final class SafeSourceReader {
         }
         if (!names.add(name) || names.size() > limits.entries())
           throw new IOException("archive entry quota or duplicate");
-        if (z.isDirectory()) continue;
         byte[] b = bounded(zip, limits.fileBytes());
+        expected.verify(z);
+        if (z.isDirectory()) {
+          if (b.length != 0) throw new IOException("ZIP directory contains payload");
+          continue;
+        }
         total += b.length;
         if (total > limits.totalBytes()
             || total > Math.max(1, compressed) * limits.expansionRatio())
@@ -102,75 +106,9 @@ public final class SafeSourceReader {
         entries.add(entry(name, b));
       }
     }
-    if (names.size() != expectedEntries)
+    if (names.size() != expected.size())
       throw new IOException("ZIP local/directory count mismatch");
     return new SnapshotManifest(tenant, repo, revision, false, entries, Set.of());
-  }
-
-  private int archiveEntryCount(Path archive, BooleanSupplier cancelled) throws IOException {
-    try (var channel = java.nio.channels.FileChannel.open(archive, StandardOpenOption.READ)) {
-      long size = channel.size();
-      int tailSize = (int) Math.min(size, 65557);
-      if (tailSize < 22) throw new IOException("malformed ZIP container");
-      java.nio.ByteBuffer tail =
-          java.nio.ByteBuffer.allocate(tailSize).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-      readAt(channel, tail, size - tailSize);
-      int end = -1;
-      for (int i = tailSize - 22; i >= 0; i--)
-        if (tail.getInt(i) == 0x06054b50
-            && i + 22 + Short.toUnsignedInt(tail.getShort(i + 20)) == tailSize) {
-          end = i;
-          break;
-        }
-      if (end < 0) throw new IOException("ZIP end record missing");
-      int entries = Short.toUnsignedInt(tail.getShort(end + 10));
-      long directoryBytes = Integer.toUnsignedLong(tail.getInt(end + 12)),
-          directoryOffset = Integer.toUnsignedLong(tail.getInt(end + 16)),
-          endOffset = size - tailSize + end;
-      if (tail.getShort(end + 4) != 0
-          || tail.getShort(end + 6) != 0
-          || Short.toUnsignedInt(tail.getShort(end + 8)) != entries
-          || entries == 65535
-          || directoryBytes == 0xffffffffL
-          || directoryOffset == 0xffffffffL)
-        throw new IOException("spanned or ZIP64 archive unsupported");
-      if (entries > limits.entries()
-          || directoryBytes < 46L * entries
-          || directoryOffset + directoryBytes != endOffset
-          || (entries == 0 && (directoryOffset != 0 || directoryBytes != 0)))
-        throw new IOException("ZIP directory bounds");
-      long position = directoryOffset;
-      java.nio.ByteBuffer header =
-          java.nio.ByteBuffer.allocate(46).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-      for (int i = 0; i < entries; i++) {
-        checkCancelled(cancelled);
-        if (position + 46 > endOffset) throw new IOException("ZIP directory truncated");
-        header.clear();
-        readAt(channel, header, position);
-        if (header.getInt(0) != 0x02014b50
-            || header.getShort(34) != 0
-            || Integer.toUnsignedLong(header.getInt(42)) >= directoryOffset)
-          throw new IOException("ZIP directory entry invalid");
-        position +=
-            46L
-                + Short.toUnsignedInt(header.getShort(28))
-                + Short.toUnsignedInt(header.getShort(30))
-                + Short.toUnsignedInt(header.getShort(32));
-        if (position > endOffset) throw new IOException("ZIP directory overflow");
-      }
-      if (position != endOffset) throw new IOException("ZIP directory count mismatch");
-      return entries;
-    }
-  }
-
-  private static void readAt(
-      java.nio.channels.FileChannel channel, java.nio.ByteBuffer buffer, long position)
-      throws IOException {
-    while (buffer.hasRemaining()) {
-      int count = channel.read(buffer, position);
-      if (count <= 0) throw new EOFException("ZIP metadata truncated");
-      position += count;
-    }
   }
 
   private Path resolve(Path path) throws IOException {

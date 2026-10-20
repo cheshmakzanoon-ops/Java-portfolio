@@ -14,14 +14,21 @@ public final class CheckpointStore {
   }
 
   public void save(String manifest, int completed) throws IOException {
-    if (completed < 0) throw new IllegalArgumentException("checkpoint");
+    requireDigest(manifest);
+    if (completed < 0 || completed > 100_000) throw new IllegalArgumentException("checkpoint");
     String payload = manifest + "\n" + completed;
     DurableFiles.atomicWrite(
         root.resolve(manifest),
         (payload + "\n" + Digests.sha256(payload)).getBytes(StandardCharsets.UTF_8));
   }
 
+  private static void requireDigest(String manifest) {
+    if (manifest == null || !manifest.matches("[a-f0-9]{64}"))
+      throw new IllegalArgumentException("manifest digest required");
+  }
+
   public OptionalInt read(String manifest) throws IOException {
+    requireDigest(manifest);
     Path p = root.resolve(manifest);
     if (!Files.exists(p)) return OptionalInt.empty();
     if (Files.size(p) > 1024) throw new IOException("checkpoint quota");

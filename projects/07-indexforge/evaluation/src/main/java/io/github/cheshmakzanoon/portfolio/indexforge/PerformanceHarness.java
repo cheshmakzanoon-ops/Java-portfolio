@@ -13,13 +13,16 @@ public final class PerformanceHarness {
   private PerformanceHarness() {}
 
   public static void run(Path data, Path output, int documents, int seconds) throws Exception {
+    if (documents < 3 || documents > 100_000 || seconds < 1 || seconds > 3600)
+      throw new IllegalArgumentException("documents3..100000 and seconds1..3600 required");
     if (Runtime.getRuntime().maxMemory() > 2147483648L)
       throw new IllegalArgumentException("declare heap at most2GiB");
     AuthorizationFilter auth = new AuthorizationFilter();
     List<AuthorizationFilter.Access> access = new ArrayList<>();
     for (int t = 0; t < 3; t++)
       access.add(auth.update("load" + t, "tenant" + t, Set.of("public"), true));
-    Files.createDirectories(output);
+    if (output.getParent() != null) Files.createDirectories(output.getParent());
+    Files.createDirectory(output);
     try (SearchEngine engine = new SearchEngine(data, auth)) {
       var generated = WorkloadGenerator.generate(engine.contentStore(), documents, 7007);
       for (int t = 0; t < 3; t++)

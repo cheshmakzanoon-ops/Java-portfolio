@@ -19,7 +19,10 @@ final class SourceStudyFiles {
       lines.add(entry.getKey() + "=" + entry.getValue());
     }
     String text = String.join("\n", lines) + "\n";
-    if (text.length() > 16384) throw new IOException("source phase identity quota");
+    if (values.isEmpty()
+        || values.size() > 128
+        || text.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 16384)
+      throw new IOException("source phase identity quota");
     Files.writeString(path, text, StandardOpenOption.CREATE_NEW);
   }
 
@@ -65,13 +68,38 @@ final class SourceStudyFiles {
 
   static void paths(Path path, Map<String, List<String>> rows) throws IOException {
     var lines = new ArrayList<String>();
-    for (var row : new TreeMap<>(rows).entrySet())
+    for (var row : new TreeMap<>(rows).entrySet()) {
+      if (row.getKey().isBlank()
+          || row.getKey().length() > 128
+          || row.getKey().indexOf('\t') >= 0
+          || row.getKey().indexOf('\r') >= 0
+          || row.getKey().indexOf('\n') >= 0
+          || row.getValue().size() > 20
+          || row.getValue().stream().distinct().count() != row.getValue().size())
+        throw new IOException("source phase paths identity/bounds");
+      for (String value : row.getValue()) {
+        try {
+          if (value.indexOf('|') >= 0
+              || value.indexOf('\t') >= 0
+              || value.indexOf('\n') >= 0
+              || value.indexOf('\r') >= 0
+              || !SnapshotManifest.normalize(value).equals(value))
+            throw new IOException("source phase path cannot be represented");
+        } catch (IllegalArgumentException invalid) {
+          throw new IOException("source phase path normalization", invalid);
+        }
+      }
       lines.add(row.getKey() + "\t" + String.join("|", row.getValue()));
-    Files.write(path, lines, StandardOpenOption.CREATE_NEW);
+    }
+    String text = String.join("\n", lines) + (lines.isEmpty() ? "" : "\n");
+    if (text.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 2_097_152)
+      throw new IOException("source phase paths quota");
+    Files.writeString(path, text, StandardOpenOption.CREATE_NEW);
   }
 
   static Map<String, List<String>> paths(Path path, Set<String> expectedIds) throws IOException {
-    if (Files.size(path) > 2_097_152) throw new IOException("source phase paths quota");
+    if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) || Files.size(path) > 2_097_152)
+      throw new IOException("source phase paths quota");
     Map<String, List<String>> result = new TreeMap<>();
     for (String line : Files.readAllLines(path)) {
       var fields = line.split("\t", -1);

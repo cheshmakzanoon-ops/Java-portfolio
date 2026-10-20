@@ -36,7 +36,7 @@ public final class CodeIdentifierAnalyzer extends Analyzer {
     return out;
   }
 
-  private static boolean indexable(String normalized) {
+  static boolean indexable(String normalized) {
     // Lucene's bound applies AFTER case normalization and counts UTF8 bytes, not Java chars.
     // Drop the entire term: a truncated prefix would create false matches. The char precheck
     // also bounds the temporary UTF8 allocation to less than98KiB.

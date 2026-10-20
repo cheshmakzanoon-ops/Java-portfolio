@@ -13,6 +13,33 @@ import org.junit.jupiter.api.Test;
 
 class IdentifierTermBoundaryTest {
   @Test
+  void immenseDeclarationsDoNotTurnBoundedSourceDocumentsIntoIndexFailures() throws Exception {
+    for (String name : List.of("x".repeat(32767), "界".repeat(10923), "İ".repeat(10923))) {
+      String content = "class " + name + " { int searchableMarker; }";
+      var entry =
+          new SnapshotManifest.Entry(
+              "Source.java", Digests.sha256(content), "java", "source", List.of(), "", "");
+      var document = DocumentMapper.map(new SourceDocument("tenant", "repo", "r1", entry, content));
+      assertFalse(
+          Arrays.asList(document.getValues("declaration")).contains(name.toLowerCase(Locale.ROOT)));
+      try (var directory = new ByteBuffersDirectory();
+          var analyzer = new CodeIdentifierAnalyzer()) {
+        try (var writer = new IndexWriter(directory, new IndexWriterConfig(analyzer))) {
+          writer.addDocument(document);
+          writer.commit();
+        }
+        try (var reader = DirectoryReader.open(directory)) {
+          assertEquals(
+              1,
+              new IndexSearcher(reader)
+                  .count(new TermQuery(new Term("content", "searchablemarker"))));
+          assertEquals(content, reader.storedFields().document(0).get("content"));
+        }
+      }
+    }
+  }
+
+  @Test
   void asciiCjkSupplementaryAndLowercaseExpansionHonorExactUtf8LimitWithoutPrefixTerms() {
     for (String accepted :
         List.of("x".repeat(32766), "界".repeat(10922), "İ".repeat(10922), "𐐀".repeat(8191))) {

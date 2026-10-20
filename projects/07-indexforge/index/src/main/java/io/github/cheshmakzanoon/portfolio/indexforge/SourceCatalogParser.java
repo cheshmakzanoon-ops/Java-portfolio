@@ -20,7 +20,7 @@ public final class SourceCatalogParser {
     boolean[] error = {false};
     int[] diagnostics = {0};
     try (var standard = compiler.getStandardFileManager(null, Locale.ROOT, StandardCharsets.UTF_8);
-        var files = new SourceJavaParser.DeniedFiles(standard)) {
+        var files = new SourceCompilerBoundary.DeniedFiles(standard)) {
       var task =
           (JavacTask)
               compiler.getTask(
@@ -42,7 +42,7 @@ public final class SourceCatalogParser {
                       "--system",
                       "none"),
                   null,
-                  List.of(new SourceJavaParser.MemorySource(source)));
+                  List.of(new SourceCompilerBoundary.MemorySource(source)));
       var parsed = task.parse().iterator();
       if (!parsed.hasNext()) throw new IOException("missing API unit");
       var unit = parsed.next();

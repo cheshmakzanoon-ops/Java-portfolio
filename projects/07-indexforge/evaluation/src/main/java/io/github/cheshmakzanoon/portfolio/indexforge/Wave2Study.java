@@ -82,7 +82,7 @@ public final class Wave2Study {
     Path packet = stage.resolve("features.tsv");
     new FeaturePacket(exported).writeNew(packet);
     // No judgment parser is called until after this immutable label-blind export is on disk.
-    writeMap(
+    SourceStudyFiles.write(
         stage.resolve("identity.properties"),
         Map.of(
             "code",
@@ -99,18 +99,20 @@ public final class Wave2Study {
             rankingIdentity));
   }
 
-  private static Properties verifiedAudit(Path fixtures, Path output) throws IOException {
-    Properties identity = readMap(output.resolve("audit/identity.properties"));
-    check(identity, "code", codeIdentity());
-    check(identity, "fixture", Digests.sha256(fixtures.resolve("FREEZE.sha256")));
-    check(identity, "protocol", Digests.sha256(fixtures.resolve("ranking-wave2/FREEZE.sha256")));
-    check(identity, "features", Digests.sha256(output.resolve("audit/features.tsv")));
-    check(identity, "schema", SearchFeatureSchema.VERSION);
+  private static Map<String, String> verifiedAudit(Path fixtures, Path output) throws IOException {
+    var identity = SourceStudyFiles.read(output.resolve("audit/identity.properties"));
+    SourceStudyFiles.check(identity, "code", codeIdentity());
+    SourceStudyFiles.check(identity, "fixture", Digests.sha256(fixtures.resolve("FREEZE.sha256")));
+    SourceStudyFiles.check(
+        identity, "protocol", Digests.sha256(fixtures.resolve("ranking-wave2/FREEZE.sha256")));
+    SourceStudyFiles.check(
+        identity, "features", Digests.sha256(output.resolve("audit/features.tsv")));
+    SourceStudyFiles.check(identity, "schema", SearchFeatureSchema.VERSION);
     return identity;
   }
 
   private static void fit(Path fixtures, Path output) throws IOException {
-    Properties identity = verifiedAudit(fixtures, output);
+    var identity = verifiedAudit(fixtures, output);
     FeaturePacket packet = FeaturePacket.read(output.resolve("audit/features.tsv"));
     var headers = packet.queries().stream().map(FeaturePacket.Query::header).toList();
     if (!headers.equals(Wave2Inputs.headers(fixtures, Set.of("development"))))
@@ -126,7 +128,7 @@ public final class Wave2Study {
             labels,
             identifierIds(headers),
             assignments,
-            identity.getProperty("features"),
+            identity.get("features"),
             Digests.sha256(fixtures.resolve("ranking-wave2/folds.tsv")));
     List<String> reports = new ArrayList<>();
     reports.add("status=" + result.status());
@@ -161,7 +163,7 @@ public final class Wave2Study {
       String name = "l2-" + fold.l2() + "-fold-" + fold.fold();
       reports.add(name + " failure=" + fold.failure() + " fit=" + fitDescription(fold.fit()));
       if (fold.fit() != null) fold.fit().model().writeNew(stage.resolve(name + ".bin"));
-      writePaths(stage.resolve(name + "-paths.tsv"), fold.paths());
+      SourceStudyFiles.paths(stage.resolve(name + "-paths.tsv"), fold.paths());
     }
     for (var trial : result.trials()) reports.add("trial=" + trial);
     if (result.selected() != null)
@@ -170,11 +172,11 @@ public final class Wave2Study {
         stage.resolve("report.txt"),
         String.join("\n", reports) + "\n",
         StandardOpenOption.CREATE_NEW);
-    writeMap(
+    SourceStudyFiles.write(
         stage.resolve("identity.properties"),
         Map.of(
             "code",
-            identity.getProperty("code"),
+            identity.get("code"),
             "audit",
             Digests.sha256(output.resolve("audit/identity.properties")),
             "report",
@@ -239,25 +241,27 @@ public final class Wave2Study {
       List<String> paths) {}
 
   private static void validate(Path data, Path fixtures, Path output) throws IOException {
-    Properties audit = verifiedAudit(fixtures, output);
-    Properties fit = readMap(output.resolve("fit/identity.properties"));
-    check(fit, "code", codeIdentity());
-    check(fit, "audit", Digests.sha256(output.resolve("audit/identity.properties")));
-    check(fit, "report", Digests.sha256(output.resolve("fit/report.txt")));
-    String modelHash = fit.getProperty("model");
+    var audit = verifiedAudit(fixtures, output);
+    var fit = SourceStudyFiles.read(output.resolve("fit/identity.properties"));
+    SourceStudyFiles.check(fit, "code", codeIdentity());
+    SourceStudyFiles.check(
+        fit, "audit", Digests.sha256(output.resolve("audit/identity.properties")));
+    SourceStudyFiles.check(fit, "report", Digests.sha256(output.resolve("fit/report.txt")));
+    String modelHash = fit.get("model");
     if (modelHash == null) throw new IOException("missing fitted model status");
     LinearRankingModel model = null;
     if (!modelHash.equals("NONE")) {
-      check(fit, "model", Digests.sha256(output.resolve("fit/selected-model.bin")));
+      SourceStudyFiles.check(
+          fit, "model", Digests.sha256(output.resolve("fit/selected-model.bin")));
       model = LinearRankingModel.read(output.resolve("fit/selected-model.bin"));
-      if (!model.trainingExport().equals(audit.getProperty("features"))
+      if (!model.trainingExport().equals(audit.get("features"))
           || !model.folds().equals(Digests.sha256(fixtures.resolve("ranking-wave2/folds.tsv"))))
         throw new IOException("fitted model provenance differs");
     } else if (Files.exists(output.resolve("fit/selected-model.bin")))
       throw new IOException("undeclared model artifact");
     Path stage = Files.createDirectory(output.resolve("validation"));
     // This records the whole frozen model/phase boundary BEFORE validation query/grade parsing.
-    writeMap(
+    SourceStudyFiles.write(
         stage.resolve("PRE-VALIDATION.properties"),
         Map.of(
             "code",
@@ -269,7 +273,7 @@ public final class Wave2Study {
             "fit",
             Digests.sha256(output.resolve("fit/identity.properties")),
             "protocol",
-            audit.getProperty("protocol"),
+            audit.get("protocol"),
             "families",
             model == null ? "C0,C1,D1" : "C0,C1,D1,C2"));
     var headers = Wave2Inputs.headers(fixtures, Set.of("development", "validation"));
@@ -365,7 +369,7 @@ public final class Wave2Study {
         stage.resolve("summary.txt"),
         String.join("\n", summary) + "\n",
         StandardOpenOption.CREATE_NEW);
-    writeMap(
+    SourceStudyFiles.write(
         stage.resolve("selection.properties"),
         Map.of(
             "family",
@@ -491,12 +495,6 @@ public final class Wave2Study {
         .collect(Collectors.toSet());
   }
 
-  private static void writePaths(Path path, Map<String, List<String>> paths) throws IOException {
-    List<String> lines = new ArrayList<>();
-    new TreeMap<>(paths).forEach((id, ranked) -> lines.add(id + "\t" + String.join("|", ranked)));
-    Files.write(path, lines, StandardOpenOption.CREATE_NEW);
-  }
-
   private static void writeRows(Path path, List<Row> rows) throws IOException {
     List<String> lines =
         new ArrayList<>(
@@ -521,28 +519,5 @@ public final class Wave2Study {
               + "\t"
               + String.join("|", row.paths()));
     Files.write(path, lines, StandardOpenOption.CREATE_NEW);
-  }
-
-  private static void writeMap(Path path, Map<String, String> values) throws IOException {
-    List<String> lines =
-        new TreeMap<>(values)
-            .entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).toList();
-    if (lines.stream().anyMatch(line -> line.indexOf('\n') >= 0 || line.indexOf('\r') >= 0))
-      throw new IOException("identity record syntax");
-    Files.write(path, lines, StandardOpenOption.CREATE_NEW);
-  }
-
-  private static Properties readMap(Path path) throws IOException {
-    if (Files.size(path) > 16384) throw new IOException("identity record quota");
-    Properties values = new Properties();
-    try (Reader input = Files.newBufferedReader(path)) {
-      values.load(input);
-    }
-    return values;
-  }
-
-  private static void check(Properties values, String key, String expected) throws IOException {
-    if (!expected.equals(values.getProperty(key)))
-      throw new IOException("wave2 changed identity: " + key);
   }
 }

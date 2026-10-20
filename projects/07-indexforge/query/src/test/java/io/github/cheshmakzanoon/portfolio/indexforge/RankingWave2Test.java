@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.time.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
@@ -296,13 +297,15 @@ class RankingWave2Test {
     model(6, 1).writeNew(file);
     var first = RankingConfiguration.from("PAIRWISE", file.toString());
     String cursor;
+    Clock clock = Clock.fixed(Instant.parse("2026-01-01T00:00:00Z"), ZoneOffset.UTC);
     try (var engine =
         new SearchEngine(
             root.resolve("data"),
             auth,
             QueryPlanner.Mode.SOURCE_AWARE,
             RankingProfile.CODE_HIGH,
-            first)) {
+            first,
+            clock)) {
       engine.ingest(
           admin,
           "visible",
@@ -338,7 +341,23 @@ class RankingWave2Test {
       cursor = response.cursor();
       assertNotNull(cursor);
       Files.write(file, model(1, 1).bytes());
-      assertEquals(response, engine.search("reader", request));
+      var cached = engine.search("reader", request);
+      assertAll(
+          () -> assertEquals(response.generationId(), cached.generationId()),
+          () -> assertEquals(response.scoringVersion(), cached.scoringVersion()),
+          () -> assertEquals(response.totalHits(), cached.totalHits()),
+          () -> assertEquals(response.relation(), cached.relation()),
+          () -> assertEquals(response.results(), cached.results()),
+          () -> assertEquals(response.facets(), cached.facets()));
+      var codec = new SearchCursor(Files.readAllBytes(root.resolve("data/cursor.key")), clock);
+      String requestDigest =
+          SearchRequestIdentity.digest(
+              request, QueryPlanner.Mode.SOURCE_AWARE, response.scoringVersion());
+      var expectedPosition = new SearchCursor.Position(response.generationId(), 1);
+      assertEquals(
+          expectedPosition, codec.decode(response.cursor(), auth.current("reader"), requestDigest));
+      assertEquals(
+          expectedPosition, codec.decode(cached.cursor(), auth.current("reader"), requestDigest));
       assertEquals(1, engine.cacheHits());
       var audit = engine.auditCandidates("reader", request, QueryPlanner.Mode.SOURCE_AWARE);
       assertEquals(2, audit.candidates().size());
@@ -431,7 +450,8 @@ class RankingWave2Test {
             auth,
             QueryPlanner.Mode.SOURCE_AWARE,
             RankingProfile.CODE_HIGH,
-            RankingConfiguration.from("PAIRWISE", file.toString()))) {
+            RankingConfiguration.from("PAIRWISE", file.toString()),
+            clock)) {
       assertNotEquals(first.identity(RankingProfile.CODE_HIGH), changed.rankingIdentity());
       var fresh =
           changed.search("reader", new SearchEngine.Request("reader lease", 1, null, Map.of()));

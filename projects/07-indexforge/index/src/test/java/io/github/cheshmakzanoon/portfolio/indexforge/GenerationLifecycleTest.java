@@ -32,6 +32,84 @@ class GenerationLifecycleTest {
   }
 
   @Test
+  void failedFirstPublicationDoesNotLeaveAnUnrecoverableOrphanGeneration() throws Exception {
+    var cas = new ContentAddressedStore(root.resolve("cas"));
+    Path index = root.resolve("index");
+    var builder = new GenerationBuilder(index, cas);
+    for (var boundary :
+        List.of(
+            GenerationBuilder.Boundary.AFTER_RENAME, GenerationBuilder.Boundary.BEFORE_POINTER)) {
+      try (var publisher = new GenerationPublisher(index)) {
+        var built =
+            builder.build(
+                manifest(cas, "failed", 1), List.of(), GenerationBuilder.Fault.none(), () -> false);
+        assertThrows(
+            IOException.class,
+            () ->
+                publisher.publish(
+                    built,
+                    stage -> {
+                      if (stage == boundary) throw new IOException("publication interrupted");
+                    }));
+        assertNull(publisher.currentId());
+        try (var directories = Files.list(index.resolve("generations"))) {
+          assertEquals(0, directories.count());
+        }
+      }
+    }
+    try (var recovered = new GenerationPublisher(index)) {
+      var built =
+          builder.build(
+              manifest(cas, "valid", 1), List.of(), GenerationBuilder.Fault.none(), () -> false);
+      recovered.publish(built, GenerationBuilder.Fault.none());
+      try (var lease = recovered.acquire()) {
+        assertEquals(1, lease.reader().numDocs());
+      }
+    }
+  }
+
+  @Test
+  void failedBuildsReleaseOnlyTheirOwnedStagingTree() throws Exception {
+    var cas = new ContentAddressedStore(root.resolve("cas"));
+    Path index = root.resolve("index");
+    var builder = new GenerationBuilder(index, cas);
+    for (var boundary :
+        List.of(
+            GenerationBuilder.Boundary.BUILD_START,
+            GenerationBuilder.Boundary.DOCUMENT,
+            GenerationBuilder.Boundary.BEFORE_COMMIT,
+            GenerationBuilder.Boundary.AFTER_COMMIT,
+            GenerationBuilder.Boundary.AFTER_WARM)) {
+      IOException original = new IOException("failure at " + boundary);
+      assertSame(
+          original,
+          assertThrows(
+              IOException.class,
+              () ->
+                  builder.build(
+                      manifest(cas, "failed", 2),
+                      List.of(),
+                      stage -> {
+                        if (stage == boundary) throw original;
+                      },
+                      () -> false)));
+      try (var stages = Files.list(index.resolve("staging"))) {
+        assertEquals(0, stages.count());
+      }
+    }
+    var valid =
+        builder.build(
+            manifest(cas, "valid", 2), List.of(), GenerationBuilder.Fault.none(), () -> false);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.discard(new GenerationBuilder.Built("../cas", valid.path(), "", 0)));
+    assertTrue(Files.exists(valid.path()));
+    builder.discard(valid);
+    builder.discard(valid);
+    assertFalse(Files.exists(valid.path()));
+  }
+
+  @Test
   void aggregateGenerationByteQuotaRejectsPartialGrowthButAllowsValidReplacement()
       throws Exception {
     var cas = new ContentAddressedStore(root.resolve("cas"));
@@ -477,6 +555,76 @@ class GenerationLifecycleTest {
       assertFalse(tokens.incrementToken(), "EOF must remain stable on repeated reads");
       tokens.end();
       assertEquals(List.of("foobar", "foo", "bar"), values);
+    }
+  }
+
+  @Test
+  void shutdownPreparationFreezesNewLeasesAndCanBeRolledBack() throws Exception {
+    var cas = new ContentAddressedStore(root.resolve("cas"));
+    Path index = root.resolve("index");
+    var builder = new GenerationBuilder(index, cas);
+    try (var publisher = new GenerationPublisher(index)) {
+      publisher.publish(
+          builder.build(
+              manifest(cas, "old", 1), List.of(), GenerationBuilder.Fault.none(), () -> false),
+          GenerationBuilder.Fault.none());
+      try (var lease = publisher.acquire()) {
+        assertThrows(IOException.class, publisher::prepareClose);
+        try (var another = publisher.acquire()) {
+          assertEquals(lease.id(), another.id());
+        }
+      }
+      publisher.prepareClose();
+      assertThrows(IllegalStateException.class, publisher::acquire);
+      publisher.cancelClose();
+      try (var lease = publisher.acquire()) {
+        assertEquals(1, lease.reader().numDocs());
+      }
+      publisher.prepareClose();
+      publisher.close();
+      publisher.cancelClose();
+      assertThrows(IllegalStateException.class, publisher::acquire);
+    }
+  }
+
+  @Test
+  void failedRecoveryRepairPreservesTheValidatedFallbackAndFailsStartup() throws Exception {
+    var cas = new ContentAddressedStore(root.resolve("cas"));
+    Path index = root.resolve("index");
+    var builder = new GenerationBuilder(index, cas);
+    String previous;
+    try (var publisher = new GenerationPublisher(index)) {
+      publisher.publish(
+          builder.build(
+              manifest(cas, "old", 1), List.of(), GenerationBuilder.Fault.none(), () -> false),
+          GenerationBuilder.Fault.none());
+      previous = publisher.currentId();
+      publisher.publish(
+          builder.build(
+              manifest(cas, "new", 2),
+              publisher.sources(),
+              GenerationBuilder.Fault.none(),
+              () -> false),
+          GenerationBuilder.Fault.none());
+    }
+    byte[] fallback = Files.readAllBytes(index.resolve("PREVIOUS"));
+    Files.writeString(index.resolve("CURRENT"), "corrupt");
+    IOException injected = new IOException("recovery pointer force unavailable");
+    assertSame(
+        injected,
+        assertThrows(
+            IOException.class,
+            () ->
+                new GenerationPublisher(
+                    index,
+                    (path, bytes) -> {
+                      throw injected;
+                    })));
+    assertArrayEquals(fallback, Files.readAllBytes(index.resolve("PREVIOUS")));
+    assertFalse(Files.exists(index.resolve("CURRENT")));
+    try (var recovered = new GenerationPublisher(index)) {
+      assertEquals(previous, recovered.currentId());
+      assertEquals(1, recovered.sources().size());
     }
   }
 }

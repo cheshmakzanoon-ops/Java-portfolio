@@ -1,6 +1,6 @@
 # ADR001: publish complete committed tenant generations
 
-Status: implemented; verified by certification23 and the earlier independent publication review. Reference performance and final-scale demonstration acceptance remain separate.
+Status: implemented; current verification is recorded in [status](../STATUS.md). Performance and relevance measurements remain separate.
 
 A reader must never combine old and new document revisions, and a process can fail after an atomic pointer replacement but before the ingestion caller observes success. Updating an index in place and treating a missing completion marker as permission to replay would violate these requirements.
 

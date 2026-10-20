@@ -44,25 +44,41 @@ public final class SearchEngine implements AutoCloseable {
       Map<String, Integer> facets,
       String cursor) {}
 
-  private final Map<String, java.util.concurrent.locks.ReentrantLock> writers =
-      new ConcurrentHashMap<>();
   private final QueryPlanner.Mode defaultMode;
   private final RankingProfile rankingProfile;
   private final RankingConfiguration ranking;
   private final boolean structuralIndex;
   private final String capturedRankingIdentity;
-  private final Path root;
-  private final DataDirectoryLock dataLock;
+  private final IngestionCoordinator ingestion;
   private final ContentAddressedStore cas;
-  private final IngestionJob jobs;
-  private final Map<String, GenerationPublisher> publishers = new ConcurrentHashMap<>();
   private final AuthorizationFilter authorization;
   private final SearchCursor cursors;
-  private final Map<String, Response> cache =
+  private final SearchRankingPipeline pipeline;
+
+  private record CacheKey(
+      AuthorizationFilter.Access access, String generation, String digest, int offset) {}
+
+  /** Cache content and continuation position, never a time-limited signed cursor. */
+  private record CachedPage(
+      String generation,
+      String scoringVersion,
+      long count,
+      String relation,
+      List<Hit> hits,
+      Map<String, Integer> facets,
+      Integer nextOffset) {
+    Response response(SearchCursor cursors, AuthorizationFilter.Access access, String digest) {
+      String next =
+          nextOffset == null ? null : cursors.encode(access, digest, generation, nextOffset);
+      return new Response(generation, scoringVersion, count, relation, hits, facets, next);
+    }
+  }
+
+  private final Map<CacheKey, CachedPage> cache =
       Collections.synchronizedMap(
-          new LinkedHashMap<>(128, 0.75f, true) {
+          new LinkedHashMap<CacheKey, CachedPage>(128, 0.75f, true) {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Response> eldest) {
+            protected boolean removeEldestEntry(Map.Entry<CacheKey, CachedPage> eldest) {
               return size() > 128;
             }
           });
@@ -97,30 +113,29 @@ public final class SearchEngine implements AutoCloseable {
       RankingProfile rankingProfile,
       RankingConfiguration ranking)
       throws IOException {
+    this(root, authorization, defaultMode, rankingProfile, ranking, Clock.systemUTC());
+  }
+
+  SearchEngine(
+      Path root,
+      AuthorizationFilter authorization,
+      QueryPlanner.Mode defaultMode,
+      RankingProfile rankingProfile,
+      RankingConfiguration ranking,
+      Clock clock)
+      throws IOException {
+    Objects.requireNonNull(clock);
     this.ranking = Objects.requireNonNull(ranking);
     structuralIndex =
         ranking.strategy().structural() || Boolean.getBoolean("indexforge.structural-index");
-    this.root = root;
     this.defaultMode = Objects.requireNonNull(defaultMode);
     this.rankingProfile = Objects.requireNonNull(rankingProfile);
     capturedRankingIdentity = ranking.identity(rankingProfile);
-    Files.createDirectories(root);
-    dataLock = new DataDirectoryLock(root);
+    this.authorization = Objects.requireNonNull(authorization);
+    pipeline = new SearchRankingPipeline(rankingProfile, ranking, authorization);
+    ingestion = new IngestionCoordinator(root, authorization, structuralIndex);
+    cas = ingestion.contentStore();
     try {
-      this.authorization = authorization;
-      cas = new ContentAddressedStore(root.resolve("cas"));
-      jobs = new IngestionJob(root.resolve("jobs"));
-      Files.createDirectories(root.resolve("index"));
-      try (var tenants = Files.list(root.resolve("index"))) {
-        for (Path tenant : tenants.filter(Files::isDirectory).toList()) {
-          String name = tenant.getFileName().toString();
-          if (!name.matches("[a-zA-Z0-9_-]{1,64}"))
-            throw new IOException("invalid tenant directory");
-          GenerationPublisher publisher = new GenerationPublisher(tenant);
-          publishers.put(name, publisher);
-          reconcile(publisher);
-        }
-      }
       Path secret = root.resolve("cursor.key");
       if (!Files.exists(secret)) {
         byte[] key = new byte[32];
@@ -132,10 +147,13 @@ public final class SearchEngine implements AutoCloseable {
         } catch (UnsupportedOperationException ignored) {
         }
       }
-      cursors = new SearchCursor(Files.readAllBytes(secret), Clock.systemUTC());
+      cursors = new SearchCursor(Files.readAllBytes(secret), clock);
     } catch (IOException | RuntimeException failure) {
-      for (var publisher : publishers.values()) publisher.close();
-      dataLock.close();
+      try {
+        ingestion.close();
+      } catch (IOException cleanup) {
+        failure.addSuppressed(cleanup);
+      }
       throw failure;
     }
   }
@@ -163,12 +181,6 @@ public final class SearchEngine implements AutoCloseable {
     for (Explanation detail : explanation.getDetails()) collectMatches(detail, matches);
   }
 
-  private void reconcile(GenerationPublisher publisher) throws IOException {
-    var committed = publisher.committedJob();
-    if (committed != null)
-      jobs.complete(committed.id(), committed.manifestHash(), committed.generation());
-  }
-
   public long cacheHits() {
     return cacheHits.get();
   }
@@ -177,40 +189,27 @@ public final class SearchEngine implements AutoCloseable {
     return cas;
   }
 
-  public synchronized GenerationPublisher generations(String tenant) throws IOException {
-    if (!tenant.matches("[a-zA-Z0-9_-]{1,64}")) throw new IllegalArgumentException("tenant");
-    GenerationPublisher p = publishers.get(tenant);
-    if (p == null) {
-      p = new GenerationPublisher(root.resolve("index").resolve(tenant));
-      publishers.put(tenant, p);
-    }
-    return p;
+  public GenerationPublisher generations(String tenant) throws IOException {
+    return ingestion.generations(tenant);
   }
 
   public IngestionJob.Registered register(
-      AuthorizationFilter.Access a, String key, SnapshotManifest m) throws IOException {
-    authorization.require(a, m.tenantId(), m.repositoryId());
-    return jobs.register(key, m);
+      AuthorizationFilter.Access access, String key, SnapshotManifest manifest) throws IOException {
+    return ingestion.register(access, key, manifest);
   }
 
   public boolean completed(String id) {
-    try {
-      return id.matches("[a-f0-9]{64}") && jobs.completed(id);
-    } catch (IOException failure) {
-      throw new UncheckedIOException(failure);
-    }
+    return ingestion.completed(id);
   }
 
   public IngestionJob.Registered ingest(
-      AuthorizationFilter.Access a,
+      AuthorizationFilter.Access access,
       String key,
-      SnapshotManifest m,
+      SnapshotManifest manifest,
       GenerationBuilder.Fault fault,
       BooleanSupplier cancelled)
       throws IOException {
-    authorization.require(a, m.tenantId(), m.repositoryId());
-    IngestionJob.Registered job = jobs.register(key, m);
-    return executeRegistered(a, job, fault, cancelled);
+    return ingestion.execute(access, ingestion.register(access, key, manifest), fault, cancelled);
   }
 
   public IngestionJob.Registered resume(AuthorizationFilter.Access access, String id)
@@ -225,51 +224,12 @@ public final class SearchEngine implements AutoCloseable {
       GenerationBuilder.Fault fault,
       BooleanSupplier cancelled)
       throws IOException {
-    return executeRegistered(a, job(a, id), fault, cancelled);
+    return ingestion.execute(a, job(a, id), fault, cancelled);
   }
 
-  private IngestionJob.Registered executeRegistered(
-      AuthorizationFilter.Access a,
-      IngestionJob.Registered job,
-      GenerationBuilder.Fault fault,
-      BooleanSupplier cancelled)
+  public IngestionJob.Registered job(AuthorizationFilter.Access access, String id)
       throws IOException {
-    var writer =
-        writers.computeIfAbsent(
-            a.tenant(), ignored -> new java.util.concurrent.locks.ReentrantLock());
-    try {
-      writer.lockInterruptibly();
-    } catch (InterruptedException interrupted) {
-      Thread.currentThread().interrupt();
-      throw new IOException("cancelled", interrupted);
-    }
-    try {
-      SnapshotManifest m = job.manifest();
-      GenerationPublisher publisher = generations(a.tenant());
-      reconcile(publisher);
-      if (jobs.completed(job.id())) return job;
-      GenerationBuilder builder =
-          new GenerationBuilder(
-              root.resolve("index").resolve(a.tenant()),
-              cas,
-              GenerationBuilder.MAX_SOURCE_BYTES,
-              structuralIndex);
-      var built = builder.build(m, publisher.sources(), fault, cancelled, job.id());
-      authorization.require(a, m.tenantId(), m.repositoryId());
-      if (cancelled.getAsBoolean() || Thread.currentThread().isInterrupted())
-        throw new IOException("cancelled");
-      publisher.publish(built, fault);
-      reconcile(publisher);
-      return job;
-    } finally {
-      writer.unlock();
-    }
-  }
-
-  public IngestionJob.Registered job(AuthorizationFilter.Access a, String id) throws IOException {
-    var j = jobs.get(id);
-    authorization.require(a, j.manifest().tenantId(), j.manifest().repositoryId());
-    return j;
+    return ingestion.job(access, id);
   }
 
   public Response search(String principal, Request request) throws IOException {
@@ -280,72 +240,31 @@ public final class SearchEngine implements AutoCloseable {
       throws IOException {
     QueryAst ast = QueryAst.parse(request.text());
     String scoringVersion = scoringVersion(mode);
-    String digest = requestDigest(request, mode, scoringVersion);
+    String digest = SearchRequestIdentity.digest(request, mode, scoringVersion);
     for (int retry = 0; retry < 3; retry++) {
       AuthorizationFilter.Access a = authorization.current(principal);
       SearchCursor.Position position =
           request.cursor() == null ? null : cursors.decode(request.cursor(), a, digest);
       try (GenerationLease lease =
           generations(a.tenant()).acquire(position == null ? null : position.generation())) {
-        if (ranking.strategy().structural() && mode != QueryPlanner.Mode.BASELINE)
-          SourceFeatureView.requireSchema(lease, ranking.catalog());
-        if (mode != QueryPlanner.Mode.BASELINE && mode != QueryPlanner.Mode.NO_SIMILARITY)
-          lease
-              .searcher()
-              .setSimilarity(
-                  new org.apache.lucene.search.similarities.BM25Similarity(
-                      rankingProfile.k1, rankingProfile.b));
-        String cacheKey =
-            a.toString()
-                + "/"
-                + new TreeSet<>(a.repositories())
-                + "/"
-                + lease.id()
-                + "/"
-                + digest
-                + "/"
-                + (position == null ? 0 : position.offset());
-        Response cached = cache.get(cacheKey);
-        if (cached != null && authorization.current(a)) {
-          cacheHits.incrementAndGet();
-          return cached;
+        CacheKey cacheKey =
+            new CacheKey(a, lease.id(), digest, position == null ? 0 : position.offset());
+        CachedPage cached = cache.get(cacheKey);
+        if (cached != null) {
+          Response response = cached.response(cursors, a, digest);
+          if (authorization.current(a)) {
+            cacheHits.incrementAndGet();
+            return response;
+          }
         }
         Query authorized = authorizedQuery(ast, request, mode, a);
         var ranked =
-            new Ranker(rankingProfile, ranking.strategy())
-                .rank(
-                    new CandidateRetriever().retrieve(lease, authorized),
-                    lease,
-                    request.text(),
-                    mode);
-        if (ranking.strategy().learned()
-            && mode != QueryPlanner.Mode.BASELINE
-            && PlainTextQuery.multiword(request.text())) {
-          var vectors =
-              new SearchFeatures()
-                  .extract(ranked, lease, request.text(), mode, rankingProfile, authorization, a);
-          if (ranking.strategy().structural()) {
-            var extraction =
-                new SourceSearchFeatures()
-                    .extract(vectors, lease, request.text(), mode, ranking, authorization, a);
-            if (extraction.usableNewEvidence())
-              ranked = new LearnedRanker().rank(extraction.vectors(), ranking.model());
-          } else ranked = new LearnedRanker().rank(vectors, ranking.model());
-        }
-        if (ranking.strategy() == RankingStrategy.SOURCE_USAGE
-            && PlainTextQuery.identifier(request.text())
-            && !Set.of(
-                    QueryPlanner.Mode.BASELINE,
-                    QueryPlanner.Mode.NO_IDENTIFIERS,
-                    QueryPlanner.Mode.NO_CODE_FEATURES,
-                    QueryPlanner.Mode.NO_MEMBER_USAGE)
-                .contains(mode)) {
-          try (var view =
-              new SourceFeatureView(ranked, lease, ranking.catalog(), authorization, a)) {
-            ranked =
-                new SourceUsageRanker().rank(ranked, request.text(), view.usage(request.text()));
-          }
-        }
+            pipeline.rank(
+                pipeline.candidates(lease, authorized, request.text(), mode),
+                lease,
+                request.text(),
+                mode,
+                a);
         int start = position == null ? 0 : position.offset(),
             end = Math.min(ranked.size(), start + request.pageSize());
         if (start > ranked.size()) throw new IllegalArgumentException("cursor offset");
@@ -376,18 +295,18 @@ public final class SearchEngine implements AutoCloseable {
           int n = lease.searcher().count(q);
           if (n > 0) facets.put(repo, n);
         }
-        String next = end < ranked.size() ? cursors.encode(a, digest, lease.id(), end) : null;
-        Response response =
-            new Response(
+        CachedPage page =
+            new CachedPage(
                 lease.id(),
                 scoringVersion,
                 count,
                 "EQUAL_TO",
                 List.copyOf(hits),
                 Map.copyOf(facets),
-                next);
+                end < ranked.size() ? end : null);
+        Response response = page.response(cursors, a, digest);
         if (authorization.current(a)) {
-          cache.put(cacheKey, response);
+          cache.put(cacheKey, page);
           return response;
         }
       }
@@ -469,37 +388,14 @@ public final class SearchEngine implements AutoCloseable {
     for (int retry = 0; retry < 3; retry++) {
       var access = authorization.current(principal);
       try (var lease = generations(access.tenant()).acquire()) {
-        if (ranking.strategy().structural() && mode != QueryPlanner.Mode.BASELINE)
-          SourceFeatureView.requireSchema(lease, ranking.catalog());
-        if (mode != QueryPlanner.Mode.BASELINE && mode != QueryPlanner.Mode.NO_SIMILARITY)
-          lease
-              .searcher()
-              .setSimilarity(
-                  new org.apache.lucene.search.similarities.BM25Similarity(
-                      rankingProfile.k1, rankingProfile.b));
         var base =
-            new Ranker(rankingProfile, ranking.strategy())
-                .rank(
-                    new CandidateRetriever()
-                        .retrieve(lease, authorizedQuery(ast, request, mode, access)),
-                    lease,
-                    request.text(),
-                    mode);
-        var vectors =
-            new SearchFeatures()
-                .extract(base, lease, request.text(), mode, rankingProfile, authorization, access);
-        if (ranking.strategy().structural())
-          vectors =
-              new SourceSearchFeatures()
-                  .extract(vectors, lease, request.text(), mode, ranking, authorization, access)
-                  .vectors();
-        var usage = new SourceUsageRanker.Decision(base, "SYNTAX_BYPASS");
-        if (includeUsage && PlainTextQuery.identifier(request.text()))
-          try (var view =
-              new SourceFeatureView(base, lease, ranking.catalog(), authorization, access)) {
-            usage =
-                new SourceUsageRanker().decide(base, request.text(), view.usage(request.text()));
-          }
+            pipeline.candidates(
+                lease, authorizedQuery(ast, request, mode, access), request.text(), mode);
+        var vectors = pipeline.features(base, lease, request.text(), mode, access);
+        var usage =
+            includeUsage
+                ? pipeline.usage(base, lease, request.text(), mode, access)
+                : new SourceUsageRanker.Decision(base, "SYNTAX_BYPASS");
         List<AuditCandidate> rows = new ArrayList<>();
         for (var vector : vectors)
           rows.add(
@@ -523,30 +419,6 @@ public final class SearchEngine implements AutoCloseable {
       }
     }
     throw new SecurityException("authorization changed; retry");
-  }
-
-  private static String requestDigest(
-      Request request, QueryPlanner.Mode mode, String scoringVersion) throws IOException {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    try (DataOutputStream out = new DataOutputStream(bytes)) {
-      out.writeInt(
-          2); // Versioned, length-prefixed UTF16 context; no delimiter or replacement aliases.
-      writeContextString(out, request.text());
-      out.writeInt(request.filters().size());
-      for (var filter : new TreeMap<>(request.filters()).entrySet()) {
-        writeContextString(out, filter.getKey());
-        writeContextString(out, filter.getValue());
-      }
-      out.writeInt(request.pageSize());
-      writeContextString(out, mode.name());
-      writeContextString(out, scoringVersion);
-    }
-    return Digests.sha256(bytes.toByteArray());
-  }
-
-  private static void writeContextString(DataOutputStream out, String value) throws IOException {
-    out.writeInt(value.length());
-    out.writeChars(value);
   }
 
   public List<String> suggest(String principal, String prefix) throws IOException {
@@ -596,7 +468,7 @@ public final class SearchEngine implements AutoCloseable {
 
   @Override
   public void close() throws IOException {
-    for (GenerationPublisher p : publishers.values()) p.close();
-    dataLock.close();
+    ingestion.close();
+    cache.clear();
   }
 }

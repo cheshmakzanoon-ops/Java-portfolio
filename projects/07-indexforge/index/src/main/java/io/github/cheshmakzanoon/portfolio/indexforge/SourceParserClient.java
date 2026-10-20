@@ -262,6 +262,8 @@ public final class SourceParserClient implements AutoCloseable {
         List.of(
             SourceParserWorker.class,
             SourceJavaParser.class,
+            SourceSyntax.class,
+            SourceCompilerBoundary.class,
             SourcePreflight.class,
             SourceWire.class,
             SourceFacts.class,

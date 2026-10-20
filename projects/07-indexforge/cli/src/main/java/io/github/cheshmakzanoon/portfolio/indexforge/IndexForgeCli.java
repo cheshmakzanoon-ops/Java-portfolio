@@ -7,8 +7,7 @@ public final class IndexForgeCli {
   private IndexForgeCli() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length < 2)
-      throw new IllegalArgumentException("command data [arguments]; see contracts/cli.md");
+    validate(args);
     String command = args[0];
     Path data = Path.of(args[1]);
     if (command.equals("prepare-api-catalog")) {
@@ -126,5 +125,80 @@ public final class IndexForgeCli {
         default -> throw new IllegalArgumentException("unsupported command " + command);
       }
     }
+  }
+
+  private static void validate(String[] args) {
+    if (args.length < 2)
+      throw new IllegalArgumentException("command data [arguments]; see contracts/cli.md");
+    int min, max;
+    switch (args[0]) {
+      case "up" -> {
+        min = 2;
+        max = 2;
+      }
+      case "prepare-api-catalog" -> {
+        min = 3;
+        max = 3;
+      }
+      case "demo" -> {
+        min = 2;
+        max = 3;
+      }
+      case "evaluate" -> {
+        min = 4;
+        max = 5;
+      }
+      case "benchmark" -> {
+        min = 3;
+        max = 5;
+      }
+      case "wave2-audit", "wave2-fit", "wave2-validate" -> {
+        min = 4;
+        max = 4;
+      }
+      case "wave3-audit", "wave3-fit", "wave3-validate" -> {
+        min = 5;
+        max = 5;
+      }
+      case "ingest" -> {
+        min = 8;
+        max = 100008;
+      }
+      case "search", "resume" -> {
+        min = 5;
+        max = 5;
+      }
+      case "reindex", "verify-generation" -> {
+        min = 4;
+        max = 4;
+      }
+      default -> throw new IllegalArgumentException("unsupported command " + args[0]);
+    }
+    if (args.length < min || args.length > max)
+      throw new IllegalArgumentException(
+          "invalid arguments for " + args[0] + "; see contracts/cli.md");
+    if (args[0].equals("demo") && args.length == 3) bounded(args[2], 3, 100000);
+    if (args[0].equals("benchmark")) {
+      if (args.length >= 4) bounded(args[3], 3, 100000);
+      if (args.length == 5) bounded(args[4], 1, 3600);
+    }
+    if (args[0].equals("evaluate")
+        && args.length == 5
+        && !Set.of("development", "final").contains(args[4]))
+      throw new IllegalArgumentException("evaluate phase must be development or final");
+    if (args[0].equals("search")) QueryAst.parse(args[4]);
+    if (args[0].equals("resume") && !args[4].matches("[a-f0-9]{64}"))
+      throw new IllegalArgumentException("resume requires a SHA256 job id");
+  }
+
+  private static void bounded(String value, int minimum, int maximum) {
+    int parsed;
+    try {
+      parsed = Integer.parseInt(value);
+    } catch (NumberFormatException invalid) {
+      throw new IllegalArgumentException("integer required", invalid);
+    }
+    if (parsed < minimum || parsed > maximum)
+      throw new IllegalArgumentException("value must be " + minimum + ".." + maximum);
   }
 }

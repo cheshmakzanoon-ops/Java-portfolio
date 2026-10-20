@@ -10,18 +10,21 @@ source scripts/cloud-env.sh
   -Dmaven.repo.local="$PWD/.work/A07/m2" -B -ntp -Pintegration verify
 ```
 
-`verify` runs unit, property, format, and coverage checks. The integration profile adds actual Boot HTTP, local OIDC/JWKS, and packaged runtime tests through Failsafe; no Docker daemon is required. The mutation profile targets selected original algorithms with nonzero-report and 70% gates. Core coverage thresholds are 85% lines and 75% branches. Consult each module POM for the exact selected classes; adapters are not evidence of algorithm coverage.
+`verify` runs unit, property, format, and coverage checks. The integration profile adds actual Boot HTTP, local OIDC/JWKS, and packaged runtime tests through Failsafe; no Docker daemon is required. The mutation profile targets selected original algorithms and extracted source/binding/ingestion/study boundaries with nonzero-report and 70% gates. Core coverage thresholds are 85% lines and 75% branches. Consult each module POM for the exact selected classes; adapters are not evidence of algorithm coverage.
 
 ## Regression boundaries
 
 | Area | Behaviors exercised |
 | --- | --- |
-| Acquisition | Invalid UTF-8, parent and symlink escape, directory traversal limits, malformed ZIP containers, expansion bounds, cancellation, corrupt content and manifests. |
-| Generations | Explicit deletions, idempotent retries, old leases during publication, corrupt-pointer fallback, ambiguous publication reconciliation, and interrupted builds. |
-| Authorization | Denied repositories and foreign tenants across results, counts, facets, suggestions, explanations, cursors, warmed caches, and revocation. |
+| Acquisition | Invalid UTF-8, parent and symlink escape, directory traversal limits, malformed ZIP containers, expansion bounds, cancellation, corrupt content and manifests, inconsistent ZIP local/central identity and payload-bearing directory entries. |
+| Generations | Explicit deletions, idempotent retries, old leases during publication, corrupt-pointer fallback, ambiguous publication reconciliation, interrupted-build cleanup, failed-first-publication cleanup, fallback repair failure, writer shutdown and atomic multi-publisher close rejection. |
+| Authorization | Denied repositories and foreign tenants across results, counts, facets, suggestions, explanations, cursors, warmed caches, virtual-clock cursor renewal/expiry, revocation and tenant-scoped administrator metrics. |
+| Feature extraction | Sparse scorers across three committed Lucene leaves, reversed candidate order, missing vectors, original candidate/score ownership and bounded ordinal storage. |
 | HTTP | RSA/JWKS validation, issuer/audience/time claims, original claim types, write scope, request-size limits, and source-root binding. |
 | Source analysis | Parser process limits, exact framing, watchdog cleanup, uncertain bindings, enum overrides, supplementary identifiers, and wire quotas. |
-| Evaluation | Independent metric calculations, cutoff denominators, grouped development folds, finite selection, and artifact/model identity. |
+| Evaluation | Independent metric calculations, cutoff denominators, grouped development folds, finite selection, complete class-origin identity with isolated helper-byte changes, split-before-parse poison-heldout fixtures and UTF-8 packet bounds. |
+
+The executable [HTTP example](../demo/http_workflow.py) additionally exercises actual ingestion/job polling, signed pagination, suggestions, resume, reindex and tenant metrics without displaying credentials. CLI malformed-command regressions verify that failures precede data creation.
 
 The 100 seeded failure schedules inject bounded faults; they are not 100 physical power cuts. The Linux `/dev/full` integration fixture produces a real `ENOSPC` at a pre-pointer boundary without filling the index volume. Both checks require the previous committed generation to remain searchable.
 

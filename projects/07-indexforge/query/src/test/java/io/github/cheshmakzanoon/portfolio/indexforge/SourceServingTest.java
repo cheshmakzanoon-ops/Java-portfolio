@@ -72,6 +72,49 @@ class SourceServingTest {
   }
 
   @Test
+  void sourceAuditAndServingUseTheSameIdentifierAblationPolicy() throws Exception {
+    var auth = new AuthorizationFilter();
+    var admin = auth.update("admin", "tenant", Set.of("repo"), true);
+    try (var source =
+        engine(auth, RankingStrategy.SOURCE_USAGE, model(16, 12), catalog("comput"))) {
+      source.ingest(
+          admin,
+          "usage-parity",
+          manifest(
+              source,
+              "repo",
+              Map.of(
+                  "One.java",
+                      "final class One {private static int pulse(int n){return n;}int first(int n){return pulse(n);}}",
+                  "Two.java",
+                      "final class Two {private static int pulse(int n){return n;}int first(int n){return pulse(n);}int second(int n){return pulse(n);}}")),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      var query = new SearchEngine.Request("pulse", 20, null, Map.of());
+      for (var mode :
+          List.of(
+              QueryPlanner.Mode.BASELINE,
+              QueryPlanner.Mode.SOURCE_AWARE,
+              QueryPlanner.Mode.NO_IDENTIFIERS,
+              QueryPlanner.Mode.NO_CODE_FEATURES,
+              QueryPlanner.Mode.NO_MEMBER_USAGE)) {
+        var audit = source.auditSourceCandidates("admin", query, mode);
+        var served = source.search("admin", query, mode);
+        assertEquals(
+            served.results().stream().map(SearchEngine.Hit::key).toList(),
+            audit.usageKeys(),
+            mode.name());
+        assertEquals(
+            mode == QueryPlanner.Mode.SOURCE_AWARE
+                ? "APPLIED_OBSERVED_LOWER_BOUND"
+                : "SYNTAX_BYPASS",
+            audit.usageReason(),
+            mode.name());
+      }
+    }
+  }
+
+  @Test
   void supplementaryIdentifierBoundaryFallsBackToOrdinarySearchWithoutAUsageFailure()
       throws Exception {
     var auth = new AuthorizationFilter();

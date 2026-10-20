@@ -204,6 +204,22 @@ class IngestionSafetyTest {
   }
 
   @Test
+  void rejectedObjectsAndCheckpointIdentitiesNeverReachPersistentPaths() throws Exception {
+    var store = cas();
+    byte[] oversized = new byte[ContentAddressedStore.MAX_OBJECT_BYTES + 1];
+    assertThrows(IOException.class, () -> store.put(oversized));
+    assertFalse(Files.exists(dir.resolve("cas").resolve(Digests.sha256(oversized))));
+    var checkpoints = new CheckpointStore(dir.resolve("checkpoint-identity"));
+    for (String invalid : List.of("../outside", "/absolute", "not-a-digest")) {
+      assertThrows(IllegalArgumentException.class, () -> checkpoints.save(invalid, 1));
+      assertThrows(IllegalArgumentException.class, () -> checkpoints.read(invalid));
+    }
+    assertThrows(
+        IllegalArgumentException.class, () -> checkpoints.save(Digests.sha256("m"), 100_001));
+    assertFalse(Files.exists(dir.resolve("outside")));
+  }
+
+  @Test
   void contentDecoderRejectsMalformedBytesAndOversizedObjects() throws Exception {
     var store = cas();
     String exact = store.put(new byte[1048576]);

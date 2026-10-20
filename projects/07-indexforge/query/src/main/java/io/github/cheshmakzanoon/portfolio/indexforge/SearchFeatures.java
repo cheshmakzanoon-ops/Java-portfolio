@@ -7,9 +7,7 @@ import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.BytesRef;
 
-/**
- * Shared authorized indexed interactions, bounded to500 candidates and64 normalized query terms.
- */
+/** Shared authorized indexed interactions, bounded to 500 candidates and 64 query terms. */
 public final class SearchFeatures {
   public record Vector(CandidateRetriever.Candidate candidate, double[] values) {
     public Vector {
@@ -120,9 +118,9 @@ public final class SearchFeatures {
       throws IOException {
     var searcher = lease.searcher();
     var weight = searcher.createWeight(searcher.rewrite(authorized), ScoreMode.COMPLETE, 1);
-    List<Integer> order = new ArrayList<>();
-    for (int i = 0; i < candidates.size(); i++) order.add(i);
-    order.sort(Comparator.comparingInt(i -> candidates.get(i).document()));
+    Integer[] order = new Integer[candidates.size()];
+    for (int i = 0; i < order.length; i++) order[i] = i;
+    Arrays.sort(order, Comparator.comparingInt(i -> candidates.get(i).document()));
     double[] result = new double[candidates.size()];
     int at = 0;
     for (LeafReaderContext leaf : lease.reader().leaves()) {
@@ -133,8 +131,8 @@ public final class SearchFeatures {
               : scorer.twoPhaseIterator() == null
                   ? scorer.iterator()
                   : TwoPhaseIterator.asDocIdSetIterator(scorer.twoPhaseIterator());
-      while (at < order.size()) {
-        int index = order.get(at), document = candidates.get(index).document();
+      while (at < order.length) {
+        int index = order[at], document = candidates.get(index).document();
         if (document >= leaf.docBase + leaf.reader().maxDoc()) break;
         int local = document - leaf.docBase;
         if (iterator != null) {

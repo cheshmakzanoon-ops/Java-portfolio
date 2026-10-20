@@ -267,7 +267,7 @@ class SourceKernelBoundaryTest {
     var compiler = javax.tools.ToolProvider.getSystemJavaCompiler();
     assertNotNull(compiler);
     try (var standard = compiler.getStandardFileManager(null, Locale.ROOT, StandardCharsets.UTF_8);
-        var denied = new SourceJavaParser.DeniedFiles(standard)) {
+        var denied = new SourceCompilerBoundary.DeniedFiles(standard)) {
       var location = javax.tools.StandardLocation.CLASS_PATH;
       assertFalse(denied.hasLocation(location));
       assertNull(denied.getClassLoader(location));
@@ -292,7 +292,7 @@ class SourceKernelBoundaryTest {
       assertNull(denied.getLocationForModule(location, "any.module"));
       assertNull(
           denied.getLocationForModule(
-              location, new SourceJavaParser.MemorySource("class NotExecuted{}")));
+              location, new SourceCompilerBoundary.MemorySource("class NotExecuted{}")));
       assertFalse(denied.listLocationsForModules(location).iterator().hasNext());
     }
     String property = "indexforge.parse.decoy." + UUID.randomUUID();

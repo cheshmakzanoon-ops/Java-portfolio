@@ -39,4 +39,15 @@ class EvaluationSealTest {
     assertThrows(
         IOException.class, () -> EvaluationSeal.claim(fixtures, root.resolve("output"), "fixed"));
   }
+
+  @Test
+  void utf8SealQuotaIsEnforcedBeforeEitherPersistentClaim() throws Exception {
+    Path fixtures = Files.createDirectory(root.resolve("fixtures"));
+    Path output = root.resolve("output");
+    assertThrows(IOException.class, () -> EvaluationSeal.claim(fixtures, output, "界".repeat(1366)));
+    assertFalse(Files.exists(output));
+    String decision = "界".repeat(1365);
+    EvaluationSeal.claim(fixtures, output, decision);
+    EvaluationSeal.claim(fixtures, output, decision);
+  }
 }

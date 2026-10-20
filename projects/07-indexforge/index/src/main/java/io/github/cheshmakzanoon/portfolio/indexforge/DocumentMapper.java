@@ -45,8 +45,10 @@ public final class DocumentMapper {
               "code_features",
               CodeFeatures.topics(CodeFeatures.features(s.content())),
               Field.Store.NO));
-      for (String declaration : DeclarationScanner.names(s.content()))
-        exact(d, "declaration", declaration.toLowerCase(Locale.ROOT));
+      for (String declaration : DeclarationScanner.names(s.content())) {
+        String normalized = declaration.toLowerCase(Locale.ROOT);
+        if (CodeIdentifierAnalyzer.indexable(normalized)) exact(d, "declaration", normalized);
+      }
     }
     d.add(new TextField("content", s.content(), Field.Store.YES));
     d.add(new Field("prose", s.content(), PROSE));

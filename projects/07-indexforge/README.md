@@ -21,6 +21,7 @@ projects/07-indexforge/scripts/down.sh
 - Each request leases one committed index generation for results, counts, facets, snippets, and pagination.
 - Publication validates and warms a replacement before atomically changing a checksummed pointer. Recovery preserves the last valid generation.
 - Authorization applies before retrieval and aggregations. Permission versions are checked again before returning a response.
+- A lifecycle owner coordinates durable jobs, tenant writers and shutdown; serving and offline exports share one ranking/ablation policy.
 - Source analysis is bounded and conservative. Unsupported syntax or uncertain dispatch produces unknown observations, rather than guessed bindings.
 
 ## Evidence and limits

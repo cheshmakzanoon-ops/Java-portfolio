@@ -11,31 +11,29 @@ public final class RelevanceEvaluator {
       String id, String split, String type, String text, Map<String, Integer> grades) {}
 
   public static List<Judged> judgments(Path fixtures) throws IOException {
-    List<Judged> out = new ArrayList<>();
-    for (String line : Files.readAllLines(fixtures.resolve("judgments.tsv"))) {
-      String[] p = line.split("\t");
-      Map<String, Integer> grades = new TreeMap<>();
-      for (String item : p[4].split(",")) {
-        int at = item.lastIndexOf(':');
-        grades.put(item.substring(0, at), Integer.parseInt(item.substring(at + 1)));
-      }
-      out.add(new Judged(p[0], p[1], p[2], p[3], Map.copyOf(grades)));
-    }
-    if (out.size() != 80
-        || out.stream().filter(q -> q.split().equals("development")).count() != 40
-        || out.stream().filter(q -> q.split().equals("validation")).count() != 20
-        || out.stream().filter(q -> q.split().equals("held-out")).count() != 20)
-      throw new IOException("evaluation split mismatch");
-    return out;
+    return EvaluationJudgments.read(fixtures, Set.of("development", "validation", "held-out"));
   }
 
   public static void verifyFreeze(Path fixtures) throws IOException {
-    for (String line : Files.readAllLines(fixtures.resolve("FREEZE.sha256"))) {
-      String[] p = line.split("  ");
-      if (p.length != 2 || !Digests.sha256(Files.readAllBytes(fixtures.resolve(p[1]))).equals(p[0]))
-        throw new IOException("frozen corpus changed");
+    Path manifest = fixtures.resolve("FREEZE.sha256");
+    if (!Files.isRegularFile(manifest, LinkOption.NOFOLLOW_LINKS) || Files.size(manifest) > 4096)
+      throw new IOException("fixture manifest regular file/quota");
+    Set<String> seen = new HashSet<>();
+    for (String line : Files.readAllLines(manifest)) {
+      String[] p = line.split("  ", -1);
+      if (p.length != 2
+          || !p[0].matches("[a-f0-9]{64}")
+          || !Set.of("corpus.tsv", "judgments.tsv", "corpus.jsonl", "judgments.jsonl")
+              .contains(p[1])
+          || !seen.add(p[1])) throw new IOException("invalid fixture manifest");
+      Path file = fixtures.resolve(p[1]);
+      if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)
+          || Files.size(file) > 33_554_432
+          || !Digests.sha256(file).equals(p[0])) throw new IOException("frozen corpus changed");
     }
-    if (!Files.exists(fixtures.resolve("REVIEW-APPROVED.md")))
+    if (!seen.containsAll(Set.of("corpus.tsv", "judgments.tsv")))
+      throw new IOException("incomplete fixture manifest");
+    if (!Files.isRegularFile(fixtures.resolve("REVIEW-APPROVED.md"), LinkOption.NOFOLLOW_LINKS))
       throw new IOException("independent pre-measurement label review required");
   }
 
@@ -44,72 +42,21 @@ public final class RelevanceEvaluator {
   }
 
   public static String modelFingerprint(String rankingIdentity) throws IOException {
-    StringBuilder model = new StringBuilder();
-    for (String type :
-        List.of(
-            "RelevanceEvaluator",
-            "PlainTextQuery",
-            "RankingStrategy",
-            "RankingConfiguration",
-            "SearchFeatureSchema",
-            "LinearRankingModel",
-            "SearchFeatures",
-            "SearchFeatures$Vector",
-            "LearnedRanker",
-            "RankingCodeIdentity",
-            "PairwiseData",
-            "PairwiseTrainer",
-            "PairwiseSelection",
-            "DevelopmentScaler",
-            "GroupedFolds",
-            "Wave2Inputs",
-            "FeaturePacket",
-            "Wave2Study",
-            "RankingProfile",
-            "GenerationLease",
-            "GenerationBuilder",
-            "SourceDocument",
-            "CodeFeatures",
-            "CodeFeatureQuery",
-            "SourceProseAnalyzer",
-            "SearchEngine",
-            "AuthorizationFilter",
-            "CodeIdentifierAnalyzer$Part",
-            "CandidateRetriever$Candidate",
-            "DeclarationScanner",
-            "DocumentMapper",
-            "SearchConcepts",
-            "SearchConcepts$Group",
-            "QueryPlanner$ClauseBudget",
-            "QueryPlanner",
-            "QueryPlanner$Mode",
-            "QueryAst$Term",
-            "QueryAst$BooleanNode",
-            "QueryAst$Negation",
-            "QueryAst$Parser$Token",
-            "Ranker",
-            "CandidateRetriever",
-            "CodeIdentifierAnalyzer",
-            "CodeIdentifierAnalyzer$1",
-            "QueryAst",
-            "QueryAst$Parser",
-            "RelevanceMetrics")) {
-      try (var resource = RelevanceEvaluator.class.getResourceAsStream(type + ".class")) {
-        if (resource == null) throw new IOException("missing model bytecode");
-        model.append(type).append(':').append(Digests.sha256(resource.readAllBytes())).append('\n');
-      }
-    }
-    // The supported shaded CLI binds dependencies/indexing helpers as well as original class bytes.
-    try {
-      Path artifact =
-          Path.of(
-              RelevanceEvaluator.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-      if (Files.isRegularFile(artifact)) model.append("artifact:").append(Digests.sha256(artifact));
-    } catch (java.net.URISyntaxException invalid) {
-      throw new IOException("invalid model artifact location", invalid);
-    }
-    model.append("ranking:").append(rankingIdentity);
-    return Digests.sha256(model.toString());
+    var domain = RelevanceEvaluator.class.getProtectionDomain();
+    if (domain == null
+        || domain.getCodeSource() == null
+        || domain.getCodeSource().getLocation() == null)
+      throw new IOException("missing evaluation artifact origin");
+    Path origin = RankingCodeIdentity.artifactPath(domain.getCodeSource().getLocation());
+    // Capture every inference and evaluation class, including extracted/future helpers. A phase
+    // identity must not depend on whether its caller passed a configuration name or full identity.
+    return Digests.sha256(
+        "evaluation-code-v3\ncore="
+            + RankingCodeIdentity.SHA256
+            + "\nevaluation="
+            + RankingCodeIdentity.fingerprint(origin)
+            + "\nranking="
+            + rankingIdentity);
   }
 
   public static void run(Path data, Path fixtures, Path output, String phase) throws IOException {
@@ -118,7 +65,7 @@ public final class RelevanceEvaluator {
       throw new IllegalArgumentException("evaluation phase");
     AuthorizationFilter auth = new AuthorizationFilter();
     var a = auth.update("evaluator", "evaluation", Set.of("corpus"), true);
-    List<Judged> queries = judgments(fixtures);
+    List<Judged> queries = EvaluationJudgments.read(fixtures, Set.of("development", "validation"));
     try (SearchEngine engine = new SearchEngine(data, auth)) {
       String capturedModel = modelFingerprint(engine.rankingIdentity());
       List<SnapshotManifest.Entry> entries = new ArrayList<>();
@@ -243,10 +190,11 @@ public final class RelevanceEvaluator {
         if (!Files.exists(selection) || !Files.readString(selection).equals(decision))
           throw new IOException("run development phase and freeze selection before held-out");
         EvaluationSeal.claim(fixtures, output, decision);
+        List<Judged> heldOutQueries = EvaluationJudgments.read(fixtures, Set.of("held-out"));
         for (var mode : QueryPlanner.Mode.legacyValues()) {
           double ndcg = 0, identifierMrr = 0, recall = 0;
           int n = 0, ids = 0;
-          for (Judged q : queries)
+          for (Judged q : heldOutQueries)
             if (q.split().equals("held-out")) {
               var response =
                   engine.search(

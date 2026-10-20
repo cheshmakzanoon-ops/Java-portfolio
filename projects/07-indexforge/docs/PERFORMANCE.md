@@ -8,7 +8,7 @@ The documented target is 100,000 generated UTF-8 source documents across three t
 
 The harness warms 150 application requests and runs three fixed-rate measurements. Latency begins at scheduled arrival, including executor queuing. Eight bounded request workers record errors, queue peak, process CPU, GC, and raw latency samples. The measured boundary includes shared application search, generation leases, authorization, facets, explanations, and the bounded warm response cache. It excludes HTTP transport.
 
-Use `projects/07-indexforge/scripts/benchmark.sh` only on an otherwise quiet reference host. Smaller `INDEXFORGE_DOCUMENTS` or `INDEXFORGE_SECONDS` values are exploratory runs and do not satisfy the reference target. Record CPU/cgroup limits, OS/JDK, heap, artifact digest, corpus bytes, concurrency, and colocated processes alongside results.
+Use `projects/07-indexforge/scripts/benchmark.sh` only on an otherwise quiet reference host. Each invocation writes a new `evidence/performance/benchmark-XXXXXX/` directory and preserves earlier attempts. Smaller `INDEXFORGE_DOCUMENTS` or `INDEXFORGE_SECONDS` values are exploratory runs and do not satisfy the reference target. Record CPU/cgroup limits, OS/JDK, heap, artifact digest, corpus bytes, concurrency, and colocated processes alongside results.
 
 ## Historical frozen baseline
 

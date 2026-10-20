@@ -6,7 +6,7 @@ IndexForge treats source content, archive metadata, query text, and HTTP bodies 
 
 Only explicitly configured roots are read. HTTP source selection is confined to `SOURCES/TENANT/REPOSITORY` after server-side permission checks. Parent traversal, binding symlinks, final-file symlinks, malformed UTF-8, and invalid path spellings are rejected.
 
-Source text and ZIP members remain data: IndexForge does not execute builds, load archive classes, or crawl networks. ZIP data is never extracted. Bounded container validation checks central-directory and local-header bounds and entry-count agreement. ZIP64 and spanned archives are unsupported; ordinary ZIP accepts at most 65,534 entries, even if a larger general snapshot quota is configured. Per-file, traversal, aggregate-byte, and expansion quotas apply independently.
+Source text and ZIP members remain data: IndexForge does not execute builds, load archive classes, or crawl networks. ZIP data is never extracted. Bounded container validation checks central-directory and local-header bounds and entry-count agreement. Every member, including directory entries, passes the bounded streaming read and central/local CRC/size/name checks. Directory entries carrying payload are rejected. ZIP64 and spanned archives are unsupported; ordinary ZIP accepts at most 65,534 entries, even if a larger general snapshot quota is configured. Per-file, traversal, aggregate-byte, and expansion quotas apply independently.
 
 Structural source analysis uses a bounded child JVM with no annotation processing, class loading, filesystem symbol resolution, or compilation. Unsupported input and uncertain bindings abstain explicitly. Unicode identifier admission and facts use the same UTF-16 quota.
 
@@ -16,7 +16,7 @@ The protected HTTP profile verifies RS256 signatures against JWKS, issuer, audie
 
 Protected startup requires explicit issuer, JWKS, and users configuration. The disposable development issuer is loopback-only and refuses an external bind. Never use development credentials or real confidential data for a public deployment.
 
-Authorization precedes candidate selection, hit counts, facets, snippets, suggestions, explanations, and cache reads. A final permission-version check discards stale responses. Tenant index directories are physically separate. Cursors authenticate tenant, principal, permission version, query, generation, and expiration; transferred, modified, or expired cursors fail. A retired generation returns `410`.
+Authorization precedes candidate selection, hit counts, facets, snippets, suggestions, explanations, and cache reads. A final permission-version check discards stale responses. Tenant index directories are physically separate. Cursors authenticate tenant, principal, permission version, query, generation, and expiration; transferred, modified, or expired cursors fail. A retired generation returns `410`. Tenant administration does not grant process-wide observability: search/failure counters and queue gauges are scoped to that tenant.
 
 ## Confidentiality limits
 
@@ -26,8 +26,10 @@ BM25 still uses tenant-wide collection statistics internally. Scores and orderin
 
 ## Resource and failure boundaries
 
-Bodies are bounded before JSON conversion; request admission and ingestion queues are bounded. Query parsing rejects wildcard, regex, fuzzy, excessive-depth, and excessive-clause inputs. Client errors use stable generic codes rather than inaccessible document names.
+Bodies are bounded before JSON conversion; request admission and ingestion queues are bounded. Query parsing bounds Boolean depth and clause count and rejects wildcard, fuzzy and range operators; it supplies no regular-expression execution path. Client errors use stable generic codes rather than inaccessible document names.
 
 Publication receipts bind schema, job, manifest, and generation identity with checksums. Malformed, truncated, or oversized receipts fail explicitly. When pointer replacement succeeds but directory synchronization reports failure, the actual pointer is reconciled before another publication. An unreadable ambiguous pointer blocks writes until recovery.
+
+Shutdown freezes new lease admission before closing any tenant reader. A rejected close preserves all publishers and the OS ownership lock; admitted writers finish or cancel before the engine releases its resources. Failed development-issuer startup releases its bound port.
 
 This model excludes an attacker who can replace source-root ancestors concurrently, alter server data, steal credentials as the same OS user, or redefine running bytecode. Local filesystem recovery is not a guarantee for distributed filesystems, disk loss, or arbitrary hardware power failure. No production security certification is claimed.

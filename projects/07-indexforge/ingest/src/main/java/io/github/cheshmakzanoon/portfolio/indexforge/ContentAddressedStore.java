@@ -5,6 +5,7 @@ import java.nio.charset.*;
 import java.nio.file.*;
 
 public final class ContentAddressedStore {
+  public static final int MAX_OBJECT_BYTES = 1_048_576;
   private final Path root;
 
   public ContentAddressedStore(Path root) throws IOException {
@@ -13,6 +14,8 @@ public final class ContentAddressedStore {
   }
 
   public String put(byte[] content) throws IOException {
+    if (content == null || content.length > MAX_OBJECT_BYTES)
+      throw new IOException("content too large or missing");
     String h = Digests.sha256(content);
     Path p = root.resolve(h);
     if (Files.exists(p)) {
@@ -26,14 +29,18 @@ public final class ContentAddressedStore {
   public long size(String digest) throws IOException {
     if (!digest.matches("[a-f0-9]{64}")) throw new IOException("invalid digest");
     long bytes = Files.size(root.resolve(digest));
-    if (bytes > 1_048_576) throw new IOException("content too large");
+    if (bytes > MAX_OBJECT_BYTES) throw new IOException("content too large");
     return bytes;
   }
 
   public byte[] read(String digest) throws IOException {
     size(digest);
     Path p = root.resolve(digest);
-    byte[] b = Files.readAllBytes(p);
+    byte[] b;
+    try (var input = Files.newInputStream(p)) {
+      b = input.readNBytes(MAX_OBJECT_BYTES + 1);
+    }
+    if (b.length > MAX_OBJECT_BYTES) throw new IOException("content too large");
     if (!Digests.sha256(b).equals(digest)) throw new IOException("content digest mismatch");
     return b;
   }

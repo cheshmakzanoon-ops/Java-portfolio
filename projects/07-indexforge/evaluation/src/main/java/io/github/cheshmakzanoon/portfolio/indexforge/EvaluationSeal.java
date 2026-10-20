@@ -8,7 +8,8 @@ public final class EvaluationSeal {
   private EvaluationSeal() {}
 
   public static void claim(Path fixtures, Path output, String decision) throws IOException {
-    if (decision.length() > 4096) throw new IOException("held-out decision quota");
+    if (decision.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 4096)
+      throw new IOException("held-out decision quota");
     Files.createDirectories(output);
     claimOne(fixtures.resolve("HELDOUT-OPENED.txt"), decision);
     claimOne(output.resolve("HELDOUT-OPENED.txt"), decision);

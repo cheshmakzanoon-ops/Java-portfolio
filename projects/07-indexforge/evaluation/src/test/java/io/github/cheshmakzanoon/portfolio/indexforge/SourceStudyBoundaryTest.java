@@ -122,4 +122,22 @@ class SourceStudyBoundaryTest {
         IllegalArgumentException.class,
         () -> SourceWave3Study.run("heldout", root, root, root, root));
   }
+
+  @Test
+  void unicodeRecordAndPathWritersNeverProduceUnrepresentablePackets() throws Exception {
+    Path record = root.resolve("unicode.properties");
+    assertThrows(
+        IOException.class, () -> SourceStudyFiles.write(record, Map.of("code", "界".repeat(5462))));
+    assertFalse(Files.exists(record));
+    SourceStudyFiles.write(record, Map.of("code", "界".repeat(5000)));
+    assertEquals("界".repeat(5000), SourceStudyFiles.read(record).get("code"));
+    Path packet = root.resolve("paths.tsv");
+    for (String path : List.of("src/A|B.java", "src/A\tB.java", "src/A\nB.java", "../outside")) {
+      assertThrows(
+          IOException.class, () -> SourceStudyFiles.paths(packet, Map.of("q1", List.of(path))));
+      assertFalse(Files.exists(packet));
+    }
+    SourceStudyFiles.paths(packet, Map.of("查询 1", List.of("src/界.java")));
+    assertEquals(List.of("src/界.java"), SourceStudyFiles.paths(packet, Set.of("查询 1")).get("查询 1"));
+  }
 }
