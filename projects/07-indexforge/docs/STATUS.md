@@ -15,17 +15,18 @@ The integration checks exercise signed HTTP/JWKS requests, the packaged structur
 
 ## Mutation verification
 
-The selected modules use the unchanged 70% **strict kill** gate. Strict rates count only `KILLED` as success and keep timeouts and uncovered mutations in the denominator; nonviable mutants are excluded. Run errors, memory errors and unknown outcomes fail validation. The [verification receipt](../evidence/maintenance-deep-20261020.json) records each module's exact outcomes and the final query campaign's completion state.
+The selected modules use the unchanged 70% **strict kill** gate. Strict rates count only `KILLED` as success and keep timeouts and uncovered mutations in the denominator; nonviable mutants are excluded. Run errors, memory errors and unknown outcomes fail validation. The [verification receipt](../evidence/maintenance-deep-20261020.json) records the completed module outcomes, source bindings and command scopes; all four selected modules passed the strict gate without runner errors.
 
 | Completed source-bound scope | Strict kills / viable mutants | Strict rate | Other outcomes |
 | --- | ---: | ---: | --- |
 | Ingest | 111 / 136 | 81.62% | 25 survived |
 | Index | 910 / 1,232 | 73.86% | 245 survived, 75 uncovered, 2 timed out |
 | Evaluation | 417 / 533 | 78.24% | 111 survived, 5 uncovered |
+| Query | 463 / 549 | 84.34% | 63 survived, 14 uncovered, 9 timed out |
 
 These are separate command scopes. Ingest and index completed in an earlier combined integration/mutation invocation before query stopped on an obsolete whole-response assertion. Their production sources, tests and POM hashes remain unchanged. Evaluation completed in a later query/evaluation reactor. That reactor's query result was correctly rejected by the strict completion gate: an increment mutation exhausted the heap while filling a growable list of candidate ordinals. The failed report remains preserved.
 
-Scoring now allocates its ordinal array to the known candidate count, bounded by 500, and preserves document-order scoring and original candidate ownership. The existing independent three-leaf, unordered-candidate regression exercises those semantics. The final source has a fresh full query campaign with every declared target and no exclusions:
+Scoring now allocates its ordinal array to the known candidate count, bounded by 500, and preserves document-order scoring and original candidate ownership. The existing independent three-leaf, unordered-candidate regression exercises those semantics. The final source passed a fresh full query campaign with every declared target and no exclusions:
 
 ```bash
 ./mvnw -f projects/07-indexforge/pom.xml -pl query \

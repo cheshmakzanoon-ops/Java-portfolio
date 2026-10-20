@@ -519,7 +519,17 @@
     "evaluation_started_epoch": 1792486872.4444687,
     "query_command": "./mvnw -f projects/07-indexforge/pom.xml -pl query -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp -Pmutation verify",
     "query_started_epoch": 1792489140.2916853,
-    "query_outcome": "RUNNING",
+    "query_outcome": "SUCCESS",
+    "resolved_ordinal_fault": {
+      "class": "io.github.cheshmakzanoon.portfolio.indexforge.SearchFeatures",
+      "method": "scores",
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator",
+      "instruction_index": 37,
+      "final_line": 122,
+      "original_outcome": "MEMORY_ERROR",
+      "final_outcome": "KILLED",
+      "killing_test": "io.github.cheshmakzanoon.portfolio.indexforge.SourceServingTest.[engine:junit-jupiter]/[class:io.github.cheshmakzanoon.portfolio.indexforge.SourceServingTest]/[method:wholePoolWithoutNewEvidencePreservesExactC1FloatScoresAndOrdering()]"
+    },
     "strict_rule": "KILLED divided by all outcomes except NON_VIABLE. Timeouts and uncovered mutations remain in the denominator; RUN_ERROR, MEMORY_ERROR and unknown outcomes fail validation.",
     "modules": [
       {
@@ -549,9 +559,15 @@
       {
         "module": "query",
         "scope": "fresh full query reactor after the fixed-size ordinal correction and coherent integration pass",
-        "outcome": "RUNNING",
-        "started_epoch": 1792489140.2916853,
-        "command": "./mvnw -f projects/07-indexforge/pom.xml -pl query -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp -Pmutation verify"
+        "report_sha256": "7ff63d7fe6d036adcb851c8a11427ff3a03d8df3b27d3a28b3a143028fea63c2",
+        "outcomes": {
+          "KILLED": 463,
+          "SURVIVED": 63,
+          "NO_COVERAGE": 14,
+          "TIMED_OUT": 9
+        },
+        "strict_killed_percent": 84.3351548269581,
+        "required_strict_killed_percent": 70
       },
       {
         "module": "evaluation",
@@ -799,6 +815,7 @@
     "deep-http-workflow.log": "ead62baf07be20b0f84be1e60b05eb991b8070dc3fe05335885a3835cb4bce5d",
     "deep-integration-mutation.log": "3e64eba4788881b1e286af148024e6478a7adbd93fc276c844698b0247a9fffc",
     "deep-parent-descriptor-install.log": "6ebc5a208937df42a59df518d8f47e3c5b1c06d4c84babff6d99ec3fa9c0fffd",
+    "deep-query-mutation-final.log": "8ca1865510686a4868d562072d5300c9f410fdf6684e8c0cf16c4992911efee9",
     "deep-verify-1.log": "b7c0ac2970381c9d9187973b8ade937f30ff45e7ffefde3f7ceb464310fdbb4e",
     "deep-verify-2.log": "f82c2d5cdfee91f5958ee09218e8b165f70fa4ce74af5a1356323faf3a100c06"
   },
