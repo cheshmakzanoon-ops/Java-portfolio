@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "project": "byteguard",
-  "recordedAt": "2026-10-20T09:37:57.350460+00:00",
-  "sourceFingerprint": "efab3143dfb6f7803087ea79915752a232da8091e24a14392836710161596363",
+  "recordedAt": "2026-10-20T10:00:06.502081+00:00",
+  "sourceFingerprint": "8d54f27459006d3f66bba8afbedf9fe3aef82defafaa4c7117960d8ec3711932",
   "demoCliSha256": "faca16e71ceb88c4f53b64ad39abd46e764c345911ad5dd339ec7766dcc3c17d",
   "verification": {
-    "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp spotless:apply -Pintegration verify",
-    "finishedAt": "2026-10-20T09:32:37Z",
-    "ordinaryMethods": 99,
+    "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp -Pintegration,mutation verify",
+    "finishedAt": "2026-10-20T09:56:55Z",
+    "ordinaryMethods": 106,
     "packagedCliIntegrationMethods": 2,
     "failures": 0,
     "errors": 0,
@@ -17,24 +17,24 @@
       "module": "byteguard-analysis-core",
       "counters": {
         "INSTRUCTION": [
-          9494,
-          476
+          9500,
+          470
         ],
         "BRANCH": [
-          1071,
-          202
+          1073,
+          200
         ],
         "LINE": [
-          1700,
-          93
+          1701,
+          92
         ],
         "COMPLEXITY": [
-          714,
-          215
+          717,
+          212
         ],
         "METHOD": [
-          225,
-          23
+          226,
+          22
         ],
         "CLASS": [
           49,
@@ -42,11 +42,11 @@
         ]
       },
       "ratios": {
-        "INSTRUCTION": 0.9522567703109328,
-        "BRANCH": 0.8413197172034564,
-        "LINE": 0.9481316229782487,
-        "COMPLEXITY": 0.7685683530678149,
-        "METHOD": 0.907258064516129,
+        "INSTRUCTION": 0.9528585757271816,
+        "BRANCH": 0.842890809112333,
+        "LINE": 0.9486893474623536,
+        "COMPLEXITY": 0.7717976318622174,
+        "METHOD": 0.9112903225806451,
         "CLASS": 1.0
       },
       "required": {
@@ -69,7 +69,8 @@
       "scripts/demo.sh",
       "scripts/down.sh"
     ],
-    "ordinaryPreparationFinishedAt": "2026-10-20T09:36:38Z",
+    "ordinaryPreparationFinishedAt": "2026-10-20T09:58:38Z",
+    "ordinaryMethods": 106,
     "assertions": [
       "cross-method source/sink witness",
       "corrected prepared binding",
@@ -83,10 +84,11 @@
       0
     ],
     "success": true,
-    "backgroundServices": 0
+    "backgroundServices": 0,
+    "sourceReceiptSha256": "9c7fab30d8b81b6029fedc343be50eeb709e2a3a6b0f256f3e657dbf18ce1860"
   },
   "mutation": {
-    "state": "running",
+    "state": "passed",
     "thresholdPercent": 70,
     "coreTargets": [
       "Taint",
@@ -103,7 +105,145 @@
       "StableIdentity",
       "OwnedOutput"
     ],
-    "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp -Pmutation verify"
+    "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp -Pintegration,mutation verify",
+    "finishedAt": "2026-10-20T09:56:55Z",
+    "modules": {
+      "analysis-core": {
+        "generated": 727,
+        "statuses": {
+          "KILLED": 527,
+          "SURVIVED": 106,
+          "NO_COVERAGE": 94
+        },
+        "classes": {
+          "io.github.cheshmakzanoon.portfolio.byteguard.bytecode.TypeHierarchy": {
+            "generated": 43,
+            "statuses": {
+              "KILLED": 27,
+              "NO_COVERAGE": 10,
+              "SURVIVED": 6
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.cfg.ControlFlowBuilder": {
+            "generated": 92,
+            "statuses": {
+              "KILLED": 85,
+              "SURVIVED": 7
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.FrameState": {
+            "generated": 30,
+            "statuses": {
+              "KILLED": 30
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.InvocationEffects": {
+            "generated": 19,
+            "statuses": {
+              "KILLED": 19
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.Taint": {
+            "generated": 35,
+            "statuses": {
+              "KILLED": 35
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.TransferFunction": {
+            "generated": 334,
+            "statuses": {
+              "KILLED": 187,
+              "SURVIVED": 63,
+              "NO_COVERAGE": 84
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.dataflow.WorklistSolver": {
+            "generated": 44,
+            "statuses": {
+              "SURVIVED": 5,
+              "KILLED": 39
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.input.ArchiveDirectory": {
+            "generated": 108,
+            "statuses": {
+              "KILLED": 85,
+              "SURVIVED": 23
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.interprocedural.MethodSummary": {
+            "generated": 22,
+            "statuses": {
+              "KILLED": 20,
+              "SURVIVED": 2
+            }
+          }
+        },
+        "mutationXmlSha256": "db70c11b76ee46e386bc90f4dbc28566a062de85ba4dc46bd84514a55264a8fd",
+        "localReport": "projects/09-byteguard/analysis-core/target/pit-reports/mutations.xml"
+      },
+      "report": {
+        "generated": 30,
+        "statuses": {
+          "KILLED": 30
+        },
+        "classes": {
+          "io.github.cheshmakzanoon.portfolio.byteguard.report.OwnedOutput": {
+            "generated": 2,
+            "statuses": {
+              "KILLED": 2
+            }
+          },
+          "io.github.cheshmakzanoon.portfolio.byteguard.report.StableIdentity": {
+            "generated": 28,
+            "statuses": {
+              "KILLED": 28
+            }
+          }
+        },
+        "mutationXmlSha256": "26647e25f4a4880e023b18e6b4ad11c074770822577a28aab1d71fd42dca24d1",
+        "localReport": "projects/09-byteguard/report/target/pit-reports/mutations.xml"
+      }
+    },
+    "noThresholdOrScopeRelaxation": true,
+    "ordinaryEvaluatorTestsNotIncludedInCorePit": true,
+    "remainingScopeLimits": [
+      "94 core mutants have no core-unit coverage (84 TransferFunction, 10 TypeHierarchy); evaluation-module tests do not enter that PIT classpath.",
+      "106 core survivors remain in the denominator; no claim of complete semantic mutation certification is made.",
+      "Two MethodSummary survivors are equivalent comparison boundaries when equal prefixes already have equal path values."
+    ],
+    "priorCampaigns": [
+      {
+        "finishedAt": "2026-10-20T09:42:42Z",
+        "core": {
+          "generated": 727,
+          "killed": 516,
+          "survived": 115,
+          "noCoverage": 96
+        },
+        "report": {
+          "generated": 30,
+          "killed": 23,
+          "survived": 6,
+          "noCoverage": 1
+        }
+      },
+      {
+        "finishedAt": "2026-10-20T09:50:24Z",
+        "core": {
+          "generated": 727,
+          "killed": 527,
+          "survived": 106,
+          "noCoverage": 94
+        },
+        "report": {
+          "generated": 30,
+          "killed": 29,
+          "survived": 1,
+          "noCoverage": 0
+        }
+      }
+    ]
   },
   "reviewScope": [
     "all production classes in analysis-core/report/cli/evaluation",
@@ -121,6 +261,110 @@
   ],
   "localLogDigests": {
     ".work/A09/deep-integrated-second-verify.log": "41e064af91bf98bb6056f6d3044bb405462abcfba23def441eb895499567c6c1",
-    ".work/A09/deep-cli-lifecycle.log": "8298155169ac93e2039e910c53df87492f02c6c14bc43d64444b63e390994987"
+    ".work/A09/deep-cli-lifecycle.log": "8298155169ac93e2039e910c53df87492f02c6c14bc43d64444b63e390994987",
+    ".work/A09/deep-expanded-mutation.log": "0b2154ae780d0bfa8054f652344430af9eb9c4285cc1c067f770af873ba8f3f7",
+    ".work/A09/deep-final-semantic-certification.log": "b10d7c8ce317c67272b8ed87d203cc3dfe8c622537ade3bcfaa3c790ce0549ad",
+    ".work/A09/deep-final-certified-low-surrogate.log": "175a50e541b60c81a15e4b317c5ebba4b1b290075639a4407c6bcab4edd18130",
+    ".work/A09/deep-build-cache-tests.log": "b035621663b853f33ed2cf3e140187c9146bdf5c12f11ccfaac07f7044cefaec",
+    ".work/A09/deep-final-cache-preparation-demo.log": "d43d352ffcc0a9bdbb990914bdb5ba9201ce4271642c9523d79e0a29b0fd7e13"
+  },
+  "priorSourceCheckpoint": {
+    "sourceFingerprint": "efab3143dfb6f7803087ea79915752a232da8091e24a14392836710161596363",
+    "demoCliSha256": "faca16e71ceb88c4f53b64ad39abd46e764c345911ad5dd339ec7766dcc3c17d",
+    "verification": {
+      "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp spotless:apply -Pintegration verify",
+      "finishedAt": "2026-10-20T09:32:37Z",
+      "ordinaryMethods": 99,
+      "packagedCliIntegrationMethods": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "coverage": {
+        "schemaVersion": 1,
+        "module": "byteguard-analysis-core",
+        "counters": {
+          "INSTRUCTION": [
+            9494,
+            476
+          ],
+          "BRANCH": [
+            1071,
+            202
+          ],
+          "LINE": [
+            1700,
+            93
+          ],
+          "COMPLEXITY": [
+            714,
+            215
+          ],
+          "METHOD": [
+            225,
+            23
+          ],
+          "CLASS": [
+            49,
+            0
+          ]
+        },
+        "ratios": {
+          "INSTRUCTION": 0.9522567703109328,
+          "BRANCH": 0.8413197172034564,
+          "LINE": 0.9481316229782487,
+          "COMPLEXITY": 0.7685683530678149,
+          "METHOD": 0.907258064516129,
+          "CLASS": 1.0
+        },
+        "required": {
+          "LINE": 0.85,
+          "BRANCH": 0.75
+        }
+      },
+      "corpus": {
+        "workload": "frozen-corpus-v2",
+        "unchangedCases": 120,
+        "truePositives": 60,
+        "trueNegatives": 60,
+        "falsePositives": 0,
+        "falseNegatives": 0
+      }
+    },
+    "lifecycle": {
+      "commands": [
+        "scripts/up.sh",
+        "scripts/demo.sh",
+        "scripts/down.sh"
+      ],
+      "ordinaryPreparationFinishedAt": "2026-10-20T09:36:38Z",
+      "assertions": [
+        "cross-method source/sink witness",
+        "corrected prepared binding",
+        "explicit partial frontier",
+        "exact unchanged baseline"
+      ],
+      "expectedScanExitCodes": [
+        1,
+        0,
+        3,
+        0
+      ],
+      "success": true,
+      "backgroundServices": 0
+    }
+  },
+  "cacheRegression": {
+    "command": "python3 projects/09-byteguard/scripts/test-build-cache.py",
+    "cases": 5,
+    "failures": 0,
+    "errors": 0,
+    "verifies": [
+      "cached reuse",
+      "source drift refusal",
+      "verification failure preserves receipt/status",
+      "failed publication preserves prior receipt and cleans temporary",
+      "symbolic receipt replacement preserves target"
+    ],
+    "executesMavenOrAnalyzedCode": false
   }
 }

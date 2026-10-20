@@ -4,21 +4,32 @@ ByteGuard's current correctness and packaged-CLI checks pass. Performance, mutat
 
 ## Current verification
 
-The deeper runtime verification completed on **2026-10-20 at 09:32:37 UTC**: **99 ordinary test methods and 2 packaged-CLI integration methods**, with zero failures, errors, or skips. The frozen 120-case corpus remains unchanged: **60 true positives and 60 true negatives**. Core aggregate coverage is **1,700 / 1,793 lines (94.81%)** and **1,071 / 1,273 branches (84.13%)**, above unchanged 85% / 75% gates.
+The deeper runtime verification completed on **2026-10-20 at 09:56:55 UTC**: **106 ordinary test methods and 2 packaged-CLI integration methods**, with zero failures, errors, or skips. The frozen 120-case corpus remains unchanged: **60 true positives and 60 true negatives**. Core aggregate coverage is **1,701 / 1,793 lines (94.87%)** and **1,073 / 1,273 branches (84.29%)**, above unchanged 85% / 75% gates.
 
 ```bash
 source scripts/cloud-env.sh
 ./mvnw -f projects/09-byteguard/pom.xml \
-  -Dmaven.repo.local=.work/A09/m2 -B -ntp spotless:apply -Pintegration verify
+  -Dmaven.repo.local=.work/A09/m2 -B -ntp -Pintegration,mutation verify
 ```
 
 The added semantic controls exercise mixed native/clean dispatch, fresh/aliased opaque mutable returns, helper write effects and allocation-length dependencies in both worklist schedules. Serialized classfile controls distinguish valid branch-local reuse from invalid arithmetic/receivers/returns, incoming handler overflow, missing concrete bodies, reachable fall-through and malformed exception ranges. Archive controls cover complete ZIP/ZIP64 indexes, CRC/size/count corruption, metadata bounds, directory payloads, manifest ambiguity and nonregular files. Reporting controls preserve actual scanned bytes through DOT symbolic/hard links and keep delimiter/unpaired-UTF-16 identities distinct through real finding/explanation output.
 
 A deterministic parser-budget test includes every unanalyzed method from the completed class prefix in its frontier. An instrumented label-index test performs16,384 lookups through4,096 metadata nodes without forward rescanning; this verifies an algorithmic boundary, not a performance benchmark. Duplicate declarations, whole field descriptors, provenance tuple joins and ordinary fingerprint stability have direct controls.
 
-Packaged-process checks exercise all four exit codes, SARIF schema validity, a nonexecuted initializer sentinel, the hostile descriptor regression and a legal long-identity case in a 64 MiB child JVM. The actual local up/demo/down lifecycle passed after a fresh ordinary source-cache build at **09:36:38 UTC**. Its four scans returned the asserted1/0/3/0 exits for a cross-method finding, corrected parameter binding, explicit partial frontier and unchanged baseline. No background service remains. The [hardening evidence](../evidence/runtime-hardening-2026-10-20.json) records source/artifact identity, exact commands, test/corpus/coverage counts and local log digests.
+Packaged-process checks exercise all four exit codes, SARIF schema validity, a nonexecuted initializer sentinel, the hostile descriptor regression and a legal long-identity case in a 64 MiB child JVM. The actual local up/demo/down lifecycle passed after a fresh ordinary source-cache build at **09:58:38 UTC**. Its four scans returned the asserted1/0/3/0 exits for a cross-method finding, corrected parameter binding, explicit partial frontier and unchanged baseline. No background service remains. The [hardening evidence](../evidence/runtime-hardening-2026-10-20.json) records source/artifact identity, exact commands, test/corpus/coverage counts and local log digests.
 
-The expanded mutation campaign is running separately against the frozen source; no new benchmark was run. Current mutation results will state their complete expanded scope and denominator rather than inheriting the historical four-class score.
+The expanded mutation campaign passed the unchanged **70%** gates with the full generated denominator:
+
+| Scope | Killed / generated | Survived | No coverage | Timeout / runner error |
+| --- | --- | --- | --- | --- |
+| Nine core components | 527 / 727 (72.49%) | 106 | 94 | 0 / 0 |
+| Report identity and owned publication | 30 / 30 (100%) | 0 | 0 | 0 / 0 |
+
+The core scope includes the prior lattice/frame/worklist/CFG components plus transfer functions, invocation effects, hierarchy resolution, summaries and ZIP-index validation. All19 invocation-effect mutants were killed; summary composition killed20/22, with two equivalent comparison-boundary survivors. Uncovered core mutants comprise84 in `TransferFunction` and10 in `TypeHierarchy`: evaluation-module tests do not enter the core-unit PIT classpath. Those94 and all106 survivors remain counted. This scope is larger than the historical177-mutant scope, so their percentages describe different denominators.
+
+The initial expanded campaign exposed missing direct assertions for exported opaque writes, seeded mutable return identity, summary sink/field substitution and tuple encoding. Added contract tests close those gaps. A final low-surrogate pair distinguishes two names that lossy UTF-8 would merge; the unchanged production implementation rejects that mutation. Earlier516/727 core and23/30 report results, then527/727 and29/30, remain separately recorded in the hardening evidence. No threshold, target scope, fixture label or survivor exclusion was relaxed. No fresh benchmark was run.
+
+Five controlled shell-cache regressions also pass. Source drift during verification refuses receipt publication; build/publication failures preserve prior evidence; atomic receipt replacement preserves a linked target. The actual final source-cache preparation and demo above exercised the corrected path. Independent [packaged-CLI counterexamples](../evidence/independent-cli-2026-10-20.json) record six additional observed closures against the same final CLI hash. Passing these bounds and synthetic controls is not complete JVM verification or a field-accuracy estimate.
 
 The first deeper-pass semantic run failed on a shared-receiver clean control: the existing weak object-insensitive heap conservatively contaminates that call. The regression now records that known false positive and separately requires the isolated clean control to remain clean; corpus labels are unchanged. A later full build stopped on a test import ambiguity before execution; the explicit import correction preceded the successful full result above. These source-specific failures are distinct from the final successful result.
 
