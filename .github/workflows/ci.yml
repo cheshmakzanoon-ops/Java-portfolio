@@ -38,6 +38,9 @@ jobs:
           distribution: temurin
           java-version: '25.0.4.1+1'
           cache: maven
+      - name: Verify ByteGuard preparation receipts
+        if: matrix.project == 'byteguard'
+        run: python3 projects/09-byteguard/scripts/test-build-cache.py
       - run: ./scripts/portfolio.sh verify "${{ matrix.project }}"
       - run: python3 scripts/check-architecture.py
       - run: python3 scripts/check-architecture.py --bytecode "${{ matrix.project }}"

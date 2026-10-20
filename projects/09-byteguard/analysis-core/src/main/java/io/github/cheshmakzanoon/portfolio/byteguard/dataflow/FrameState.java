@@ -44,7 +44,13 @@ public final class FrameState {
       throw new IllegalArgumentException("incompatible verifier frame shape");
     boolean changed = false;
     for (int i = 0; i < locals.length; i++) {
-      AbstractValue v = locals[i].join(other.locals[i]);
+      // A local that holds different computational types along two predecessors is
+      // unusable at their join. Unlike an operand-stack mismatch, this is legal when
+      // subsequent code does not load that slot (ordinary disjoint lexical scopes).
+      AbstractValue v =
+          locals[i].kind() == other.locals[i].kind()
+              ? locals[i].join(other.locals[i])
+              : AbstractValue.TOP;
       if (!v.equals(locals[i])) {
         locals[i] = v;
         changed = true;

@@ -68,6 +68,44 @@ class BoundaryTest implements Opcodes {
   }
 
   @Test
+  void loneUtf16MethodNamesProduceTwoFindingsAndTwoExplanations() throws Exception {
+    ClassWriter writer = new ClassWriter(0);
+    writer.visit(V25, ACC_PUBLIC, "Surrogates", null, "java/lang/Object", null);
+    for (String name : List.of("read\uD800", "read\uD801")) {
+      MethodVisitor method =
+          writer.visitMethod(ACC_STATIC, name, "(Ljava/sql/Statement;)V", null, null);
+      method.visitCode();
+      method.visitVarInsn(ALOAD, 0);
+      method.visitLdcInsn("INPUT");
+      method.visitMethodInsn(
+          INVOKESTATIC,
+          "java/lang/System",
+          "getenv",
+          "(Ljava/lang/String;)Ljava/lang/String;",
+          false);
+      method.visitMethodInsn(
+          INVOKEINTERFACE, "java/sql/Statement", "execute", "(Ljava/lang/String;)Z", true);
+      method.visitInsn(POP);
+      method.visitInsn(RETURN);
+      method.visitMaxs(2, 1);
+      method.visitEnd();
+    }
+    writer.visitEnd();
+    Path input = temp.resolve("Surrogates.class");
+    Files.write(input, writer.toByteArray());
+    var result = scan(input, AnalysisBudget.defaults());
+    List<Finding> findings = new FindingReporter().findings(result);
+    assertFalse(result.analysis().partial());
+    assertEquals(2, findings.size());
+    assertEquals(2, findings.stream().map(Finding::fingerprint).distinct().count());
+    Path explanations = temp.resolve("surrogate-explanations");
+    new AnalysisExplainer().write(result, explanations, null);
+    try (var files = Files.list(explanations)) {
+      assertEquals(2, files.filter(p -> p.toString().endsWith(".dot")).count());
+    }
+  }
+
+  @Test
   void explicitClassFilesShareTheEntryBudgetWithClasspathFiles() throws Exception {
     Path first = compile("First", "public class First {}");
     Path second = compile("Second", "public class Second {}");

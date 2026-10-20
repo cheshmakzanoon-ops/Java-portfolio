@@ -131,26 +131,21 @@ public final class SarifExporter {
   }
 
   public void write(Path path, Object value) throws IOException {
-    Path parent = path.toAbsolutePath().getParent();
-    Files.createDirectories(parent);
-    if (Files.isSymbolicLink(path)) throw new IOException("symbolic report output rejected");
-    Path temporary = Files.createTempFile(parent, ".byteguard-report-", ".tmp");
-    try {
-      mapper.writerWithDefaultPrettyPrinter().writeValue(temporary.toFile(), value);
-      try {
-        Files.move(
-            temporary, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-      } catch (AtomicMoveNotSupportedException unavailable) {
-        Files.move(temporary, path, StandardCopyOption.REPLACE_EXISTING);
-      }
-    } finally {
-      Files.deleteIfExists(temporary);
-    }
+    OwnedOutput.write(
+        path,
+        temporary -> mapper.writerWithDefaultPrettyPrinter().writeValue(temporary.toFile(), value));
   }
 
   public Set<String> baseline(Path path) throws IOException {
+    if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
+      throw new IOException("baseline must be a regular file");
     if (Files.size(path) > 8 * 1024 * 1024) throw new IOException("baseline exceeds 8 MiB");
-    JsonNode root = mapper.readTree(path.toFile());
+    byte[] bytes;
+    try (InputStream input = Files.newInputStream(path)) {
+      bytes = input.readNBytes(8 * 1024 * 1024 + 1);
+    }
+    if (bytes.length > 8 * 1024 * 1024) throw new IOException("baseline exceeds 8 MiB");
+    JsonNode root = mapper.readTree(bytes);
     TreeSet<String> fingerprints = new TreeSet<>();
     JsonNode runs = root.path("runs");
     if (!runs.isArray())

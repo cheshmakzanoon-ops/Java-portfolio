@@ -20,6 +20,10 @@ public final class MethodDescriptor {
     return slots;
   }
 
+  public static void field(String descriptor) {
+    if (descriptor == null || typeEnd(descriptor, 0, false) != descriptor.length()) throw invalid();
+  }
+
   private static int typeEnd(String descriptor, int cursor, boolean allowVoid) {
     if (cursor >= descriptor.length()) throw invalid();
     char type = descriptor.charAt(cursor++);

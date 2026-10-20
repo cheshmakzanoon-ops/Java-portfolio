@@ -1,5 +1,7 @@
 package io.github.cheshmakzanoon.portfolio.byteguard.dataflow;
 
+import static io.github.cheshmakzanoon.portfolio.byteguard.dataflow.InvocationEffects.mutableReference;
+
 import io.github.cheshmakzanoon.portfolio.byteguard.bytecode.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.interprocedural.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.rules.*;
@@ -63,16 +65,35 @@ public final class TransferFunction implements Opcodes {
     return AbstractValue.of(kind, taint);
   }
 
-  private void unary(FrameState f, AbstractValue.Kind k) {
-    f.push(value(k, f.pop().taint()));
+  private AbstractValue pop(FrameState frame, AbstractValue.Kind kind) {
+    AbstractValue operand = frame.pop();
+    requireKind(operand, kind);
+    return operand;
   }
 
-  private void binary(FrameState f, AbstractValue.Kind k) {
-    Taint t = f.pop().taint().join(f.pop().taint());
-    f.push(value(k, t));
+  private void unary(FrameState frame, AbstractValue.Kind from, AbstractValue.Kind to) {
+    frame.push(value(to, pop(frame, from).taint()));
+  }
+
+  private void binary(
+      FrameState frame,
+      AbstractValue.Kind left,
+      AbstractValue.Kind right,
+      AbstractValue.Kind result) {
+    Taint taint = pop(frame, right).taint().join(pop(frame, left).taint());
+    frame.push(value(result, taint));
+  }
+
+  private AbstractValue.Kind fieldKind(FieldInsnNode field) {
+    Type type = Type.getType(field.desc);
+    if (type.getSort() == Type.VOID || type.getSort() == Type.METHOD)
+      throw new IllegalArgumentException("invalid field descriptor");
+    return AbstractValue.kind(type);
   }
 
   public void apply(int ordinal, FrameState f) {
+    if (f.slots() > method.node.maxStack)
+      throw new IllegalArgumentException("incoming maxStack exceeded: " + method.at(ordinal));
     AbstractInsnNode n = method.instructions.get(ordinal);
     int op = n.getOpcode();
     InstructionId site = method.at(ordinal);
@@ -131,6 +152,8 @@ public final class TransferFunction implements Opcodes {
       }
       case IINC -> {
         int slot = ((IincInsnNode) n).var;
+        if (slot < 0 || slot >= f.locals.length)
+          throw new IllegalArgumentException("iinc local out of bounds");
         if (f.locals[slot].kind() != AbstractValue.Kind.INT)
           throw new IllegalArgumentException("iinc on non-int");
       }
@@ -142,67 +165,96 @@ public final class TransferFunction implements Opcodes {
           throw new IllegalArgumentException("invalid pop2");
       }
       case DUP, DUP_X1, DUP_X2, DUP2, DUP2_X1, DUP2_X2, SWAP -> duplicate(op, f);
-      case IADD,
-          ISUB,
-          IMUL,
-          IDIV,
-          IREM,
-          ISHL,
-          ISHR,
-          IUSHR,
-          IAND,
-          IOR,
-          IXOR,
-          LCMP,
-          FCMPL,
-          FCMPG,
-          DCMPL,
-          DCMPG ->
-          binary(f, AbstractValue.Kind.INT);
-      case LADD, LSUB, LMUL, LDIV, LREM, LSHL, LSHR, LUSHR, LAND, LOR, LXOR ->
-          binary(f, AbstractValue.Kind.LONG);
-      case FADD, FSUB, FMUL, FDIV, FREM -> binary(f, AbstractValue.Kind.FLOAT);
-      case DADD, DSUB, DMUL, DDIV, DREM -> binary(f, AbstractValue.Kind.DOUBLE);
-      case INEG, I2B, I2C, I2S, L2I, F2I, D2I -> unary(f, AbstractValue.Kind.INT);
-      case LNEG, I2L, F2L, D2L -> unary(f, AbstractValue.Kind.LONG);
-      case FNEG, I2F, L2F, D2F -> unary(f, AbstractValue.Kind.FLOAT);
-      case DNEG, I2D, L2D, F2D -> unary(f, AbstractValue.Kind.DOUBLE);
-      case IFEQ, IFNE, IFLT, IFGE, IFGT, IFLE, IFNULL, IFNONNULL, TABLESWITCH, LOOKUPSWITCH ->
-          f.pop();
-      case IF_ICMPEQ,
-          IF_ICMPNE,
-          IF_ICMPLT,
-          IF_ICMPGE,
-          IF_ICMPGT,
-          IF_ICMPLE,
-          IF_ACMPEQ,
-          IF_ACMPNE -> {
-        f.pop();
-        f.pop();
+      case IADD, ISUB, IMUL, IDIV, IREM, ISHL, ISHR, IUSHR, IAND, IOR, IXOR ->
+          binary(f, AbstractValue.Kind.INT, AbstractValue.Kind.INT, AbstractValue.Kind.INT);
+      case LADD, LSUB, LMUL, LDIV, LREM, LAND, LOR, LXOR ->
+          binary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.LONG, AbstractValue.Kind.LONG);
+      case LSHL, LSHR, LUSHR ->
+          binary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.INT, AbstractValue.Kind.LONG);
+      case FADD, FSUB, FMUL, FDIV, FREM ->
+          binary(f, AbstractValue.Kind.FLOAT, AbstractValue.Kind.FLOAT, AbstractValue.Kind.FLOAT);
+      case DADD, DSUB, DMUL, DDIV, DREM ->
+          binary(
+              f, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.DOUBLE);
+      case LCMP ->
+          binary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.LONG, AbstractValue.Kind.INT);
+      case FCMPL, FCMPG ->
+          binary(f, AbstractValue.Kind.FLOAT, AbstractValue.Kind.FLOAT, AbstractValue.Kind.INT);
+      case DCMPL, DCMPG ->
+          binary(f, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.INT);
+      case INEG, I2B, I2C, I2S -> unary(f, AbstractValue.Kind.INT, AbstractValue.Kind.INT);
+      case LNEG -> unary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.LONG);
+      case FNEG -> unary(f, AbstractValue.Kind.FLOAT, AbstractValue.Kind.FLOAT);
+      case DNEG -> unary(f, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.DOUBLE);
+      case L2I -> unary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.INT);
+      case F2I -> unary(f, AbstractValue.Kind.FLOAT, AbstractValue.Kind.INT);
+      case D2I -> unary(f, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.INT);
+      case I2L -> unary(f, AbstractValue.Kind.INT, AbstractValue.Kind.LONG);
+      case F2L -> unary(f, AbstractValue.Kind.FLOAT, AbstractValue.Kind.LONG);
+      case D2L -> unary(f, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.LONG);
+      case I2F -> unary(f, AbstractValue.Kind.INT, AbstractValue.Kind.FLOAT);
+      case L2F -> unary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.FLOAT);
+      case D2F -> unary(f, AbstractValue.Kind.DOUBLE, AbstractValue.Kind.FLOAT);
+      case I2D -> unary(f, AbstractValue.Kind.INT, AbstractValue.Kind.DOUBLE);
+      case L2D -> unary(f, AbstractValue.Kind.LONG, AbstractValue.Kind.DOUBLE);
+      case F2D -> unary(f, AbstractValue.Kind.FLOAT, AbstractValue.Kind.DOUBLE);
+      case IFEQ, IFNE, IFLT, IFGE, IFGT, IFLE, TABLESWITCH, LOOKUPSWITCH ->
+          pop(f, AbstractValue.Kind.INT);
+      case IFNULL, IFNONNULL -> pop(f, AbstractValue.Kind.REF);
+      case IF_ICMPEQ, IF_ICMPNE, IF_ICMPLT, IF_ICMPGE, IF_ICMPGT, IF_ICMPLE -> {
+        pop(f, AbstractValue.Kind.INT);
+        pop(f, AbstractValue.Kind.INT);
+      }
+      case IF_ACMPEQ, IF_ACMPNE -> {
+        pop(f, AbstractValue.Kind.REF);
+        pop(f, AbstractValue.Kind.REF);
       }
       case GOTO -> {}
       case JSR, RET -> throw new IllegalArgumentException("legacy jsr/ret unsupported: " + site);
       case IRETURN, LRETURN, FRETURN, DRETURN, ARETURN -> {
-        AbstractValue returnedValue = f.pop();
+        AbstractValue.Kind kind =
+            switch (op) {
+              case IRETURN -> AbstractValue.Kind.INT;
+              case LRETURN -> AbstractValue.Kind.LONG;
+              case FRETURN -> AbstractValue.Kind.FLOAT;
+              case DRETURN -> AbstractValue.Kind.DOUBLE;
+              default -> AbstractValue.Kind.REF;
+            };
+        if (AbstractValue.kind(Type.getReturnType(method.node.desc)) != kind)
+          throw new IllegalArgumentException(
+              "return opcode disagrees with method descriptor: " + site);
+        AbstractValue returnedValue = pop(f, kind);
         returns = returns.join(heap.elements(returnedValue));
         if (op == ARETURN && mutableReference(Type.getReturnType(method.node.desc)))
           heap.alias("return:" + method.scope, returnedValue.references());
       }
-      case RETURN -> {}
-      case ATHROW -> f.pop();
+      case RETURN -> {
+        if (Type.getReturnType(method.node.desc).getSort() != Type.VOID)
+          throw new IllegalArgumentException("void return in non-void method: " + site);
+      }
+      case ATHROW -> pop(f, AbstractValue.Kind.REF);
       case NEW -> f.push(AbstractValue.reference(Taint.BOTTOM, "new:" + site));
       case NEWARRAY, ANEWARRAY -> {
-        Taint t = f.pop().taint();
+        if (op == NEWARRAY) {
+          int type = ((IntInsnNode) n).operand;
+          if (type < T_BOOLEAN || type > T_LONG)
+            throw new IllegalArgumentException("invalid primitive array type");
+        }
+        Taint t = pop(f, AbstractValue.Kind.INT).taint();
         f.push(AbstractValue.reference(t, "array:" + site));
       }
       case MULTIANEWARRAY -> {
+        MultiANewArrayInsnNode array = (MultiANewArrayInsnNode) n;
+        Type type = Type.getType(array.desc);
+        if (type.getSort() != Type.ARRAY || array.dims < 1 || array.dims > type.getDimensions())
+          throw new IllegalArgumentException("invalid multi-dimensional array dimensions");
         Taint t = Taint.BOTTOM;
-        for (int i = 0; i < ((MultiANewArrayInsnNode) n).dims; i++) t = t.join(f.pop().taint());
+        for (int i = 0; i < array.dims; i++) t = t.join(pop(f, AbstractValue.Kind.INT).taint());
         f.push(AbstractValue.reference(t, "array:" + site));
       }
       case IALOAD, BALOAD, CALOAD, SALOAD, LALOAD, FALOAD, DALOAD, AALOAD -> {
-        Taint index = f.pop().taint();
-        AbstractValue array = f.pop();
+        Taint index = pop(f, AbstractValue.Kind.INT).taint();
+        AbstractValue array = pop(f, AbstractValue.Kind.REF);
         AbstractValue.Kind kind =
             switch (op) {
               case LALOAD -> AbstractValue.Kind.LONG;
@@ -219,9 +271,17 @@ public final class TransferFunction implements Opcodes {
                 null));
       }
       case IASTORE, LASTORE, FASTORE, DASTORE, AASTORE, BASTORE, CASTORE, SASTORE -> {
-        AbstractValue v = f.pop();
-        f.pop();
-        AbstractValue array = f.pop();
+        AbstractValue.Kind kind =
+            switch (op) {
+              case LASTORE -> AbstractValue.Kind.LONG;
+              case FASTORE -> AbstractValue.Kind.FLOAT;
+              case DASTORE -> AbstractValue.Kind.DOUBLE;
+              case AASTORE -> AbstractValue.Kind.REF;
+              default -> AbstractValue.Kind.INT;
+            };
+        AbstractValue v = pop(f, kind);
+        pop(f, AbstractValue.Kind.INT);
+        AbstractValue array = pop(f, AbstractValue.Kind.REF);
         heap.addElement(array, heap.elements(v));
         if (op == AASTORE)
           for (String reference : array.references()) heap.alias(reference, v.references());
@@ -231,23 +291,24 @@ public final class TransferFunction implements Opcodes {
             heap.write(ref + "#const:" + v.constant(), Taint.source("CONST"));
       }
       case ARRAYLENGTH -> {
-        f.pop();
-        f.push(value(AbstractValue.Kind.INT, Taint.BOTTOM));
+        // Array creation records length dependence on the reference itself. Element
+        // contents are separate heap facts and cannot change the allocation length.
+        f.push(value(AbstractValue.Kind.INT, pop(f, AbstractValue.Kind.REF).taint()));
       }
-      case CHECKCAST -> {}
+      case CHECKCAST -> f.push(pop(f, AbstractValue.Kind.REF));
       case INSTANCEOF -> {
-        f.pop();
+        pop(f, AbstractValue.Kind.REF);
         f.push(value(AbstractValue.Kind.INT, Taint.BOTTOM));
       }
-      case MONITORENTER, MONITOREXIT -> f.pop();
+      case MONITORENTER, MONITOREXIT -> pop(f, AbstractValue.Kind.REF);
       case GETFIELD, GETSTATIC -> {
         FieldInsnNode field = (FieldInsnNode) n;
         AbstractValue receiver =
-            op == GETFIELD ? f.pop() : AbstractValue.of(AbstractValue.Kind.REF, Taint.BOTTOM);
+            op == GETFIELD
+                ? pop(f, AbstractValue.Kind.REF)
+                : AbstractValue.of(AbstractValue.Kind.REF, Taint.BOTTOM);
         AbstractValue loaded =
-            heap.readField(
-                field.owner + "." + field.name + field.desc,
-                AbstractValue.kind(Type.getType(field.desc)));
+            heap.readField(field.owner + "." + field.name + field.desc, fieldKind(field));
         f.push(
             new AbstractValue(
                 loaded.kind(),
@@ -257,8 +318,8 @@ public final class TransferFunction implements Opcodes {
       }
       case PUTFIELD, PUTSTATIC -> {
         FieldInsnNode field = (FieldInsnNode) n;
-        AbstractValue v = f.pop();
-        if (op == PUTFIELD) f.pop();
+        AbstractValue v = pop(f, fieldKind(field));
+        if (op == PUTFIELD) pop(f, AbstractValue.Kind.REF);
         String fieldKey = field.owner + "." + field.name + field.desc;
         heap.writeField(fieldKey, v);
         fieldWrites.merge(fieldKey, heap.elements(v), Taint::join);
@@ -397,18 +458,25 @@ public final class TransferFunction implements Opcodes {
   private void dynamic(InvokeDynamicInsnNode n, FrameState f, InstructionId site) {
     Type[] types = Type.getArgumentTypes(n.desc);
     Taint t = Taint.BOTTOM;
-    for (int i = types.length - 1; i >= 0; i--) t = t.join(heap.elements(f.pop()));
+    for (int i = types.length - 1; i >= 0; i--)
+      t = t.join(heap.elements(pop(f, AbstractValue.kind(types[i]))));
     String owner = n.bsm.getOwner();
     if (owner.equals("java/lang/invoke/StringConcatFactory")
         && Set.of("makeConcat", "makeConcatWithConstants").contains(n.bsm.getName())) {
-      f.push(value(AbstractValue.Kind.REF, t));
+      Type result = Type.getReturnType(n.desc);
+      if (result.getSort() != Type.VOID) f.push(value(AbstractValue.kind(result), t));
     } else if (owner.equals("java/lang/invoke/LambdaMetafactory")
         && Set.of("metafactory", "altMetafactory").contains(n.bsm.getName())) {
       String target = "lambda:" + site;
       for (Object arg : n.bsmArgs)
         if (arg instanceof Handle h)
           target = "lambda:" + h.getTag() + ":" + h.getOwner() + "." + h.getName() + h.getDesc();
-      f.push(AbstractValue.reference(t, target));
+      Type result = Type.getReturnType(n.desc);
+      if (result.getSort() != Type.VOID)
+        f.push(
+            AbstractValue.kind(result) == AbstractValue.Kind.REF
+                ? AbstractValue.reference(t, target)
+                : value(AbstractValue.kind(result), t));
     } else {
       diagnostics.add("UNSUPPORTED_BOOTSTRAP " + site + " " + owner);
       if (Type.getReturnType(n.desc).getSort() != Type.VOID)
@@ -427,12 +495,15 @@ public final class TransferFunction implements Opcodes {
     AbstractValue receiver =
         n.getOpcode() == INVOKESTATIC
             ? AbstractValue.of(AbstractValue.Kind.REF, Taint.BOTTOM)
-            : f.pop();
+            : pop(f, AbstractValue.Kind.REF);
     String id = n.owner + "." + n.name + n.desc;
     Taint joined = heap.elements(receiver);
     for (AbstractValue arg : args) joined = joined.join(heap.elements(arg));
     Taint returned = Taint.BOTTOM;
     SortedSet<String> resultRefs = new TreeSet<>();
+    List<AbstractValue> operands = new ArrayList<>(args);
+    operands.add(receiver);
+    boolean opaque = false;
     RuleModels.Sink sink = models.sink(id);
     if (sink != null && args.size() > sink.argument())
       flow(
@@ -544,11 +615,19 @@ public final class TransferFunction implements Opcodes {
                 + " limit="
                 + budget.dispatchTargets);
         returned = joined.join(Taint.unknownValue());
+        opaque = true;
       } else if (!targets.isEmpty()) {
         List<Taint> actual = new ArrayList<>();
         if (n.getOpcode() != INVOKESTATIC) actual.add(heap.elements(receiver));
         for (AbstractValue a : args) actual.add(heap.elements(a));
         for (String target : targets) {
+          MethodSummary targetSummary = summaries.get(target);
+          if (targetSummary == null) {
+            diagnostics.add("UNKNOWN_CALL " + site + " " + target);
+            returned = returned.join(InvocationEffects.opaque(heap, operands, this::recordEffect));
+            opaque = true;
+            continue;
+          }
           String targetScope = MethodScope.of(target);
           int localSlot = 0;
           if (n.getOpcode() != INVOKESTATIC) {
@@ -564,8 +643,7 @@ public final class TransferFunction implements Opcodes {
             localSlot += parameterTypes[argument].getSize();
           }
           if (mutableReference(Type.getReturnType(n.desc))) resultRefs.add("return:" + targetScope);
-          MethodSummary summary =
-              summaries.getOrDefault(target, MethodSummary.empty()).instantiate(actual, target);
+          MethodSummary summary = targetSummary.instantiate(actual, target);
           CallContext context = new CallContext(target, site);
           summary = contexts.merge(context, summary, MethodSummary::join);
           returned = returned.join(summary.returns());
@@ -592,41 +670,19 @@ public final class TransferFunction implements Opcodes {
         returned = joined;
       } else {
         diagnostics.add("UNKNOWN_CALL " + site + " " + id);
-        returned = joined.join(Taint.unknownValue());
-        List<AbstractValue> affected = new ArrayList<>(args);
-        affected.add(receiver);
-        for (AbstractValue object : affected)
-          if (object.kind() == AbstractValue.Kind.REF) {
-            heap.addElement(object, returned);
-            recordEffect(object, returned);
-          }
+        returned = InvocationEffects.opaque(heap, operands, this::recordEffect);
+        opaque = true;
       }
     }
     Type ret = Type.getReturnType(n.desc);
     if (ret.getSort() != Type.VOID)
-      f.push(new AbstractValue(AbstractValue.kind(ret), returned, resultRefs, null));
-  }
-
-  private static boolean mutableReference(Type type) {
-    if (type.getSort() == Type.ARRAY) return true;
-    if (type.getSort() != Type.OBJECT) return false;
-    String name = type.getInternalName();
-    return !name.equals("java/lang/String")
-        && !name.equals("java/lang/Class")
-        && !name.startsWith("java/lang/Integer")
-        && !name.startsWith("java/lang/Long")
-        && !name.startsWith("java/lang/Double")
-        && !name.startsWith("java/lang/Float")
-        && !name.startsWith("java/lang/Boolean")
-        && !name.startsWith("java/lang/Character")
-        && !name.startsWith("java/lang/Byte")
-        && !name.startsWith("java/lang/Short")
-        && !name.startsWith("java/sql/")
-        && !name.equals("java/nio/file/Path");
+      f.push(
+          InvocationEffects.returned(
+              heap, ret, returned, resultRefs, operands, opaque, method.scope, site));
   }
 
   private void recordEffect(AbstractValue object, Taint taint) {
-    for (String reference : object.references()) {
+    for (String reference : heap.references(object.references())) {
       int parameter = -1;
       if (reference.equals("this:" + method.scope)) parameter = 0;
       else if (reference.startsWith("parameter:" + method.scope + ":")) {

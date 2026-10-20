@@ -4,7 +4,6 @@ import io.github.cheshmakzanoon.portfolio.byteguard.bytecode.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.input.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.interprocedural.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.rules.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public final class FindingReporter {
@@ -17,10 +16,7 @@ public final class FindingReporter {
           if (!source.getKey().startsWith("S:")) continue;
           SourceIdentity identity = SourceIdentity.fromLabel(source.getKey());
           InstructionId sourceId = identity.instruction();
-          String fingerprint =
-              BoundedJarReader.sha(
-                  (flow.rule() + "|" + sourceId + "|" + flow.sink())
-                      .getBytes(StandardCharsets.UTF_8));
+          String fingerprint = StableIdentity.finding(flow.rule(), sourceId, flow.sink());
           Finding finding =
               new Finding(
                   flow.rule(),

@@ -7,6 +7,11 @@ import org.objectweb.asm.*;
 final class BoundedFactsVisitor extends ClassVisitor {
   private final AnalysisBudget budget;
 
+  private record Member(String name, String descriptor) {}
+
+  private final java.util.Set<Member> fields = new java.util.HashSet<>();
+  private final java.util.Set<Member> methods = new java.util.HashSet<>();
+
   BoundedFactsVisitor(ClassVisitor delegate, AnalysisBudget budget) {
     super(Opcodes.ASM9, delegate);
     this.budget = budget;
@@ -29,6 +34,9 @@ final class BoundedFactsVisitor extends ClassVisitor {
   public FieldVisitor visitField(
       int access, String name, String descriptor, String signature, Object value) {
     budget.reserveFact();
+    MethodDescriptor.field(descriptor);
+    if (!fields.add(new Member(name, descriptor)))
+      throw new IllegalArgumentException("duplicate field declaration");
     FieldVisitor delegate = super.visitField(access, name, descriptor, signature, value);
     return new FieldVisitor(Opcodes.ASM9, delegate) {
       @Override
@@ -103,6 +111,8 @@ final class BoundedFactsVisitor extends ClassVisitor {
       int access, String name, String descriptor, String signature, String[] exceptions) {
     budget.reserveFact();
     if (exceptions != null) for (String ignored : exceptions) budget.reserveFact();
+    if (!methods.add(new Member(name, descriptor)))
+      throw new IllegalArgumentException("duplicate method declaration");
     MethodDescriptor.parameterSlots(descriptor, (access & Opcodes.ACC_STATIC) != 0);
     MethodVisitor delegate = super.visitMethod(access, name, descriptor, signature, exceptions);
     return new MethodVisitor(Opcodes.ASM9, delegate) {
@@ -182,6 +192,7 @@ final class BoundedFactsVisitor extends ClassVisitor {
       @Override
       public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
         budget.reserveFact();
+        MethodDescriptor.field(descriptor);
         super.visitFieldInsn(opcode, owner, name, descriptor);
       }
 
@@ -217,6 +228,8 @@ final class BoundedFactsVisitor extends ClassVisitor {
       @Override
       public void visitLdcInsn(Object value) {
         budget.reserveFact();
+        if (value instanceof ConstantDynamic dynamic)
+          MethodDescriptor.field(dynamic.getDescriptor());
         super.visitLdcInsn(value);
       }
 

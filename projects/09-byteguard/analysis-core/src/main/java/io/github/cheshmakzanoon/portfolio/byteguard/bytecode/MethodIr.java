@@ -10,6 +10,7 @@ public final class MethodIr {
   public final List<AbstractInsnNode> instructions;
   public final Map<AbstractInsnNode, Integer> ordinals;
   private final int[] lines;
+  private final Map<AbstractInsnNode, Integer> targets;
 
   public MethodIr(String owner, String sourceFile, MethodNode node) {
     parameterSlots =
@@ -34,14 +35,20 @@ public final class MethodIr {
     }
     instructions = List.copyOf(ins);
     ordinals = Map.copyOf(map);
+    IdentityHashMap<AbstractInsnNode, Integer> targetMap = new IdentityHashMap<>();
+    int next = ins.size();
+    for (AbstractInsnNode n = node.instructions.getLast(); n != null; n = n.getPrevious()) {
+      if (n.getOpcode() >= 0) next = map.get(n);
+      targetMap.put(n, next);
+    }
+    targets = Collections.unmodifiableMap(targetMap);
     lines = ls.stream().mapToInt(Integer::intValue).toArray();
   }
 
   public int target(AbstractInsnNode label) {
-    AbstractInsnNode n = label;
-    while (n != null && n.getOpcode() < 0) n = n.getNext();
-    if (n == null) return instructions.size();
-    return ordinals.get(n);
+    Integer target = targets.get(label);
+    if (target == null) throw new IllegalArgumentException("label is outside this method");
+    return target;
   }
 
   public InstructionId at(int ordinal) {

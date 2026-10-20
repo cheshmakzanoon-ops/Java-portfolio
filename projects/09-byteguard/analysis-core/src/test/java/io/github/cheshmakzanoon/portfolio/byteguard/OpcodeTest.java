@@ -15,11 +15,16 @@ import org.objectweb.asm.tree.*;
 class OpcodeTest implements Opcodes {
   AbstractValue i = AbstractValue.of(AbstractValue.Kind.INT, Taint.source("src")),
       l = AbstractValue.of(AbstractValue.Kind.LONG, Taint.source("src")),
+      fl = AbstractValue.of(AbstractValue.Kind.FLOAT, Taint.source("src")),
       d = AbstractValue.of(AbstractValue.Kind.DOUBLE, Taint.source("src")),
       r = AbstractValue.reference(Taint.source("src"), "allocation");
 
   FrameState apply(AbstractInsnNode node, AbstractValue... stack) {
-    MethodNode n = new MethodNode(ACC_STATIC, "test", "()V", null, null);
+    return apply("()V", node, stack);
+  }
+
+  FrameState apply(String descriptor, AbstractInsnNode node, AbstractValue... stack) {
+    MethodNode n = new MethodNode(ACC_STATIC, "test", descriptor, null, null);
     n.maxLocals = 4;
     n.maxStack = 12;
     n.instructions.add(node);
@@ -61,24 +66,64 @@ class OpcodeTest implements Opcodes {
     assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(POP2), l, i));
   }
 
+  private void binary(
+      int[] opcodes, AbstractValue left, AbstractValue right, AbstractValue.Kind result) {
+    for (int opcode : opcodes) {
+      AbstractValue actual = apply(new InsnNode(opcode), left, right).pop();
+      assertEquals(result, actual.kind(), "opcode " + opcode);
+      assertEquals(left.taint().join(right.taint()), actual.taint(), "opcode " + opcode);
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(opcode), r, right));
+    }
+  }
+
   @Test
-  void arithmeticPreservesDataDependencies() {
-    for (int op :
-        new int[] {
-          IADD, ISUB, IMUL, IDIV, IREM, ISHL, ISHR, IUSHR, IAND, IOR, IXOR, LCMP, FCMPL, FCMPG,
-          DCMPL, DCMPG
-        }) assertEquals(i.taint(), apply(new InsnNode(op), i, i).pop().taint());
-    for (int op : new int[] {LADD, LSUB, LMUL, LDIV, LREM, LSHL, LSHR, LUSHR, LAND, LOR, LXOR})
-      assertEquals(AbstractValue.Kind.LONG, apply(new InsnNode(op), l, l).pop().kind());
-    for (int op : new int[] {FADD, FSUB, FMUL, FDIV, FREM})
-      assertEquals(AbstractValue.Kind.FLOAT, apply(new InsnNode(op), i, i).pop().kind());
-    for (int op : new int[] {DADD, DSUB, DMUL, DDIV, DREM})
-      assertEquals(AbstractValue.Kind.DOUBLE, apply(new InsnNode(op), d, d).pop().kind());
-    for (int op :
-        new int[] {
-          INEG, I2B, I2C, I2S, L2I, F2I, D2I, LNEG, I2L, F2L, D2L, FNEG, I2F, L2F, D2F, DNEG, I2D,
-          L2D, F2D
-        }) assertEquals(i.taint(), apply(new InsnNode(op), i).pop().taint());
+  void arithmeticPreservesDataDependenciesWithValidComputationalKinds() {
+    binary(
+        new int[] {IADD, ISUB, IMUL, IDIV, IREM, ISHL, ISHR, IUSHR, IAND, IOR, IXOR},
+        i,
+        i,
+        AbstractValue.Kind.INT);
+    binary(
+        new int[] {LADD, LSUB, LMUL, LDIV, LREM, LAND, LOR, LXOR}, l, l, AbstractValue.Kind.LONG);
+    binary(new int[] {LSHL, LSHR, LUSHR}, l, i, AbstractValue.Kind.LONG);
+    binary(new int[] {FADD, FSUB, FMUL, FDIV, FREM}, fl, fl, AbstractValue.Kind.FLOAT);
+    binary(new int[] {DADD, DSUB, DMUL, DDIV, DREM}, d, d, AbstractValue.Kind.DOUBLE);
+    binary(new int[] {LCMP}, l, l, AbstractValue.Kind.INT);
+    binary(new int[] {FCMPL, FCMPG}, fl, fl, AbstractValue.Kind.INT);
+    binary(new int[] {DCMPL, DCMPG}, d, d, AbstractValue.Kind.INT);
+    assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(LSHL), l, l));
+  }
+
+  @Test
+  void numericConversionsCheckSourceAndResultKinds() {
+    int[][] conversions = {
+      {INEG, 0, 0},
+      {I2B, 0, 0},
+      {I2C, 0, 0},
+      {I2S, 0, 0},
+      {LNEG, 1, 1},
+      {FNEG, 2, 2},
+      {DNEG, 3, 3},
+      {L2I, 1, 0},
+      {F2I, 2, 0},
+      {D2I, 3, 0},
+      {I2L, 0, 1},
+      {F2L, 2, 1},
+      {D2L, 3, 1},
+      {I2F, 0, 2},
+      {L2F, 1, 2},
+      {D2F, 3, 2},
+      {I2D, 0, 3},
+      {L2D, 1, 3},
+      {F2D, 2, 3}
+    };
+    AbstractValue[] values = {i, l, fl, d};
+    for (int[] conversion : conversions) {
+      AbstractValue actual = apply(new InsnNode(conversion[0]), values[conversion[1]]).pop();
+      assertEquals(values[conversion[2]].kind(), actual.kind());
+      assertEquals(i.taint(), actual.taint());
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(conversion[0]), r));
+    }
   }
 
   @Test
@@ -114,31 +159,100 @@ class OpcodeTest implements Opcodes {
       assertEquals(i.taint(), apply(new InsnNode(op), r, i).pop().taint());
     for (int op :
         new int[] {IASTORE, LASTORE, FASTORE, DASTORE, AASTORE, BASTORE, CASTORE, SASTORE})
-      assertTrue(apply(new InsnNode(op), r, i, i).stack.isEmpty());
-    assertEquals(Taint.BOTTOM, apply(new InsnNode(ARRAYLENGTH), r).pop().taint());
+      assertTrue(
+          apply(
+                  new InsnNode(op),
+                  r,
+                  i,
+                  switch (op) {
+                    case LASTORE -> l;
+                    case FASTORE -> fl;
+                    case DASTORE -> d;
+                    case AASTORE -> r;
+                    default -> i;
+                  })
+              .stack
+              .isEmpty());
+    assertEquals(r.taint(), apply(new InsnNode(ARRAYLENGTH), r).pop().taint());
     assertEquals(r, apply(new TypeInsnNode(CHECKCAST, "Foo"), r).pop());
     assertEquals(
         AbstractValue.Kind.INT, apply(new TypeInsnNode(INSTANCEOF, "Foo"), r).pop().kind());
   }
 
   @Test
-  void controlAndReturns() {
-    for (int op :
-        new int[] {
-          IFEQ, IFNE, IFLT, IFGE, IFGT, IFLE, IFNULL, IFNONNULL, TABLESWITCH, LOOKUPSWITCH
-        }) assertTrue(apply(new InsnNode(op), i).stack.isEmpty());
-    for (int op :
-        new int[] {
-          IF_ICMPEQ, IF_ICMPNE, IF_ICMPLT, IF_ICMPGE, IF_ICMPGT, IF_ICMPLE, IF_ACMPEQ, IF_ACMPNE
-        }) assertTrue(apply(new InsnNode(op), i, i).stack.isEmpty());
-    for (int op :
-        new int[] {IRETURN, LRETURN, FRETURN, DRETURN, ARETURN, ATHROW, MONITORENTER, MONITOREXIT})
-      assertTrue(apply(new InsnNode(op), i).stack.isEmpty());
+  void controlAndReturnsUseDeclaredKinds() {
+    for (int opcode : new int[] {IFEQ, IFNE, IFLT, IFGE, IFGT, IFLE, TABLESWITCH, LOOKUPSWITCH}) {
+      assertTrue(apply(new InsnNode(opcode), i).stack.isEmpty());
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(opcode), r));
+    }
+    for (int opcode : new int[] {IFNULL, IFNONNULL}) {
+      assertTrue(apply(new InsnNode(opcode), r).stack.isEmpty());
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(opcode), i));
+    }
+    for (int opcode :
+        new int[] {IF_ICMPEQ, IF_ICMPNE, IF_ICMPLT, IF_ICMPGE, IF_ICMPGT, IF_ICMPLE}) {
+      assertTrue(apply(new InsnNode(opcode), i, i).stack.isEmpty());
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(opcode), i, r));
+    }
+    for (int opcode : new int[] {IF_ACMPEQ, IF_ACMPNE}) {
+      assertTrue(apply(new InsnNode(opcode), r, r).stack.isEmpty());
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(opcode), i, r));
+    }
+    int[] returns = {IRETURN, LRETURN, FRETURN, DRETURN, ARETURN};
+    String[] descriptors = {"()I", "()J", "()F", "()D", "()Ljava/lang/Object;"};
+    AbstractValue[] operands = {i, l, fl, d, r};
+    for (int index = 0; index < returns.length; index++) {
+      int opcode = returns[index];
+      String descriptor = descriptors[index];
+      assertTrue(apply(descriptor, new InsnNode(opcode), operands[index]).stack.isEmpty());
+      assertThrows(IllegalArgumentException.class, () -> apply("()V", new InsnNode(opcode), i));
+    }
+    for (int opcode : new int[] {ATHROW, MONITORENTER, MONITOREXIT}) {
+      assertTrue(apply(new InsnNode(opcode), r).stack.isEmpty());
+      assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(opcode), i));
+    }
     for (int op : new int[] {NOP, GOTO, RETURN})
       assertTrue(apply(new InsnNode(op)).stack.isEmpty());
+    assertThrows(IllegalArgumentException.class, () -> apply("()I", new InsnNode(RETURN)));
     assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(JSR)));
     assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(RET)));
     assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(255)));
+  }
+
+  @Test
+  void arrayFieldAndReceiverKindsRejectMalformedOperands() {
+    assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(IALOAD), i, i));
+    assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(IALOAD), r, r));
+    assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(LASTORE), r, i, i));
+    assertThrows(IllegalArgumentException.class, () -> apply(new InsnNode(ARRAYLENGTH), i));
+    assertThrows(IllegalArgumentException.class, () -> apply(new IntInsnNode(NEWARRAY, T_INT), r));
+    assertThrows(IllegalArgumentException.class, () -> apply(new IntInsnNode(NEWARRAY, 255), i));
+    assertThrows(
+        IllegalArgumentException.class, () -> apply(new MultiANewArrayInsnNode("[I", 2), i, i));
+    assertThrows(
+        IllegalArgumentException.class, () -> apply(new TypeInsnNode(CHECKCAST, "Foo"), i));
+    assertThrows(
+        IllegalArgumentException.class, () -> apply(new TypeInsnNode(INSTANCEOF, "Foo"), i));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> apply(new FieldInsnNode(GETFIELD, "Foo", "x", "I"), i));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> apply(new FieldInsnNode(PUTFIELD, "Foo", "x", "I"), r, r));
+    assertTrue(apply(new FieldInsnNode(PUTFIELD, "Foo", "x", "I"), r, i).stack.isEmpty());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> apply(new FieldInsnNode(PUTSTATIC, "Foo", "x", "J"), i));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            apply(
+                new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "length", "()I", false), i));
+    assertEquals(
+        AbstractValue.Kind.INT,
+        apply(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "length", "()I", false), r)
+            .pop()
+            .kind());
   }
 
   @Test

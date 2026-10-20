@@ -36,6 +36,23 @@ public final class Analyzer {
     try {
       classes = new ClassFactsReader().read(manifest, budget);
     } catch (ClassFactsReader.Incomplete incomplete) {
+      List<String> unfinished = new ArrayList<>(incomplete.unfinished);
+      // Parsing consumed the budget before any summary work began. Completed
+      // class structures are retained, but every concrete method is still pending.
+      incomplete
+          .completed
+          .values()
+          .forEach(
+              c ->
+                  c.methods().values().stream()
+                      .filter(
+                          m ->
+                              (m.node.access
+                                      & (org.objectweb.asm.Opcodes.ACC_ABSTRACT
+                                          | org.objectweb.asm.Opcodes.ACC_NATIVE))
+                                  == 0)
+                      .forEach(m -> unfinished.add(m.id)));
+      Collections.sort(unfinished);
       return new Result(
           manifest,
           incomplete.completed,
@@ -43,7 +60,7 @@ public final class Analyzer {
               new TreeMap<>(),
               new TreeSet<>(Set.of("RESOURCE_LIMIT " + incomplete.getMessage())),
               true,
-              incomplete.unfinished,
+              List.copyOf(unfinished),
               budget.work(),
               Map.of(),
               List.of(),

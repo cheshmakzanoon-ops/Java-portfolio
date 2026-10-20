@@ -2,28 +2,25 @@
 
 ByteGuard's current correctness and packaged-CLI checks pass. Performance, mutation results, and earlier demo receipts apply to their recorded source revisions; they are not automatically inherited by later changes. Repository-wide clean-checkout restoration, hosted CI, and final release remain separate checks.
 
-## Current hardening
+## Current verification
 
-The 2026-10-20 verification completed at `07:42:41Z`: **70 ordinary test methods and 2 packaged-CLI integration methods**, with zero failures, errors, or skips. Formatting and configured coverage gates passed.
+The deeper runtime verification completed on **2026-10-20 at 09:32:37 UTC**: **99 ordinary test methods and 2 packaged-CLI integration methods**, with zero failures, errors, or skips. The frozen 120-case corpus remains unchanged: **60 true positives and 60 true negatives**. Core aggregate coverage is **1,700 / 1,793 lines (94.81%)** and **1,071 / 1,273 branches (84.13%)**, above unchanged 85% / 75% gates.
 
 ```bash
 source scripts/cloud-env.sh
 ./mvnw -f projects/09-byteguard/pom.xml \
-  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A09/m2 -B -ntp \
-  com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify
+  -Dmaven.repo.local=.work/A09/m2 -B -ntp spotless:apply -Pintegration verify
 ```
 
-Seven new regression methods exercise:
+The added semantic controls exercise mixed native/clean dispatch, fresh/aliased opaque mutable returns, helper write effects and allocation-length dependencies in both worklist schedules. Serialized classfile controls distinguish valid branch-local reuse from invalid arithmetic/receivers/returns, incoming handler overflow, missing concrete bodies, reachable fall-through and malformed exception ranges. Archive controls cover complete ZIP/ZIP64 indexes, CRC/size/count corruption, metadata bounds, directory payloads, manifest ambiguity and nonregular files. Reporting controls preserve actual scanned bytes through DOT symbolic/hard links and keep delimiter/unpaired-UTF-16 identities distinct through real finding/explanation output.
 
-- A valid JVM method name containing `|`, `@`, and `:`, preserving the correct source instruction and descriptor through finding/report generation.
-- Entry-limit enforcement across individually selected application and classpath classfiles.
-- Output alias protection for direct paths, hard links, symbolic parent directories, rules, and baselines, including the failure-report path.
-- Filesystem-correct resolution of a symbolic parent followed by `..`, preserving an existing input and refusing a new report inside the aliased scanned directory.
-- Preservation of an earlier report when serialization fails, with temporary-file cleanup.
+A deterministic parser-budget test includes every unanalyzed method from the completed class prefix in its frontier. An instrumented label-index test performs16,384 lookups through4,096 metadata nodes without forward rescanning; this verifies an algorithmic boundary, not a performance benchmark. Duplicate declarations, whole field descriptors, provenance tuple joins and ordinary fingerprint stability have direct controls.
 
-The frozen 120-case corpus remains unchanged and reports 60 true positives and 60 true negatives. Packaged-process checks still exercise all four exit codes, SARIF schema validity, the invalid descriptor regression, and a legal long-identity case in a 64 MiB child JVM.
+Packaged-process checks exercise all four exit codes, SARIF schema validity, a nonexecuted initializer sentinel, the hostile descriptor regression and a legal long-identity case in a 64 MiB child JVM. The actual local up/demo/down lifecycle passed after a fresh ordinary source-cache build at **09:36:38 UTC**. Its four scans returned the asserted1/0/3/0 exits for a cross-method finding, corrected parameter binding, explicit partial frontier and unchanged baseline. No background service remains. The [hardening evidence](../evidence/runtime-hardening-2026-10-20.json) records source/artifact identity, exact commands, test/corpus/coverage counts and local log digests.
 
-The full benchmark and mutation profile were not rerun for this hardening change.
+The expanded mutation campaign is running separately against the frozen source; no new benchmark was run. Current mutation results will state their complete expanded scope and denominator rather than inheriting the historical four-class score.
+
+The first deeper-pass semantic run failed on a shared-receiver clean control: the existing weak object-insensitive heap conservatively contaminates that call. The regression now records that known false positive and separately requires the isolated clean control to remain clean; corpus labels are unchanged. A later full build stopped on a test import ambiguity before execution; the explicit import correction preceded the successful full result above. These source-specific failures are distinct from the final successful result.
 
 ## Historical evidence
 

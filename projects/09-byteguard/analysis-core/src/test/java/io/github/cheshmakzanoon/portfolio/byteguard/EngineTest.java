@@ -576,7 +576,7 @@ class EngineTest implements Opcodes {
       var graph =
           new ControlFlowBuilder().build(new MethodIr("Throwing", null, n), ticks::incrementAndGet);
       assertEquals(List.of(new ExceptionEdge(0, 3, null)), graph.exceptionEdges(), "opcode " + op);
-      assertEquals(10, ticks.get());
+      assertEquals(11, ticks.get());
     }
   }
 

@@ -6,6 +6,27 @@ import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
 public final class ControlFlowBuilder {
+  private record ExceptionRange(int start, int end, int handler, String type) {}
+
+  /** Whether normal execution also continues at the immediately following instruction. */
+  public static boolean fallsThrough(int opcode) {
+    return !(opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN)
+        && opcode != Opcodes.ATHROW
+        && opcode != Opcodes.GOTO
+        && opcode != Opcodes.JSR
+        && opcode != Opcodes.RET
+        && opcode != Opcodes.TABLESWITCH
+        && opcode != Opcodes.LOOKUPSWITCH;
+  }
+
+  private int target(MethodIr method, LabelNode label) {
+    try {
+      return method.target(label);
+    } catch (RuntimeException invalid) {
+      throw new IllegalArgumentException("label outside method: " + method.id, invalid);
+    }
+  }
+
   public record Graph(
       List<List<Integer>> normal,
       List<List<Integer>> exceptional,
@@ -31,36 +52,44 @@ public final class ControlFlowBuilder {
     int count = m.instructions.size();
     List<List<Integer>> normal = new ArrayList<>(), exceptional = new ArrayList<>();
     List<ExceptionEdge> edges = new ArrayList<>();
+    List<ExceptionRange> ranges = new ArrayList<>();
+    // Validate even ranges containing no throwing instruction; edge discovery must not
+    // silently erase malformed exception-table metadata.
+    for (TryCatchBlockNode block : m.node.tryCatchBlocks) {
+      tick.run();
+      int start = target(m, block.start),
+          end = target(m, block.end),
+          handler = target(m, block.handler);
+      if (start < 0 || start >= end || end > count || handler < 0 || handler >= count)
+        throw new IllegalArgumentException("invalid exception range or handler: " + m.id);
+      ranges.add(new ExceptionRange(start, end, handler, block.type));
+    }
     for (int i = 0; i < count; i++) {
       tick.run();
       TreeSet<Integer> next = new TreeSet<>();
       AbstractInsnNode n = m.instructions.get(i);
       int op = n.getOpcode();
       if (n instanceof JumpInsnNode j) {
-        next.add(m.target(j.label));
+        next.add(target(m, j.label));
         if (op != Opcodes.GOTO && op != Opcodes.JSR && i + 1 < count) next.add(i + 1);
       } else if (n instanceof TableSwitchInsnNode t) {
-        next.add(m.target(t.dflt));
-        for (LabelNode l : t.labels) next.add(m.target(l));
+        next.add(target(m, t.dflt));
+        for (LabelNode l : t.labels) next.add(target(m, l));
       } else if (n instanceof LookupSwitchInsnNode l) {
-        next.add(m.target(l.dflt));
-        for (LabelNode t : l.labels) next.add(m.target(t));
-      } else if (!(op >= Opcodes.IRETURN && op <= Opcodes.RETURN)
-          && op != Opcodes.ATHROW
-          && op != Opcodes.RET
-          && i + 1 < count) next.add(i + 1);
+        next.add(target(m, l.dflt));
+        for (LabelNode t : l.labels) next.add(target(m, t));
+      } else if (fallsThrough(op) && i + 1 < count) next.add(i + 1);
       for (int t : next)
         if (t < 0 || t >= count)
           throw new IllegalArgumentException("invalid branch target " + m.id);
       normal.add(List.copyOf(next));
       TreeSet<Integer> handlers = new TreeSet<>();
-      for (TryCatchBlockNode b : m.node.tryCatchBlocks) {
+      for (ExceptionRange range : ranges) {
         tick.run();
-        if (i >= m.target(b.start) && i < m.target(b.end) && mayThrow(op)) {
-          int h = m.target(b.handler);
-          if (h >= count) throw new IllegalArgumentException("invalid handler");
+        if (i >= range.start() && i < range.end() && mayThrow(op)) {
+          int h = range.handler();
           handlers.add(h);
-          edges.add(new ExceptionEdge(i, h, b.type));
+          edges.add(new ExceptionEdge(i, h, range.type()));
         }
       }
       exceptional.add(List.copyOf(handlers));

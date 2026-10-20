@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "project": "byteguard",
+  "recordedAt": "2026-10-20T09:37:57.350460+00:00",
+  "sourceFingerprint": "efab3143dfb6f7803087ea79915752a232da8091e24a14392836710161596363",
+  "demoCliSha256": "faca16e71ceb88c4f53b64ad39abd46e764c345911ad5dd339ec7766dcc3c17d",
+  "verification": {
+    "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp spotless:apply -Pintegration verify",
+    "finishedAt": "2026-10-20T09:32:37Z",
+    "ordinaryMethods": 99,
+    "packagedCliIntegrationMethods": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "coverage": {
+      "schemaVersion": 1,
+      "module": "byteguard-analysis-core",
+      "counters": {
+        "INSTRUCTION": [
+          9494,
+          476
+        ],
+        "BRANCH": [
+          1071,
+          202
+        ],
+        "LINE": [
+          1700,
+          93
+        ],
+        "COMPLEXITY": [
+          714,
+          215
+        ],
+        "METHOD": [
+          225,
+          23
+        ],
+        "CLASS": [
+          49,
+          0
+        ]
+      },
+      "ratios": {
+        "INSTRUCTION": 0.9522567703109328,
+        "BRANCH": 0.8413197172034564,
+        "LINE": 0.9481316229782487,
+        "COMPLEXITY": 0.7685683530678149,
+        "METHOD": 0.907258064516129,
+        "CLASS": 1.0
+      },
+      "required": {
+        "LINE": 0.85,
+        "BRANCH": 0.75
+      }
+    },
+    "corpus": {
+      "workload": "frozen-corpus-v2",
+      "unchangedCases": 120,
+      "truePositives": 60,
+      "trueNegatives": 60,
+      "falsePositives": 0,
+      "falseNegatives": 0
+    }
+  },
+  "lifecycle": {
+    "commands": [
+      "scripts/up.sh",
+      "scripts/demo.sh",
+      "scripts/down.sh"
+    ],
+    "ordinaryPreparationFinishedAt": "2026-10-20T09:36:38Z",
+    "assertions": [
+      "cross-method source/sink witness",
+      "corrected prepared binding",
+      "explicit partial frontier",
+      "exact unchanged baseline"
+    ],
+    "expectedScanExitCodes": [
+      1,
+      0,
+      3,
+      0
+    ],
+    "success": true,
+    "backgroundServices": 0
+  },
+  "mutation": {
+    "state": "running",
+    "thresholdPercent": 70,
+    "coreTargets": [
+      "Taint",
+      "FrameState",
+      "WorklistSolver",
+      "ControlFlowBuilder",
+      "TransferFunction",
+      "InvocationEffects",
+      "TypeHierarchy",
+      "MethodSummary",
+      "ArchiveDirectory"
+    ],
+    "reportTargets": [
+      "StableIdentity",
+      "OwnedOutput"
+    ],
+    "command": "./mvnw -f projects/09-byteguard/pom.xml -Dmaven.repo.local=.work/A09/m2 -B -ntp -Pmutation verify"
+  },
+  "reviewScope": [
+    "all production classes in analysis-core/report/cli/evaluation",
+    "hostile archive/class parsing and descriptor bounds",
+    "CFG and typed frames",
+    "taint, heap aliases, dispatch and recursion",
+    "coverage/frontier and provenance truth",
+    "report identity/output ownership and packaged CLI"
+  ],
+  "limitations": [
+    "No fresh performance benchmark was run; historical scans retain their own source/artifact identities.",
+    "Weak object-insensitive aliases and coarse shell-array modeling retain disclosed false positives outside the frozen corpus.",
+    "Supported computational-kind checks are not complete JVM verification or security certification.",
+    "Filesystem alias protection assumes owned directories and does not defend against concurrent path replacement."
+  ],
+  "localLogDigests": {
+    ".work/A09/deep-integrated-second-verify.log": "41e064af91bf98bb6056f6d3044bb405462abcfba23def441eb895499567c6c1",
+    ".work/A09/deep-cli-lifecycle.log": "8298155169ac93e2039e910c53df87492f02c6c14bc43d64444b63e390994987"
+  }
+}

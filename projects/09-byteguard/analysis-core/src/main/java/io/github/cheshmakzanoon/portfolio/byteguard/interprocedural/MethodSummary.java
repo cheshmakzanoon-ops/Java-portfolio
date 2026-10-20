@@ -91,6 +91,10 @@ public record MethodSummary(
   }
 
   private static List<String> choose(List<String> a, List<String> b) {
-    return String.join("|", a).compareTo(String.join("|", b)) <= 0 ? a : b;
+    for (int i = 0; i < Math.min(a.size(), b.size()); i++) {
+      int comparison = a.get(i).compareTo(b.get(i));
+      if (comparison != 0) return comparison < 0 ? a : b;
+    }
+    return a.size() <= b.size() ? a : b;
   }
 }

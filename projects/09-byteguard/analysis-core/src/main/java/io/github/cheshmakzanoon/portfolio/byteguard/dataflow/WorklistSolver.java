@@ -19,7 +19,12 @@ public final class WorklistSolver {
     if (method.parameterSlots > method.node.maxLocals && !method.instructions.isEmpty())
       throw new IllegalArgumentException("method parameters exceed maxLocals");
     int n = method.instructions.size();
-    if (n == 0) return new Result(MethodSummary.empty(), List.of(), 0);
+    boolean bodyless = (method.node.access & (Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT)) != 0;
+    if (bodyless) {
+      if (n != 0) throw new IllegalArgumentException("native/abstract method has executable code");
+      return new Result(MethodSummary.empty(), List.of(), 0);
+    }
+    if (n == 0) throw new IllegalArgumentException("concrete method has no executable code");
     FrameState[] states = new FrameState[n];
     budget.reserveFrame(method.node.maxLocals);
     FrameState initial = new FrameState(method.node.maxLocals);
@@ -52,6 +57,8 @@ public final class WorklistSolver {
       FrameState before = states[i];
       FrameState after = before.copy();
       transfer.apply(i, after);
+      if (i == n - 1 && ControlFlowBuilder.fallsThrough(method.instructions.get(i).getOpcode()))
+        throw new IllegalArgumentException("reachable fall-through past method end: " + method.id);
       for (int to : graph.normal().get(i)) propagate(to, after, states, pending, queued, budget);
       for (int to : graph.exceptional().get(i)) {
         FrameState handler = before.copy();

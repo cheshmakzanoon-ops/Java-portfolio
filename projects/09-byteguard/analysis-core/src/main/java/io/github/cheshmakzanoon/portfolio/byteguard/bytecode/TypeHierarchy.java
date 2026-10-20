@@ -80,7 +80,7 @@ public final class TypeHierarchy {
       String id = c.name() + "." + name + desc;
       MethodIr method = c.methods().get(id);
       if (method != null) {
-        if ((method.node.access & (Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT)) == 0) ids.add(id);
+        if ((method.node.access & Opcodes.ACC_ABSTRACT) == 0) ids.add(id);
         if ((method.node.access & Opcodes.ACC_ABSTRACT) == 0) return;
       }
       interfaces.addAll(c.interfaces());
@@ -95,8 +95,7 @@ public final class TypeHierarchy {
       if (facts == null) continue;
       String id = iface + "." + name + desc;
       MethodIr method = facts.methods().get(id);
-      if (method != null && (method.node.access & (Opcodes.ACC_NATIVE | Opcodes.ACC_ABSTRACT)) == 0)
-        ids.add(id);
+      if (method != null && (method.node.access & Opcodes.ACC_ABSTRACT) == 0) ids.add(id);
       pending.addAll(facts.interfaces());
     }
   }

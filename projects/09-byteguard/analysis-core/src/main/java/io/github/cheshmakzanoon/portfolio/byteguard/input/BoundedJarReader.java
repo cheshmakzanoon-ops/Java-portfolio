@@ -64,6 +64,8 @@ public final class BoundedJarReader {
       }
       return;
     }
+    if (!Files.isRegularFile(p, LinkOption.NOFOLLOW_LINKS))
+      throw new InputFailure("explicit input must be a regular file");
     if (p.toString().endsWith(".class")) {
       count();
       try (InputStream in = Files.newInputStream(p)) {
@@ -80,36 +82,39 @@ public final class BoundedJarReader {
     }
     if (!p.toString().endsWith(".jar") && !p.toString().endsWith(".zip"))
       throw new InputFailure("expected class, directory, JAR or ZIP");
-    try (InputStream signature = Files.newInputStream(p)) {
-      byte[] header = signature.readNBytes(4);
-      if (header.length != 4
-          || header[0] != 80
-          || header[1] != 75
-          || !(header[2] == 3 && header[3] == 4 || header[2] == 5 && header[3] == 6))
-        throw new InputFailure("invalid ZIP signature");
-    }
+    ArchiveDirectory.validate(p, limits.entries() - entries, this::check);
     Map<String, byte[]> raw = new TreeMap<>();
     Set<String> names = new HashSet<>();
     long archiveStart = expanded;
-    try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(p))) {
-      ZipEntry e;
-      while ((e = zip.getNextEntry()) != null) {
+    try (ZipFile zip = new ZipFile(p.toFile())) {
+      Enumeration<? extends ZipEntry> archiveEntries = zip.entries();
+      while (archiveEntries.hasMoreElements()) {
         check();
         count();
+        ZipEntry e = archiveEntries.nextElement();
         String n = e.getName();
         validateName(n);
         if (!names.add(n)) throw new InputFailure("duplicate archive entry: " + n);
-        if (e.isDirectory()) continue;
         if (n.endsWith(".jar") || n.endsWith(".zip"))
           throw new InputFailure("nested archives forbidden: " + n);
-        int max = n.endsWith(".class") ? limits.classBytes() : limits.classBytes();
-        byte[] bytes = bounded(zip, max);
+        byte[] bytes;
+        try (InputStream input = zip.getInputStream(e)) {
+          bytes = bounded(input, e.isDirectory() ? 0 : limits.classBytes());
+        }
+        CRC32 crc = new CRC32();
+        crc.update(bytes);
+        if (e.getSize() != bytes.length || e.getCrc() != crc.getValue())
+          throw new InputFailure("archive entry size or checksum mismatch: " + n);
+        if (e.isDirectory()) continue;
         long compressed = e.getCompressedSize();
-        if (compressed > 0 && bytes.length > compressed * (long) limits.expansionRatio())
+        if (bytes.length > Math.max(1, compressed) * (long) limits.expansionRatio())
           throw new InputFailure("expansion ratio exceeded: " + n);
-        if (n.endsWith(".class") || n.equalsIgnoreCase("META-INF/MANIFEST.MF")) raw.put(n, bytes);
+        if (n.equalsIgnoreCase("META-INF/MANIFEST.MF")) {
+          if (raw.putIfAbsent("META-INF/MANIFEST.MF", bytes) != null)
+            throw new InputFailure("ambiguous manifest entries");
+        } else if (n.endsWith(".class")) raw.put(n, bytes);
       }
-    } catch (ZipException e) {
+    } catch (ZipException | IllegalArgumentException e) {
       throw new InputFailure("corrupt archive: " + e.getMessage());
     }
     if (expanded - archiveStart > Math.max(1, Files.size(p)) * (long) limits.expansionRatio())

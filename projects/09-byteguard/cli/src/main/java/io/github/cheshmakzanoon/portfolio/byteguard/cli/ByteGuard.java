@@ -181,8 +181,15 @@ public final class ByteGuard implements Runnable {
     }
 
     private RuleModels validateRules(Path path) throws IOException {
+      if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
+        throw new IOException("rule model must be a regular file");
       if (Files.size(path) > 1024 * 1024) throw new IOException("rule model exceeds 1 MiB");
-      JsonNode node = new ObjectMapper().readTree(path.toFile());
+      byte[] bytes;
+      try (InputStream input = Files.newInputStream(path)) {
+        bytes = input.readNBytes(1024 * 1024 + 1);
+      }
+      if (bytes.length > 1024 * 1024) throw new IOException("rule model exceeds 1 MiB");
+      JsonNode node = new ObjectMapper().readTree(bytes);
       if (!RuleModels.VERSION.equals(node.path("version").asText())
           || !node.path("model").asText().equals("byteguard-core"))
         throw new IOException("unsupported versioned rule model");

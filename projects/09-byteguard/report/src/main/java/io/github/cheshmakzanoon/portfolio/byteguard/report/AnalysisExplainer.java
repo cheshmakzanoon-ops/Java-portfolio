@@ -5,7 +5,6 @@ import io.github.cheshmakzanoon.portfolio.byteguard.cfg.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.input.*;
 import io.github.cheshmakzanoon.portfolio.byteguard.interprocedural.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 
@@ -25,9 +24,10 @@ public final class AnalysisExplainer {
               Map.of("method", method.id, "coverage", "unfinished", "instructions", List.of()));
           continue;
         }
-        String filename = BoundedJarReader.sha(method.id.getBytes(StandardCharsets.UTF_8)) + ".dot";
+        String filename = StableIdentity.method(method.id) + ".dot";
         var graph = new ControlFlowBuilder().build(method);
-        Files.writeString(directory.resolve(filename), graph.dot());
+        OwnedOutput.write(
+            directory.resolve(filename), temporary -> Files.writeString(temporary, graph.dot()));
         List<Object> instructions = new ArrayList<>();
         for (int i = 0; i < method.instructions.size(); i++) {
           Map<String, Object> instruction = new LinkedHashMap<>();
