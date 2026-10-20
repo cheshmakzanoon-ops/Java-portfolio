@@ -149,7 +149,9 @@ public final class SourceJavaParser {
         types.add(
             new SourceFacts.Type(
                 owner,
-                record || flags.contains(Modifier.FINAL) || c.getKind() == Tree.Kind.ENUM,
+                record
+                    || flags.contains(Modifier.FINAL)
+                    || c.getKind() == Tree.Kind.ENUM && !hasConstantSpecificBody(c),
                 named.local()
                     || !c.getTypeParameters().isEmpty()
                     || c.getExtendsClause() != null
@@ -171,6 +173,18 @@ public final class SourceJavaParser {
   }
 
   private record NamedType(ClassTree tree, String owner, boolean local) {}
+
+  private static boolean hasConstantSpecificBody(ClassTree declaration) {
+    // An enum with a constant-specific class body is implicitly sealed, not final. Its
+    // instance methods can dispatch to the constant's override rather than the enum body.
+    return declaration.getMembers().stream()
+        .filter(VariableTree.class::isInstance)
+        .map(VariableTree.class::cast)
+        .anyMatch(
+            variable ->
+                variable.getInitializer() instanceof NewClassTree creation
+                    && creation.getClassBody() != null);
+  }
 
   private record TypeVisit(Tree tree, String owner, boolean local) {}
 

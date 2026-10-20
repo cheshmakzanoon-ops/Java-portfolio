@@ -10,6 +10,17 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
 class RankingWave2Test {
+  @Test
+  void identifierLaneUsesTheGraphUtf16BoundaryForSupplementaryLetters() {
+    String letter = new String(Character.toChars(0x10400));
+    assertTrue(PlainTextQuery.identifier(letter.repeat(64)));
+    assertTrue(PlainTextQuery.identifier(letter.repeat(63) + "ab"));
+    assertFalse(PlainTextQuery.identifier(letter.repeat(64) + "a"));
+    assertFalse(PlainTextQuery.identifier(letter.repeat(65)));
+    assertTrue(PlainTextQuery.identifier("a".repeat(128)));
+    assertFalse(PlainTextQuery.identifier("a".repeat(129)));
+  }
+
   @TempDir Path root;
   private static final String HASH = "a".repeat(64);
 

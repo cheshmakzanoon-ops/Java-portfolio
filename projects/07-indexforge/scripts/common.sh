@@ -14,7 +14,7 @@ root=Path(sys.argv[1]);h=hashlib.sha256()
 for p in sorted(root.rglob('*')):
  if p.is_file() and not set(p.relative_to(root).parts)&{'target','.runtime','evidence'} and p.suffix in {'.java','.xml','.tsv','.jsonl','.sh'}:
   h.update(p.relative_to(root).as_posix().encode()+b'\0'+p.read_bytes())
-for p in [root.parent.parent/'pom.xml',root.parent.parent/'AGENTS.md']:
+for p in [root.parent.parent/'pom.xml',root.parent.parent/'CONTRIBUTING.md']:
  h.update(p.name.encode()+p.read_bytes())
 print(h.hexdigest())
 PY
@@ -22,7 +22,7 @@ PY
 require_build() {
  fingerprint=$(source_fingerprint)
  if [[ ! -f "$jar" || ! -f "$project_dir/.runtime/tested-source" || "$(cat "$project_dir/.runtime/tested-source")" != "$fingerprint" ]]; then
-  echo 'A verified build for this source fingerprint is required. Run projects/07-indexforge/scripts/verify.sh (coordinate a Maven slot in shared cloud runs).' >&2
+  echo 'A verified build for this source fingerprint is required. Run projects/07-indexforge/scripts/verify.sh.' >&2
   exit 1
  fi
 }

@@ -1,11 +1,30 @@
-# Reproducible checks
+# Testing
 
-Use the repository wrapper with the project POM and a project-specific absolute Maven cache; source scripts/cloud-env.sh in the managed cloud. `verify` executes unit/invariant suites, formatter checks and coverage reports. `-Pintegration verify` adds real Boot HTTP and local OIDC/JWKS tests through Failsafe. No Docker is required. `-Pmutation verify` explicitly mutates selected ContentAddressedStore, CodeIdentifierAnalyzer, SearchCursor and RelevanceMetrics classes; adapters do not inherit an indiscriminate PIT execution. Nonzero XML/HTML reports and70% thresholds are configured. Whole-bundle coverage gates apply to ingest/index/query; evaluation gates the handwritten RelevanceMetrics algorithm explicitly, while workload/benchmark/CLI harness adapters use observable scenario validation and retain their full coverage reports. No algorithm branches are excluded.
+Run commands from the repository root with JDK 25. In the managed workspace, source `scripts/cloud-env.sh` first so the wrapper uses the configured proxy and system CA trust.
 
-Safety tests exercise malformed UTF8, unsafe path spellings, source and symlink escape, per-file/aggregate/entry/zip expansion bounds, cancellation, corrupt CAS, manifest and checkpoint metadata. Generation tests cover explicit deletion/partial uploads, committed readers, old leases across publication, corrupt current fallback/quarantine, and100 seeded failure schedules across build/document/commit/warm/rename/pointer/retirement boundaries (seed7007). These are bounded injected failure schedules, not100 actual power cuts. A Linux integration fixture writes to `/dev/full` at the pre-pointer boundary, producing a genuine kernel ENOSPC and verifying the previous generation remains searchable after restart. This injects a real storage exception at the boundary; it does not fill the actual index volume. A simulated ENOSPC unit fixture is also retained.
+```bash
+source scripts/cloud-env.sh
+./mvnw -f projects/07-indexforge/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/A07/m2" -B -ntp verify
+./mvnw -f projects/07-indexforge/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/A07/m2" -B -ntp -Pintegration verify
+```
 
-Search tests ingest10,000 records twice under one idempotency key, verify one logical copy per stable key, verify signed pagination and retired generation behavior, and exercise denied repository/cross-tenant results/counts/repository facets/suggestions/explanations/cursors/repeated warmed queries. HTTP tests validate actual RSA signatures against a live local JWKS server, issuer/audience/expiry/tenant rules, signed numeric/array/null/blank subject rejection after Nimbus decoding, write ingestion, cross-tenant/repository source bindings, malformed page bounds and pre-parse body limits. Metric tests compare against independent hand calculations and cutoff boundaries.
+`verify` runs unit, property, format, and coverage checks. The integration profile adds actual Boot HTTP, local OIDC/JWKS, and packaged runtime tests through Failsafe; no Docker daemon is required. The mutation profile targets selected original algorithms with nonzero-report and 70% gates. Core coverage thresholds are 85% lines and 75% branches. Consult each module POM for the exact selected classes; adapters are not evidence of algorithm coverage.
 
-Coverage, mutation outcomes and actual discovered counts are recorded only after execution in STATUS/evidence. The80-query v3 corpus is frozen with hashes and source provenance before any ranking metrics; independent coordinator semantic review approved it before measurements. Development/validation preliminary failures remain published; held-out remains unmeasured until selection is fixed. V1 smoke-only rejection remains preserved rather than silently replaced after poor metrics.
+## Regression boundaries
 
-Build19 adds conventional BM25 short/long equal-frequency controls, default-similarity ablation and exact baseline invariance, plus actual HTTP nondefault mode/profile parity. Synthetic EvaluationSeal tests verify global fixed-model replay protection across different output directories without running any held-out search. Each preset's raw per-query failures are retained; current selection remains below the hard relevance targets. STATUS carries the exact certification and preset selection identities.
+| Area | Behaviors exercised |
+| --- | --- |
+| Acquisition | Invalid UTF-8, parent and symlink escape, directory traversal limits, malformed ZIP containers, expansion bounds, cancellation, corrupt content and manifests. |
+| Generations | Explicit deletions, idempotent retries, old leases during publication, corrupt-pointer fallback, ambiguous publication reconciliation, and interrupted builds. |
+| Authorization | Denied repositories and foreign tenants across results, counts, facets, suggestions, explanations, cursors, warmed caches, and revocation. |
+| HTTP | RSA/JWKS validation, issuer/audience/time claims, original claim types, write scope, request-size limits, and source-root binding. |
+| Source analysis | Parser process limits, exact framing, watchdog cleanup, uncertain bindings, enum overrides, supplementary identifiers, and wire quotas. |
+| Evaluation | Independent metric calculations, cutoff denominators, grouped development folds, finite selection, and artifact/model identity. |
+
+The 100 seeded failure schedules inject bounded faults; they are not 100 physical power cuts. The Linux `/dev/full` integration fixture produces a real `ENOSPC` at a pre-pointer boundary without filling the index volume. Both checks require the previous committed generation to remain searchable.
+
+Frozen relevance fixtures contain 80 queries split into development, validation, and held-out sets. They must not be relabeled in response to results. Existing held-out measurements have failed the declared targets; repeating that corpus is not a new blind test. Correctness regressions use synthetic fixtures and do not run a relevance study.
+
+[Validation status](STATUS.md) records executed commands and outcomes. Historical result files certify their original artifact, not later source changes.

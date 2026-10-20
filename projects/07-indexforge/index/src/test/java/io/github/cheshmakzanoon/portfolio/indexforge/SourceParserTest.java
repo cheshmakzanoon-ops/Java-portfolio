@@ -93,6 +93,24 @@ class SourceParserTest {
   }
 
   @Test
+  void supplementaryIdentifiersUseTheSameUtf16QuotaBeforeAndAfterParsing() throws Exception {
+    String letter = new String(Character.toChars(0x10400));
+    String maximum = letter.repeat(128);
+    String accepted = "class Glyphs { int " + maximum + "() { return 1; } }";
+    assertEquals(SourceFacts.Status.OBSERVED, SourcePreflight.check(accepted));
+    var parsed = SourceJavaParser.parse(accepted);
+    assertEquals(SourceFacts.Status.OBSERVED, parsed.status());
+    assertEquals(maximum, parsed.members().getFirst().name());
+    assertEquals(parsed, SourceWire.decode(SourceWire.encode(parsed)));
+
+    for (String oversized : List.of(maximum + "a", "a" + maximum, letter.repeat(129))) {
+      String source = "class Glyphs { int " + oversized + "() { return 1; } }";
+      assertEquals(SourceFacts.Status.SOURCE_QUOTA, SourcePreflight.check(source));
+      assertEquals(SourceFacts.Status.SOURCE_QUOTA, SourceJavaParser.parse(source).status());
+    }
+  }
+
+  @Test
   void packagedWorkerProtocolMatchesTrustedKernelAndRecyclesAfter64Units() throws Exception {
     String source = "final class T { int read(int x) { return x; } }";
     var expected = SourceJavaParser.parse(source);

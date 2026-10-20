@@ -7,6 +7,16 @@ import org.junit.jupiter.api.Test;
 
 class DeclarationScannerTest {
   @Test
+  void supplementaryCodePointsRemainWholeInTypeAndMethodNames() {
+    String letter = new String(Character.toChars(0x10400));
+    String type = letter + "Reader";
+    String method = "read" + letter;
+    String source = "class " + type + " { " + type + " " + method + "() { return null; } }";
+    assertEquals(Set.of(type, method), DeclarationScanner.names(source));
+    assertTrue(DeclarationScanner.tokens(source).containsAll(List.of(type, method)));
+  }
+
+  @Test
   void englishProseFiltersKeepOriginalSourceOffsetsAndStopwordPositionGap() throws Exception {
     try (var analyzer = new SourceProseAnalyzer();
         var stream = analyzer.tokenStream("prose", "Readers the generations")) {

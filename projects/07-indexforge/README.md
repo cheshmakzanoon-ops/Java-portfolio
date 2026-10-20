@@ -1,19 +1,30 @@
 # IndexForge
 
-Local-first, transactional search over explicitly selected UTF8 source snapshots and artifact metadata. Original work covers safe ingestion, manifest idempotency, index-generation publication/recovery, generation leases, bounded source-aware query planning, tenant/repository authorization, signed pagination, and relevance evaluation. Apache Lucene provides the inverted index, BM25, postings and segments.
+Transactional search over local source snapshots and artifact metadata, built with Java 25 and Apache Lucene. IndexForge owns safe ingestion, immutable manifests, index publication and recovery, generation leases, access control, signed pagination, and reproducible relevance evaluation. Lucene supplies the inverted index, BM25, postings, and segments.
 
-Requires JDK25 and repository Maven wrapper. No Docker or external search server is needed.
+## Build and run
+
+Run from the repository root with JDK 25 and the checksum-pinned Maven wrapper. This project requires no Docker daemon, external search server, or paid service.
 
 ```bash
-source scripts/cloud-env.sh # managed cloud environment only
-./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local="$PWD/.work/A07/m2" -B -ntp -Pintegration verify
+source scripts/cloud-env.sh # managed cloud workspace
 projects/07-indexforge/scripts/verify.sh
 projects/07-indexforge/scripts/up.sh
 projects/07-indexforge/scripts/demo.sh
+projects/07-indexforge/scripts/down.sh
 ```
 
-The demo uses20,000 deterministic documents over three tenant-owned directories and asserts retrieval, explicit deletion under search load, failed-build recovery and inaccessible-repository isolation. Set `INDEXFORGE_DOCUMENTS=2000` for CI. `up` prepares local CLI data and starts no daemon. Optional authenticated Boot HTTP startup and protected OIDC configuration are in [operations](docs/OPERATIONS.md).
+`up` prepares local CLI state; it does not start a daemon. The demo creates 20,000 deterministic documents across three tenants and asserts retrieval, explicit deletion during concurrent search, failed-build recovery, and denied-repository isolation. Use `INDEXFORGE_DOCUMENTS=2000` for the smaller CI workload. Optional authenticated HTTP startup is documented in [operations](docs/OPERATIONS.md).
 
-[Architecture](docs/ARCHITECTURE.md) · [security](docs/SECURITY.md) · [testing](docs/TESTING.md) · [performance](docs/PERFORMANCE.md) · [case study](docs/CASE_STUDY.md) · [exact execution status](docs/STATUS.md) · [CLI](contracts/cli.md) · [HTTP](contracts/http.md).
+## Design
 
-Observed status: strict25 passes88 tests and declared coverage/mutation gates. Relevance acceptance still FAILS after two preserved final waves; baseline is retained because the fixed C1 candidate regresses identifier MRR despite higher nDCG. Frozen24 baseline reference passed100k/30RPS/2GiB at its documented application boundary. Exact artifacts, scope and remaining gaps are in [STATUS](docs/STATUS.md).
+- Each request leases one committed index generation for results, counts, facets, snippets, and pagination.
+- Publication validates and warms a replacement before atomically changing a checksummed pointer. Recovery preserves the last valid generation.
+- Authorization applies before retrieval and aggregations. Permission versions are checked again before returning a response.
+- Source analysis is bounded and conservative. Unsupported syntax or uncertain dispatch produces unknown observations, rather than guessed bindings.
+
+## Evidence and limits
+
+The [validation status](docs/STATUS.md) distinguishes current checks from historical measurements. The published relevance experiments failed the stated quality targets; the baseline remains the selected configuration. Historical performance results apply to their frozen artifact and application boundary, excluding HTTP transport. This is a portfolio implementation, with no production deployment or certification claim.
+
+[Architecture](docs/ARCHITECTURE.md) · [security](docs/SECURITY.md) · [testing](docs/TESTING.md) · [performance](docs/PERFORMANCE.md) · [case study](docs/CASE_STUDY.md) · [CLI contract](contracts/cli.md) · [HTTP contract](contracts/http.md)

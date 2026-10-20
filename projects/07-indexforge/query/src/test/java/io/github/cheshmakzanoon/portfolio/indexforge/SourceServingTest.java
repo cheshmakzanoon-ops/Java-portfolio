@@ -72,6 +72,43 @@ class SourceServingTest {
   }
 
   @Test
+  void supplementaryIdentifierBoundaryFallsBackToOrdinarySearchWithoutAUsageFailure()
+      throws Exception {
+    var auth = new AuthorizationFilter();
+    var admin = auth.update("admin", "tenant", Set.of("repo"), true);
+    String letter = new String(Character.toChars(0x10400));
+    var sources = new TreeMap<String, String>();
+    for (int count : List.of(64, 65)) {
+      String name = letter.repeat(count);
+      sources.put(
+          "Boundary" + count + ".java",
+          "final class Boundary"
+              + count
+              + " { private static int "
+              + name
+              + "(){return 1;} int caller(){return "
+              + name
+              + "();} }");
+    }
+    try (var source =
+        engine(auth, RankingStrategy.SOURCE_USAGE, model(16, 12), catalog("comput"))) {
+      source.ingest(
+          admin,
+          "unicode-boundary",
+          manifest(source, "repo", sources),
+          GenerationBuilder.Fault.none(),
+          () -> false);
+      for (int count : List.of(64, 65)) {
+        var query = new SearchEngine.Request(letter.repeat(count), 20, null, Map.of());
+        var response = source.search("admin", query);
+        assertEquals(1, response.totalHits());
+        assertEquals("Boundary" + count + ".java", response.results().getFirst().path());
+        assertEquals(response, source.search("admin", query), "warm response must also be safe");
+      }
+    }
+  }
+
+  @Test
   void legacyIndexRequiresExplicitMigrationAndServingSharesActualAuditVectorsAndMasks()
       throws Exception {
     var auth = new AuthorizationFilter();

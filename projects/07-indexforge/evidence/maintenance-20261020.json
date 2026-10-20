@@ -1,0 +1,287 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "workflow": "IndexForge project integration verification",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+  "test_totals": {
+    "tests": 169,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_inputs": {
+    "index/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/DeclarationScanner.java": "3d24a20207fecee69d4527d964b8b4bb91a74609e2b790a92a4749f4bee79409",
+    "index/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceJavaParser.java": "8a5ccb0494979a83dbc7065048476f6e6893a36bc3ef5b98aafb0bb9ab676034",
+    "index/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/SourcePreflight.java": "3e00d3092013cf1755b0c690d2f77a0926e7a69f1173064f38d833853fec7f97",
+    "query/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/PlainTextQuery.java": "508408f2c719c5a32a822e745ae4264faeed371f335dc03263fc0a65fab71e44",
+    "index/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/DeclarationScannerTest.java": "8e28ebef3e18bc557b364839e4fdfb90b5b1997da04a2a42ee2c2b5ed7df668c",
+    "index/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceParserTest.java": "9728f34e5560fb6d059713610349022ee739b2b77248dae43b127111b05818e9",
+    "index/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceSymbolGraphTest.java": "53a81ce87fe05a3e186ad2b84c6931be0d95ef42063880e76e639160286446b3",
+    "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/RankingWave2Test.java": "cd6f5945a0d6b26057a0f59cab754dce637d1e0f9bcfca55378fd32d2dee5bc1",
+    "query/src/test/java/io/github/cheshmakzanoon/portfolio/indexforge/SourceServingTest.java": "aaf543949b5bf752a11aef8165943ceb5586915ea393b5ceefc88abd95e22fc5",
+    "scripts/common.sh": "a686f6b58f94a5ed12fc70c9e62c5aee49070bddd5560a56918a64524e02f3a5"
+  },
+  "reports": [
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationSealTest.xml",
+      "sha256": "4fe80cbc124105b578fe325cca199a10fb68bf33a5b04e239833f38d6d0792d5",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.PairwiseTrainingTest.xml",
+      "sha256": "c354910b36136f7ae21b11fef67f85b2f832894cf7d4015ca94c8c67c1c1ee6e",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RelevanceMetricsTest.xml",
+      "sha256": "04e57e9fc68cd3c2f01376b577c5636072c2a9f0cb9338d7440917bcf8b9eab7",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceFeaturePacketTest.xml",
+      "sha256": "f7fab3e86b0bd9ce6956e82913884cf088b25013d9687018736f831693d2a4cf",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourcePairwiseSelectionTest.xml",
+      "sha256": "03681e974f061b3003d17ef1f41679810e1fe6033564243d58b4fbf3701a44c4",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceStudyBoundaryTest.xml",
+      "sha256": "6c349eba79b3c4edeb08bfb4bf265d73b82e7b1fd6e3279a65c35328f6cb2686",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceWave3StudyTest.xml",
+      "sha256": "4a7ed64b8c758efc870c848dffbd04c8c2264d7729ceecf20aa36d5e06415f80",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.Wave2ProtocolTest.xml",
+      "sha256": "bb8fe54428c071918ee9adcb802b02e2bf0f230d99d99e29e7dcbe4b37bec81d",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CodeFeaturesTest.xml",
+      "sha256": "16d3d94e4e065bfd24484f7bfa6c2ff6b725c7f5121fa7785cc1ecad308a26b1",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.DeclarationScannerTest.xml",
+      "sha256": "a839d012ef53a2d3e117d4bd0dd22cfad96d8cdb750a130ac0ac0185670d5add",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.GenerationLifecycleTest.xml",
+      "sha256": "53e43de9404391b5b834f287dcff4f115f4039d3f2c63d72b8615241fac2058d",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IdentifierTermBoundaryTest.xml",
+      "sha256": "e542149ca8684f1f38aeca9b83c665d288bc8b1b68b5c915eb5846905631eb0f",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceCatalogTest.xml",
+      "sha256": "771f6f27cc9f6441701c861e30689d029d7eb952858c65f41287f727e7ec7612",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceGenerationTest.xml",
+      "sha256": "b6f3926c3654a9707ce608e39d72d821438f1b3c8c1b74df0ca45c9e6cb5298c",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceKernelBoundaryTest.xml",
+      "sha256": "f025a828ff47f23c1017319f708d6a80e29c701278aed767aae832c96b45b136",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceParserTest.xml",
+      "sha256": "5d33f6cfbeb4ee3ff8ab7ea9c2786274de7bc63b5f678e81a86f472ea03eb2f8",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceRelationsTest.xml",
+      "sha256": "a2700272b5233d7edcd12111afdcaddf3b28cefa244f5b7e6efcf065368394d1",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceRepositoryFactsTest.xml",
+      "sha256": "06d8d74fc7dad7d4cfee06d7837961c3ee394a5ef9b9a5c3d39d26cd8b976347",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceSymbolGraphTest.xml",
+      "sha256": "0dce383d9e94e78cde0e87749532e4614f70dfbce2c5af643b074560f99e348e",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IngestionSafetyTest.xml",
+      "sha256": "aa66ec96edc3a9e3b2cca5a33fdb32733c675bcf9f60f2065b61091bbe8ff461",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingCodeIdentityTest.xml",
+      "sha256": "c707b962a9fe1b6b6158bf19b2d79801f0081280e3d7cd1db0deb6357a522150",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingIdentityRestartTest.xml",
+      "sha256": "39dbaa6a4305f90bd64ee840a5884bbd9fb48b66abfe3508e9271ffe3479df16",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingWave2Test.xml",
+      "sha256": "20f180d9453acc0e5abe0793a78518a46ab562ac311c853b1a0eb8d9c46736a2",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SearchSecurityTest.xml",
+      "sha256": "9a5bf1531618ddb82aad5195b6ef074a80cbaab97cf7f7916ef22bedffd18fd7",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceServingTest.xml",
+      "sha256": "664d992902fd2dacf93401eede74e4b46aa37397960c4d09bf775ed21e5eb842",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceUsageRankerTest.xml",
+      "sha256": "fa8e4a15d17942b80a035ca7389a744b41932b56013c0edeb34683be1c73cf7c",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingConfigurationTest.xml",
+      "sha256": "9ceea7944fcf506819b5f8a2f47d30789a8d90937c8e3d04120cd0a2d5068549",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TokenValidationTest.xml",
+      "sha256": "b406007574a2e5524ffb6acc2542bfd6e9372acb3c675a0c889bf1b1488eefbc",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "cli/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourcePackagedIT.xml",
+      "sha256": "9839dcb59e41456b3d83a0e9887a13afcf734d0772c5ef5531dd7c8c63dda7d2",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "index/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.KernelDiskFullIT.xml",
+      "sha256": "ef10218a4cc00e255ae7b8dfc96c7475e969b45d9ed7d719d6978eccfa087683",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.HttpSecurityIT.xml",
+      "sha256": "725559ea3a71b208983fd2df0d7bd678228f91ab5743dd20823a2dc79dcc2eaa",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "limits": [
+    "Current mutation profile and reference performance were not run.",
+    "Historical relevance targets remain unmet.",
+    "No browser UI exists in this project."
+  ],
+  "demo": {
+    "command": "projects/07-indexforge/scripts/up.sh; INDEXFORGE_DOCUMENTS=2000 projects/07-indexforge/scripts/demo.sh; projects/07-indexforge/scripts/down.sh",
+    "exit_code": 0,
+    "documents": 2000,
+    "source_bytes": 439546,
+    "tenants": 3,
+    "assertions": "passed"
+  }
+}

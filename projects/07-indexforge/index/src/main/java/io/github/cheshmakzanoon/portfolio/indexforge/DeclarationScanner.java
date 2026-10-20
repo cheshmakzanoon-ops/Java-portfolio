@@ -50,9 +50,11 @@ public final class DeclarationScanner {
         tokens.add("<literal>");
         continue;
       }
-      if (Character.isJavaIdentifierStart(c)) {
-        int start = i++;
-        while (i < source.length() && Character.isJavaIdentifierPart(source.charAt(i))) i++;
+      if (Character.isJavaIdentifierStart(source.codePointAt(i))) {
+        int start = i;
+        i += Character.charCount(source.codePointAt(i));
+        while (i < source.length() && Character.isJavaIdentifierPart(source.codePointAt(i)))
+          i += Character.charCount(source.codePointAt(i));
         tokens.add(source.substring(start, i));
       } else {
         tokens.add(String.valueOf(c));
@@ -67,14 +69,14 @@ public final class DeclarationScanner {
     Set<String> names = new LinkedHashSet<>();
     for (int i = 1; i + 1 < tokens.size() && names.size() < 256; i++) {
       String name = tokens.get(i), previous = tokens.get(i - 1);
-      if (!Character.isJavaIdentifierStart(name.charAt(0))) continue;
+      if (!Character.isJavaIdentifierStart(name.codePointAt(0))) continue;
       if (TYPES.contains(previous)) {
         names.add(name);
         continue;
       }
       if (!tokens.get(i + 1).equals("(") || CONTROLS.contains(name) || NON_TYPES.contains(previous))
         continue;
-      if (!(Character.isJavaIdentifierStart(previous.charAt(0))
+      if (!(Character.isJavaIdentifierStart(previous.codePointAt(0))
           || previous.equals("]")
           || previous.equals(">"))) continue;
       int depth = 1, j = i + 2;

@@ -1,19 +1,35 @@
-# Performance methodology
+# Performance and relevance evidence
 
-Target:100,000 generated UTF8 source documents over three tenants at30 scheduled searches/second, after warmup, p95 below200ms, with configured heap at most2GiB. Scripts always pass `-Xmx2g`; deterministic seed7007 and exact aggregate source byte counts are emitted. Generated document bodies perform a small maximum-of-revisions operation and are never compiled or executed during ingestion.
+Measurements apply to a specific artifact, corpus, configuration, and runtime boundary. Correctness tests on newer source do not refresh a historical benchmark.
 
-The harness builds all tenant generations, warms150 application requests, then performs three independent fixed-rate runs. Latency starts at the scheduled open-loop arrival time, including client executor queuing;8 bounded request workers collect errors, queue peak, process CPU time and GC time. It publishes p50/p95/p99 and raw latency samples. Current harness boundary includes shared application search, generation leases, authorization, facets, explanations and bounded warm response cache; it excludes HTTP transport and is explicitly labeled. It does not constitute HTTP end-to-end acceptance by itself.
+## Reference workload
 
-Run only in a coordinator-granted quiet reference window: `projects/07-indexforge/scripts/benchmark.sh`. Set INDEXFORGE_SECONDS and INDEXFORGE_DOCUMENTS for exploratory smoke runs; such runs do not satisfy the100k target. Record OS/JDK/CPU/cgroup limits, heap flags, source fingerprint, timestamp, concurrency and other co-resident processes alongside raw results. No performance target has been claimed passed before a measurement.
+The documented target is 100,000 generated UTF-8 source documents across three tenants, 30 scheduled searches per second, p95 below 200 ms after warm-up, and at most 2 GiB configured heap. The fixed seed is 7007; the published corpus contains 22,266,651 source bytes with tenant counts 33,334 / 33,333 / 33,333.
 
+The harness warms 150 application requests and runs three fixed-rate measurements. Latency begins at scheduled arrival, including executor queuing. Eight bounded request workers record errors, queue peak, process CPU, GC, and raw latency samples. The measured boundary includes shared application search, generation leases, authorization, facets, explanations, and the bounded warm response cache. It excludes HTTP transport.
 
-Certification23 preparation is recorded in `evidence/performance/preparation-build23.json`:100000 documents,22266651 aggregate UTF8 bytes, seed7007, tenant counts33334/33333/33333,2147483648-byte maximum heap,161.56-second preparation. The runtime explicitly uses `-Dindexforge.ranking-mode=SOURCE_AWARE -Dindexforge.ranking-profile=CODE_HIGH`; one untimed sanity query verifies its actual scoringVersion and selected compiled-model identity. This is preparation only, measuredRuns=0, and establishes no throughput/latency target.
+Use `projects/07-indexforge/scripts/benchmark.sh` only on an otherwise quiet reference host. Smaller `INDEXFORGE_DOCUMENTS` or `INDEXFORGE_SECONDS` values are exploratory runs and do not satisfy the reference target. Record CPU/cgroup limits, OS/JDK, heap, artifact digest, corpus bytes, concurrency, and colocated processes alongside results.
 
-The copied certified application is `.work/A07/artifacts/build23-cli.jar`; prepared local data is `.runtime/performance-build23`. The coordinator can validate the exact source/artifact/pointers without Java using `python .work/A07/run-reference-build23.py --preflight-only`. After granting a quiet window, it can execute `INDEXFORGE_QUIET_GRANT=window-id python .work/A07/run-reference-build23.py`. This uses the fixed JDK25 executable and copied JAR, no Maven, actual selected configuration and2GiB cap. The existing benchmark command deterministically regenerates source objects/idempotently reconciles the prepared jobs before warmup; preparation/regeneration and warmup are outside timed runs. Each fresh attempt preserves environment/argv, GC log, stdout, raw latency samples, workload/error/p95 assertions and failures. This driver has passed only its read-only preflight; the reference Java execution remains NOT_RUN. Quiet isolation is established by the coordinator's actual process/stack/lock preflight, not by an environment-variable name alone.
+## Historical frozen baseline
 
+The corrected build-24 baseline reference used the copied CLI artifact with SHA-256 `6c2ae0c414013a55e8d83bcfd9e65707ccfb984fa684054bf83910f08c4d564d`, `BASELINE/CODE_HIGH`, and a 2 GiB heap. Baseline bypasses source-aware feature weights and uses content BM25.
 
-## Current corrected24 reference handoff
+| Run | Requests | Offered rate | Errors | p95 |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 900 | 30/s | 0 | 4.727653 ms |
+| 2 | 900 | 30/s | 0 | 6.977346 ms |
+| 3 | 900 | 30/s | 0 | 2.607306 ms |
 
-The build23 candidate preparation/driver above is historical and superseded. After the first frozen held-out guard retained baseline, actual reference configuration is BASELINE/CODE_HIGH with copied24JAR SHA6c2ae0c414013a55e8d83bcfd9e65707ccfb984fa684054bf83910f08c4d564d; baseline bypasses feature weights and uses default content BM25. Compiled defaults were not changed. Only SearchEngine.class differs from23; all other packaged entries and index schema/builder/mapper/generator/resources are byte-identical. Prior CURRENT hashes and fresh24 committed-reader checksum/count/scoringVersion/model checks validate explicit reuse of100k/22266651-byte seed7007 data. New artifact-bound `preparation-build24.json` references the preserved original preparation and `index-reuse-build23-24.json`; measuredRuns=0.
+Raw evidence is retained under `evidence/performance/reference-build24-attempt1/`. The initial preparation and explicit build-23-to-24 index reuse are recorded in adjacent evidence files. These results establish the frozen baseline's warm-cache application behavior on that machine; they do not certify the later source parser, learned candidates, or HTTP end-to-end latency.
 
-Current read-only preflight passed: `python .work/A07/run-reference-build24.py --preflight-only`. Current executable after coordinator isolation: `INDEXFORGE_QUIET_GRANT=window-id python .work/A07/run-reference-build24.py`. No Maven; fixedJDK25/copied24JAR/2GiB,three30second30RPS runs,150warmups,allerrors/p95/workload assertions and fresh attempt evidence. Actual corrected24 measurement completed under root quiet-reference-8-indexforge:3×900requests,30offeredRPS,0errors,p95=4.727653/6.977346/2.607306ms,2GiB,100000documents/22266651bytes. Raw evidence is `evidence/performance/reference-build24-attempt1/`. This proves that frozen24 warm-cache application boundary, excluding HTTP; it does not certify25 C1 or later changed artifacts. Do not execute the old23driver against changed source or claim its discarded candidate configuration was deployed.
+## Relevance outcome
+
+The published corpus has 80 reviewed queries with a 40/20/20 development/validation/held-out split. The declared targets are held-out nDCG@10 of at least 0.75 and identifier MRR@10 of at least 0.90. Existing final measurements were:
+
+| Configuration | nDCG@10 | Identifier MRR@10 | Decision |
+| --- | ---: | ---: | --- |
+| Original baseline | 0.6012721858 | 0.8833333333 | Retained |
+| First selected candidate | 0.6267961004 | 0.8000000000 | Rejected by guard |
+| Later fixed candidate C1 | 0.6594266978 | 0.8000000000 | Rejected by guard |
+
+No configuration met both targets. The selected candidate's greater nDCG did not justify its lower identifier MRR. Frozen labels, failed fits, ablations, seals, and repeated-test exposure remain recorded under `evidence/relevance/` and `fixtures/`. These are authored-corpus results, not a universal search-quality claim. Further tuning requires development/validation evidence and a separately declared evaluation protocol.

@@ -104,6 +104,43 @@ class SourceSymbolGraphTest {
   }
 
   @Test
+  void constantSpecificEnumBodiesPreventExactInstanceDispatchButPreserveStaticBindings()
+      throws Exception {
+    var source =
+        document(
+            "Mode.java",
+            """
+            enum Mode {
+              FIRST { @Override int read() { return 2; } }, SECOND;
+              int read() { return 1; }
+              static int shared() { return 3; }
+              int caller() { read(); return shared(); }
+            }
+            """);
+    var type =
+        source.facts().types().stream()
+            .filter(t -> t.name().equals("Mode"))
+            .findFirst()
+            .orElseThrow();
+    assertFalse(type.closed(), "a constant-specific body makes an enum extensible");
+    var reads = graph(source).observe(List.of(source.key()), "read").get(source.key());
+    assertEquals(2, reads.members().size());
+    assertTrue(reads.members().stream().noneMatch(SourceSymbolGraph.Usage::usable));
+    var shared = graph(source).observe(List.of(source.key()), "shared").get(source.key());
+    assertEquals(1, shared.members().getFirst().observedCallers());
+    assertTrue(shared.members().getFirst().usable());
+
+    var finalEnum =
+        document(
+            "FinalMode.java",
+            "enum FinalMode { FIRST, SECOND; int read(){return 1;} int caller(){return read();} }");
+    assertTrue(finalEnum.facts().types().getFirst().closed());
+    var exact = graph(finalEnum).observe(List.of(finalEnum.key()), "read").get(finalEnum.key());
+    assertEquals(1, exact.members().getFirst().observedCallers());
+    assertTrue(exact.members().getFirst().usable());
+  }
+
+  @Test
   void inheritedOverloadsNullGenericAndUnknownReceiversAreNotGuessed() throws Exception {
     var inherited =
         document(

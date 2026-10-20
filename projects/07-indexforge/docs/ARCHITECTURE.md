@@ -1,36 +1,46 @@
-# Architecture and guarantees
+# Architecture
 
-```mermaid
-flowchart LR
- C[CLI or authenticated Boot HTTP] --> A[Shared SearchEngine]
- A --> I[Bounded reader / immutable manifest / CAS]
- I --> B[GenerationBuilder]
- B --> L[Lucene committed filesystem index]
- L --> P[Checksum verification and atomic pointer]
- A --> Q[Bounded AST / planner / ACL filter]
- Q --> G[Exactly one generation lease]
- G --> R[BM25 and deterministic bounded ranking]
- R --> V[Authorization version recheck]
-```
+IndexForge separates input acquisition, durable index lifetime, search policy, and adapters. Production modules do not depend on another portfolio project.
 
-`ingest` has no Lucene or server dependency. `index` owns actual Lucene directory lifetimes and commits. `query` owns server-side access mappings, original grammar, field weighting, signed cursors and application services. `service` is an HTTP/security/job adapter. `cli` and `evaluation` call the same query application services. No production module imports another portfolio project.
+| Module | Responsibility |
+| --- | --- |
+| `ingest` | Configured source roots, strict UTF-8, bounded archives, content-addressed storage, immutable manifests, and resumable jobs. No Lucene or HTTP dependency. |
+| `index` | Document mapping, identifier analysis, source observations, Lucene commits, generation publication, leases, and recovery. |
+| `query` | Bounded grammar, access context, query planning, ranking, snippets, signed cursors, and application services. |
+| `service` | HTTP authentication, admission limits, ingestion jobs, and response mapping. |
+| `cli` | Administrative local commands over the same application services. |
+| `evaluation` | Frozen-corpus metrics and finite ranking experiments. |
 
-Each stable key is tenant/repository/canonical relative path. Input manifests are immutable schema-tagged binary values with canonical entry order. CAS validates SHA256 on both existing writes and reads. A tenant's index is physically under `index/TENANT/`; a generation includes its complete immutable snapshot metadata, the registered input manifest, committed Lucene metadata, and a checksum over stable files. Partial uploads merge with prior committed state; complete uploads must explicitly name every deletion. Retry keys are scoped to tenant/repository and canonical manifest hash.
+## Ingestion and publication
 
-Publication builds in sibling staging, commits the writer, opens and warms a committed reader, validates counts/content hashes/full-snapshot hashes, renames staging to a generation, saves PREVIOUS then atomically replaces CURRENT. Pointer payloads are checksummed. File and directory metadata are forced. Unsupported atomic move/directory force is a hard failure. The tested durability model is a local Linux filesystem with same-filesystem rename; this is not a claim about remote/object filesystems, lying storage controllers, or arbitrary power-loss hardware. On startup CURRENT is validated, then PREVIOUS; incomplete staging is quarantined. If neither pointer validates while committed files exist, startup fails explicitly and preserves files for operator recovery.
+A document's stable identity is `(tenant, repository, canonical relative path)`. Immutable manifests use canonical entry order and content digests; retry keys bind a tenant, repository, and manifest. File and directory selections retain paths relative to the configured repository root. A partial upload merges with the existing snapshot; deletions must be explicit.
 
-Requests acquire exactly one committed generation lease. Old readers retire after publication and close after outstanding leases close. Files retain current/previous and leased older generations; older unleased files are reclaimed. Pagination is a bounded500-candidate window; a signed cursor into a reader that has retired returns410. A cursor does not indefinitely pin a snapshot. CAS and immutable job retention currently require operator retention policy; they are not automatically garbage collected.
+Content-addressed storage verifies SHA-256 on writes and reads. A complete tenant generation is capped at 100,000 documents, 128 MiB aggregate UTF-8 source, and 64 MiB metadata. Upload acquisition has a separate 256 MiB bound; passing that bound does not guarantee that the retained generation fits. Deletions and replacements are accounted for before loading replacement text.
 
-The parser implements uppercase AND/OR/NOT, parentheses, quoted phrases and an allowlisted set of exact fields; ordinary adjacent terms use OR for natural-language retrieval. AND binds more tightly, NOT is unary, adjacent NOT restricts the preceding expression. Limits are512 characters,64 tokens and depth8. Identifier analysis lowercases Unicode using Locale.ROOT, preserves the complete identifier with offsets, and emits acronym/camel-case/underscore pieces at the same token position. Original symbol spelling is stored separately; tenant/repository/path identities remain case sensitive. Phrase positions reflect source words; identifier pieces are synonym-position alternatives.
+Publication builds in sibling staging, commits Lucene, opens and warms a committed reader, checks counts and digests, renames staging to a generation, records `PREVIOUS`, then atomically replaces `CURRENT`. File and directory metadata are forced. Unsupported atomic replacement or directory force fails explicitly. This model assumes local storage with same-filesystem rename; it does not establish durability on arbitrary distributed storage or hardware.
 
-Lucene supplies BM25. The original planner weights content1, split identifiers3, exact symbols8, path pieces2, and conservative exact Java declarations32 for a whole single-identifier query; an additional prose field uses Lucene English stopword/Porter filters at1.5; baseline uses content only; ablations remove the weighted identifier/declaration channels, path features, or added prose field. Baseline content analysis retains the original identifier tokenizer. Candidate selection is bounded500 and deterministic score/key ordering; score explanations export only matching authorized-document field/term features, numeric score and reranking bonuses; raw Lucene collection statistics are withheld. The original reranker examines at most500 authorized candidates, adds4 for an indexed exact Java declaration and2 for an exact source-file stem, then applies score/key tie-breaking. The bounded declaration-hint scanner skips comments/string/char/text blocks, recognizes type names and typed method signatures, rejects ordinary calls, and caps input1MiB,100000 lexical tokens,1024 signature tokens and256 hints per document. This is a conservative lexical hint, not a complete Java grammar or compiler. Declaration features were added after preliminary development/validation failures and before any held-out measurement; identifier/path ablations disable corresponding features; explanations include their bonuses. No learned embeddings or external search server exists.
+Startup validates `CURRENT`, then `PREVIOUS`, quarantining incomplete staging. If committed data exists but neither pointer validates, startup preserves the files and refuses to guess. Committed metadata includes job and manifest identity. Before a later writer can publish, the current job is reconciled into a checksummed completion receipt. This prevents a retried job from overwriting a newer publication after an ambiguous earlier success.
 
-A complete generation is capped at128MiB aggregate UTF8 source bytes in addition to the100k document and64MiB metadata quotas. Upload acquisition has a separate256MiB total limit; a successful bounded upload can still be rejected when its complete tenant generation would exceed the tighter retained-state budget. Preflight subtracts deletions/replacements before reading new CAS source text; startup verifies the same aggregate. Candidate retrieval/ranking/suggestion stages load only required stored metadata; final authorized hits read source for snippets.
+## Read lifetime and concurrency
 
-Response cache capacity128; keys contain tenant, principal, exact allowed repository set, authorization version, generation, query/filter/mode digest and page offset. Every cache hit still acquires a lease and rechecks the current authorization version. Counts and repository facets use the same authorized query. Suggestions use an authorized symbol prefix query and version recheck. No constant-time confidentiality is claimed for shared hardware.
+Each request acquires exactly one committed generation lease. Publication retires the old reader, but outstanding leases remain valid. Cleanup retains current, previous, and leased generations. A cursor into a retired reader returns `410`; cursors do not pin storage indefinitely. Content-store and job retention remain an operator responsibility.
 
-Directory and selected-file ingestion preserve paths relative to the configured repository source root. Selecting `src/Foo.java` after a full-root snapshot replaces `src/Foo.java`; selecting `src` does not rebase it to `Foo.java`. ZIP entries retain their declared normalized repository-relative names. Root binding is therefore part of ingestion identity, and HTTP selects within the authorized tenant/repository source root.
+Per-tenant writer locks serialize replacement builds. A short map lock protects publisher lookup. Existing leases continue during publication; acquiring a new lease can pause while the publisher validates the next generation. Search is not claimed to be lock-free.
 
-Optional handwritten concept associations apply only to plain multiword queries and are disabled for explicit Boolean, phrase, field and single-identifier queries. At most6 groups contribute4 additional terms each, with two independently triggered groups required when available. This catalog was authored using ordinary software terminology and observed development/validation failures, not an external thesaurus. Generation/snapshot/version and lease/reader/retire are associations, not synonyms. The frozen catalog/provenance is in fixtures/CONCEPTS-v1.md; NO_CONCEPTS is retained as an ablation. Held-out data has not influenced the catalog.
+## Search and authorization
 
-The pending coverage/weight experiment is preregistered in fixtures/WEIGHT-COVERAGE-v1.md: six fixed presets and a distinct normalized query-term coverage bonus. Prose term vectors avoid reloading full source for500 candidates. Coverage changes scores only for ordinary multiword queries, and NO_COVERAGE/NO_PROSE/BASELINE disable it. Profile is captured once per engine, included in scoringVersion and compiled evaluation identity. CURRENT preserves previous weights and has coverage0. Validation selection must preserve both baseline nDCG and identifierMRR before maximizing the weaker ratio to the declared .75/.90 targets. STATUS distinguishes pending code from certified evidence.
+The grammar supports uppercase `AND`, `OR`, unary `NOT`, parentheses, phrases, and allowlisted fields. Adjacent terms use `OR`; `AND` binds more tightly. Limits are 512 characters, 64 tokens, and depth 8. Wildcard, regex, and fuzzy syntax are rejected.
+
+Identifier analysis preserves source offsets and emits whole identifiers and acronym, camel-case, and underscore components at synonym positions. Terms are lowercased with `Locale.ROOT`; tenant, repository, and path identities remain case-sensitive. A normalized term exceeding Lucene's UTF-8 limit is omitted whole rather than truncated into a false match.
+
+Retrieval and deterministic reranking consider at most 500 authorized candidates. The configured profile and complete inference artifact identity participate in score versions, caches, and cursors. Optional source and prose features have explicit ablations; the [performance and relevance record](PERFORMANCE.md) describes the measured configurations.
+
+Authorization is part of retrieval, counts, facets, snippets, suggestions, explanations, and the 128-entry response cache. Cache keys include principal, allowed repositories, permission version, generation, query, filters, mode, and page. A lease and permission-version recheck are required even on a cache hit. [Security](SECURITY.md) describes the remaining statistical channel through tenant-wide BM25 statistics.
+
+## Conservative source observations
+
+Structural ingestion parses syntax in a bounded child JVM without compilation, annotation processing, class loading, or symbol attribution. Unsupported input abstains as a whole unit. Identifier tokens are consumed by Unicode code point, while the 256-unit UTF-16 quota matches the facts and wire format.
+
+The repository-local call graph reports only supported bindings. An enum with constant-specific class bodies is not treated as final: instance calls may dispatch to an override. Static and private bindings can remain exact where their other preconditions hold. Unknown receivers, inheritance, incomplete call inventories, and ambiguous overloads are not converted into zero usage or guessed targets.
+
+The identifier-specific usage lane accepts at most 128 UTF-16 units, matching its graph work bound. Longer supplementary identifiers remain valid ordinary searches and bypass that optional lane; they do not become serving errors.

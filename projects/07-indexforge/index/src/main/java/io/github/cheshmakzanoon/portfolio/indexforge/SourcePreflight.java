@@ -58,9 +58,13 @@ public final class SourcePreflight {
         if (!ended) return SourceFacts.Status.SYNTAX;
         continue;
       }
-      if (Character.isJavaIdentifierStart(c)) {
-        int start = i++;
-        while (i < source.length() && Character.isJavaIdentifierPart(source.charAt(i))) i++;
+      if (Character.isJavaIdentifierStart(source.codePointAt(i))) {
+        int start = i;
+        i += Character.charCount(source.codePointAt(i));
+        while (i < source.length() && Character.isJavaIdentifierPart(source.codePointAt(i)))
+          i += Character.charCount(source.codePointAt(i));
+        // Parsed facts and wire strings are bounded in UTF-16 code units. Consume complete
+        // Unicode identifiers, then apply that same limit before invoking the compiler.
         if (i - start > 256) return SourceFacts.Status.SOURCE_QUOTA;
         continue;
       }

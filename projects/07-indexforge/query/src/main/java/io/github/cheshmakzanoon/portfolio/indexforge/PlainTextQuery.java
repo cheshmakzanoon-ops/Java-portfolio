@@ -18,6 +18,8 @@ public final class PlainTextQuery {
   }
 
   public static boolean identifier(String raw) {
-    return raw != null && raw.matches("[\\p{L}_$][\\p{L}\\p{N}_$]{0,127}");
+    // Regex repetition counts code points, while the bounded graph query counts UTF-16
+    // units. Longer supplementary names remain searchable through the ordinary lane.
+    return raw != null && raw.length() <= 128 && raw.matches("[\\p{L}_$][\\p{L}\\p{N}_$]{0,127}");
   }
 }
