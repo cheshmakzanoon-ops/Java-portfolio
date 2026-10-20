@@ -38,6 +38,20 @@ jobs:
           distribution: temurin
           java-version: '25.0.4.1+1'
           cache: maven
+      - name: Verify ClearLedger runtime ownership
+        if: matrix.project == 'clearledger'
+        run: |
+          python3 projects/01-clearledger/scripts/test-runtime-cache.py
+          python3 projects/01-clearledger/scripts/test-lifecycle.py
+      - name: Verify PulseStream runtime ownership
+        if: matrix.project == 'pulsestream'
+        run: python3 projects/04-pulsestream/scripts/test-lifecycle.py
+      - name: Verify TenantShield runtime ownership
+        if: matrix.project == 'tenantshield'
+        run: python3 projects/05-tenantshield/scripts/test_process_lifecycle.py
+      - name: Verify RouteWeaver runtime ownership
+        if: matrix.project == 'routeweaver'
+        run: python3 projects/10-routeweaver/scripts/test-runtime.py
       - name: Verify ByteGuard preparation receipts
         if: matrix.project == 'byteguard'
         run: python3 projects/09-byteguard/scripts/test-build-cache.py
