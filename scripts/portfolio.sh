@@ -38,7 +38,7 @@ case "$command" in
     echo 'MatchCore, ThreadLens and ByteGuard are CLI-first; up prepares local state rather than starting a web server.'
     ;;
   verify|integration|mutation)
-    export PORTFOLIO_TEST_RUN_STARTED=$(date +%s)
+    export PORTFOLIO_TEST_RUN_STARTED=$(python3 -c 'import time; print(time.time())')
     args=(); [[ $command != integration ]] || args+=(-Pintegration)
     [[ $command != mutation ]] || args+=(-Pmutation -DoutputFormats=XML,HTML)
     mkdir -p "$root/.work/build"

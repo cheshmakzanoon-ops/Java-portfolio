@@ -6,6 +6,8 @@ import tempfile
 import unittest
 import os
 import subprocess
+import shutil
+import xml.etree.ElementTree as ET
 
 spec = importlib.util.spec_from_file_location('architecture', Path(__file__).with_name('check-architecture.py'))
 architecture = importlib.util.module_from_spec(spec)
@@ -19,6 +21,35 @@ spec.loader.exec_module(markdown_links)
 spec = importlib.util.spec_from_file_location('source_sarif', Path(__file__).with_name('check-source-sarif.py'))
 source_sarif = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(source_sarif)
+
+
+def make_reactor(root, names=('core',), mutation=False):
+    namespace = 'http://maven.apache.org/POM/4.0.0'
+    (root / 'pom.xml').write_text(
+        f'<project xmlns="{namespace}"><modelVersion>4.0.0</modelVersion>'
+        '<groupId>example</groupId><artifactId>reactor</artifactId><version>1</version>'
+        '<packaging>pom</packaging><modules>' + ''.join(f'<module>{name}</module>' for name in names)
+        + '</modules></project>')
+    for name in names:
+        directory = root / name
+        directory.mkdir(parents=True, exist_ok=True)
+        selection = ('<build><plugins><plugin><artifactId>pitest-maven</artifactId><configuration>'
+                     '<targetClasses><param>example.Core</param></targetClasses>'
+                     '</configuration></plugin></plugins></build>') if mutation else ''
+        (directory / 'pom.xml').write_text(
+            f'<project xmlns="{namespace}"><modelVersion>4.0.0</modelVersion>'
+            '<parent><groupId>example</groupId><artifactId>reactor</artifactId><version>1</version>'
+            f'</parent><artifactId>{name}</artifactId>{selection}</project>')
+
+
+def write_test_report(path, tests=1, skipped=0):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    suite = ET.Element('testsuite', tests=str(tests), failures='0', errors='0', skipped=str(skipped))
+    for index in range(tests):
+        case = ET.SubElement(suite, 'testcase', name='case' + str(index))
+        if index < skipped:
+            ET.SubElement(case, 'skipped')
+    ET.ElementTree(suite).write(path, encoding='unicode')
 
 
 class ArchitectureGateTest(unittest.TestCase):
@@ -110,10 +141,51 @@ class ArchitectureGateTest(unittest.TestCase):
             self.assertTrue(any('domain framework dependency' in item for item in failures))
             self.assertTrue(any('cross-project dependency' in item for item in failures))
 
+    def test_compiled_qualified_references_cannot_bypass_import_checks(self):
+        compiler = shutil.which('javac') or str(Path(os.environ.get('JAVA_HOME', '/workspace/.tools/jdk-25')) / 'bin/javac')
+        jdeps = str(Path(compiler).resolve().with_name('jdeps'))
+        self.assertTrue(Path(compiler).is_file(), 'Tooling tests require the documented JDK')
+        for namespace in ('io.github.cheshmakzanoon.portfolio.clearledger', 'example'):
+            with tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                project = root / 'projects/01-clearledger'
+                project.mkdir(parents=True)
+                make_reactor(project, ('ledger-domain',))
+                source = project / 'ledger-domain/src/main/java/example/Domain.java'
+                source.parent.mkdir(parents=True)
+                source.write_text('package ' + namespace + '; '
+                                  'public class Domain { org.springframework.Context context; '
+                                  'io.github.cheshmakzanoon.portfolio.quorumkv.Other foreign; }')
+                support = root / 'fixture-support'
+                support.mkdir()
+                context = support / 'Context.java'
+                context.write_text('package org.springframework; public class Context {}')
+                other = support / 'Other.java'
+                other.write_text('package io.github.cheshmakzanoon.portfolio.quorumkv; public class Other {}')
+                classes = project / 'ledger-domain/target/classes'
+                classes.mkdir(parents=True)
+                subprocess.run([compiler, '--release', '17', '-d', str(classes), str(source), str(context), str(other)],
+                               check=True, capture_output=True, text=True)
+                self.assertEqual([], architecture.inspect(root))
+                failures = architecture.inspect_bytecode(project, jdeps)
+                self.assertTrue(any('cross-project bytecode dependency' in failure for failure in failures))
+                self.assertTrue(any('domain framework bytecode dependency' in failure for failure in failures))
+
+    def test_compiled_architecture_requires_build_outputs(self):
+        with tempfile.TemporaryDirectory() as temp:
+            project = Path(temp) / '01-clearledger'
+            project.mkdir()
+            make_reactor(project, ('ledger-domain',))
+            source = project / 'ledger-domain/src/main/java/Domain.java'
+            source.parent.mkdir(parents=True)
+            source.write_text('class Domain {}')
+            self.assertTrue(architecture.inspect_bytecode(project, '/unneeded/jdeps'))
+
 
 class MutationEvidenceGateTest(unittest.TestCase):
     def invoke(self, statuses, started='1', timestamp=None):
         with tempfile.TemporaryDirectory() as temp:
+            make_reactor(Path(temp), mutation=True)
             report = Path(temp) / 'core/target/pit-reports/mutations.xml'
             report.parent.mkdir(parents=True)
             report.write_text('<mutations>' + ''.join(
@@ -151,10 +223,13 @@ class MutationEvidenceGateTest(unittest.TestCase):
 class TestEvidenceGateTest(unittest.TestCase):
     def invoke(self, suites, action='verify', started='1', timestamp=None):
         with tempfile.TemporaryDirectory() as temp:
+            make_reactor(Path(temp))
             for index, (kind, tests, skipped) in enumerate(suites):
                 report = Path(temp) / f'core/target/{kind}-reports/TEST-suite{index}.xml'
-                report.parent.mkdir(parents=True, exist_ok=True)
-                report.write_text(f'<testsuite tests="{tests}" failures="0" errors="0" skipped="{skipped}"/>')
+                write_test_report(report, tests, skipped)
+                source = Path(temp) / 'core/src/test/java/example' / ('Suite' + str(index) + ('IT.java' if kind == 'failsafe' else 'Test.java'))
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text('// selected Maven test source\n')
                 if timestamp is not None:
                     os.utime(report, (timestamp, timestamp))
             env = {**os.environ}

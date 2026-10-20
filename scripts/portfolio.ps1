@@ -7,7 +7,7 @@ switch ($Action) {
   'doctor' { & java -version; if ($LASTEXITCODE) { exit $LASTEXITCODE }; & javac -version; if ($LASTEXITCODE) { exit $LASTEXITCODE }; & .\mvnw.cmd -version; exit $LASTEXITCODE }
   'list' { $slugs | ForEach-Object { Write-Output $_ }; exit 0 }
   { $_ -in 'verify','integration','mutation' } {
-    $env:PORTFOLIO_TEST_RUN_STARTED = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
+    $env:PORTFOLIO_TEST_RUN_STARTED = ([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() / 1000.0).ToString('F3', [Globalization.CultureInfo]::InvariantCulture)
     if ($Action -eq 'verify' -and $Project -in @('indexforge','routeweaver')) {
       # Reuse the supported, nonmutating receipt preparation and report gates.
       if (!(Get-Command bash -ErrorAction SilentlyContinue)) { throw 'Git Bash is required to prepare this project for its lifecycle commands' }
