@@ -28,15 +28,19 @@ wait_for_services() {
   echo "Owned HTTP services did not become ready within 90 seconds; run scripts/up.sh and inspect $RUNTIME_DIR/*.log" >&2
   return 1
 }
+stop_process() {
+  local pid="$1" jar="$2"
+  if [[ "$pid" =~ ^[0-9]+$ ]] && owned_process_running "$pid" "$jar"; then
+    kill "$pid"
+    for _ in $(seq 1 30); do if ! owned_process_running "$pid" "$jar"; then break; fi; sleep 1; done
+    if owned_process_running "$pid" "$jar"; then kill -KILL "$pid"; fi
+  fi
+}
 stop_service() {
   local name="$1" jar="$2" pid
   if [[ -f "$RUNTIME_DIR/$name.pid" ]]; then
     pid="$(cat "$RUNTIME_DIR/$name.pid")"
-    if [[ "$pid" =~ ^[0-9]+$ ]] && owned_process_running "$pid" "$jar"; then
-      kill "$pid"
-      for _ in $(seq 1 30); do if ! owned_process_running "$pid" "$jar"; then break; fi; sleep 1; done
-      if owned_process_running "$pid" "$jar"; then kill -KILL "$pid"; fi
-    fi
+    stop_process "$pid" "$jar"
     rm -f "$RUNTIME_DIR/$name.pid"
   fi
 }

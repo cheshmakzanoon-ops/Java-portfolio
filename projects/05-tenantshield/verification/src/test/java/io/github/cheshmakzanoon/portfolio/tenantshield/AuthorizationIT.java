@@ -7,6 +7,9 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.*;
 import com.zaxxer.hikari.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.*;
 import java.net.http.*;
 import java.nio.file.*;
@@ -16,6 +19,8 @@ import java.util.*;
 import java.util.Date;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -46,7 +51,7 @@ class AuthorizationIT {
     db =
         new PostgreSQLContainer(
                 DockerImageName.parse(
-                        "postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db")
+                        "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
                     .asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("tenantshield")
             .withUsername("migration")
@@ -618,6 +623,317 @@ class AuthorizationIT {
     assertThat(result.statusCode()).isEqualTo(413);
     assertThat(result.headers().firstValue("Content-Type").orElse(""))
         .startsWith("application/problem+json");
+  }
+
+  @Test
+  void runtimeDatabaseGuardChecksEveryProtectedTableAndRoleBoundary() throws Exception {
+    try (Connection owner = owner();
+        Statement statement = owner.createStatement()) {
+      for (String table :
+          List.of(
+              "tenant",
+              "membership",
+              "resource",
+              "policy_version",
+              "role",
+              "role_edge",
+              "\"grant\"",
+              "active_policy",
+              "audit")) {
+        statement.execute("ALTER TABLE " + table + " DISABLE ROW LEVEL SECURITY");
+        try (Connection connection = runtime.getConnection()) {
+          assertThatThrownBy(() -> RuntimeDatabase.verify(connection))
+              .isInstanceOf(IllegalStateException.class);
+        } finally {
+          statement.execute("ALTER TABLE " + table + " ENABLE ROW LEVEL SECURITY");
+        }
+        statement.execute("ALTER TABLE " + table + " NO FORCE ROW LEVEL SECURITY");
+        try (Connection connection = runtime.getConnection()) {
+          assertThatThrownBy(() -> RuntimeDatabase.verify(connection))
+              .isInstanceOf(IllegalStateException.class);
+        } finally {
+          statement.execute("ALTER TABLE " + table + " FORCE ROW LEVEL SECURITY");
+        }
+      }
+      statement.execute("ALTER TABLE role RENAME TO unavailable_role");
+      try (Connection connection = runtime.getConnection()) {
+        assertThatThrownBy(() -> RuntimeDatabase.verify(connection))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("missing");
+      } finally {
+        statement.execute("ALTER TABLE unavailable_role RENAME TO role");
+      }
+      statement.execute("ALTER TABLE resource OWNER TO tenantshield_runtime");
+      try (Connection connection = runtime.getConnection()) {
+        assertThatThrownBy(() -> RuntimeDatabase.verify(connection))
+            .isInstanceOf(IllegalStateException.class);
+      } finally {
+        statement.execute("ALTER TABLE resource OWNER TO migration");
+        statement.execute("GRANT SELECT ON resource TO tenantshield_runtime");
+      }
+      statement.execute("CREATE ROLE guard_bypass_probe BYPASSRLS");
+      try {
+        statement.execute("GRANT guard_bypass_probe TO tenantshield_runtime");
+        try (Connection connection = runtime.getConnection()) {
+          assertThatThrownBy(() -> RuntimeDatabase.verify(connection))
+              .isInstanceOf(IllegalStateException.class)
+              .hasMessageContaining("assume");
+        } finally {
+          statement.execute("REVOKE guard_bypass_probe FROM tenantshield_runtime");
+        }
+      } finally {
+        statement.execute("DROP ROLE guard_bypass_probe");
+      }
+    }
+    try (Connection connection = runtime.getConnection()) {
+      RuntimeDatabase.verify(connection);
+    }
+    assertThat(decision("harbor", "doc-7", alice).body()).contains("ALLOW");
+  }
+
+  @Test
+  void commitAndRollbackFaultsPreservePrimaryConflictAndAtomicState() throws Exception {
+    SQLException primary = new SQLException("injected serialization failure", "40001");
+    SQLException rollbackFailure = new SQLException("injected rollback transport failure", "08006");
+    DataSource injected =
+        wrapConnections(
+            connection ->
+                (Connection)
+                    Proxy.newProxyInstance(
+                        Connection.class.getClassLoader(),
+                        new Class<?>[] {Connection.class},
+                        (proxy, method, arguments) -> {
+                          if (method.getName().equals("commit")) throw primary;
+                          if (method.getName().equals("rollback")) {
+                            jdbc(method, connection, arguments);
+                            throw rollbackFailure;
+                          }
+                          return jdbc(method, connection, arguments);
+                        }));
+    PolicyStore failing = new PolicyStore(injected);
+    long before = auditCount("membership:update");
+    var snapshot =
+        store
+            .decide("harbor", principal("admin"), "document:read", "doc-7", this::evaluate)
+            .snapshot();
+    Throwable failure =
+        catchThrowable(
+            () ->
+                failing.membership(
+                    "harbor",
+                    principal("admin"),
+                    principal("alice"),
+                    new PolicyStore.Membership(
+                        Set.of("reader"), "support", 3L, false, false, false)));
+    assertThat(failure).isInstanceOf(PolicyStore.Conflict.class).hasCause(primary);
+    assertThat(primary.getSuppressed()).containsExactly(rollbackFailure);
+    assertThat(auditCount("membership:update")).isEqualTo(before);
+    var after =
+        store.decide("harbor", principal("alice"), "document:read", "doc-7", this::evaluate);
+    assertThat(after.snapshot().epoch()).isEqualTo(snapshot.epoch());
+    assertThat(after.decision().allowed()).isTrue();
+  }
+
+  @Test
+  void setupErrorsCallbackErrorsAndNestedCallsAlwaysRollbackAndRelease() throws Exception {
+    AtomicInteger rollbacks = new AtomicInteger(),
+        commits = new AtomicInteger(),
+        connections = new AtomicInteger(),
+        closes = new AtomicInteger();
+    SQLException setup = new SQLException("injected tenant-context failure", "08006");
+    DataSource setupFailure =
+        wrapConnections(
+            connection ->
+                (Connection)
+                    Proxy.newProxyInstance(
+                        Connection.class.getClassLoader(),
+                        new Class<?>[] {Connection.class},
+                        (proxy, method, arguments) -> {
+                          if (method.getName().equals("prepareStatement")
+                              && arguments[0].toString().contains("set_config")) throw setup;
+                          if (method.getName().equals("rollback")) rollbacks.incrementAndGet();
+                          return jdbc(method, connection, arguments);
+                        }));
+    assertThatThrownBy(
+            () ->
+                new PolicyStore(setupFailure)
+                    .simulate("harbor", principal("admin"), member -> true))
+        .isInstanceOf(PolicyStore.StoreFailure.class)
+        .hasCause(setup);
+    assertThat(rollbacks).hasValue(1);
+    DataSource observed =
+        wrapConnections(
+            connection -> {
+              connections.incrementAndGet();
+              return (Connection)
+                  Proxy.newProxyInstance(
+                      Connection.class.getClassLoader(),
+                      new Class<?>[] {Connection.class},
+                      (proxy, method, arguments) -> {
+                        if (method.getName().equals("rollback")) rollbacks.incrementAndGet();
+                        if (method.getName().equals("commit")) commits.incrementAndGet();
+                        if (method.getName().equals("close")) closes.incrementAndGet();
+                        return jdbc(method, connection, arguments);
+                      });
+            });
+    PolicyStore checked = new PolicyStore(observed);
+    AssertionError callback = new AssertionError("injected callback failure");
+    assertThatThrownBy(
+            () ->
+                checked.simulate(
+                    "harbor",
+                    principal("admin"),
+                    member -> {
+                      throw callback;
+                    }))
+        .isSameAs(callback);
+    assertThatThrownBy(
+            () ->
+                checked.simulate(
+                    "harbor",
+                    principal("admin"),
+                    member -> checked.simulate("orchard", principal("admin"), other -> true)))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("nested");
+    assertThat(connections).hasValue(2);
+    assertThat(commits).hasValue(0);
+    assertThat(rollbacks).hasValue(3);
+    assertThat(checked.simulate("harbor", principal("admin"), PolicyStore.Membership::active))
+        .isTrue();
+    assertThat(connections).hasValue(3);
+    assertThat(closes).hasValue(3);
+    assertThat(commits).hasValue(1);
+  }
+
+  @Test
+  void storeMembershipBoundaryCannotBeBypassedByAnEvaluatorCallback() {
+    AtomicInteger evaluations = new AtomicInteger();
+    var outcome =
+        store.decide(
+            "orchard",
+            principal("alice"),
+            "document:read",
+            "doc-7",
+            snapshot -> {
+              evaluations.incrementAndGet();
+              return new PolicyEngine.Decision(
+                  true, "MATCHED_ALLOW", List.of("untrusted-evaluator"));
+            });
+    assertThat(outcome.decision().allowed()).isFalse();
+    assertThat(outcome.decision().reason()).isEqualTo("NO_MEMBERSHIP");
+    assertThat(outcome.snapshot().epoch()).isZero();
+    assertThat(outcome.snapshot().policy()).isNull();
+    assertThat(outcome.snapshot().resource()).isNull();
+    assertThat(evaluations).hasValue(0);
+    assertThat(store.audits("orchard", principal("admin")))
+        .anySatisfy(
+            audit -> {
+              assertThat(audit.id()).isEqualTo(outcome.id());
+              assertThat(audit.result()).isEqualTo("DENY");
+            });
+  }
+
+  @Test
+  void storedPolicyAndAttributeCorruptionReturnUnavailableAndRecoverAfterRepair() throws Exception {
+    PolicyStore.Revision revision =
+        store
+            .decide("harbor", principal("admin"), "document:read", "doc-7", this::evaluate)
+            .snapshot()
+            .policy();
+    DecisionController controller = app.getBean(DecisionController.class);
+    long before = auditCount("document:read");
+    try (Connection owner = owner();
+        Statement statement = owner.createStatement()) {
+      statement.execute("ALTER TABLE policy_version DISABLE TRIGGER immutable_version");
+      try {
+        try (var update =
+            owner.prepareStatement(
+                "UPDATE policy_version SET content=? WHERE tenant_id='harbor' AND version=?")) {
+          update.setString(1, "not-json");
+          update.setLong(2, revision.version());
+          update.executeUpdate();
+          controller.evict();
+          assertThat(decision("harbor", "doc-7", alice).statusCode()).isEqualTo(503);
+          assertThat(auditCount("document:read")).isEqualTo(before);
+          update.setString(1, revision.content());
+          update.executeUpdate();
+        }
+      } finally {
+        try (var restore =
+            owner.prepareStatement(
+                "UPDATE policy_version SET content=? WHERE tenant_id='harbor' AND version=?")) {
+          restore.setString(1, revision.content());
+          restore.setLong(2, revision.version());
+          restore.executeUpdate();
+        }
+        statement.execute("ALTER TABLE policy_version ENABLE TRIGGER immutable_version");
+        controller.evict();
+      }
+      assertThat(decision("harbor", "doc-7", alice).body()).contains("ALLOW");
+      try (var update =
+          owner.prepareStatement(
+              "UPDATE membership SET department=? WHERE tenant_id='harbor' AND subject_id='alice'")) {
+        update.setString(1, new String(Character.toChars(0x1F600)).repeat(200));
+        update.executeUpdate();
+        try {
+          assertThat(decision("harbor", "doc-7", alice).statusCode()).isEqualTo(503);
+        } finally {
+          update.setString(1, "support");
+          update.executeUpdate();
+        }
+      }
+      assertThat(decision("harbor", "doc-7", alice).body()).contains("ALLOW");
+      statement.executeUpdate(
+          "UPDATE membership SET roles=ARRAY['reader',NULL] WHERE tenant_id='harbor' AND subject_id='alice'");
+      try {
+        assertThat(decision("harbor", "doc-7", alice).statusCode()).isEqualTo(503);
+      } finally {
+        statement.executeUpdate(
+            "UPDATE membership SET roles=ARRAY['reader','reader'] WHERE tenant_id='harbor' AND subject_id='alice'");
+      }
+      try {
+        assertThat(decision("harbor", "doc-7", alice).body()).contains("ALLOW");
+      } finally {
+        statement.executeUpdate(
+            "UPDATE membership SET roles=ARRAY['reader'] WHERE tenant_id='harbor' AND subject_id='alice'");
+      }
+    }
+  }
+
+  private Connection owner() throws SQLException {
+    return DriverManager.getConnection(db.getJdbcUrl(), db.getUsername(), db.getPassword());
+  }
+
+  private long auditCount(String action) throws SQLException {
+    try (Connection connection = owner();
+        var statement =
+            connection.prepareStatement(
+                "SELECT count(*) FROM audit WHERE tenant_id='harbor' AND action=?")) {
+      statement.setString(1, action);
+      try (var result = statement.executeQuery()) {
+        result.next();
+        return result.getLong(1);
+      }
+    }
+  }
+
+  private DataSource wrapConnections(Function<Connection, Connection> wrapper) {
+    return (DataSource)
+        Proxy.newProxyInstance(
+            DataSource.class.getClassLoader(),
+            new Class<?>[] {DataSource.class},
+            (proxy, method, arguments) ->
+                method.getName().equals("getConnection") && method.getParameterCount() == 0
+                    ? wrapper.apply(runtime.getConnection())
+                    : jdbc(method, runtime, arguments));
+  }
+
+  private static Object jdbc(Method method, Object target, Object[] arguments) throws Throwable {
+    try {
+      return method.invoke(target, arguments);
+    } catch (InvocationTargetException invocation) {
+      throw invocation.getCause();
+    }
   }
 
   @AfterAll

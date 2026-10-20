@@ -114,7 +114,10 @@ public final class PolicyLanguage {
           (k, v) -> {
             Type t = FIELDS.get(k);
             if (t == null
-                || !(t == Type.STRING && v instanceof String s && s.length() <= MAX_STRING
+                || !(t == Type.STRING
+                        && v instanceof String s
+                        && s.length() <= MAX_STRING
+                        && unicode(s)
                     || t == Type.INTEGER && v instanceof Long
                     || t == Type.BOOLEAN && v instanceof Boolean
                     || t == Type.ENUM && v instanceof Label))
@@ -130,6 +133,17 @@ public final class PolicyLanguage {
   }
 
   private PolicyLanguage() {}
+
+  private static boolean unicode(CharSequence value) {
+    for (int index = 0; index < value.length(); index++) {
+      char current = value.charAt(index);
+      if (Character.isHighSurrogate(current)) {
+        if (++index >= value.length() || !Character.isLowSurrogate(value.charAt(index)))
+          return false;
+      } else if (Character.isLowSurrogate(current)) return false;
+    }
+    return true;
+  }
 
   public static Expr compile(String text) {
     if (text == null || text.getBytes(StandardCharsets.UTF_8).length > MAX_BYTES)
@@ -228,6 +242,7 @@ public final class PolicyLanguage {
             if (b.length() > MAX_STRING) throw error("literal length");
           }
           if (!closed) throw error("unterminated string");
+          if (!unicode(b)) throw error("invalid Unicode scalar value");
           tokens.add(new Token(b.toString(), true));
         } else if (Character.isLetter(c) || c == '_' || Character.isDigit(c) || c == '-') {
           int start = n++;

@@ -117,6 +117,27 @@ class RequestBoundsTest {
     assertThat(bounds.tenantStats("harbor").get("rejections")).isEqualTo(1);
   }
 
+  @Test
+  void downstreamFailuresReleaseOwnedAdmissionLeases() throws Exception {
+    RequestBounds bounds = new RequestBounds();
+    for (int index = 0; index < 100; index++) {
+      assertThatThrownBy(
+              () ->
+                  bounds.doFilter(
+                      request(),
+                      new MockHttpServletResponse(),
+                      (request, response) -> {
+                        throw new jakarta.servlet.ServletException("downstream fault");
+                      }))
+          .isInstanceOf(jakarta.servlet.ServletException.class);
+    }
+    MockHttpServletResponse response = new MockHttpServletResponse();
+    AtomicBoolean called = new AtomicBoolean();
+    bounds.doFilter(request(), response, (request, result) -> called.set(true));
+    assertThat(called).isTrue();
+    assertThat(response.getStatus()).isEqualTo(200);
+  }
+
   static MockHttpServletRequest request() {
     MockHttpServletRequest r = new MockHttpServletRequest();
     r.setMethod("POST");

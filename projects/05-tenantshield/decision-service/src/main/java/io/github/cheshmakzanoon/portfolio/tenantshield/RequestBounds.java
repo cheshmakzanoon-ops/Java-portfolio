@@ -1,38 +1,14 @@
 package io.github.cheshmakzanoon.portfolio.tenantshield;
 
-import com.github.benmanes.caffeine.cache.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
-import java.time.Duration;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class RequestBounds extends OncePerRequestFilter {
-  private final Semaphore permits = new Semaphore(64);
-  private final AtomicInteger inFlight = new AtomicInteger(), maximum = new AtomicInteger();
-  private final Cache<String, Bucket> quotas =
-      Caffeine.newBuilder().maximumSize(1000).expireAfterAccess(Duration.ofMinutes(5)).build();
-
-  private static final class Bucket {
-    long second;
-    int count;
-    final AtomicInteger inFlight = new AtomicInteger(),
-        maximum = new AtomicInteger(),
-        rejected = new AtomicInteger();
-
-    synchronized boolean take() {
-      long now = System.nanoTime() / 1_000_000_000L;
-      if (now != second) {
-        second = now;
-        count = 0;
-      }
-      return ++count <= 5000;
-    }
-  }
+  private final TenantAdmission admission = new TenantAdmission();
 
   @Override
   protected void doFilterInternal(
@@ -55,17 +31,12 @@ public class RequestBounds extends OncePerRequestFilter {
         return;
       }
     }
-    Bucket bucket = quotas.get(tenant, k -> new Bucket());
-    if (!bucket.take() || !permits.tryAcquire()) {
-      bucket.rejected.incrementAndGet();
+    TenantAdmission.Lease lease = admission.acquire(tenant);
+    if (lease == null) {
       error(response, 429, "authorization capacity exceeded");
       return;
     }
-    int tenantActive = bucket.inFlight.incrementAndGet();
-    bucket.maximum.accumulateAndGet(tenantActive, Math::max);
-    int active = inFlight.incrementAndGet();
-    maximum.accumulateAndGet(active, Math::max);
-    try {
+    try (lease) {
       byte[] body = request.getInputStream().readNBytes(262145);
       if (body.length > 262144) {
         error(response, 413, "request body limit");
@@ -106,10 +77,6 @@ public class RequestBounds extends OncePerRequestFilter {
             }
           };
       chain.doFilter(bounded, response);
-    } finally {
-      bucket.inFlight.decrementAndGet();
-      inFlight.decrementAndGet();
-      permits.release();
     }
   }
 
@@ -122,13 +89,10 @@ public class RequestBounds extends OncePerRequestFilter {
   }
 
   public java.util.Map<String, Integer> tenantStats(String tenant) {
-    Bucket b = quotas.getIfPresent(tenant);
-    return b == null
-        ? java.util.Map.of("maximumInFlight", 0, "rejections", 0)
-        : java.util.Map.of("maximumInFlight", b.maximum.get(), "rejections", b.rejected.get());
+    return admission.stats(tenant);
   }
 
   public int maximumInFlight() {
-    return maximum.get();
+    return admission.maximumInFlight();
   }
 }

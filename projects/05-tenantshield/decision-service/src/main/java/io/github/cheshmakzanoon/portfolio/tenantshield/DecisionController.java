@@ -1,6 +1,5 @@
 package io.github.cheshmakzanoon.portfolio.tenantshield;
 
-import com.github.benmanes.caffeine.cache.*;
 import java.util.*;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,18 +43,18 @@ public class DecisionController {
 
   public record Simulation(PolicyEngine.Definition policy, Example example) {}
 
-  private record Key(String tenant, long version, String digest) {}
-
   private final RequestBounds bounds;
   private final PolicyStore store;
   private final ObjectMapper mapper;
-  private final Cache<Key, PolicyEngine.Compiled> cache =
-      Caffeine.newBuilder().maximumSize(500).recordStats().build();
+  private final CompiledPolicies policies;
+  private final SnapshotAuthorization authorization;
 
   public DecisionController(PolicyStore store, ObjectMapper mapper, RequestBounds bounds) {
     this.bounds = bounds;
     this.store = store;
     this.mapper = mapper;
+    this.policies = new CompiledPolicies(mapper);
+    this.authorization = new SnapshotAuthorization(policies);
   }
 
   private PolicyStore.Principal principal(Jwt jwt) {
@@ -65,44 +64,16 @@ public class DecisionController {
   @PostMapping("/decisions")
   public Response decide(
       @PathVariable String tenant, @AuthenticationPrincipal Jwt jwt, @RequestBody Request request) {
-    validate(request);
+    SnapshotAuthorization.Context context = validate(request);
     PolicyStore.Outcome o =
         store.decide(
             tenant,
             principal(jwt),
             request.action(),
             request.resource().id(),
-            s -> {
-              if (s.membership() == null || !s.membership().active())
-                return denied("NO_MEMBERSHIP");
-              if (s.resource() == null || !s.resource().type().equals(request.resource().type()))
-                return denied("RESOURCE_NOT_FOUND");
-              if (s.policy() == null) return denied("NO_ACTIVE_POLICY");
-              Map<String, Object> fields = new HashMap<>();
-              put(fields, "subject.department", s.membership().department());
-              put(fields, "subject.clearance", s.membership().clearance());
-              put(fields, "subject.suspended", s.membership().suspended());
-              put(fields, "resource.department", s.resource().department());
-              put(fields, "resource.classification", s.resource().classification());
-              put(fields, "resource.type", s.resource().type());
-              if (s.resource().classification() != null)
-                put(
-                    fields,
-                    "resource.sensitivity",
-                    s.resource().classification() <= 0
-                        ? PolicyLanguage.Label.PUBLIC
-                        : s.resource().classification() == 1
-                            ? PolicyLanguage.Label.INTERNAL
-                            : PolicyLanguage.Label.CONFIDENTIAL);
-              put(fields, "resource.id", s.resource().id());
-              context(request.context()).forEach(fields::put);
-              return PolicyEngine.decide(
-                  compiled(tenant, s.policy()),
-                  s.membership().roles(),
-                  request.action(),
-                  request.resource().type(),
-                  fields);
-            });
+            s ->
+                authorization.decide(
+                    tenant, s, request.action(), request.resource().type(), context));
     return new Response(
         o.decision().allowed() ? "ALLOW" : "DENY",
         o.decision().reason(),
@@ -113,30 +84,7 @@ public class DecisionController {
         o.id());
   }
 
-  private static PolicyEngine.Decision denied(String reason) {
-    return new PolicyEngine.Decision(false, reason, List.of());
-  }
-
-  private static void put(Map<String, Object> fields, String k, Object v) {
-    if (v != null) fields.put(k, v);
-  }
-
-  private static Map<String, Object> context(Map<String, Object> input) {
-    Map<String, Object> out = new HashMap<>();
-    if (input == null) return out;
-    if (input.size() > 2) throw new IllegalArgumentException("context limits");
-    input.forEach(
-        (k, v) -> {
-          if (k.equals("purpose") && v instanceof String s && s.length() <= 256)
-            out.put("context.purpose", s);
-          else if (k.equals("hour") && (v instanceof Integer || v instanceof Long))
-            out.put("context.hour", ((Number) v).longValue());
-          else throw new IllegalArgumentException("unapproved context field/type");
-        });
-    return out;
-  }
-
-  private static void validate(Request r) {
+  private static SnapshotAuthorization.Context validate(Request r) {
     if (r == null
         || r.action() == null
         || !r.action().matches("[A-Za-z0-9:_-]{1,128}")
@@ -146,20 +94,11 @@ public class DecisionController {
         || r.resource().type() == null
         || !r.resource().type().matches("[A-Za-z0-9:_-]{1,128}"))
       throw new IllegalArgumentException("invalid decision request");
-    context(r.context());
+    return SnapshotAuthorization.Context.from(r.context());
   }
 
   private PolicyEngine.Compiled compiled(String tenant, PolicyStore.Revision revision) {
-    return cache.get(
-        new Key(tenant, revision.version(), revision.digest()),
-        k -> {
-          PolicyEngine.Compiled p =
-              PolicyEngine.compile(
-                  mapper.readValue(revision.content(), PolicyEngine.Definition.class));
-          if (!p.digest().equals(revision.digest()))
-            throw new IllegalStateException("immutable content digest mismatch");
-          return p;
-        });
+    return policies.resolve(tenant, revision);
   }
 
   @PostMapping("/policy-versions")
@@ -289,17 +228,17 @@ public class DecisionController {
                 "queryCount",
                 store.queryCount(tenant),
                 "cacheSize",
-                cache.asMap().keySet().stream().filter(k -> k.tenant().equals(tenant)).count(),
+                policies.size(tenant),
                 "requests",
                 bounds.tenantStats(tenant)));
   }
 
   public long cacheSize() {
-    return cache.estimatedSize();
+    return policies.size();
   }
 
   public void evict() {
-    cache.invalidateAll();
+    policies.invalidate();
   }
 
   @ExceptionHandler(PolicyStore.Forbidden.class)

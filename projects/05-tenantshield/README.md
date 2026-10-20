@@ -26,7 +26,9 @@ hasRole("reader")
   and subject.clearance >= resource.classification
 ```
 
-The route tenant is bound to the verified `(issuer, subject)` through current database membership. Subject and resource attributes are server-owned. A matching RBAC grant and a true ALLOW rule are both required. Explicit DENY takes precedence; an applicable unknown condition produces INDETERMINATE. Explanations include stable rule IDs and observed policy, resource, and tenant versions.
+The route tenant is bound to the verified `(issuer, subject)` through current database membership. Subject and resource attributes are server-owned. A matching RBAC grant and a true ALLOW rule are both required. Explicit DENY takes precedence; an applicable unknown condition produces INDETERMINATE. Explanations include stable rule IDs and observed policy, resource, and tenant versions. Compiler-owned immutable plans index both grants and conditions by action/resource type; the cache stores no membership or decision results.
+
+The document API accepts only a complete, strictly typed ALLOW response within explicit byte/time limits. A malformed response, corrupt stored policy or dependency failure refuses access. Runtime startup verifies the database role and RLS/FORCE RLS on all nine authorization tables.
 
 Each decision and its mandatory audit commit in one repeatable-read transaction. A snapshot established after a revocation commit must deny the revoked membership. An older snapshot may finish under its observed epoch. A remote authorization response does not make a subsequent resource write atomic with revocation.
 
@@ -36,10 +38,11 @@ Policy publication and rollback require one strong `If-Match` tag containing the
 
 ```bash
 ./mvnw -f projects/05-tenantshield/pom.xml -B -ntp verify
-./mvnw -f projects/05-tenantshield/pom.xml -B -ntp -Pintegration verify
+./mvnw -f projects/05-tenantshield/pom.xml -B -ntp -Pintegration,mutation verify
+python3 projects/05-tenantshield/scripts/test_process_lifecycle.py
 ```
 
-For the managed workspace, add `-Dmaven.repo.local=/workspace/Java-portfolio/.work/A05/m2`. Ordinary verification needs no Docker. Integration uses actual PostgreSQL and Keycloak; missing Docker is an error.
+For the managed workspace, add `-Dmaven.repo.local=/workspace/Java-portfolio/.work/A05/m2`. Ordinary verification needs no Docker. Integration uses actual PostgreSQL and Keycloak; missing Docker is an error. The mutation profile covers the policy engine, parser, evaluator and nested plan types at the unchanged 70% gate. Process tests exercise descendant cleanup and failed-startup resource ownership.
 
 The historical reference study includes three 100,000-request HTTP runs and separate JMH compilation/evaluation measurements. Throughput declined substantially between runs; it establishes neither stable capacity nor a production service-level objective. See [performance](docs/PERFORMANCE.md) for all repetitions and measurement boundaries.
 

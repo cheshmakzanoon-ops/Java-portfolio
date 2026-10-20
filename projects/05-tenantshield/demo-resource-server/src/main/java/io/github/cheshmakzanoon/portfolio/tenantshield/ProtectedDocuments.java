@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 
 @SpringBootApplication
 @RestController
@@ -39,23 +38,18 @@ public class ProtectedDocuments {
     SpringApplication.run(ProtectedDocuments.class, args);
   }
 
-  private final RestClient decisionClient;
+  private final DocumentAuthorization authorization;
 
   public ProtectedDocuments(Environment e) {
-    var transport =
-        new org.springframework.http.client.JdkClientHttpRequestFactory(
-            java.net.http.HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build());
-    transport.setReadTimeout(Duration.ofSeconds(5));
-    decisionClient =
-        RestClient.builder()
-            .baseUrl(e.getProperty("tenantshield.decision-url", "http://127.0.0.1:18500"))
-            .requestFactory(transport)
-            .build();
+    authorization =
+        new DocumentAuthorization(
+            e.getProperty("tenantshield.decision-url", "http://127.0.0.1:18500"));
   }
 
   @Bean
   JwtDecoder decoder(Environment e) {
     String issuer = e.getRequiredProperty("tenantshield.oidc.issuer");
+    String audience = e.getProperty("tenantshield.oidc.audience", "tenantshield");
     NimbusJwtDecoder d =
         NimbusJwtDecoder.withJwkSetUri(e.getRequiredProperty("tenantshield.oidc.jwks"))
             .jwsAlgorithm(SignatureAlgorithm.RS256)
@@ -68,7 +62,7 @@ public class ProtectedDocuments {
                 jwt.getSubject() != null
                         && !jwt.getSubject().isBlank()
                         && jwt.getAudience() != null
-                        && jwt.getAudience().contains("tenantshield")
+                        && jwt.getAudience().contains(audience)
                         && jwt.getExpiresAt() != null
                         && jwt.getIssuedAt() != null
                         && !jwt.getIssuedAt().isAfter(Instant.now())
@@ -117,22 +111,9 @@ public class ProtectedDocuments {
     if (!tenant.matches("[A-Za-z0-9_-]{1,128}") || !id.matches("[A-Za-z0-9:_-]{1,128}"))
       return problem(400, "invalid document reference");
     try {
-      Map<?, ?> decision =
-          decisionClient
-              .post()
-              .uri("/v1/tenants/{tenant}/decisions", tenant)
-              .header("Authorization", "Bearer " + jwt.getTokenValue())
-              .body(
-                  Map.of(
-                      "action",
-                      "document:read",
-                      "resource",
-                      Map.of("type", "document", "id", id),
-                      "context",
-                      Map.of("purpose", "support")))
-              .retrieve()
-              .body(Map.class);
-      if (decision != null && "ALLOW".equals(decision.get("decision")))
+      DocumentAuthorization.Decision decision =
+          authorization.decide(tenant, id, jwt.getTokenValue());
+      if (decision.allowed())
         return ResponseEntity.ok(
             Map.of("id", id, "content", "Synthetic portfolio document", "authorization", decision));
       return problem(403, "document access denied");

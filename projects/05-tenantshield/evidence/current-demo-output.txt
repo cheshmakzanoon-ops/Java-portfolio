@@ -1,0 +1,21 @@
+PASS membership mutation (True, False)
+PASS harbor active version read
+PASS harbor typed draft and regressions
+PASS harbor expected-version publication
+PASS orchard active version read
+PASS orchard typed draft and regressions
+PASS orchard expected-version publication
+PASS harbor/doc-7 ALLOW
+PASS orchard/doc-7 DENY NO_MEMBERSHIP
+PASS harbor/doc-other DENY NO_ABAC_ALLOW
+PASS harbor/doc-missing DENY INDETERMINATE
+PASS membership mutation (True, True)
+PASS harbor/doc-7 DENY EXPLICIT_DENY
+PASS membership mutation (True, False)
+PASS harbor/doc-7 ALLOW
+PASS protected resource allows fresh authorized request
+PASS membership mutation (False, False)
+PASS harbor/doc-7 DENY NO_MEMBERSHIP
+PASS revocation epoch exceeds warmed-cache decision
+PASS authorized redacted audit contains revocation epoch
+PASS protected resource refuses revoked principal

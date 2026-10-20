@@ -9,6 +9,92 @@ import org.junit.jupiter.api.Test;
 
 class PolicyEngineTest {
   @Test
+  void compiledPlansOwnDerivedStateAndRejectForgedIndexes() {
+    Compiled original = compile(definition(List.of(allow("true"))));
+    Map<String, Set<String>> closure = new HashMap<>();
+    original.closure().forEach((role, ancestors) -> closure.put(role, new HashSet<>(ancestors)));
+    Map<String, List<Candidate>> index = new HashMap<>();
+    original.index().forEach((scope, candidates) -> index.put(scope, new ArrayList<>(candidates)));
+    Compiled copied = new Compiled(original.definition(), closure, index, original.digest());
+    closure.get("reader").clear();
+    index.values().forEach(List::clear);
+    assertThat(copied).isEqualTo(original).hasSameHashCodeAs(original);
+    assertThat(copied).isNotEqualTo(compile(definition(List.of(allow("false")))));
+    assertThat(copied.equals(null)).isFalse();
+    assertThat(copied.equals(original.definition())).isFalse();
+    assertThat(copied.toString()).contains(original.digest());
+    assertThat(decide(copied, Set.of("reader"), "document:read", "document", Map.of()).allowed())
+        .isTrue();
+    assertThatThrownBy(() -> copied.closure().get("reader").clear())
+        .isInstanceOf(UnsupportedOperationException.class);
+    assertThatThrownBy(() -> copied.index().values().iterator().next().clear())
+        .isInstanceOf(UnsupportedOperationException.class);
+    assertThatThrownBy(
+            () -> new Compiled(original.definition(), closure, original.index(), original.digest()))
+        .isInstanceOf(InvalidPolicy.class);
+    assertThatThrownBy(
+            () -> new Compiled(original.definition(), original.closure(), index, original.digest()))
+        .isInstanceOf(InvalidPolicy.class);
+    assertThatThrownBy(
+            () ->
+                new Compiled(
+                    original.definition(), original.closure(), original.index(), "0".repeat(64)))
+        .isInstanceOf(InvalidPolicy.class);
+  }
+
+  @Test
+  void grantScopesCannotCrossActionsResourceTypesOrAssignedRoles() {
+    Definition policy =
+        new Definition(
+            Map.of("reader", Set.of(), "editor", Set.of("reader"), "auditor", Set.of()),
+            List.of(
+                new Grant("reader", "read", "document"),
+                new Grant("editor", "write", "document"),
+                new Grant("auditor", "read", "report")),
+            List.of(
+                new Rule("read", "read", "document", Effect.ALLOW, "true"),
+                new Rule("write", "write", "document", Effect.ALLOW, "true"),
+                new Rule("report", "read", "report", Effect.ALLOW, "true"),
+                new Rule("ungranted", "delete", "report", Effect.ALLOW, "true")));
+    Compiled compiled = compile(policy);
+    for (Set<String> roles :
+        List.of(
+            Set.<String>of(),
+            Set.of("reader"),
+            Set.of("editor"),
+            Set.of("auditor"),
+            Set.of("unknown")))
+      for (String action : List.of("read", "write", "delete"))
+        for (String type : List.of("document", "report", "unknown"))
+          assertThat(decide(compiled, roles, action, type, Map.of()))
+              .isEqualTo(ReferenceInterpreter.decide(policy, roles, action, type, Map.of()));
+  }
+
+  @Test
+  void malformedUnicodeCannotCollapseDistinctPolicyDigests() {
+    for (String malformed : List.of("\ud800", "\udc00", "x\ud800y")) {
+      assertThatThrownBy(
+              () ->
+                  compile(
+                      definition(List.of(allow("subject.department == \"" + malformed + "\"")))))
+          .isInstanceOf(InvalidPolicy.class)
+          .hasMessageContaining("Unicode");
+      assertThatThrownBy(() -> new Inputs(Map.of("subject.department", malformed), Set.of()))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+    String supplementary = new String(Character.toChars(0x1F600));
+    assertThat(
+            evaluate(
+                PolicyLanguage.compile("subject.department == \"" + supplementary + "\""),
+                new Inputs(Map.of("subject.department", supplementary), Set.of())))
+        .isEqualTo(Truth.TRUE);
+    assertThat(
+            compile(definition(List.of(allow("subject.department == \"" + supplementary + "\""))))
+                .digest())
+        .isNotEqualTo(compile(definition(List.of(allow("subject.department == \"?\"")))).digest());
+  }
+
+  @Test
   void publicationRejectsInvalidIdentifiersAndHonorsInclusiveCollectionBounds() {
     Map<String, Set<String>> roles = new TreeMap<>();
     for (int n = 0; n < 100; n++) roles.put("role" + n, Set.of());
@@ -323,6 +409,97 @@ class PolicyEngineTest {
                   new Inputs(Map.of("resource.department", "a"), Set.of())))
           .as(text)
           .isEqualTo(Truth.TRUE);
+  }
+
+  @Test
+  void languageBudgetsAcceptTheirBoundaryAndRejectTheNextValue() {
+    Inputs empty = new Inputs(Map.of(), Set.of());
+    String bytes = "true" + " ".repeat(MAX_BYTES - 4);
+    assertThat(evaluate(PolicyLanguage.compile(bytes), empty)).isEqualTo(Truth.TRUE);
+    assertThatThrownBy(() -> PolicyLanguage.compile(bytes + " "))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("byte limit");
+
+    String value = "x".repeat(MAX_STRING);
+    String literal = "subject.department == \"" + value + "\"";
+    assertThat(
+            evaluate(
+                PolicyLanguage.compile(literal),
+                new Inputs(Map.of("subject.department", value), Set.of())))
+        .isEqualTo(Truth.TRUE);
+    assertThatThrownBy(() -> new Inputs(Map.of("subject.department", value + "x"), Set.of()))
+        .isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> PolicyLanguage.compile("\"" + value + "x\" == \"x\""))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("literal length");
+    assertThat(evaluate(PolicyLanguage.compile("\" \" == \" \""), empty)).isEqualTo(Truth.TRUE);
+    assertThatThrownBy(() -> PolicyLanguage.compile("\"" + (char) 31 + "\" == \" \""))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("control character");
+    assertThatThrownBy(() -> PolicyLanguage.compile("\"unterminated" + '\\'))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("unterminated escape");
+
+    String set = "subject.clearance in [" + "1,".repeat(MAX_SET - 1) + "1]";
+    assertThat(
+            evaluate(
+                PolicyLanguage.compile(set), new Inputs(Map.of("subject.clearance", 1L), Set.of())))
+        .isEqualTo(Truth.TRUE);
+    assertThatThrownBy(() -> PolicyLanguage.compile(set.replace("]", ",1]")))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("set limit");
+
+    String nodes = "not true" + " and true".repeat(MAX_NODES / 2 - 1);
+    assertThat(evaluate(PolicyLanguage.compile(nodes), empty)).isEqualTo(Truth.FALSE);
+    assertThatThrownBy(() -> PolicyLanguage.compile("not " + nodes))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("AST node limit");
+    String depth = "not ".repeat(MAX_DEPTH - 1) + "true";
+    assertThat(evaluate(PolicyLanguage.compile(depth), empty)).isEqualTo(Truth.FALSE);
+    assertThatThrownBy(() -> PolicyLanguage.compile("not " + depth))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("nesting limit");
+    assertThatThrownBy(
+            () ->
+                PolicyLanguage.compile(
+                    "false or (".repeat(MAX_DEPTH) + "true" + ")".repeat(MAX_DEPTH)))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("nesting limit");
+  }
+
+  @Test
+  void everyLogicalOperandMustBeBoolean() {
+    for (String expression : List.of("2 and true", "true and 2", "2 or true", "true or 2"))
+      assertThatThrownBy(() -> PolicyLanguage.compile(expression))
+          .as(expression)
+          .isInstanceOf(InvalidPolicy.class)
+          .hasMessageContaining("boolean");
+  }
+
+  @Test
+  void orderedComparisonsDistinguishEqualityFromStrictOrder() {
+    for (long left : List.of(-1L, 0L, 1L))
+      for (long right : List.of(-1L, 0L, 1L))
+        for (String operator : List.of("<", "<=", ">", ">=", "==", "!=")) {
+          Expr expression = PolicyLanguage.compile(left + " " + operator + " " + right);
+          Object expected = ReferenceInterpreter.value(expression, new Inputs(Map.of(), Set.of()));
+          assertThat(evaluate(expression, new Inputs(Map.of(), Set.of())))
+              .as("%s %s %s", left, operator, right)
+              .isEqualTo(Boolean.TRUE.equals(expected) ? Truth.TRUE : Truth.FALSE);
+        }
+  }
+
+  @Test
+  void directExpressionEvaluationCannotExceedItsIndependentWorkBudget() {
+    Expr tree = new Literal(true, Type.BOOLEAN);
+    // Ten levels contain 1,023 nodes without a deep call stack.
+    for (int level = 0; level < 9; level++) tree = new Binary("and", tree, tree);
+    Expr boundary = new Negate(tree);
+    assertThat(evaluate(boundary, new Inputs(Map.of(), Set.of()))).isEqualTo(Truth.FALSE);
+    Expr excessive = new Negate(boundary);
+    assertThatThrownBy(() -> evaluate(excessive, new Inputs(Map.of(), Set.of())))
+        .isInstanceOf(InvalidPolicy.class)
+        .hasMessageContaining("evaluation budget");
   }
 
   @Test

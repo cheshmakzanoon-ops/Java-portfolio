@@ -37,31 +37,107 @@ public final class PolicyEngine {
     }
   }
 
-  public record Compiled(
+  private record Scope(String action, String resourceType) {}
+
+  private record Plan(
       Definition definition,
       Map<String, Set<String>> closure,
       Map<String, List<Candidate>> index,
-      String digest) {
+      String digest,
+      Map<Scope, Set<String>> grants) {}
+
+  public static final class Compiled {
+    private final Plan plan;
+
+    private Compiled(Plan plan) {
+      this.plan = plan;
+    }
+
+    /** Retains the existing construction API, but never trusts caller-provided derived state. */
+    public Compiled(
+        Definition definition,
+        Map<String, Set<String>> closure,
+        Map<String, List<Candidate>> index,
+        String digest) {
+      this(plan(definition));
+      if (!plan.closure().equals(closure)
+          || !plan.index().equals(index)
+          || !plan.digest().equals(digest))
+        throw new InvalidPolicy("compiled state does not match its definition");
+    }
+
+    public Definition definition() {
+      return plan.definition();
+    }
+
+    public Map<String, Set<String>> closure() {
+      return plan.closure();
+    }
+
+    public Map<String, List<Candidate>> index() {
+      return plan.index();
+    }
+
+    public String digest() {
+      return plan.digest();
+    }
+
     public Set<String> roles(Set<String> assigned) {
       Set<String> all = new TreeSet<>();
-      for (String r : assigned) all.addAll(closure.getOrDefault(r, Set.of()));
+      for (String r : assigned) all.addAll(closure().getOrDefault(r, Set.of()));
       return Set.copyOf(all);
+    }
+
+    private boolean granted(Set<String> roles, String action, String resourceType) {
+      return plan.grants().getOrDefault(new Scope(action, resourceType), Set.of()).stream()
+          .anyMatch(roles::contains);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+      return other instanceof Compiled compiled && plan.equals(compiled.plan);
+    }
+
+    @Override
+    public int hashCode() {
+      return plan.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return "Compiled[definition="
+          + definition()
+          + ", closure="
+          + closure()
+          + ", index="
+          + index()
+          + ", digest="
+          + digest()
+          + "]";
     }
   }
 
   private PolicyEngine() {}
 
   public static Compiled compile(Definition d) {
+    return new Compiled(plan(d));
+  }
+
+  private static Plan plan(Definition d) {
     if (d.parents().size() > 100 || d.rules().size() > 200 || d.grants().size() > 2000)
       throw new InvalidPolicy("policy collection bounds");
     Map<String, Set<String>> closure = new TreeMap<>();
     for (String role : d.parents().keySet()) visit(role, d.parents(), closure, new HashSet<>());
     Set<Grant> uniqueGrants = new HashSet<>();
+    Map<Scope, Set<String>> grants = new HashMap<>();
     for (Grant g : d.grants()) {
       if (!uniqueGrants.add(g)) throw new InvalidPolicy("duplicate grant");
       identifier(g.action());
       identifier(g.resourceType());
       if (!closure.containsKey(g.role())) throw new InvalidPolicy("grant references unknown role");
+      grants
+          .computeIfAbsent(new Scope(g.action(), g.resourceType()), scope -> new TreeSet<>())
+          .add(g.role());
     }
     Map<String, List<Candidate>> index = new TreeMap<>();
     Set<String> ids = new HashSet<>();
@@ -87,14 +163,17 @@ public final class PolicyEngine {
             + "|"
             + d.rules().stream().map(r -> encoded(r.toString())).sorted().toList();
     try {
-      return new Compiled(
+      Map<Scope, Set<String>> frozenGrants = new HashMap<>();
+      grants.forEach((scope, roles) -> frozenGrants.put(scope, Set.copyOf(roles)));
+      return new Plan(
           d,
           Collections.unmodifiableMap(closure),
           Collections.unmodifiableMap(frozen),
           HexFormat.of()
               .formatHex(
                   MessageDigest.getInstance("SHA-256")
-                      .digest(canonical.getBytes(StandardCharsets.UTF_8))));
+                      .digest(canonical.getBytes(StandardCharsets.UTF_8))),
+          Map.copyOf(frozenGrants));
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalStateException(e);
     }
@@ -178,13 +257,7 @@ public final class PolicyEngine {
     }
     if (deny) return new Decision(false, "EXPLICIT_DENY", matched);
     if (unknown) return new Decision(false, "INDETERMINATE", matched);
-    boolean grant =
-        policy.definition().grants().stream()
-            .anyMatch(
-                g ->
-                    roles.contains(g.role())
-                        && g.action().equals(action)
-                        && g.resourceType().equals(resourceType));
+    boolean grant = policy.granted(roles, action, resourceType);
     return grant && allow
         ? new Decision(true, "MATCHED_ALLOW", matched)
         : new Decision(false, grant ? "NO_ABAC_ALLOW" : "NO_RBAC_GRANT", matched);

@@ -48,13 +48,8 @@ public class DecisionApplication {
     c.setValidationTimeout(2000);
     c.setConnectionInitSql("SET statement_timeout='5000'");
     HikariDataSource ds = new HikariDataSource(c);
-    try (var connection = ds.getConnection();
-        var s = connection.createStatement();
-        var r =
-            s.executeQuery(
-                "SELECT rolsuper,rolbypassrls,current_user=(SELECT tableowner FROM pg_tables WHERE schemaname='public' AND tablename='membership') FROM pg_roles WHERE rolname=current_user")) {
-      if (!r.next() || r.getBoolean(1) || r.getBoolean(2) || r.getBoolean(3))
-        throw new IllegalStateException("runtime role must not own tables or bypass RLS");
+    try (var connection = ds.getConnection()) {
+      RuntimeDatabase.verify(connection);
     } catch (java.sql.SQLException | RuntimeException ex) {
       ds.close();
       throw new IllegalStateException("runtime role validation failed", ex);

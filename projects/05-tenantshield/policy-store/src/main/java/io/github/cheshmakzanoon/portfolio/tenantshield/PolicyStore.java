@@ -57,7 +57,13 @@ public final class PolicyStore {
 
   public static class Forbidden extends RuntimeException {}
 
-  public static class Conflict extends RuntimeException {}
+  public static class Conflict extends RuntimeException {
+    public Conflict() {}
+
+    private Conflict(SQLException cause) {
+      super("authorization transaction conflicted", cause);
+    }
+  }
 
   private final DataSource dataSource;
   private final ThreadLocal<long[]> transactionQueries = new ThreadLocal<>();
@@ -94,19 +100,23 @@ public final class PolicyStore {
   private <T> T transaction(String tenant, boolean write, Work<T> work) {
     if (tenant == null || !tenant.matches("[A-Za-z0-9_-]{1,128}"))
       throw new IllegalArgumentException("invalid tenant");
+    if (transactionQueries.get() != null)
+      throw new IllegalStateException("nested authorization transactions are not supported");
     transactionQueries.set(new long[] {0});
     try (Connection c = dataSource.getConnection()) {
-      c.setAutoCommit(false);
-      c.setTransactionIsolation(
-          write ? Connection.TRANSACTION_SERIALIZABLE : Connection.TRANSACTION_REPEATABLE_READ);
-      try (PreparedStatement s =
-          prepare(
-              c,
-              "SELECT set_config('tenantshield.tenant', ?, true), set_config('statement_timeout','5000',true), set_config('lock_timeout','3000',true)")) {
-        s.setString(1, tenant);
-        s.execute();
-      }
+      boolean started = false;
       try {
+        c.setAutoCommit(false);
+        started = true;
+        c.setTransactionIsolation(
+            write ? Connection.TRANSACTION_SERIALIZABLE : Connection.TRANSACTION_REPEATABLE_READ);
+        try (PreparedStatement s =
+            prepare(
+                c,
+                "SELECT set_config('tenantshield.tenant', ?, true), set_config('statement_timeout','5000',true), set_config('lock_timeout','3000',true)")) {
+          s.setString(1, tenant);
+          s.execute();
+        }
         T result = work.run(c);
         c.commit();
         synchronized (tenantQueries) {
@@ -114,12 +124,18 @@ public final class PolicyStore {
             tenantQueries.merge(tenant, transactionQueries.get()[0], Long::sum);
         }
         return result;
-      } catch (SQLException | RuntimeException e) {
-        c.rollback();
+      } catch (SQLException | RuntimeException | Error e) {
+        if (started) {
+          try {
+            c.rollback();
+          } catch (SQLException | RuntimeException | Error rollback) {
+            e.addSuppressed(rollback);
+          }
+        }
         throw e;
       }
     } catch (SQLException e) {
-      if ("40001".equals(e.getSQLState())) throw new Conflict();
+      if ("40001".equals(e.getSQLState()) || "40P01".equals(e.getSQLState())) throw new Conflict(e);
       throw new StoreFailure(e);
     } finally {
       transactionQueries.remove();
@@ -150,13 +166,17 @@ public final class PolicyStore {
       s.setString(3, p.subject());
       try (ResultSet r = s.executeQuery()) {
         if (!r.next()) return null;
-        return new Membership(
-            Set.of((String[]) r.getArray(1).getArray()),
-            r.getString(2),
-            r.getObject(3, Long.class),
-            r.getObject(4, Boolean.class),
-            r.getBoolean(5),
-            r.getBoolean(6));
+        try {
+          return new Membership(
+              Set.copyOf(Arrays.asList((String[]) r.getArray(1).getArray())),
+              r.getString(2),
+              r.getObject(3, Long.class),
+              r.getObject(4, Boolean.class),
+              r.getBoolean(5),
+              r.getBoolean(6));
+        } catch (IllegalArgumentException | NullPointerException invalidStoredMembership) {
+          throw new IllegalStateException("stored membership is invalid", invalidStoredMembership);
+        }
       }
     }
   }
@@ -228,7 +248,10 @@ public final class PolicyStore {
                   m,
                   v == 0 ? null : revision(c, tenant, v),
                   m != null && m.active() ? resource(c, tenant, id) : null);
-          PolicyEngine.Decision d = evaluator.apply(snap);
+          PolicyEngine.Decision d =
+              m == null || !m.active()
+                  ? new PolicyEngine.Decision(false, "NO_MEMBERSHIP", List.of())
+                  : Objects.requireNonNull(evaluator.apply(snap), "authorization decision");
           UUID decisionId = UUID.randomUUID();
           audit(
               c,
