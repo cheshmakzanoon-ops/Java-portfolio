@@ -1,19 +1,23 @@
-# Scoped source and measurement review
+# Review scope and evidence
 
-A04 independently reviewed executable fingerprint `4bd439735ed2a4399ba8c0f9d7abfa3d28dcbec9bec81130d6472dfa27ea124d` against 27 passing methods, including nine real PostgreSQL/Keycloak tests under JUnit 6.1.3 and the 21-assertion protected demo. Both JWT paths, expected-prior atomic rollback, RR/NO KEY UPDATE, membership/resource snapshots, transaction-local RLS and immutable cache keys were inspected. Earlier missing-audience/subject and draft-only rollback findings are closed within that tested correctness/security scope. No new blocking source finding arose.
+## Current hardening
 
-Later image pins, artifact integrity and the JMH metadata repair changed source to `832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11` without production Java changes. Ordinary 18-method verification, eight actual integrity probes and JMH discovery passed. Failed quiet attempt 5 is preserved; successful quiet attempt 6 completed the full study. These are distinct evidence scopes, not a new integration rerun of every configuration spelling.
+Publication and rollback previously removed all quote characters from `If-Match` before parsing. That accepted malformed representations of a version and contradicted the documented strong-tag contract. Both operations now validate one canonical, quoted, nonnegative int64 version before database access. Regression tests cover malformed tags, weak tags, lists, wildcards, overflow, initial publication, the int64 boundary, and rollback content verification.
 
-## Measured-artifact packet ready
+The application JSON configuration rejects duplicate object keys and trailing documents in addition to unknown fields, numeric enums and lossy integer coercion. The configuration test loads the actual application properties and exercises the resulting Spring-managed mapper; it does not substitute a test-only parser configuration.
 
-Final independent measurement review is requested and has not yet been received. Review the envelope, CSV, JMH summary and artifact receipt under `evidence/reference-20261018/`, plus original `http-1..3.json`, `http-server-1..3.json`, `jmh.json` and `environment.json` one directory above. The envelope indexes 22 archived raw files, including all six JFR recordings. The owner verified their hashes/sizes, executable hashes, three full request/error/denial counts, rates/statistics and both JMH histogram means. Server summaries are the original FlightSummary output; analysis did not perform an independent event recount or Java profiling rerun.
+See [verification status](STATUS.md) for the checks executed against this revision. Historical benchmark identities below do not certify these later changes.
 
-Check the progressive slowdown, 23.32% sample CV and 38.10% first-to-third throughput decline. Fresh client JVMs shared the continuing server/database and growing audit history. Per-run percentiles, closed-loop coordinated omission, application prepared-statement counts, cache size 50 versus limit 500, periodic JVM CPU fractions, sampled allocation and GC-event durations all retain their specific boundaries. JMH measures separate in-memory components. No stable capacity, attributed slowdown, production SLA or optimization speedup is claimed.
+## Historical correctness review
 
-Clean-checkout reproduction, repository-wide/remote-CI gates and release approval remain coordinator work. This records actual scoped acknowledgments, not an unreceived final approval.
+The earlier source fingerprint `4bd439735ed2a4399ba8c0f9d7abfa3d28dcbec9bec81130d6472dfa27ea124d` was reviewed against 27 passing methods, including nine PostgreSQL/Keycloak integration tests under JUnit 6.1.3 and the 21-assertion protected demo. The scope included both JWT paths, atomic rollback with an expected prior version, repeatable-read snapshots, tenant epoch locks, membership binding, RLS, and immutable policy-cache keys. Earlier audience, subject-type, and draft-only rollback defects were closed within that scope.
 
-## A04 measured-artifact closure
+Later image pins, artifact verification, and JMH metadata extraction changed the recorded source fingerprint to `832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11` without changing production Java. Ordinary 18-method verification, eight artifact-integrity probes, and real JMH discovery passed. The first measurement attempt failed before JMH; the failure remains in `evidence/reference-attempt-5-failed.json`.
 
-A04 independently reproduced the reviewed19-file/730510-byte packet SHA584579ad789f89a231f64cc7d2dee2e4b46e87d4c11e4dcf3dce9bb74e10e263 and executable source832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11. All22 archived raw files/72,670,683bytes, six JFR hashes/70,931,991bytes, actual three JARs, eight source-evidence hashes and every published CSV/statistic matched. Three100k-request/20k-DENY/zero-error runs and both3-fork JMH histogram summaries agree with the raw evidence.
+## Historical measurement review
 
-Closure: PASS, no blocking finding in measured-artifact identity, arithmetic or claims. ThroughputCV23.316551% and first-to-third decline38.095545% remain disclosed; no stable capacity, causal slowdown or speedup claim is approved. No fresh JFR event recount was performed; sample/GC boundaries remain explicit. This closes the earlier measurement-review item only; clean-checkout, global/remote CI and final release approval remain separate. The reviewed packet identity refers to the pre-closure files; this note is subsequent review metadata.
+The review reproduced the 19-file, 730,510-byte packet with SHA-256 `584579ad789f89a231f64cc7d2dee2e4b46e87d4c11e4dcf3dce9bb74e10e263`. It checked 22 archived raw files, six JFR identities, three executable JARs, eight source-evidence hashes, and the published CSV and statistics. All three 100,000-request runs contained 20,000 denials and zero errors. Both three-fork JMH summaries agreed with the original results.
+
+No blocking finding remained in the packet's artifact identity, arithmetic, or stated claims. Throughput variation of 23.32% and a 38.10% first-to-third decline remain material limitations. No fresh JFR event recount was performed; sample allocation weights and GC-event durations retain their documented boundaries. The packet records one historical execution, not stable capacity, a causal explanation of the slowdown, a performance improvement, or production readiness.
+
+Clean-checkout reproduction, repository-wide checks, hosted CI, and release approval are separate from these scoped reviews. See [performance](PERFORMANCE.md) for the complete measurements and [status](STATUS.md) for current validation.

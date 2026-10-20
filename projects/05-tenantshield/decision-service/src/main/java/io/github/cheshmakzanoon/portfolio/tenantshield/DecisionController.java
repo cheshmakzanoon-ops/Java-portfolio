@@ -189,12 +189,7 @@ public class DecisionController {
       @PathVariable long version,
       @RequestHeader("If-Match") String prior,
       @AuthenticationPrincipal Jwt jwt) {
-    long expected;
-    try {
-      expected = Long.parseLong(prior.replace("\"", ""));
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("If-Match must quote active version; use 0 for initial");
-    }
+    long expected = expectedVersion(prior);
     return Map.of(
         "tenantEpoch",
         store.publish(tenant, principal(jwt), version, expected),
@@ -208,15 +203,20 @@ public class DecisionController {
       @PathVariable long version,
       @RequestHeader("If-Match") String prior,
       @AuthenticationPrincipal Jwt jwt) {
+    long expected = expectedVersion(prior);
     PolicyStore.Revision old = store.readForAdmin(tenant, principal(jwt), version);
     compiled(tenant, old);
-    long expected;
-    try {
-      expected = Long.parseLong(prior.replace("\"", ""));
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("invalid expected version");
-    }
     return store.rollback(tenant, principal(jwt), version, expected);
+  }
+
+  private static long expectedVersion(String value) {
+    if (value == null || !value.matches("\"(0|[1-9][0-9]{0,18})\""))
+      throw new IllegalArgumentException("If-Match must contain one quoted active version");
+    try {
+      return Long.parseLong(value, 1, value.length() - 1, 10);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("If-Match active version exceeds int64 range", e);
+    }
   }
 
   @PutMapping("/memberships/{subject}")

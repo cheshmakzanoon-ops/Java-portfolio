@@ -1,28 +1,48 @@
 # Architecture
 
+TenantShield separates authentication, authorization semantics, and persistence. Spring Security verifies identity; a dependency-free policy core evaluates explicit rules; PostgreSQL establishes the tenant and snapshot boundary.
+
 ```mermaid
 flowchart LR
-    OIDC[Local Keycloak / trusted OIDC] -->|signed RS256 JWT| Caller
-    Caller --> Protected[Document API :18501]
-    Protected -->|fresh decision per operation| Service[Decision API :18500]
-    Service -->|fixed JWKS, issuer, audience, times| OIDC
-    Service --> Store[JDBC repeatable-read snapshot]
-    Store --> DB[(PostgreSQL / runtime RLS role)]
-    Store --> Engine[Original policy compiler / indexed evaluator]
-    Engine --> Cache[Bounded immutable compiled AST cache]
-    Service -->|redacted mandatory audit / same transaction| DB
+    Caller -->|RS256 bearer token| Protected[Document API :18501]
+    Protected -->|fresh decision per read| Service[Decision API :18500]
+    Service -->|fixed issuer and JWKS| OIDC[Trusted Keycloak issuer]
+    Service --> Store[JDBC snapshot and mandatory audit]
+    Store --> DB[(PostgreSQL with RLS)]
+    Service --> Engine[Typed compiler and indexed evaluator]
+    Engine --> Cache[Immutable compiled-policy cache]
 ```
 
-The policy-core module has no Spring/JDBC dependency. It owns recursive descent, static types, strong Kleene truth tables, role closure, action/type indexing, explicit deny precedence and stable rule IDs. The store owns consistency, immutable revisions, RLS context, version-conflict checks and audit. The decision service owns trusted JWT validation and binding `(issuer,subject)` to current database membership, body/context bounds, quotas, caching and HTTP. The resource service trusts a fresh decision only for that operation and fails closed on dependency errors. Verification owns real PostgreSQL/Keycloak adversarial and concurrency tests, JMH and the authenticated load driver.
+## Responsibilities
 
-Each decision uses one REPEATABLE READ transaction. `set_config(...,true)` establishes transaction-local tenant scope, then epoch, membership, active immutable version and resource come from one snapshot. Audit must commit before an allow response. No allow-result cache exists. Compiled cache keys include tenant, version and content digest, maximum 500 entries. Cache eviction recompiles from database immutable content; it never substitutes another version or tenant. Publication cannot mutate an existing AST.
+| Module | Responsibility |
+| --- | --- |
+| `policy-core` | Bounded recursive-descent parser, static types, three-valued logic, role closure, candidate index and deterministic explanations |
+| `policy-store` | Transaction boundaries, RLS context, immutable revisions, expected-version publication, snapshots and audit |
+| `decision-service` | Verified principal binding, request validation, quotas, compiled-policy caching and HTTP responses |
+| `demo-resource-server` | A protected document endpoint that requires a fresh decision and refuses dependency failures |
+| `verification` | PostgreSQL/Keycloak integration tests, authenticated workload and separate component benchmarks |
 
-A policy revision contains its own role DAG. `editor -> reader` means the child editor inherits reader's roles and RBAC grants. Assigning reader does not confer editor. A rule applies solely by action and resource type before its boolean condition is evaluated. Applicable explicit TRUE deny wins; otherwise any applicable UNKNOWN/error yields INDETERMINATE; otherwise both an effective role grant and TRUE allow are required. No relevant rule means default deny. Condition iteration and matched IDs are lexically sorted by stable rule ID.
+## Decision transaction
 
-Administrative mutations run SERIALIZABLE, lock the tenant row first, then check current administrative membership in that transaction. Conflicts are explicit 409 responses; there is no uncontrolled retry. Drafts are compiled and their supplied regression examples checked before storage. The active pointer updates atomically under an expected prior active version. Version numbers are assigned monotonically under the tenant lock; publication may only increase the active version. Rollback copies the selected old contents into a new immutable version and publishes it within one expected-version transaction, incrementing the epoch. PostgreSQL triggers advance the tenant epoch for membership/resource/active-pointer changes, including direct maintenance writes.
+1. Validate the request, its typed context, and the signature-verified identity. Context cannot supply subject or resource attributes.
+2. Begin a repeatable-read transaction and set transaction-local tenant context. Read epoch, current membership, active policy, and resource attributes from that snapshot. Nonmembers cannot resolve resource or policy metadata.
+3. Retrieve the compiled policy by `(tenant, immutable version, content digest)`. The cache holds at most 500 immutable ASTs and never stores authorization results. A miss recompiles stored content and verifies its digest.
+4. Expand assigned roles, select rules by action/resource type, and evaluate conditions. A matching grant and true ALLOW are required. A true DENY wins; otherwise any applicable UNKNOWN produces INDETERMINATE. Explanations sort rule IDs lexically.
+5. Insert the redacted audit and commit before returning the decision. An audit or database failure cannot return ALLOW.
 
-RLS uses composite tenant keys/FKs on all protected tables and transaction-local context. The application validates that the runtime role is neither owner, superuser nor BYPASSRLS. Schema setup uses a separate migration role; migration credentials never enter the application processes. This prevents accidental missing tenant predicates and pooled session leakage. It does not protect against an attacker holding runtime SQL credentials who can set tenant context directly; SQL access is inside the trusted server boundary.
+`editor -> reader` means an editor inherits the reader role and its grants; the reverse does not hold. Missing attributes propagate UNKNOWN through comparisons and negation. `exists(field)` tests presence explicitly. No applicable rule means default deny.
 
-Snapshot-boundary guarantee: a snapshot established after revocation commits sees the new membership and higher epoch. An already established snapshot may finish under its prior epoch. The remote decision cannot make a later resource write atomic with revocation; an application needing that stronger guarantee must coordinate epoch checking in its resource transaction.
+## Publication and revocation
 
-Administrative epoch locking uses `FOR NO KEY UPDATE`: tenant identity remains stable, so writers need to exclude other epoch writers while allowing audit foreign-key `FOR KEY SHARE` checks. `FOR UPDATE` was experimentally shown to cause SQLSTATE 40001 for an older repeatable-read decision inserting its audit after an epoch writer committed. The weaker key-conflict mode does not weaken mutual exclusion between administrative writers or change the snapshot isolation contract. See CASE_STUDY and the exact observed integration checkpoint.
+Administrative mutations use serializable transactions and lock the tenant row before checking current administrative membership. Drafts are compiled and checked against supplied regression examples before storage. Publication requires one strong `If-Match` tag for the active version and atomically changes the pointer to a higher immutable version. Stale versions return 409; malformed tags return 400 before database access. Rollback copies old content into a newly numbered revision and publishes it in one transaction.
+
+Membership, resource, and active-pointer triggers advance a monotonic tenant epoch. Tenant writers use `FOR NO KEY UPDATE`: they exclude competing epoch writers while remaining compatible with audit foreign-key `FOR KEY SHARE` checks. An earlier `FOR UPDATE` implementation caused SQLSTATE 40001 when an old-snapshot decision attempted its mandatory audit after an epoch update; the integration regression preserves that schedule.
+
+A decision whose snapshot begins after revocation commits sees the revoked membership. An existing snapshot may finish under its earlier epoch. The remote response cannot make a later resource write atomic with policy changes; stronger enforcement requires coordinating an epoch check with the resource transaction.
+
+## Tenant boundary
+
+Composite tenant keys and foreign keys accompany RLS on protected tables. Tenant context is transaction-local, so commit or rollback clears it before a pooled connection is reused. Startup rejects a runtime role that owns the membership table, is a superuser, or bypasses RLS. Migrations use a separate privileged process.
+
+RLS limits accidental missing predicates and pool leakage. It does not protect against an attacker holding raw runtime SQL credentials who can set the tenant context directly. SQL access remains inside the trusted service boundary. See [security](SECURITY.md) for request limits, identity validation, audit privacy, and deployment exclusions.

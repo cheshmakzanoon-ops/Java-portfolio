@@ -207,6 +207,32 @@ class AuthorizationIT {
   }
 
   @Test
+  void ambiguousJsonAndPublicationPreconditionsReturnBadRequest() throws Exception {
+    String body =
+        "{\"action\":\"document:read\",\"resource\":{\"type\":\"document\",\"id\":\"doc-7\"}}";
+    for (String invalid :
+        List.of(
+            body.replace("\"action\":", "\"action\":\"document:write\",\"action\":"), body + " {}"))
+      assertThat(send("POST", "/v1/tenants/harbor/decisions", alice, invalid).statusCode())
+          .isEqualTo(400);
+    for (String operation : List.of("publish", "rollback"))
+      for (String header :
+          List.of("1\"2\"3", "W/\"1\"", "\"1\", \"2\"", "\"9223372036854775808\"")) {
+        HttpResponse<String> response =
+            http.send(
+                HttpRequest.newBuilder(
+                        URI.create(base + "/v1/tenants/harbor/policy-versions/1/" + operation))
+                    .header("Authorization", "Bearer " + admin)
+                    .header("If-Match", header)
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .timeout(Duration.ofSeconds(10))
+                    .build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertThat(response.statusCode()).as("%s with %s", operation, header).isEqualTo(400);
+      }
+  }
+
+  @Test
   void realOidcAndTenantBindingRejectAdversarialRequests() throws Exception {
     assertThat(json.readTree(decision("harbor", "doc-7", alice).body()).get("decision").asText())
         .isEqualTo("ALLOW");

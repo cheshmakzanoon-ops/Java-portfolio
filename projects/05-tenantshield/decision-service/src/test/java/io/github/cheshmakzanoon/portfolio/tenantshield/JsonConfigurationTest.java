@@ -44,7 +44,9 @@ class JsonConfigurationTest {
                   new String[] {
                     "{\"clearance\":3.9,\"classification\":\"PUBLIC\"}",
                     "{\"clearance\":3,\"classification\":0}",
-                    "{\"clearance\":3,\"classification\":\"PUBLIC\",\"subjectId\":\"admin\"}"
+                    "{\"clearance\":3,\"classification\":\"PUBLIC\",\"subjectId\":\"admin\"}",
+                    "{\"clearance\":0,\"clearance\":3,\"classification\":\"PUBLIC\"}",
+                    "{\"clearance\":3,\"classification\":\"PUBLIC\"} {}"
                   }) {
                 assertThatThrownBy(() -> mapper.readValue(invalid, Input.class))
                     .isInstanceOf(tools.jackson.core.JacksonException.class);

@@ -57,8 +57,8 @@ paths:
       - {name: version, in: path, required: true, schema: {type: integer, format: int64}}
     post:
       operationId: publish
-      parameters: [{name: If-Match, in: header, required: true, schema: {type: string}, description: 'Quoted prior active version, or "0" for initial publication.'}]
-      responses: {'200': {description: Committed new epoch/version}, '409': {description: Prior version mismatch or serialization conflict}, '403': {description: Admin permission required}}
+      parameters: [{name: If-Match, in: header, required: true, schema: {type: string, pattern: '^"(0|[1-9][0-9]{0,18})"$'}, description: 'One strong quoted int64 version. Use "0" for initial publication; weak tags, lists and wildcards are rejected.'}]
+      responses: {'200': {description: Committed new epoch/version}, '400': {description: Malformed or out-of-range If-Match}, '409': {description: Prior version mismatch or serialization conflict}, '403': {description: Admin permission required}}
   /v1/tenants/{tenant}/memberships/{subject}:
     parameters:
       - {name: tenant, in: path, required: true, schema: {type: string}}
@@ -86,5 +86,5 @@ paths:
     post:
       operationId: rollback
       description: Atomically copy selected immutable contents to a new higher version and publish at a higher epoch; current tenant administrator only.
-      parameters: [{name: If-Match, in: header, required: true, schema: {type: string}}]
-      responses: {'200': {description: New published policyVersion and tenantEpoch}, '409': {description: Prior version conflict}, '403': {description: Admin permission required}}
+      parameters: [{name: If-Match, in: header, required: true, schema: {type: string, pattern: '^"(0|[1-9][0-9]{0,18})"$'}, description: One strong quoted int64 active version.}]
+      responses: {'200': {description: New published policyVersion and tenantEpoch}, '400': {description: Malformed or out-of-range If-Match}, '409': {description: Prior version conflict}, '403': {description: Admin permission required}}

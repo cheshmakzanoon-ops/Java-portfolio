@@ -1,8 +1,12 @@
 # TenantShield
 
-A multi-tenant document authorization service with an original typed policy compiler, role inheritance, conservative three-valued ABAC semantics and fresh database snapshots. Every decision explains its rule matches, policy version, resource version and tenant authorization epoch. A small protected document service performs a new decision for each operation.
+TenantShield is a document authorization service that combines role inheritance with a bounded, statically typed attribute policy language. Its central guarantee is a fresh, tenant-scoped database snapshot for every decision: a compiled-policy cache hit never bypasses membership or revocation checks.
 
-Requires JDK 25, Docker Compose, Python 3 and curl. From repository root:
+The implementation includes a policy compiler and evaluator, PostgreSQL persistence with row-level security, an OIDC-protected decision API, and a document API that requests authorization before each read. Authentication uses Spring Security and a local Keycloak fixture. Policy evaluation has no scripting, reflection, network access, or user-defined functions.
+
+## Run the demonstration
+
+Use JDK 25, the repository Maven wrapper, Docker with Compose, Bash, Python 3, and curl. Run commands from the repository root. In the managed workspace, first run `source scripts/cloud-env.sh` to select the pinned JDK and trusted Maven proxy configuration.
 
 ```bash
 projects/05-tenantshield/scripts/up.sh
@@ -10,16 +14,40 @@ projects/05-tenantshield/scripts/demo.sh
 projects/05-tenantshield/scripts/down.sh
 ```
 
-The asserted walkthrough obtains genuine local Keycloak tokens, publishes a department/clearance policy, permits Harbor Alice, denies cross-tenant and mismatched-department access, reports missing classification as INDETERMINATE, applies suspension deny, revokes membership after warming the AST cache, checks the new epoch and audit, then demonstrates the protected resource's denied response. It exits nonzero on any incorrect observation. Disposable fixture passwords are local only; tokens are never printed. Ports 18500–18503 bind loopback. Down preserves data; `scripts/reset-demo.sh` explicitly removes only Harbor/Orchard fixture records.
+The demo asserts department and clearance checks, cross-tenant denial, conservative handling of missing attributes, suspension precedence, and revocation after warming the policy cache. It obtains real local Keycloak tokens and does not print them. All four fixture ports, 18500–18503, bind to loopback. Shutdown preserves data; `scripts/reset-demo.sh` removes only the Harbor and Orchard fixtures.
+
+## Authorization contract
+
+A rule condition can combine approved, typed fields with role predicates:
+
+```text
+hasRole("reader")
+  and resource.department == subject.department
+  and subject.clearance >= resource.classification
+```
+
+The route tenant is bound to the verified `(issuer, subject)` through current database membership. Subject and resource attributes are server-owned. A matching RBAC grant and a true ALLOW rule are both required. Explicit DENY takes precedence; an applicable unknown condition produces INDETERMINATE. Explanations include stable rule IDs and observed policy, resource, and tenant versions.
+
+Each decision and its mandatory audit commit in one repeatable-read transaction. A snapshot established after a revocation commit must deny the revoked membership. An older snapshot may finish under its observed epoch. A remote authorization response does not make a subsequent resource write atomic with revocation.
+
+Policy publication and rollback require one strong `If-Match` tag containing the prior active version, such as `"7"`; initial publication uses `"0"`. Malformed, weak, multiple, wildcard, and out-of-range tags return 400 before database access. A valid but stale version returns 409. Rollback creates and publishes a new immutable revision rather than moving the active pointer backward.
+
+## Verify changes
 
 ```bash
 ./mvnw -f projects/05-tenantshield/pom.xml -B -ntp verify
 ./mvnw -f projects/05-tenantshield/pom.xml -B -ntp -Pintegration verify
-projects/05-tenantshield/scripts/benchmark.sh
 ```
 
-In the managed cloud source `scripts/cloud-env.sh` first and pass `-Dmaven.repo.local=/workspace/Java-portfolio/.work/A05/m2`. Unit verification needs no Docker. Integration uses real PostgreSQL and Keycloak; missing Docker is an error. The prescribed workload seeds 50 tenants, 200 immutable revisions per tenant, 100 roles per revision and 1000 resources per tenant, then measures 100,000 authenticated HTTP requests three times. It separately measures cold compilation and warm AST evaluation with JMH. `benchmark-smoke.sh` is explicitly a smoke run and does not satisfy the full workload.
+For the managed workspace, add `-Dmaven.repo.local=/workspace/Java-portfolio/.work/A05/m2`. Ordinary verification needs no Docker. Integration uses actual PostgreSQL and Keycloak; missing Docker is an error.
 
-The AST cache never stores an ALLOW result; membership and epoch are read from a new repeatable-read snapshot even on a cache hit. Explicit denies take precedence and unknown applicable rules fail conservatively. PostgreSQL uses composite tenant keys, RLS, a non-owner runtime role and transaction-local tenant context. A snapshot established after a successful revocation commit must deny; a previously established snapshot may finish under its observed version. A remote decision alone does not make a later resource write atomic with revocation.
+The historical reference study includes three 100,000-request HTTP runs and separate JMH compilation/evaluation measurements. Throughput declined substantially between runs; it establishes neither stable capacity nor a production service-level objective. See [performance](docs/PERFORMANCE.md) for all repetitions and measurement boundaries.
 
-Read [reviewer demo](docs/DEMO.md), [technical walkthrough](docs/INTERVIEW.md), [architecture](docs/ARCHITECTURE.md), [invariants](docs/INVARIANTS.md), [policy grammar](contracts/grammar.ebnf), [OpenAPI](contracts/openapi.yaml), [security](docs/SECURITY.md), [operations](docs/OPERATIONS.md), [performance](docs/PERFORMANCE.md) and [execution status](docs/STATUS.md). Observed test/performance results are recorded only after execution; unclosed gates remain explicit in status.
+| Guide | Contents |
+| --- | --- |
+| [Architecture](docs/ARCHITECTURE.md) | Module boundaries, transaction flow, caching and publication |
+| [Invariants](docs/INVARIANTS.md) | Policy and tenant-isolation contracts |
+| [Security](docs/SECURITY.md) | Trust boundaries, limits and deployment exclusions |
+| [Operations](docs/OPERATIONS.md) | Startup, reset, diagnosis and runtime preparation |
+| [API](contracts/openapi.yaml) · [Grammar](contracts/grammar.ebnf) | Request contracts and policy syntax |
+| [Verification status](docs/STATUS.md) · [Review](docs/REVIEW.md) | Executed checks, historical evidence and open release work |

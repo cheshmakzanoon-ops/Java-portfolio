@@ -1,6 +1,6 @@
 # Reviewer demonstration (3–5 minutes)
 
-Prepare the real local stack with `projects/05-tenantshield/scripts/up.sh` from the repository root. The first Keycloak start includes Quarkus augmentation and realm import and may take several minutes; run preparation before the timed walkthrough. The script verifies source-matching artifacts, migrates PostgreSQL using a separate owner process, and waits for both services. JDK 25, Docker Compose, Python 3 and curl are required. The [execution checkpoint](STATUS.md) records which complete runs have actually passed.
+Prepare the real local stack with `projects/05-tenantshield/scripts/up.sh` from the repository root. The first Keycloak start includes Quarkus augmentation and realm import and may take several minutes; run preparation before the timed walkthrough. The script verifies source-matching artifacts, migrates PostgreSQL using a separate owner process, and waits for both services. JDK 25, Docker Compose, Python 3 and curl are required. The [verification status](STATUS.md) records which complete runs have actually passed.
 
 Run `projects/05-tenantshield/scripts/demo.sh`. It obtains real disposable Keycloak tokens without printing them and asserts each HTTP result. Narrate the sequence:
 

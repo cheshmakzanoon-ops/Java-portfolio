@@ -1,46 +1,48 @@
-# TenantShield execution status
+# Verification status
 
-Current-instance correctness/security, asserted demo/reset and the full quiet reference workload have passed. A04’s scoped measured-artifact review is closed with no blocking finding. **Clean-checkout reproduction and repository-wide/remote-CI release gates remain open.** No complete repository release or production guarantee follows.
+TenantShield has executable coverage for policy semantics, OIDC identity validation, tenant isolation, revocation, immutable publication, and mandatory audit. Results below distinguish current hardening from historical correctness and measurement evidence; historical source fingerprints do not certify subsequent code changes.
 
-Executable source is `working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11`. Java/POM/scripts/fixtures remain frozen; this handoff changes analysis evidence/docs only. No A05 build, service or container is running. Coordinator owns all Git/shared writes.
+## Current hardening: 2026-10-20
 
-| Acceptance | Current-instance result | Evidence |
+Ordinary Maven verification passed **21 test methods with zero failures, errors, or skips** on JDK 25.0.4.1 and Maven 3.10.0. The six-module build includes 12 policy-core tests, eight decision-service tests, and one protected-service claim test. Policy-core coverage thresholds and format checks passed.
+
+The current changes enforce a single strong `If-Match` version for publication and rollback, validate malformed preconditions before database access, and reject ambiguous JSON with duplicate keys or trailing documents. Three new controller test methods cover malformed and overflow preconditions, exact boundary values, and immutable rollback. The Spring mapper test loads actual application properties and checks duplicate keys and trailing input alongside prior coercion and unknown-field cases.
+
+Full integration verification passed on 2026-10-20: **31 methods (21 ordinary and 10 PostgreSQL/Keycloak integration), with zero failures, errors, or skips**. The additional integration method exercises those rejections over authenticated HTTP against the actual service. The historical results below remain separate.
+
+Reproduce from the repository root:
+
+```bash
+source scripts/cloud-env.sh
+./mvnw -f projects/05-tenantshield/pom.xml \
+  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A05/m2 -B -ntp verify
+./mvnw -f projects/05-tenantshield/pom.xml \
+  -Dmaven.repo.local=/workspace/Java-portfolio/.work/A05/m2 -B -ntp -Pintegration verify
+```
+
+## Historical correctness and lifecycle
+
+| Scope | Recorded result | Evidence |
 | --- | --- | --- |
-| P05-A1 | PASS within tested scope | Original bounded language and 2,500 generated reference comparisons; core 343/348 lines and 267/291 branches clears 85%/75% gates. |
-| P05-A2 | PASS within tested scope | Real OIDC verification; signed identity/audience/time negatives; server-side membership binding and raw body limits. |
-| P05-A3 | PASS within tested scope | Deterministic RBAC/ABAC/UNKNOWN/deny behavior; expected-prior immutable publication and atomic monotonic rollback. |
-| P05-A4 | PASS within tested scope | Older snapshot boundary, 30 new post-revocation denials, 160 concurrent version-specific readers, 100 alternating pooled reads and cache/failure tests. |
-| P05-A5 | Full execution passed; scoped measurement review closed with no blocker | Two 21-assertion protected demos with reset preservation, full seed, three 100k authenticated HTTP runs and both three-fork JMH methods. |
+| Parser, compiler and evaluator | 2,500 generated comparisons with an independent interpreter; original core line/branch gates passed | `evidence/correctness.json`, `evidence/correctness-methods.json` |
+| OIDC, tenant isolation and revocation | 18 unit plus nine PostgreSQL/Keycloak methods passed under JUnit 6.1.3 with no failures, errors or skips | `evidence/correctness.json` |
+| Selected mutation analysis | 58/58 top-level `PolicyEngine` mutants killed; parser and adapters were outside this selection | `evidence/mutation.json`, `evidence/mutations.xml` |
+| Protected demo | Two 21-assertion lifecycle runs; fixture reset preserved workload tenants | `evidence/demo.json`, `evidence/preparation.json` |
+| Dependency refusal | Protected response changed 403 → 503 → 403 when the project's database was paused and recovered | `evidence/protected-outage.json` |
+| Runtime integrity | Source/JAR binding, packaged-byte extraction, eight tamper probes and JMH discovery passed | `evidence/cache-preparation.json`, `evidence/jmh-fix-verification.json` |
 
-## Correctness and reviewed source lineage
+The database concurrency suite exposed an audit foreign-key conflict with `FOR UPDATE`. The retained regression and repair use `FOR NO KEY UPDATE` while preserving writer serialization, repeatable-read semantics, and mandatory audit. See [architecture](ARCHITECTURE.md) and [case study](CASE_STUDY.md).
 
-Full integration verification passed 18 unit plus nine real PostgreSQL/Keycloak methods at 02:02:23 UTC under actual JUnit 6.1.3, with zero failures/errors/skips, on source `4bd4397…`. The exact reports are in `correctness.json` and `correctness-methods.json`; earlier 6.0.3 evidence remains separate. A04 closed its scoped source review and prior audience/subject/rollback findings. No production Java changed during subsequent image/cache/metadata maintenance.
+The earlier executable fingerprint `832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11` identifies the completed 2026-10-18 reference study. Later hardening requires fresh build and test evidence; the earlier artifact receipts remain historical.
 
-Selected mutation analysis killed 58/58 original top-level PolicyEngine mutants, with no uncovered mutations or runner errors. Parser/adapters were not selected. The historical source/framework and first failed 66% result remain preserved; no hard branches were excluded to raise the score.
+## Historical reference study
 
-The real PostgreSQL concurrency regression exposed SQLSTATE 40001 when an old-snapshot audit FK lookup followed a tenant epoch updated under FOR UPDATE. The same minimal schedule committed under FOR NO KEY UPDATE. That repair retained writer serialization, RR isolation, mandatory audit and unchanged concurrent assertions; all nine integration methods then passed twice. CASE_STUDY and raw logs retain the failure and proof.
+The study completed both three-fork JMH methods and three authenticated 100,000-request HTTP runs. Every HTTP run recorded 20,000 denials, zero errors, 700,150 application prepared statements, 50 cached policies, and maximum client concurrency 16. All repetitions remain visible.
 
-## Lifecycle and runtime preparation
+Throughput declined **593.275 → 504.958 → 367.263 requests/s**, a 38.10% first-to-third decline with sample CV 23.32%. Per-run p99 values were 133.285, 121.010, and 176.966 ms. Clients were fresh processes, but the database, service, cache, and audit history continued between runs. Stable capacity and the cause of the slowdown are unestablished.
 
-Direct seed counts verified 50 load tenants, 10,000 immutable versions, 1,000,000 role rows, 990,000 edges, 50,000 resources and 50 active pointers. Both 21-assertion demo runs passed. Reset removed only Harbor/Orchard and preserved all workload rows. The protected dependency probe passed 403 → 503 → 403. See `preparation.json`, `demo.json` and `protected-outage.json`.
+The first reference attempt failed before JMH because extraction omitted archive-root benchmark metadata. Its failure remains in `evidence/reference-attempt-5-failed.json`; the later metadata repair passed discovery and integrity checks before the successful study. The [measurement packet](../evidence/reference-20261018/README.md), [performance report](PERFORMANCE.md), and [scoped review](REVIEW.md) retain identities, all runs, and measurement limits.
 
-Compose/Testcontainers pin the exact tested PostgreSQL 18.3 and Keycloak 26.8.1 digests. A successful unchanged-source verify binds all three executable JAR hashes. Extraction verifies each packaged runtime file and rejects stale, modified, extra or symlink entries; eight actual probes passed. No-Maven mode prevents rebuilding during the reference window.
+## Open release work
 
-Quiet attempt 5 failed before JMH measurement because extraction omitted archive-root BenchmarkList/CompilerHints. Its 58.434-second failed reservation, logs and manifests remain in `reference-attempt-5-failed.json` and `.work/A05/failed-reference-5/`. The repair passed 18 unit methods at 03:46:35 UTC, real discovery of both methods and eight integrity probes. No benchmark assertion was weakened.
-
-## Completed full quiet reference
-
-Reservation 6 held all three build locks, found no unrelated active JVMs/application containers at entry/completion and exited zero after 814.080 seconds, from 03:53:56.096602 to 04:07:30.175597 UTC. Both JMH methods completed three forks with three warmup and three measurement iterations each. Each fresh HTTP client process performed 1,000 excluded warmup requests, then 100,000 measured requests with 16 clients and pool size eight. Every run had 20,000 denials, zero errors, 700,150 application prepared statements, 50 cached policies and maximum client in-flight 16. No repetition was discarded.
-
-Throughput declined 593.275 → 504.958 → 367.263 requests/s: sample CV 23.32%, first-to-third decline 38.10%. The continuing backend and growing audit history limit independence. Stable capacity and the slowdown cause are not established. Per-run p99 values were 133.285 / 121.010 / 176.966 ms. Separate JMH and server JFR observations retain their different boundaries.
-
-The packet under `evidence/reference-20261018/` contains the small hash/stat envelope, CSV, JMH summary and artifact receipt. Original result JSON remains one directory above. All six recordings and original logs/results are archived under `.work/A05/reference-20261018-quiet6/`, with 22 size/SHA256 identities. Owner analysis recomputed HTTP counts/rates/statistics and JMH histogram means. Existing FlightSummary JSON was retained without a fresh JFR CLI recount. Product source/artifact hashes are unchanged.
-
-## Remaining work and pause
-
-- Coordinator clean-checkout, global/hosted-CI and Git publication validation, followed by the final release decision.
-- All owned paths write-paused after handoff. Preserve the seeded volume and every failed/successful artifact; no experiments are scheduled.
-
-Pre-analysis chronological docs remain under `.work/A05/reference-20261018-quiet6/docs-before-analysis/`. Failures remain evidence rather than being overwritten with success.
-
-A04 final measured-artifact review is CLOSED with no blocking finding. All22 raw-file hashes, actual three JARs, full HTTP outcomes, variability and JMH summaries match. See REVIEW.md for scope and pre-closure packet identity. Coordinator clean-checkout/global/CI release checks remain separate.
+Clean-checkout reproduction, repository-wide release checks, and hosted CI must be assessed separately from these results. Neither a successful local build nor the historical study establishes a production security certification, service-level objective, or complete repository release.

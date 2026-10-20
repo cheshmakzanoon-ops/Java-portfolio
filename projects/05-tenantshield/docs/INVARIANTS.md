@@ -9,6 +9,8 @@
 | Validated token subject is sole request identity | Spring resource server; DecisionController.principal | JwtSecurityTest; realOidcAndTenantBindingRejectAdversarialRequests |
 | RLS context is transaction-local; reused connections do not leak tenant | PolicyStore.transaction / migration RLS | pooledTenantIsolationImmutableRevisionsAndSnapshotRevocationBoundary |
 | Revocation before a new snapshot denies even with warm AST | Snapshot transaction; epoch trigger | latched before/after snapshot IT; real demo |
+| Publication preconditions have one unambiguous int64 version | DecisionController.expectedVersion | PublicationPreconditionsTest; ambiguousJsonAndPublicationPreconditionsReturnBadRequest |
+| JSON request identity and values have one interpretation | Spring-managed application mapper | JsonConfigurationTest; ambiguousJsonAndPublicationPreconditionsReturnBadRequest |
 | Active policy version and epoch increase; old AST is immutable | expected-version publication / revision trigger | concurrentPublicationKeepsVersionedCacheImmutable; stale publish/immutable write assertions |
 | Every allow requires persisted redacted audit | same transaction, before response | requiredAuditAndDatabaseOutageNeverReturnAllow |
 | An unavailable DB cannot authorize | bounded socket/query timeout, 503 mapping | pausedDatabaseReturnsExplicitFailure |
