@@ -1,21 +1,29 @@
-# Pinned baseline
+# Technology baseline
 
-Maven Central metadata was rechecked 2026-10-17. Maven 3.10.0 and Spring Boot 4.1.1 are released; JUnit Jupiter 6.1.3 is released. Eclipse Temurin 25.0.4.1+1 archive checksum was verified from its GitHub release. Maven 3.10.0 SHA-512 was verified from Central. Compiler release is 25; preview features prohibited.
+| Component | Pinned baseline | Definition |
+| --- | --- | --- |
+| Java | Eclipse Temurin 25.0.4.1+1 | `scripts/bootstrap-cloud.sh`; compiler release 25 |
+| Maven | 3.10.0 | `.mvn/wrapper/maven-wrapper.properties`, distribution SHA-256 pinned |
+| Spring Boot | 4.1.1 | Root dependency management |
+| JUnit | 6.1.3 | JUnit BOM imported before Spring Boot BOM |
+| jqwik | 1.9.3 | Root dependency management |
+| JaCoCo | 0.8.14 | Root verification plugins |
+| PIT / JUnit platform plugin | 1.22.0 / 1.2.3 | Root mutation profile |
 
-JDK: https://github.com/adoptium/temurin25-binaries/releases/tag/jdk-25.0.4.1%2B1
-Maven: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/
-Boot: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-dependencies/4.1.1/
+The root [POM](../pom.xml) is authoritative for library and plugin versions. Preview features are disabled. Project POMs declare adapter-specific dependencies and selected mutation/coverage targets. Containers and GitHub Actions use immutable digests or commit pins; `scripts/container-images.py` checks the container inventory.
 
-Dependency/plugin pins are in root pom.xml. Dependency resolution and foundation gate probes are required before fan-out. Container image pins remain project-specific and must be recorded by each owner.
+## Installation and trust
 
-All cloud Maven requests now use the platform HTTP proxy and the system Java CA trust store with TLS verification enabled. Released dependencies are mirrored to Maven Central to avoid dependency-declared snapshot repositories and prefix metadata delays; no snapshot dependencies are selected. The mirror identifier change causes one-time cache-origin revalidation.
+The Linux x86-64 bootstrap verifies the pinned Temurin archive checksum before extraction and verifies the version before reusing an installation. The Maven wrapper verifies its distribution checksum. In the managed cloud environment, `scripts/cloud-env.sh` supplies the HTTP proxy and system Java CA trust store, and mirrors released dependencies to Maven Central. Keep TLS and checksum verification enabled.
 
-The PIT1.22.0/JUnit-platform plugin1.2.3 combination was executed on Java25 using the temporary foundation fixture:4 mutations,3 killed,75%. This is harness compatibility evidence only. `scripts/foundation-probes.sh` reproduces controlled test/format/coverage failures in an isolated temporary module.
+Authoritative distributions:
 
-GitHub action pins were resolved read-only from official repositories: checkout v5 fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09; setup-java v5 b6effb05e454b25005698d916606bdc6ffcbf961; upload-artifact v5 330a01c490aca151604b8cf639adc76d48f6c5d4. CI execution remains separately verified.
+- [Eclipse Temurin JDK](https://github.com/adoptium/temurin25-binaries/releases/tag/jdk-25.0.4.1%2B1)
+- [Maven distribution](https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.0/)
+- [Spring Boot dependency BOM](https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-dependencies/4.1.1/)
 
-The container scanner action v0.36.0 resolves to official peeled commit `ed142fd0673e97e23eac54620cfb913e5ce36c25`; Trivy v0.70.0 resolves to `8a3177aedf7ee0864920eb1852eef031cd3742b8`. These tags and the action's inputs were checked read-only on 2026-10-18. The workflow selects the five exact application dependency and cleanup-helper image digests from the checked inventory, reports HIGH/CRITICAL findings including unfixed findings, and fails when scanning or feed access fails. These version checks do not establish a successful scan. The Maven wrappers select the inspected Ryuk0.14.0 cleanup-helper digest by default; its new pin awaits fresh integration execution. Explicit environment overrides are outside the default inventory.
+## Verification scope
 
-On 2026-10-18, an effective-dependency audit found that importing Spring Boot’s BOM first selected JUnit 6.0.3 despite the declared 6.1.3 property. An isolated Java 25 fixture passed one Jupiter test, 20 jqwik cases and three PIT mutations on resolved JUnit 6.1.3. The coordinator drained all three build slots before moving the JUnit BOM first. Historical project results retain their actual 6.0.3 dependency selection; final project runs must use 6.1.3. Exact evidence is in [the baseline correction record](execution/junit-baseline-correction.json). Production library versions are unchanged.
+The [JUnit baseline correction](execution/junit-baseline-correction.json) documents the BOM-order fix that selected JUnit 6.1.3 rather than 6.0.3. Earlier results retain their actual dependency baseline. Harness compatibility and deliberately failing probes are available through `scripts/foundation-probes.sh`; they do not substitute for project tests.
 
-The official CodeQL v4 tag is annotated: `f051dc808ef3645eb0d08647ec751634ec2304ac` is its tag object, and `6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee` is the peeled commit now pinned for init/analyze. The exact analyze action inputs were read at that commit. Source acceptance additionally requires actual SARIF and rejects security-severity>=7 or unscored error findings; successful analysis/upload alone is insufficient. No implicit fixture suppression is applied. Actual scan execution remains unverified.
+Security workflows scan source, dependency metadata, and pinned container images. Scan execution, feed availability, and findings are separate from version pinning. An inventory or a verified upstream tag is not a vulnerability-scan pass. The [dependency inventory](dependencies/LICENSES.md) states its scope; the [release criteria](release.md) require observed results.

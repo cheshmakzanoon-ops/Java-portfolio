@@ -1,0 +1,274 @@
+{
+  "captured_at_utc": "2026-10-20T07:44:00.520232+00:00",
+  "base_revision": "60673589ab6a129525204134a8991095f7d1bd08",
+  "identity_scope": "working tree after project validation, before review commits",
+  "manifest_algorithm": "SHA-256 of sorted repository-relative path + NUL + file SHA-256 + LF entries",
+  "projects": [
+    {
+      "project": "01-clearledger",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 27,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 58,
+      "implementation_manifest_sha256": "28916368bf666fe9a9a7d1889312d6ba34873f529f0bb5bfc5607ec1a26d000e",
+      "report_files": 9,
+      "report_manifest_sha256": "3bd4becac932661ecf3464455f393dbecd993ed4a9db5bcf7a42e2462677acbb",
+      "earliest_report_utc": "2026-10-20T07:27:32.356658+00:00",
+      "latest_report_utc": "2026-10-20T07:29:25.591365+00:00"
+    },
+    {
+      "project": "02-durableflow",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 74,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 63,
+      "implementation_manifest_sha256": "dafa1916975c2010446b23ebf68ee2339fd0482f2c8a048c03adbabfb93eaa5d",
+      "report_files": 17,
+      "report_manifest_sha256": "4333b1809ddcc3ff7369b45b1ab6c6a1619538717d3fcc3333c01e9bdb7ce4ea",
+      "earliest_report_utc": "2026-10-20T07:38:21.289084+00:00",
+      "latest_report_utc": "2026-10-20T07:39:20.272404+00:00"
+    },
+    {
+      "project": "03-quorumkv",
+      "command_profile": "extended,integration",
+      "counts": {
+        "surefire": {
+          "tests": 43,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 40,
+      "implementation_manifest_sha256": "11a3bf10a638a0710c0f60ef57b76b6975b042eb6fe7ce001e5430f71428939b",
+      "report_files": 10,
+      "report_manifest_sha256": "7456dd14fe406f2f93b4905edf82632ca6fc613bbcbe8cfcffd0ad97420d72f7",
+      "earliest_report_utc": "2026-10-20T07:30:03.190938+00:00",
+      "latest_report_utc": "2026-10-20T07:31:14.315655+00:00"
+    },
+    {
+      "project": "04-pulsestream",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 47,
+      "implementation_manifest_sha256": "d1b0609d175a759aa70e7eca6bd9a948ccd90ed1cee435686d956a11bcffc6c1",
+      "report_files": 8,
+      "report_manifest_sha256": "3be825af841835a0c2992ced3ba5c2ad80a47104e08e98fb396d70109cf0554f",
+      "earliest_report_utc": "2026-10-20T07:36:47.002203+00:00",
+      "latest_report_utc": "2026-10-20T07:40:44.607422+00:00"
+    },
+    {
+      "project": "05-tenantshield",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 50,
+      "implementation_manifest_sha256": "901dfd36c9b6224c088562c1eb15cbd616e5045b254290f85843cafbd080cec1",
+      "report_files": 8,
+      "report_manifest_sha256": "db34ad7b730bbfaf080eae7dca21c22a0f5956368e9a44b404a01f4f493a839b",
+      "earliest_report_utc": "2026-10-20T07:31:54.953679+00:00",
+      "latest_report_utc": "2026-10-20T07:35:05.407508+00:00"
+    },
+    {
+      "project": "06-matchcore",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 23,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 43,
+      "implementation_manifest_sha256": "c636df431cc14868bc49a4c0df99db6eec37747ed7ba2dd02a613f00f3d21ec7",
+      "report_files": 9,
+      "report_manifest_sha256": "608721dd2e184ecc57a3920ccf23d3b62dde1d9edc6c05c9451d577b11e9459b",
+      "earliest_report_utc": "2026-10-20T07:39:45.028116+00:00",
+      "latest_report_utc": "2026-10-20T07:40:27.844394+00:00"
+    },
+    {
+      "project": "07-indexforge",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 165,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 160,
+      "implementation_manifest_sha256": "51d67997a76ccc24cb147158f4795e13fb7789098309f3f316ec59629b36fe61",
+      "report_files": 31,
+      "report_manifest_sha256": "f6cea7f23e114545f541d486f1d1b480f6a2f57622bf32601628c9b08002a4b1",
+      "earliest_report_utc": "2026-10-20T07:32:22.945360+00:00",
+      "latest_report_utc": "2026-10-20T07:35:05.903502+00:00"
+    },
+    {
+      "project": "08-threadlens",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 115,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 67,
+      "implementation_manifest_sha256": "e21b16158c32e7a76182f926db1f8608eaff3a0f50ad3cf0784de9808c0de44a",
+      "report_files": 16,
+      "report_manifest_sha256": "ad23c1ef5e915d6e3f6ee6610833341edfe90411e073ea22bc813e0bfc84a0cc",
+      "earliest_report_utc": "2026-10-20T07:36:27.722436+00:00",
+      "latest_report_utc": "2026-10-20T07:38:10.201215+00:00"
+    },
+    {
+      "project": "09-byteguard",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 70,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 312,
+      "implementation_manifest_sha256": "4660a3d7b2da9069276110f9e9ff2753e2aa524d37d565b719d28aa405fb3cc1",
+      "report_files": 8,
+      "report_manifest_sha256": "2ba200c3d969f65b76e07a3451ae361a12bd99428449d0c50a11e50c54f0cea4",
+      "earliest_report_utc": "2026-10-20T07:42:21.802299+00:00",
+      "latest_report_utc": "2026-10-20T07:42:40.622082+00:00"
+    },
+    {
+      "project": "10-routeweaver",
+      "command_profile": "integration",
+      "counts": {
+        "surefire": {
+          "tests": 41,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "failsafe": {
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "implementation_files": 52,
+      "implementation_manifest_sha256": "422888250b46b16f46d2cc29f59e837a8edd2095c219b661dfa9efe53c716f03",
+      "report_files": 10,
+      "report_manifest_sha256": "d1f929ab55d673486a7b0173eca53a743be96ef4d82b17a8507e47e97c77522b",
+      "earliest_report_utc": "2026-10-20T07:34:57.419603+00:00",
+      "latest_report_utc": "2026-10-20T07:36:23.419570+00:00"
+    }
+  ],
+  "shared_checks": {
+    "python_test_methods": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "architecture": "PASS",
+    "markdown_links": "PASS",
+    "container_inventory": "PASS",
+    "whitespace": "PASS",
+    "all_ten_project_teardowns": "PASS"
+  },
+  "not_repeated": [
+    "clean-clone/full-reactor release reproduction",
+    "current mutation campaigns",
+    "long stress/performance studies",
+    "vulnerability-feed scans",
+    "hosted CI",
+    "native Windows/macOS"
+  ],
+  "release_audit": {
+    "mandatory_criteria": 63,
+    "outstanding": 20,
+    "status": "INCOMPLETE"
+  },
+  "java_test_methods": 676,
+  "shared_build_input_manifest_sha256": "9f240cd2dc475bf487124c935f0bbd290d39bca92898c387542a23a6d3b1cdee"
+}

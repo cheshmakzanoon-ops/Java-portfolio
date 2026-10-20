@@ -20,7 +20,7 @@ verify_prepared_project() {
       (
         source "$(resolve "$1")/scripts/common.sh"
         before=$(fingerprint)
-        "$root/mvnw" -f "$project/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp verify
+        "$root/mvnw" -f "$project/pom.xml" -Dmaven.repo.local="$root/.work/build/m2" -B -ntp verify
         [[ "$before" == "$(fingerprint)" ]] || { echo 'RouteWeaver inputs changed during verification' >&2; exit 1; }
         printf '%s\n' "$before" > "$runtime/build-stamp"
       )
@@ -41,11 +41,11 @@ case "$command" in
     export PORTFOLIO_TEST_RUN_STARTED=$(date +%s)
     args=(); [[ $command != integration ]] || args+=(-Pintegration)
     [[ $command != mutation ]] || args+=(-Pmutation -DoutputFormats=XML,HTML)
-    mkdir -p "$root/.work/coordinator"
+    mkdir -p "$root/.work/build"
     if [[ $slug == all ]]; then
-      "$root/mvnw" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+      "$root/mvnw" -Dmaven.repo.local="$root/.work/build/m2" -B -ntp "${args[@]}" verify
       if [[ $command == verify ]]; then
-        # These owners create source-bound runtime receipts only after their
+        # These projects create source-bound runtime receipts only after their
         # supported verification entrypoints complete successfully.
         verify_prepared_project indexforge
         verify_prepared_project routeweaver
@@ -56,7 +56,7 @@ case "$command" in
       if [[ $command == verify && ( $slug == indexforge || $slug == routeweaver ) ]]; then
         verify_prepared_project "$slug"
       else
-        "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "${args[@]}" verify
+        "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/build/m2" -B -ntp "${args[@]}" verify
       fi
       python3 "$root/scripts/check-tests.py" "$path" "$command"
       if [[ $command == mutation ]]; then python3 "$root/scripts/check-mutations.py" "$path"; fi

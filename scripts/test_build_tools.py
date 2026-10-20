@@ -66,6 +66,50 @@ class ArchitectureGateTest(unittest.TestCase):
                 pom.write_text(f'<project xmlns="http://maven.apache.org/POM/4.0.0"><artifactId>{name}</artifactId><dependencies><dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId><artifactId>{dependency}</artifactId></dependency></dependencies></project>')
             self.assertTrue(any('cycle' in item for item in architecture.inspect(root)))
 
+    def test_cross_project_artifact_is_rejected_without_java_imports(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'import java.time.Instant;')
+            for slug, artifact, dependency in [
+                    ('01-clearledger', 'ledger-api', 'quorumkv-raft'),
+                    ('03-quorumkv', 'quorumkv-raft', None)]:
+                pom = root / f'projects/{slug}/service/pom.xml'
+                pom.parent.mkdir(parents=True)
+                deps = (f'<dependencies><dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId>'
+                        f'<artifactId>{dependency}</artifactId></dependency></dependencies>') if dependency else ''
+                pom.write_text(f'<project xmlns="http://maven.apache.org/POM/4.0.0"><artifactId>{artifact}</artifactId>{deps}</project>')
+            self.assertTrue(any('cross-project dependency' in item for item in architecture.inspect(root)))
+
+    def test_pure_module_rejects_declared_framework_dependency(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'import java.time.Instant;')
+            pom = root / 'projects/01-clearledger/ledger-domain/pom.xml'
+            for scope, should_fail in [('compile', True), ('provided', True),
+                                       ('runtime', True), ('test', False)]:
+                pom.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0">'
+                               '<artifactId>ledger-domain</artifactId><dependencies><dependency>'
+                               '<groupId>org.springframework</groupId><artifactId>spring-core</artifactId>'
+                               f'<scope>{scope}</scope></dependency></dependencies></project>')
+                failures = architecture.inspect(root)
+                self.assertEqual(should_fail, any('domain framework dependency' in item for item in failures), scope)
+
+    def test_profile_dependencies_cannot_bypass_project_or_domain_boundaries(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.make_root(temp, 'import java.time.Instant;')
+            target = root / 'projects/03-quorumkv/raft-core/pom.xml'
+            target.parent.mkdir(parents=True)
+            target.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0">'
+                              '<artifactId>quorumkv-raft</artifactId></project>')
+            pom = root / 'projects/01-clearledger/ledger-domain/pom.xml'
+            pom.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0">'
+                           '<artifactId>ledger-domain</artifactId><profiles><profile><id>integration</id>'
+                           '<activation><activeByDefault>true</activeByDefault></activation><dependencies>'
+                           '<dependency><groupId>org.springframework</groupId><artifactId>spring-core</artifactId></dependency>'
+                           '<dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId><artifactId>quorumkv-raft</artifactId></dependency>'
+                           '</dependencies></profile></profiles></project>')
+            failures = architecture.inspect(root)
+            self.assertTrue(any('domain framework dependency' in item for item in failures))
+            self.assertTrue(any('cross-project dependency' in item for item in failures))
+
 
 class MutationEvidenceGateTest(unittest.TestCase):
     def invoke(self, statuses, started='1', timestamp=None):
@@ -191,6 +235,22 @@ class ContainerInventoryGateTest(unittest.TestCase):
 
 
 class MarkdownLinkGateTest(unittest.TestCase):
+    def test_discovery_checks_new_documents_and_excludes_deleted_and_ignored_files(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            deleted = root / 'deleted.md'
+            deleted.write_text('# Removed\n')
+            subprocess.run(['git', 'add', 'deleted.md'], cwd=root, check=True)
+            deleted.unlink()
+            (root / '.gitignore').write_text('ignored.md\n')
+            (root / 'ignored.md').write_text('[bad](missing.md)\n')
+            added = root / 'new.md'
+            added.write_text('[bad](missing.md)\n')
+            files = markdown_links.markdown_files(root)
+            self.assertEqual([added], files)
+            self.assertEqual(1, len(markdown_links.inspect(root, files)))
+
     def test_targets_and_duplicate_heading_anchors(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

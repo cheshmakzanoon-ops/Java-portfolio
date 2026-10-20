@@ -14,6 +14,8 @@ PURE = {'ledger-domain', 'workflow-model', 'workflow-engine', 'raft-core', 'matc
 def inspect(root):
     errors = []
     graph = {}
+    owners = {}
+    dependencies = []
     for project in sorted((root / 'projects').glob('[0-9][0-9]-*')):
         slug = project.name.split('-', 1)[1]
         prefix = f'io.github.cheshmakzanoon.portfolio.{slug}.'
@@ -34,9 +36,25 @@ def inspect(root):
             aid = tree.findtext('m:artifactId', namespaces=NS)
             if aid in graph:
                 errors.append(f'Duplicate artifact ID: {aid}')
+            owners[aid] = project.name
+            declared = (tree.findall('m:dependencies/m:dependency', NS)
+                        + tree.findall('m:profiles/m:profile/m:dependencies/m:dependency', NS))
+            for dependency in declared:
+                group = dependency.findtext('m:groupId', namespaces=NS)
+                artifact = dependency.findtext('m:artifactId', namespaces=NS)
+                scope = dependency.findtext('m:scope', default='compile', namespaces=NS)
+                dependencies.append((pom, aid, group, artifact, scope))
+                if (pom.parent.name in PURE and scope in ('compile', 'runtime', 'provided')
+                        and group and group.startswith(('org.springframework', 'org.hibernate',
+                                                       'jakarta.persistence', 'javax.persistence'))):
+                    errors.append(f'{pom.relative_to(root)}: domain framework dependency {group}:{artifact}')
             graph[aid] = {x.findtext('m:artifactId', namespaces=NS)
-                          for x in tree.findall('m:dependencies/m:dependency', NS)
+                          for x in declared
                           if x.findtext('m:groupId', namespaces=NS) == 'io.github.cheshmakzanoon.portfolio'}
+    for pom, aid, group, artifact, scope in dependencies:
+        if (group == 'io.github.cheshmakzanoon.portfolio' and artifact in owners
+                and owners[aid] != owners[artifact]):
+            errors.append(f'{pom.relative_to(root)}: cross-project dependency {artifact} ({scope})')
     active, done = set(), set()
     def visit(node):
         if node in active:

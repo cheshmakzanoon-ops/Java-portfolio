@@ -6,4 +6,4 @@ Original repository code is Apache-2.0. Dependencies are resolved from published
 
 ByteGuard bundles the pinned OASIS SARIF schema under its [upstream license](projects/09-byteguard/contracts/OASIS-LICENSE.md), with [schema provenance](projects/09-byteguard/contracts/SARIF-SCHEMA.md). Project-specific acknowledgments and consequential mechanism references are in each case study, decision record or security/operations guide. No third-party search, matching, consensus or workflow implementation is presented as original code.
 
-Financial, trading, identity, workflow and routing fixtures are synthetic. IndexForge's small relevance collection uses attributed original repository source with frozen authored judgments. The master brief is user-provided. No commercial deployment or employment history is implied.
+Financial, trading, identity, workflow and routing fixtures are synthetic. IndexForge's small relevance collection uses attributed original repository source with frozen authored judgments. No commercial deployment or employment history is implied.

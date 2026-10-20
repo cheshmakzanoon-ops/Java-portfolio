@@ -1,8 +1,0 @@
-A07 is voluntarily paused pending coordinator quiet reservation/release after build18+fixed grid completed.
-No Java/build processes remain. No source changes, standalone Java, demos, prep or ranking measurements until root releases.
-Latest source2f31ecea5b8d7add7220c0794ea6e7c0bbf1136deeeb608cd87da11cc790e8cf.
-Latest CLIa7c61014fcae7edd259b1a54860901bc704da3bc4a408fba7630eb26ee0c827f.
-55tests0fail/errors/skips;95/95 selectedPIT KILLED. Full integration/mutation/coverage PASS18.
-Fixed preset selection CONTEXTUAL/NO_COVERAGE, validation nDCG.5417399157401148 identifierMRR.7666666666666666, still below.75/.90. Baseline.43697890841425036/.75. All6presets and ablations preserved; baseline exactly identical acrossprofiles.
-Selected model977f8a9dd5849d1e42b9d9d7396aee7fc0d5e5f94b2931605909721f053e4496.
-No heldout rank/metrics run. No final-source demos or100kprep yet. Next general BM25 experiment design in NEXT-EXPERIMENT.md, not active source. Exact root quiet-start/end not yet received at checkpoint creation.

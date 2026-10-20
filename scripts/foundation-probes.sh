@@ -31,7 +31,7 @@ class ProbeTest {
 JAVA
 logs="$root/.work/foundation-gates"
 mkdir -p "$logs"
-run() { "$root/mvnw" -f "$fixture/pom.xml" -Dmaven.repo.local="$root/.work/coordinator/m2" -B -ntp "$@"; }
+run() { "$root/mvnw" -f "$fixture/pom.xml" -Dmaven.repo.local="$root/.work/build/m2" -B -ntp "$@"; }
 run com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply verify > "$logs/baseline.log" 2>&1
 cp "$fixture/src/test/java/foundation/ProbeTest.java" "$fixture/good-test"
 sed 's/assertEquals(2, Probe.absolute(2))/assertEquals(999, Probe.absolute(2))/' "$fixture/good-test" > "$fixture/src/test/java/foundation/ProbeTest.java"

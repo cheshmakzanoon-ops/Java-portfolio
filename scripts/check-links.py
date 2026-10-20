@@ -90,14 +90,20 @@ def inspect(root, files):
     return failures
 
 
+def markdown_files(root):
+    names = subprocess.check_output(
+        ['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', '*.md'],
+        cwd=root).decode().split('\0')
+    return sorted({root / name for name in names if name and (root / name).is_file()})
+
+
 def main():
     root = Path(__file__).resolve().parents[1]
-    names = subprocess.check_output(['git', 'ls-files', '-z', '*.md'], cwd=root).decode().split('\0')
-    files = [root / name for name in names if name]
+    files = markdown_files(root)
     failures = inspect(root, files)
     for failure in failures:
         print(failure, file=sys.stderr)
-    print(f'Markdown links: {len(files)} tracked documents; {len(failures)} unresolved local targets/anchors')
+    print(f'Markdown links: {len(files)} working-tree documents; {len(failures)} unresolved local targets/anchors')
     return bool(failures)
 
 

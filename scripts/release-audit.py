@@ -32,8 +32,8 @@ for project in projects:
             errors.append(f'Missing substantive {project["slug"]}/{relative}')
     if not list(path.glob('**/src/main/java/**/*.java')):
         errors.append(f'{project["slug"]}: no Java implementation')
-brief = (root / 'docs/JAVA_PORTFOLIO_MASTER_EXECUTION_BRIEF.md').read_text()
-required = set(re.findall(r'P\d{2}-A\d+|R-A\d{2}', brief))
+criteria = (root / 'docs/release.md').read_text()
+required = set(re.findall(r'P\d{2}-A\d+|R-A\d{2}', criteria))
 rows = {}
 for line in (root / 'docs/acceptance-matrix.md').read_text().splitlines():
     parts = [p.strip() for p in line.split('|')]

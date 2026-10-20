@@ -1,9 +1,0 @@
-# Pending diagnosis-driven timing consumer improvement
-
-Do not apply during current frozen Maven invocation. First run a bounded15–30s allocation/instrumented diagnostic; preserve per-run output volume/status and host output.
-
-Risk hypothesis: default per-exit TSV grows with high-rate workload and may reach256MiB output budget before mandated90s run, correctly disabling collection but invalidating overhead evidence.
-
-If observed, replace default raw-event emission with bounded single-consumer HDR summaries for <=128selected IDs (same probe/event path and same allowlist/event settings). Keep optional strictly bounded rawTimingRows for diagnostics, default0; count any omitted raw rows separately from lost normalized timings. Export compressed HDR histogram log plus small per-method summary TSV at shutdown. All queue accepted entries are still aggregated, shutdown still drains or reports discarded tail, and quantile units remain observed wall nanoseconds. Raw optional sample is never used as a distribution oracle. Update TimingImporter to prefer the bounded summary/hlog and preserve every loss/unknown status. Parent root pins already supply managed HdrHistogram2.2.2; add agent module dependency and shade relocation locally, no root edits.
-
-Mandatory revalidation: real-agent queue saturation accepted-count conservation, observer fault/exception identity, limits, short diagnostic proving bounded output/healthy collector, full final verify/mutation, final1200s live-observer stress and seven-trial identification; then full7randomized paired30s+60s per-workload/mode overhead on quiet host.
