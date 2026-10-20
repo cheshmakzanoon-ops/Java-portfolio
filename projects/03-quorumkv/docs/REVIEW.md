@@ -1,6 +1,6 @@
 # Independent engineering review
 
-A02 and the coordinator reviewed protocol, persistence barriers, snapshot transfer, client uncertainty and the independent history checker. A02 supplied a scoped final closure against the tested source and later re-reviewed the standalone process helper. [Current verification](../evidence/verification-current.json) passed 41 fresh methods on JUnit 6.1.3. Full workload measurements and clean-checkout release approval remain pending.
+Protocol review covers persistence barriers, snapshot transfer, mutation uncertainty and the independent history checker. Process lifecycle review covers ownership checks, bounded stop deadlines and detached child processes. Historical [verification evidence](../evidence/verification-current.json) records its source scope; the current validation result is maintained in [STATUS.md](STATUS.md). Full workload measurements and clean-checkout release validation remain pending.
 
 | Finding | Correction and executable evidence |
 | --- | --- |
@@ -14,7 +14,7 @@ A02 and the coordinator reviewed protocol, persistence barriers, snapshot transf
 
 The deterministic simulator additionally found the seed-27 apply-before-disk-ack and seed-417 rejected-vote election-deadline defects. Both have minimized named regressions. These tests and bounded schedules are evidence, not exhaustive protocol proofs.
 
-A02's final process-helper review recorded production helper SHA-256 `eb03a0a355e12504aaec44342cfdf9147023d9838d4bf37f8742657eabb5d9c2` and process-test SHA-256 `f728d4bf5eaa6b9f9a42a8fdbc14d8f6700a5d8ca71c3e1f914c388c9b5beff5`. No new confirmed serious finding arose in that scope.
+The historical process-helper review bound helper SHA-256 `eb03a0a355e12504aaec44342cfdf9147023d9838d4bf37f8742657eabb5d9c2` and test SHA-256 `f728d4bf5eaa6b9f9a42a8fdbc14d8f6700a5d8ca71c3e1f914c388c9b5beff5`. That review did not identify a further blocking defect in its scope.
 
 ## Mutation investigation
 
@@ -23,3 +23,8 @@ All selected original Raft and Registers classes remain in scope with the origin
 Survivors expose remaining test distinctions around election/heartbeat timing, boundary comparisons, redundant sends/cleanup, snapshot-transfer edges and exact retained-capacity accounting. Some mutations may be behaviorally equivalent under valid-state invariants; no blanket equivalence claim is made. Uncovered cases include small identity/leader getters and defensive deferred/install paths. The four timeouts affect loop/progress behavior and are penalized rather than counted as kills. No memory or runner errors are accepted as successful kills.
 
 The final review still needs full measured resource behavior, workload output, operations artifacts and clean-checkout/remote checks. A numeric mutation threshold or a scoped source acknowledgment does not close those obligations.
+
+
+## Recovery validation follow-up
+
+Checksum-valid snapshots previously accepted duplicate client IDs, short digests, invalid sequences and impossible snapshot coordinates. Duplicate IDs silently replaced receipts during decoding, undermining the retry state required after restart. The decoder now rejects these inputs and reports malformed model state as an `IOException`. Constructors enforce the same invariants for in-memory values. Regression cases cover duplicate IDs, identifier bounds, nonpositive sequences, digest lengths, uncommitted result codes, index/term consistency, persisted vote bounds and log-index overflow. Snapshot transfer rejects an impossible last-included term before activation, with a regression that verifies a subsequent valid transfer still succeeds.

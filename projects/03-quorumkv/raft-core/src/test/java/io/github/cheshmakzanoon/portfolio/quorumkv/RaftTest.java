@@ -286,6 +286,32 @@ class RaftTest {
   }
 
   @Test
+  void impossibleSnapshotCoordinatesDoNotActivateStateOrPreventSubsequentRecovery() {
+    Registers registers = new Registers(Snapshot.empty());
+    Key key = new Key(new byte[] {1});
+    registers.apply(new Command("snapshot-client", 1, Kind.PUT, key, new byte[] {7}, null));
+    byte[] futureTerm = Codec.snapshot(registers.snapshot(7, 4));
+    Raft follower = new Raft(0, 1, Durable.empty());
+    for (long[] coordinates : List.of(new long[] {7, 4}, new long[] {-1, 2}, new long[] {7, 0})) {
+      List<Effect> effects =
+          stable(
+              follower,
+              new Receive(
+                  1,
+                  new SnapshotRequest(
+                      3, 1, 1, coordinates[0], coordinates[1], 0, futureTerm.length, futureTerm)));
+      assertTrue(effects.stream().noneMatch(e -> e instanceof Send));
+      assertEquals(0, follower.applied());
+      assertEquals(0, follower.durable().snapshot().index());
+    }
+    byte[] valid = Codec.snapshot(registers.snapshot(7, 2));
+    stable(follower, new Receive(1, new SnapshotRequest(3, 2, 1, 7, 2, 0, valid.length, valid)));
+    assertEquals(7, follower.applied());
+    assertEquals(2, follower.durable().snapshot().term());
+    assertArrayEquals(new byte[] {7}, follower.view().data().get(key));
+  }
+
+  @Test
   void compactionRestartsChunkTransferAtZeroForNewSnapshot() {
     Registers registers = new Registers(Snapshot.empty());
     for (int i = 1; i <= 6; i++)

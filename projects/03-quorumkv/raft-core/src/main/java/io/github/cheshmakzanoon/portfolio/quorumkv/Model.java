@@ -60,8 +60,7 @@ public final class Model {
         throw new IllegalArgumentException("VALUE_REQUIRED");
       value = copy(value);
       expected = copy(expected);
-      if (client.length() > 128
-          || client.isBlank()
+      if (!validClient(client)
           || sequence < 1
           || length(value) > MAX_VALUE
           || length(expected) > MAX_VALUE) throw new IllegalArgumentException("REQUEST_LIMIT");
@@ -112,6 +111,12 @@ public final class Model {
 
   public record Session(long sequence, byte[] digest, Result result) {
     public Session {
+      Objects.requireNonNull(digest);
+      Objects.requireNonNull(result);
+      if (sequence < 1
+          || digest.length != 32
+          || !(result.code().equals("OK") || result.code().equals("CAS_MISMATCH")))
+        throw new IllegalArgumentException("INVALID_SESSION");
       digest = digest.clone();
     }
 
@@ -130,8 +135,21 @@ public final class Model {
       NavigableMap<Key, byte[]> data,
       Map<String, Session> sessions) {
     public Snapshot {
+      if (index < 0 || term < 0 || (index == 0) != (term == 0) || !CLUSTER.equals(cluster))
+        throw new IllegalArgumentException("INVALID_SNAPSHOT_COORDINATES");
+      if (data.size() > MAX_KEYS || sessions.size() > MAX_CLIENTS)
+        throw new IllegalArgumentException("SNAPSHOT_RESOURCE_LIMIT");
       var d = new TreeMap<Key, byte[]>();
-      data.forEach((k, v) -> d.put(k, v.clone()));
+      long retained = 0;
+      for (var entry : data.entrySet()) {
+        byte[] value = Objects.requireNonNull(entry.getValue());
+        retained += entry.getKey().bytes().length + value.length;
+        if (value.length > MAX_VALUE || retained > MAX_DATA)
+          throw new IllegalArgumentException("SNAPSHOT_RESOURCE_LIMIT");
+        d.put(entry.getKey(), value.clone());
+      }
+      for (String client : sessions.keySet())
+        if (!validClient(client)) throw new IllegalArgumentException("INVALID_SESSION_CLIENT");
       data = Collections.unmodifiableNavigableMap(d);
       sessions = Map.copyOf(sessions);
     }
@@ -151,13 +169,16 @@ public final class Model {
   public record Durable(long term, int vote, long commit, Snapshot snapshot, List<Entry> log) {
     public Durable {
       log = List.copyOf(log);
-      if (term < 0 || commit < snapshot.index())
+      if (term < snapshot.term() || vote < -1 || vote > 2 || commit < snapshot.index())
         throw new IllegalArgumentException("INVALID_STATE");
       long i = snapshot.index();
       long previousTerm = snapshot.term();
       for (Entry e : log) {
-        if (e.index() != ++i || e.term() > term || e.term() < 1 || e.term() < previousTerm)
-          throw new IllegalArgumentException("NONCONTIGUOUS_LOG");
+        if (i == Long.MAX_VALUE
+            || e.index() != ++i
+            || e.term() > term
+            || e.term() < 1
+            || e.term() < previousTerm) throw new IllegalArgumentException("NONCONTIGUOUS_LOG");
         previousTerm = e.term();
       }
       if (commit > i) throw new IllegalArgumentException("COMMIT_BEYOND_LOG");
@@ -225,6 +246,10 @@ public final class Model {
 
   public record SnapshotResponse(long term, long request, long index, int nextOffset, boolean done)
       implements Rpc {}
+
+  private static boolean validClient(String client) {
+    return client != null && !client.isBlank() && client.length() <= 128;
+  }
 
   static byte[] copy(byte[] b) {
     return b == null ? null : b.clone();
@@ -365,12 +390,17 @@ public final class Model {
         }
         int m = count(in, MAX_CLIENTS);
         var sessions = new HashMap<String, Session>();
-        for (int i = 0; i < m; i++)
-          sessions.put(
-              in.readUTF(),
-              new Session(in.readLong(), Objects.requireNonNull(bytes(in, 32)), result(in)));
+        for (int i = 0; i < m; i++) {
+          String client = in.readUTF();
+          Session session =
+              new Session(in.readLong(), Objects.requireNonNull(bytes(in, 32)), result(in));
+          if (sessions.putIfAbsent(client, session) != null)
+            throw new IOException("DUPLICATE_SESSION_CLIENT");
+        }
         if (in.available() != 0) throw new IOException("TRAILING");
         return new Snapshot(index, term, cluster, data, sessions);
+      } catch (IllegalArgumentException | NullPointerException e) {
+        throw new IOException("INVALID_SNAPSHOT", e);
       }
     }
 
@@ -409,6 +439,8 @@ public final class Model {
         for (int i = 0; i < n; i++) log.add(entry(in));
         if (in.available() != 0) throw new IOException("TRAILING");
         return new Durable(term, vote, commit, s, log);
+      } catch (IllegalArgumentException | NullPointerException e) {
+        throw new IOException("INVALID_DURABLE_STATE", e);
       }
     }
 

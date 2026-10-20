@@ -3,9 +3,9 @@
 ```mermaid
 flowchart LR
   C[kv-client: ordered identity retries] --> T[raft-transport: TLS + bounded Netty codec]
-  T --> S[kv-server: one owner queue]
+  T --> S[kv-server: one event queue]
   S --> R[raft-core: typed transitions + effects]
-  R --> D[raft-storage: disk worker + FileChannel.force]
+  R --> D[raft-storage: persistence queue + FileChannel.force]
   D -->|Persisted token| S
   V[raft-verification: independent interval checker + real-process driver] --> C
   SIM[core simulator: virtual network and disk] --> R
@@ -22,3 +22,6 @@ A register mutation includes client identity, contiguous sequence, operation and
 The network uses fixed IDs 0/1/2 and cluster `quorumkv-local-v1`. Port 18300+ID serves authenticated peer and client frames. The administrative role is separately authenticated and every listener binds loopback. See the wire grammar for bounds and trust details.
 
 Protocol reference: [Raft paper, Figure 2 and sections 5/8](https://raft.github.io/raft.pdf). Persistence ordering reference: [etcd Raft integration documentation](https://github.com/etcd-io/raft). Neither implementation is imported.
+
+
+Snapshot recovery validates both checksums and state invariants before activation. In particular, client receipts cannot be silently merged: duplicate IDs, invalid sequences, malformed digests and uncommitted routing results are refused. The same checks apply to values constructed in memory and to decoded snapshots, keeping persistence and network snapshot transfer on one validation path.

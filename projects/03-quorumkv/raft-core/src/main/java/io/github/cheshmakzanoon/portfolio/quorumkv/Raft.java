@@ -515,6 +515,7 @@ public final class Raft {
 
   private void install(int peer, SnapshotRequest r) {
     if (r.term() != term || r.leader() != peer) return;
+    if (r.index() < 1 || r.snapshotTerm() < 1 || r.snapshotTerm() > term) return;
     if (role != Role.FOLLOWER) stepDown(term);
     leader = peer;
     resetDeadline();

@@ -1,43 +1,38 @@
-# QuorumKV execution status
+# Verification status
 
-The original Raft core, durable storage, TLS processes and failure demonstrations are implemented and verified. Full isolated workload measurements and final release validation remain open. This is not a completed project release.
+QuorumKV implements a fixed three-member Raft protocol, checksummed storage, authenticated TLS transport and a real-process fault demonstration. Correctness checks cover the documented bounded model. The prescribed full performance study and repository-wide release validation remain incomplete.
 
-The coordinator owns the write-paused project. The current verified executable/build fingerprint is `ab5534dd111bf63b606b5da53c2cd870d6d0bf5c3549e8f6db2cf4e509a89ca9`, computed by `scripts/source-fingerprint.py`. [Fresh recertification evidence](../evidence/runtime-recertification-current.json) records exact commands, source identity,43 current methods,351 mutation outcomes, runtime artifact/JAR hashes and limits. Earlier [verification evidence](../evidence/verification-current.json) retains its original historical scope.
+## Current development checks
 
-| Acceptance | State | Evidence |
+The recovery validation review adds checksum-valid adversarial fixtures for duplicate client receipts, invalid client identifiers, nonpositive sequences, short digests, uncommitted outcome codes and impossible snapshot/WAL coordinates. These checks protect retry identity across recovery rather than relying on checksums alone. The full extended/integration build passed on 2026-10-20 at 07:31:15 UTC: **46 methods, zero failures, errors or skips**, including all three TLS-process tests and 1,000 deterministic simulation seeds. [Recovery validation evidence](../evidence/recovery-validation.json) binds the reviewed source, command, suite results and log hash. Current-source mutation testing was not rerun; the older mutation report below remains historical.
+
+Run the complete project correctness workflow from the repository root:
+
+```bash
+source scripts/cloud-env.sh
+./mvnw -f projects/03-quorumkv/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/A03/m2" -B -ntp \
+  -Pextended,integration verify
+```
+
+`extended` runs 1,000 deterministic simulation seeds with 180 fault actions per seed. `integration` runs actual TLS-process tests; those tests require OpenSSL and available loopback ports, not Docker. Unit/property tests, storage fault injection, process tests and the independent bounded history checker exercise different failure surfaces. None is an exhaustive consensus proof.
+
+## Recorded evidence
+
+| Scope | Recorded result | Source-bound evidence |
 | --- | --- | --- |
-| P03-A1 | PASS | Named safety regressions; 1,000 seeded schedules with 180 fault actions each and invariant checks after every event; 200 generated register cases. |
-| P03-A2 | PASS | WAL framing/checksums, term/vote persistence, atomic suffix replacement, snapshot publication/fallback and corruption tests. |
-| P03-A3 | PASS | Isolated reads fail, unknown mutation identities survive retry/overload, restart deduplication and CAS histories pass the independent bounded checker. |
-| P03-A4 | PASS | Three actual process integration methods and two complete catalog up/down/reset/demo rounds preserve acknowledged data. The detached-launcher shutdown regression now passes. |
-| P03-A5 | IN_PROGRESS | The prescribed workload driver exists; full 100,000-operation/profile/concurrency measurements and final report remain open. |
+| Protocol and process recertification, 2026-10-18 | 43 methods; no failures, errors or skips; 1,000 simulator seeds; three TLS-process tests | [Recertification](../evidence/runtime-recertification-current.json) |
+| Selected Raft/Registers mutations, 2026-10-18 | 261 killed / 351 total (74.36%); 79 survived, eight uncovered, three timed out | [Non-killed mutations](../evidence/mutation-recertified-survivors.json) |
+| Earlier protocol/storage tests | 41 methods and documented source identity | [Historical verification](../evidence/verification-current.json) |
+| Fault demonstration | Partition refusal, majority progress, restart recovery and stable retry results | [Demonstration](../evidence/demo-current.json) |
+| Prepared runtime integrity | Compiled classes/resources, classpath and dependency hashes; 17 tamper/restoration checks | [Artifact cache](../evidence/runtime-artifact-cache.json) |
+| Workload smoke under contention | Failed with 20 rejected/failed outcomes in the 32-client read-heavy case | [Failed smoke](../evidence/workload-smoke-failure.json) |
+| Isolated workload smoke | All six 100-operation combinations completed without errors | [Isolated smoke](../evidence/workload-smoke-isolated.json) |
 
-The historical extended integration run passed at 2026-10-18 01:48:25 UTC: **41 fresh test methods, no failures, errors or skips**, on effective JUnit 6.1.3. Core coverage is 758/779 lines (97.30%) and 446/528 branches (84.47%), above unchanged aggregate and selected-class gates. An obsolete XML report for an earlier verification-module `SimulationTest` remained under `target`; older summary counts that included it must not be used. Current evidence filters reports by the actual run start.
+Historical envelopes retain their original source identity. They do not certify subsequent changes. Mutation survivors, uncovered branches and timeouts remain in the denominator; they are not represented as successful kills. [Review findings](REVIEW.md) explain the defects and corresponding regressions.
 
-The historical selected Raft/Registers source passed mutation verification at 01:42:49 UTC: 262 killed, 80 survived, four timed out and eight uncovered out of 354. Strict killed percentage is 74.01%, above the unchanged 70% gate. Timeouts and uncovered cases remain in the denominator; no memory or runner errors occurred. [Every non-killed mutation](../evidence/mutation-survivors.json) is retained for review.
+## Remaining validation
 
-Two actual catalog lifecycle rounds then passed. Each started the default cluster, stopped it, reset only its seeded runtime and ran a fresh three-process fault demo. Both demos observed `UNAVAILABLE` isolated reads, `UNKNOWN_OUTCOME` isolated mutations, a five-operation history check, successful restart reads and stable duplicate receipts. Their common final digest is recorded in [demo evidence](../evidence/demo-current.json). Shared-host timing fields are diagnostic observations, not a performance baseline.
+The full workload is 100,000 operations with 1-KiB values, read-heavy and mixed profiles, 1/8/32 clients and three independent runs. Execute `scripts/benchmark.sh` on a quiet host and retain raw observations, environment metadata, GC/CPU/allocation data, replication lag, snapshot duration and failure-recovery timing. The isolated smoke validates the driver only. Closed-loop latency remains subject to coordinated omission.
 
-A02 independently acknowledged the snapshot/client/checker repairs and the final detached-process helper changes. The latter review explicitly inspected ownership checks, bounded Linux process-state reads and stop deadlines, all-member cleanup, and a separate launcher JVM that exits before an independent controller stops and restarts its nodes. [Review details](REVIEW.md) distinguish this scoped closure from final release approval.
-
-## Remaining work
-
-The first `scripts/benchmark.sh --smoke` failed under shared-host contention: its 32-client read-heavy case recorded 20 failed/rejected outcomes and ended at term 34. A member GC pause exceeded the minimum election timeout. [Failed-run evidence](../evidence/workload-smoke-failure.json) preserves the actual data; an isolated rerun and diagnosis are required before any timing change or baseline claim. Smoke remains driver validation only. The unchanged isolated rerun then passed all six combinations with zero errors; [isolated evidence](../evidence/workload-smoke-isolated.json) records the held build locks and absence of other JVMs/application containers. No production timing was changed. In an explicitly quiet window run `scripts/benchmark.sh`: 100,000 1-KiB operations per combination, 1/8/32 clients, separate read-heavy/mixed profiles and three independent runs. Preserve raw CSV, environment, per-member/client CPU and GC, replication lag/sample failures, snapshot observations and JFR. Report closed-loop coordinated omission and variability.
-
-Then review measured bottlenecks, complete the performance/case-study evidence, repeat from a clean checkout, build independently and in the root reactor, verify remote CI and close P03-A5. Current-instance correctness evidence does not fulfill those gates.
-
-Historical handoff and coordinator envelopes remain under `evidence/` with their original source scope. The runtime stamp is reused only for identical source/build inputs; a working stop path remains available after source edits. The project assumes fixed three-member non-Byzantine operation and the documented POSIX flush/atomic-rename contract. It has no lease reads, dynamic membership, multi-key transactions or silent client-session expiration. Independent JVMs on one host share kernel, storage and host failures.
-
-## Prepared artifact integrity follow-up
-
-The coordinator repaired the source-only cache after A05 review. That historical operational source fingerprint is `c2fa4c96f74db0a7ca20facb579713eb2c79cd12e4d8c52b264befa6f380b7ac`. Fresh ordinary verification passed 38 methods with no failures/errors/skips. The cache now binds every compiled class/resource, runtime classpath and dependency JAR to successful verification; prepared mode refuses changed inputs before entering Maven. The effective classpath has no empty element, and symbolic-link roots, descendants and dependencies are rejected. Seventeen actual tamper/restoration/classpath probes passed; commands, hashes and exact source scope are in [cache evidence](../evidence/runtime-artifact-cache.json). No production Java changed in this follow-up. Full reference workloads remain open.
-
-## Shared-wrapper and fixed-membership recertification
-
-The pinned Ryuk default/export in shared `mvnw` changed the source/build fingerprint despite a clean project tree. Replacing only those wrapper bytes with their pre-`a152090` version reproduced the previous `c2fa4c96...` fingerprint exactly. The first new run passed41 methods, but strict mutation certification correctly failed on one constructor `p++`→`p--` heap-runaway mutant. Its full354-outcome XML, raw verification log, cgroup evidence and prior runner/prepared receipts remain preserved in `.work/A03/recertification-20261018T064341Z`. No failed outcome was erased or called passing.
-
-The coordinator authorized representing the fixed peer membership as an immutable outer `Map.of` with keys0/1/2 and mutable inner correlation maps. No outer membership changes existed elsewhere. Added behavior tests exercise every member through election, replication, marker commitment, step-down and reelection, and reject invalid IDs. This representation removes the three constructor-loop mutants; PIT target classes, heap, timeout, exclusions and70% strict threshold were unchanged.
-
-After project-only Spotless, the ordinary wrapper command `source scripts/cloud-env.sh; export PORTFOLIO_TEST_RUN_STARTED=$(date +%s); ./mvnw -f projects/03-quorumkv/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A03/m2 -B -ntp -Pextended,integration,mutation -DoutputFormats=XML,HTML verify` passed at2026-10-18T06:51:03Z. The positive report cutoff was1792306111. Root fresh-report checkers passed: **43 methods,0 failures/errors/skips**, including3 actual TLS-process integration methods and1000 simulator seeds0–999 with180 fault actions each. Fresh selected mutation outcomes are **261 killed,79 survived,8 uncovered,3 timed out:261/351=74.36% strict**, with no memory/runner error. [All current non-killed mutations](../evidence/mutation-recertified-survivors.json) remain visible. The extended XML proves1000 seeds; PIT separately uses1 seed and overwrites its mutable target seed-summary file, so that file is not treated as the extended-run record.
-
-Only after all three Maven/test-checker/mutation-checker exits were0 did the supported artifact tool write/check the82-artifact receipt, exact runtime classpath and source stamp. Five small prepared-runner controls passed, including actual artifact validation and stale/smoke/ownership refusal. Root `scripts/check-stopped.py quorumkv` independently passed. The refreshed18-scenario runner remains **PREPARED_NOT_EXECUTED** under `.work/A03/FULL_RUN_PROTOCOL.md`; no benchmark or full workload was launched. Full study, clean-checkout/root validation and release acceptance remain open.
+Clean-checkout and full-reactor verification, hosted CI and release acceptance also remain open. Native Windows and macOS behavior has not been verified. Three processes on one machine share its kernel, storage and host failure risks; availability claims are limited to the documented process/partition model.
