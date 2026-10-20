@@ -14,11 +14,7 @@ import org.springframework.security.oauth2.jwt.*;
 
 /** Minimal loopback HTTP adapter; matching remains exclusively in Gateway's writer. */
 public final class HttpApi implements AutoCloseable {
-  private final ObjectMapper json =
-      new ObjectMapper()
-          .disable(com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_FLOAT_AS_INT)
-          .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
-          .enable(com.fasterxml.jackson.core.JsonParser.Feature.STRICT_DUPLICATE_DETECTION);
+  private final ObjectMapper json = CommandJson.create();
   private final Gateway gateway;
   private final HttpServer server;
   private final ThreadPoolExecutor executor;
@@ -139,9 +135,10 @@ public final class HttpApi implements AutoCloseable {
         Result r = gateway.result(identity, id);
         send(x, r == null ? 404 : 200, r == null ? Map.of("code", "NOT_FOUND") : r);
       } else if (path.equals("/book") && method.equals("GET")) {
-        Map<String, String> q = query(x);
+        Map<String, String> q = query(x, Set.of("depth", "minimumSequence"));
         int depth = boundedInt(q, "depth", 20, 1, 100);
         long minimum = Long.parseLong(q.getOrDefault("minimumSequence", "0"));
+        if (minimum < 0) throw new IllegalArgumentException("negative minimum sequence");
         View v = gateway.read(minimum, Duration.ofSeconds(2));
         send(
             x,
@@ -164,7 +161,7 @@ public final class HttpApi implements AutoCloseable {
                 "balance",
                 v.accounts().getOrDefault(identity, new Balance(0, 0, 0, 0))));
       } else if (path.equals("/executions") && method.equals("GET")) {
-        Map<String, String> q = query(x);
+        Map<String, String> q = query(x, Set.of("offset", "limit"));
         int offset = boundedInt(q, "offset", 0, 0, Integer.MAX_VALUE),
             limit = boundedInt(q, "limit", 20, 1, 100);
         View v = gateway.view();
@@ -205,13 +202,17 @@ public final class HttpApi implements AutoCloseable {
     }
   }
 
-  private Map<String, String> query(HttpExchange x) {
+  private Map<String, String> query(HttpExchange x, Set<String> allowed) {
     Map<String, String> result = new HashMap<>();
     String q = x.getRequestURI().getRawQuery();
     if (q != null)
       for (String pair : q.split("&")) {
         String[] kv = pair.split("=", 2);
-        result.put(kv[0], kv.length == 2 ? kv[1] : "");
+        String key = URLDecoder.decode(kv[0], java.nio.charset.StandardCharsets.UTF_8);
+        String value =
+            kv.length == 2 ? URLDecoder.decode(kv[1], java.nio.charset.StandardCharsets.UTF_8) : "";
+        if (!allowed.contains(key) || result.putIfAbsent(key, value) != null)
+          throw new IllegalArgumentException("unknown or repeated query parameter");
       }
     return result;
   }

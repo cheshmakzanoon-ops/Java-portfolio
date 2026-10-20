@@ -12,6 +12,9 @@
 | Incoming self-trade remainder cancels; earlier fills stand | Matching loop self blocker | Generated histories and targeted BookTest |
 | No published pre-force business result | Gateway force -> apply -> publish -> complete | GatewayTest force barrier; CrashIT durable-prefix comparison |
 | One result per account/command/run; terminal IDs never reused | Pending map + committed results + Book.used | Concurrent retries; conflicts; terminal replace/reuse tests |
+| Invalid commands never poison the durable log | Journal.appendAndForce validates before writes | JournalTest invalidCommandsAreRejectedBeforeWritingAndDoNotPoisonTheJournal |
+| Valid checksums cannot bypass JSON type validation | HTTP and journal strict command decoders | HttpApiTest commandEnumsAndQueryParametersHaveOneInterpretation; JournalTest checksumValidFramesStillRejectInvalidCommandTypes |
+| Query parameters have one interpretation | Decoded endpoint allowlists and duplicate rejection | HttpApiTest commandEnumsAndQueryParametersHaveOneInterpretation |
 | Durable log integrity is mandatory | Header and payload CRC, length/version/sequence validation | JournalTest every byte truncation and complete corruption |
 | Immutable, sequence-tagged reads | Book.publicView, Gateway.read | GatewayTest minimum-sequence and InvariantsTest historical view checks |
 | Bounded queue and finite retention | Gateway queue/pending/maxCommands and Book cap | GatewayTest overload/run-cap |

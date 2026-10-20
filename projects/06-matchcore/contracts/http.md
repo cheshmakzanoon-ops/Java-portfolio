@@ -1,6 +1,6 @@
 # HTTP v1
 
-All endpoints bind loopback by default, port 18600 (`MATCHCORE_PORT`). Except health, requests require a valid protected bearer token or explicit `trusted-local-demo` with `X-Demo-Account`. Audience: `matchcore`; subject: account ID. Identifiers match `[a-zA-Z0-9_-]{1,64}`. POST JSON <=65536 bytes.
+All endpoints bind loopback by default, port 18600 (`MATCHCORE_PORT`). Except health, requests require a valid protected bearer token or explicit `trusted-local-demo` with `X-Demo-Account`. Audience: `matchcore`; subject: account ID. Identifiers match `[a-zA-Z0-9_-]{1,64}`. POST JSON <=65536 bytes. Enum fields require string names; scalar coercion, explicit null primitives, fractional integers, duplicate keys, unknown fields and trailing documents return 400. Query names/values are URL-decoded once; duplicate decoded names and unknown keys return 400. `minimumSequence` and `offset` must be nonnegative.
 
 - `POST /commands`: Model.Command JSON. NEW, CANCEL, REPLACE, INIT. `clientCommandId`, `accountId`, `type`, `orderId`, `side`, integral `priceTicks`, integral `quantityLots`, `timeInForce` GTC/IOC/FOK, `postOnly`, initialCash/initialLots. In REPLACE, `quantityLots` means **new remaining lots**, never total lifetime quantity; zero cancels. Side changes reject. INITIALIZATION requires admin. Tick size 0.01; unpriced market orders excluded.
 - `GET /commands/{id}`: authenticated subject's immutable durable outcome, including sequence, code, canonical payload hash and that command's executions. Unknown/other-owner IDs return 404.

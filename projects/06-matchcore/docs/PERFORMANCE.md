@@ -67,13 +67,13 @@ Across nine measured iterations, throughput was **1,193,758.75 ± 238,436.68 ops
 
 ## Environment, provenance and reproduction
 
-The coordinator held all three build locks from 02:54:16.349894 to 03:28:07.482351 UTC; the complete protocol exited zero after 2031.133 seconds. No unrelated active JVMs or application containers were present at reservation or completion, and every launch recorded zero other live Java processes. Defunct entries were recorded separately. The cloud provider's physical neighbors remain unobservable.
+The measurement process held all three build locks from 02:54:16.349894 to 03:28:07.482351 UTC; the complete protocol exited zero after 2031.133 seconds. No unrelated active JVMs or application containers were present at reservation or completion, and every launch recorded zero other live Java processes. Defunct entries were recorded separately. The cloud provider's physical neighbors remain unobservable.
 
-Measured executable/build-input fingerprint: `62fc0b0351864486ffa736bd64f444393e3dda894f93677c7ca95448dab1ce83`. Reservation Git revision was `29e0bbd0df3c6ab6d776817b0dc3b05e86141392`; runtime outputs/dependency artifacts were bound to verification by the prepared cache. [Cache integrity evidence](../evidence/runtime-artifact-cache.json) retains 17 actual tamper/restoration probes; the [67-artifact receipt](../evidence/reference-20261018/verified-artifacts.json) preserves actual compiled/resource/dependency hashes. Its current read-only integrity check also passed during analysis. This is a trusted local receipt, not remote attestation. No production Java changed after the 21-method integration/mutation verification, which killed 119/133 selected Book mutants. Raw-file SHA-256 checks passed for all 83 indexed files, including journals, recordings and their summaries.
+Measured executable/build-input fingerprint: `62fc0b0351864486ffa736bd64f444393e3dda894f93677c7ca95448dab1ce83`. Reservation Git revision was `29e0bbd0df3c6ab6d776817b0dc3b05e86141392`; runtime outputs/dependency artifacts were bound to verification by the prepared cache. [Cache integrity evidence](../evidence/runtime-artifact-cache.json) retains 17 actual tamper/restoration probes; the [67-artifact receipt](../evidence/reference-20261018/verified-artifacts.json) preserves actual compiled/resource/dependency hashes. Its current read-only integrity check also passed during analysis. This is a trusted local receipt, not remote attestation. At measurement time, production Java matched the 21-method integration/mutation verification, which killed 119/133 selected Book mutants. Subsequent hardening is validated separately and does not inherit these artifact identities. Raw-file SHA-256 checks passed for all 83 indexed files, including journals, recordings and their summaries.
 
 Host: Debian 13.6/Linux 6.18.55, x86_64 Intel Xeon Platinum 8573C, five visible processors with a four-core cgroup quota, 32 GiB cgroup memory, Eclipse Temurin 25.0.4.1+1-LTS. System JVMs used `-Xms512m -Xmx3g`, G1, JFR profile recording and GC/safepoint logs. Storage is overlayfs; the underlying physical device and power-loss behavior are unknown. `force(true)` process-crash recovery depends on retained local storage honoring the operation and provides no replicated availability or disk-loss protection.
 
-Prepare/verify before reserving the host. During a coordinator-approved quiet reservation, use the prepared mode, which fails before Maven if source or runtime artifacts changed:
+Prepare/verify before reserving the host. During an isolated measurement window, use the prepared mode, which fails before Maven if source or runtime artifacts changed:
 
 ```bash
 MATCHCORE_PREPARED=1 MATCHCORE_MEASUREMENT_CLASS=quiet-baseline \
@@ -85,4 +85,4 @@ MATCHCORE_PREPARED=1 MATCHCORE_MEASUREMENT_CLASS=quiet-baseline \
   projects/06-matchcore/scripts/jmh.sh
 ```
 
-The actual reservation command was `bash .work/A06/run-reference-window.sh`, alternating core/durable for three repetitions before JMH. Exact Java argument arrays and all run locations are hashed in the envelope. Clean-checkout/global release verification remains coordinator work; no remote-CI success is inferred from this study.
+The actual reservation command was `bash .work/A06/run-reference-window.sh`, alternating core/durable for three repetitions before JMH. Exact Java argument arrays and all run locations are hashed in the envelope. Clean-checkout and repository-wide release verification remain separate; no remote-CI success is inferred from this study.

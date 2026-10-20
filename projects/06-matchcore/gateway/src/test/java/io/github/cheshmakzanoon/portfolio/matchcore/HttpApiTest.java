@@ -284,6 +284,54 @@ class HttpApiTest {
   }
 
   @Test
+  void commandEnumsAndQueryParametersHaveOneInterpretation() throws Exception {
+    try (Gateway gateway = new Gateway(dir.resolve("strict-input"), "test", 8, 100);
+        HttpApi api =
+            new HttpApi(gateway, new InetSocketAddress("127.0.0.1", 0), null, null, true)) {
+      Command command =
+          new Command("new", "alice", Type.NEW, "order", Side.BUY, 10, 2, Tif.GTC, false, 0, 0);
+      String body = json.writeValueAsString(command);
+      for (String invalid :
+          List.of(
+              body.replace("\"NEW\"", "1"),
+              body.replace("\"BUY\"", "0"),
+              body.replace("\"GTC\"", "0"),
+              body.replace("\"clientCommandId\":\"new\"", "\"clientCommandId\":123"),
+              body.replace("\"accountId\":\"alice\"", "\"accountId\":true"),
+              body.replace("\"orderId\":\"order\"", "\"orderId\":12.5"),
+              body.replace("\"priceTicks\":10", "\"priceTicks\":\"10\""),
+              body.replace("\"postOnly\":false", "\"postOnly\":\"false\""),
+              body.replace("\"quantityLots\":2", "\"quantityLots\":null"))) {
+        HttpResponse<String> response = trustedRequest(api.port(), "/commands", invalid);
+        assertEquals(400, response.statusCode());
+        assertTrue(response.body().contains("INVALID_REQUEST"));
+      }
+      assertEquals(0, gateway.view().sequence(), "invalid commands must not enter the journal");
+      for (String path :
+          List.of(
+              "/book?depth=1&depth=2",
+              "/book?depth=1&%64epth=2",
+              "/book?minimumSequence=-1",
+              "/book?unknown=1",
+              "/executions?limit=1&limit=2",
+              "/executions?offset=-1",
+              "/executions?depth=1"))
+        assertEquals(400, trustedRequest(api.port(), path, null).statusCode(), path);
+      assertEquals(200, trustedRequest(api.port(), "/book?%64epth=%32", null).statusCode());
+      assertEquals(
+          200, trustedRequest(api.port(), "/executions?offset=0&limit=1", null).statusCode());
+    }
+  }
+
+  private HttpResponse<String> trustedRequest(int port, String path, String body) throws Exception {
+    HttpRequest.Builder request =
+        HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+            .header("X-Demo-Account", "alice");
+    if (body != null) request.POST(HttpRequest.BodyPublishers.ofString(body));
+    return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+  }
+
+  @Test
   void trustedModeRefusesPublicBinding() throws Exception {
     try (Gateway g = new Gateway(dir.resolve("journal"), "test", 8, 100)) {
       assertThrows(

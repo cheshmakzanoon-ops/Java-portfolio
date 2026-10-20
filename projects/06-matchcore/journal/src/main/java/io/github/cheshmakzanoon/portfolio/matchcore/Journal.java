@@ -17,11 +17,7 @@ public final class Journal implements AutoCloseable {
       MAX_SNAPSHOT = 16 * 1024 * 1024,
       MAX_ENTRIES = 1_100_000;
   private static final int MAGIC = 0x4d434f52, VERSION = 1;
-  private static final ObjectMapper JSON =
-      new ObjectMapper()
-          .disable(com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_FLOAT_AS_INT)
-          .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
-          .enable(com.fasterxml.jackson.core.JsonParser.Feature.STRICT_DUPLICATE_DETECTION);
+  private static final ObjectMapper JSON = CommandJson.create();
 
   public interface Fault {
     void at(String boundary) throws IOException;
@@ -119,7 +115,7 @@ public final class Journal implements AutoCloseable {
       if (data.getInt() != crc(payload, length))
         throw new IOException("corrupt payload at " + start);
       Payload p = JSON.readValue(payload, Payload.class);
-      if (!runId.equals(p.runId())) throw new IOException("run ID mismatch");
+      if (p == null || !runId.equals(p.runId())) throw new IOException("invalid payload run ID");
       try {
         p.command().validate();
       } catch (RuntimeException e) {
@@ -144,6 +140,7 @@ public final class Journal implements AutoCloseable {
   }
 
   public void appendAndForce(long sequence, Command command) throws IOException {
+    Objects.requireNonNull(command, "command").validate();
     if (entries.size() >= MAX_ENTRIES) throw new IOException("journal run cap exceeded");
     if (sequence != entries.size() + 1L) throw new IllegalArgumentException("sequence gap");
     fault.at("BEFORE_APPEND");
