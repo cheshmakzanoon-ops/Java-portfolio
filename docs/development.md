@@ -70,6 +70,28 @@ python3 scripts/container-images.py
 
 CI runs project reactors independently. Security, mutation, integration, benchmarks, and release checks have separate workflows and outcomes. A successful ordinary build does not establish that those other gates passed.
 
+## OWASP NVD vulnerability feed
+
+The separate OWASP Dependency-Check gate needs a live NVD API feed. Request an API key at
+https://nvd.nist.gov/developers/request-an-api-key and save it as the GitHub Actions
+repository secret `NVD_API_KEY`; never put the secret in the POM, workflow command
+arguments, generated reports, commits, or shell history. Reusable workflows can receive
+it as the optional `workflow_call` secret. Push and manual workflow runs read the same
+repository secret. Fork PRs without authorized secrets will fail closed at the OWASP step.
+
+To perform the same local scan after exporting the key securely (for example using a
+local credential manager), run:
+
+```bash
+./mvnw -B -ntp org.owasp:dependency-check-maven:13.0.0:aggregate \
+  -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
+```
+
+The Maven plugin reads the environment variable directly without printing its value as
+a Maven property. A missing key, unreachable feed, empty vulnerability database or
+vulnerability above the configured threshold is a **failed** gate. The independent Trivy
+SBOM and container scans remain mandatory; none substitutes for a missing OWASP result.
+
 ## Dependency security
 
 ```bash

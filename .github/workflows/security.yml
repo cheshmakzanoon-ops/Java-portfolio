@@ -1,6 +1,10 @@
 name: Security and SBOM
 on:
   workflow_call:
+    secrets:
+      NVD_API_KEY:
+        description: NVD API key for the OWASP Dependency-Check live feed
+        required: false
   push:
     branches: [main]
   pull_request:
@@ -55,7 +59,15 @@ jobs:
       - name: Refresh library inventory and scan using the current Trivy database
         run: ./scripts/security-scan.sh
       - name: Dependency vulnerability scan
-        run: ./mvnw -B -ntp org.owasp:dependency-check-maven:13.0.0:aggregate -DfailBuildOnCVSS=7
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if [[ -z "$NVD_API_KEY" ]]; then
+            echo "::error title=NVD API key required::Configure repository secret NVD_API_KEY; the OWASP scan is blocked, not passed."
+            exit 1
+          fi
+          ./mvnw -B -ntp org.owasp:dependency-check-maven:13.0.0:aggregate \
+            -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         if: always()
         with:

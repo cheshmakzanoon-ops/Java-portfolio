@@ -69,3 +69,15 @@ ClearLedger `/health` now performs a query through the bounded application datab
 An acknowledged JDBC commit now remains successful if returning/closing its connection subsequently fails; a failed commit acknowledgement still propagates uncertainty. Connection cleanup emits a bounded warning. The HTTP JSON mapper now rejects duplicate fields, multiple JSON documents, fractional integer inputs, null primitives, numeric enum ordinals and scalar coercion, with valid wire fields retained.
 
 [Current validation](../projects/02-durableflow/evidence/production-hardening-20261021/validation.json): 98 ordinary and 22 real-PostgreSQL tests passed with no failures/errors/skips. Strict per-module mutation gates passed: data 41/41, interpreter 158/162, persistence 54/55; all five survivors remain in the denominator. Nine preparation and ten lifecycle helper tests passed. Historical workload measurements are not current certification; simultaneous demos and recovery checks follow separately.
+
+
+## Milestone: wire OWASP's NVD API credential without exposing it
+
+OWASP Dependency-Check 13.0.0 previously failed during the feed update because the runner
+provided no NVD API key and the NVD database was empty. The security workflow now reads
+`NVD_API_KEY` from a GitHub Actions secret using the plugin's recommended
+`nvdApiKeyEnvironmentVariable` mechanism; it refuses to certify a scan without the key.
+The secret is not passed on the Maven command line. A repository administrator must
+configure the key before the independent OWASP gate can pass. Trivy and CodeQL still run
+under their independent policies. This is a **wiring change**, not evidence of a passed
+security scan or a completed release.
