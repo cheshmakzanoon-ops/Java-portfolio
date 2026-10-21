@@ -8,17 +8,27 @@ public record SourceIdentity(InstructionId instruction, String descriptor) {
   }
 
   public static SourceIdentity fromLabel(String label) {
-    if (!label.startsWith("S:")) throw new IllegalArgumentException("source label required");
+    if (label == null || label.length() > 262_144 || !label.startsWith("S:"))
+      throw new IllegalArgumentException("source label required");
     int lengthEnd = label.indexOf(':', 2);
-    int methodLength = Integer.parseInt(label.substring(2, lengthEnd));
+    if (lengthEnd <= 2) throw new IllegalArgumentException("invalid source method length");
+    String encodedLength = label.substring(2, lengthEnd);
+    int methodLength = Integer.parseInt(encodedLength);
+    if (methodLength < 1 || !Integer.toString(methodLength).equals(encodedLength))
+      throw new IllegalArgumentException("noncanonical source method length");
     int methodStart = lengthEnd + 1;
-    int methodEnd = Math.addExact(methodStart, methodLength);
-    if (methodLength < 1 || methodEnd >= label.length() || label.charAt(methodEnd) != ':')
-      throw new IllegalArgumentException("invalid source method identity");
+    if (methodLength >= label.length() - methodStart)
+      throw new IllegalArgumentException("source method length exceeds payload");
+    int methodEnd = methodStart + methodLength;
+    if (label.charAt(methodEnd) != ':')
+      throw new IllegalArgumentException("invalid source method separator");
     int ordinalEnd = label.indexOf(':', methodEnd + 1);
-    int ordinal = Integer.parseInt(label.substring(methodEnd + 1, ordinalEnd));
-    if (ordinal < 0 || ordinalEnd == label.length() - 1)
-      throw new IllegalArgumentException("invalid source instruction identity");
+    if (ordinalEnd <= methodEnd + 1 || ordinalEnd == label.length() - 1)
+      throw new IllegalArgumentException("invalid source instruction separator");
+    String ordinalText = label.substring(methodEnd + 1, ordinalEnd);
+    int ordinal = Integer.parseInt(ordinalText);
+    if (ordinal < 0 || !Integer.toString(ordinal).equals(ordinalText))
+      throw new IllegalArgumentException("noncanonical source instruction identity");
     return new SourceIdentity(
         new InstructionId(label.substring(methodStart, methodEnd), ordinal),
         label.substring(ordinalEnd + 1));
