@@ -112,6 +112,12 @@ def fresh_reports(module, kind, started):
     directory = module.directory / 'target' / (kind + '-reports')
     if directory.is_symlink() or directory.parent.is_symlink():
         raise EvidenceError(str(directory) + ': reports must not use redirected output paths')
+    # pathlib's recursive ** glob does not traverse symlinked directories on every
+    # Python release. Reject them explicitly instead of quietly reporting no tests.
+    if directory.exists():
+        for entry in directory.rglob('*'):
+            if entry.is_symlink():
+                raise EvidenceError(str(entry) + ': report directories cannot be linked')
     pattern = '**/mutations.xml' if kind == 'pit' else 'TEST-*.xml'
     result = []
     for report in sorted(directory.glob(pattern)):
