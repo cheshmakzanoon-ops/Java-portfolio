@@ -16,6 +16,17 @@ it requires no account, network service, database, or container.
 ./scripts/portfolio.sh demo matchcore
 ```
 
+For a Windows PowerShell walkthrough without Git Bash or Docker:
+
+```powershell
+.\scripts\portfolio.ps1 demo matchcore
+```
+
+The PowerShell entrypoint runs Maven verification before executing the same asserted
+MatchCore Java demo with an isolated synthetic journal. Native Windows execution has
+**not yet been independently certified**; report any toolchain or path failure rather
+than treating this command as verified by Linux CI.
+
 The demo asserts four executions, eight traded lots, exact end balances, no open orders,
 idempotent commands and recovery from an interrupted cancellation. Follow the
 [order-book implementation](../projects/06-matchcore/matching-core/src/main/java/io/github/cheshmakzanoon/portfolio/matchcore/Book.java),

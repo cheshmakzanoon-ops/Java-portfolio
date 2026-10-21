@@ -3,6 +3,11 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $slugs = @('clearledger','durableflow','quorumkv','pulsestream','tenantshield','matchcore','indexforge','threadlens','byteguard','routeweaver')
 Set-Location $root
+# The MatchCore CLI showcase is native PowerShell and does not require Git Bash or Docker.
+if ($Action -eq 'demo' -and $Project -eq 'matchcore') {
+  & (Join-Path $PSScriptRoot 'matchcore-demo.ps1')
+  exit $LASTEXITCODE
+}
 switch ($Action) {
   'doctor' { & java -version; if ($LASTEXITCODE) { exit $LASTEXITCODE }; & javac -version; if ($LASTEXITCODE) { exit $LASTEXITCODE }; & .\mvnw.cmd -version; exit $LASTEXITCODE }
   'list' { $slugs | ForEach-Object { Write-Output $_ }; exit 0 }

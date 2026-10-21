@@ -16,6 +16,16 @@ Use JDK 25, Bash, and the repository Maven wrapper. No Docker, database, or exte
 
 For a dedicated local dependency cache, add `-Dmaven.repo.local="$PWD/.work/A06/m2"`. Ordinary verification runs matching, reservation, reference-model, journal, gateway, and HTTP tests. The integration profile adds real child-JVM SIGKILL checks before append, during a frame, before force, after force and after application, plus four slow HTTP uploads that must release handler capacity. The mutation profile covers matching/model/checkpoint, journal and gateway code.
 
+On Windows PowerShell, a native launcher runs the Maven verification and the same asserted
+CLI demo without requiring Git Bash or Docker:
+
+```powershell
+.\scripts\portfolio.ps1 demo matchcore
+```
+
+This entrypoint does not replace the Linux CI checks or claim independent Windows
+certification; it creates an isolated synthetic journal for each run.
+
 The CLI demo asserts FIFO allocation, priority-preserving reduction, priority-losing increase, retry deduplication, and recovery after an unacknowledged cancellation. Final state must contain four executions, eight lots traded, Alice cash 19,200, inventory eight, no open orders, twelve command results, and the same reference/replay digest. The ordinary demo injects a storage fault; it does not claim to perform the separate process-kill test.
 
 ## Interfaces and guarantees
