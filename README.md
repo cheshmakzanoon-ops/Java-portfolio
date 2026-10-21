@@ -4,6 +4,15 @@ Ten independent Java 25 systems, each built around a specific engineering proble
 
 Each project contains its implementation, executable examples, tests, design decisions, and operating limits. The shared Maven parent supplies dependency versions and verification policy; projects do not depend on one another.
 
+## Start here if you are reviewing this portfolio
+
+For an efficient hiring review, see the [five-minute runnable example and backend
+engineering walkthrough](docs/hiring-guide.md). Start with **MatchCore** if you do not
+have Docker, or **ClearLedger**, **DurableFlow**, and **TenantShield** for backend
+architecture, transaction semantics, and authorization. Source code, tests, operating
+limits, and failure evidence are linked directly; historical checks do not certify
+later changes.
+
 ## Choose a project
 
 | Project | Engineering focus | Start here |
