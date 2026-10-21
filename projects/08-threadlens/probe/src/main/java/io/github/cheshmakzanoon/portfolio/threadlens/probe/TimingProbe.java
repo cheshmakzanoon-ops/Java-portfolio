@@ -1,26 +1,47 @@
 package io.github.cheshmakzanoon.portfolio.threadlens.probe;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
 /**
  * No argument/object capture, locks, I/O, or per-call allocation. Fatal VM failures are outside
- * scope.
+ * scope. Long-lived threads use per-thread volatile quiescence marks instead of a contended
+ * global read-modify-write on every exit. A bounded registry falls back to the original atomic
+ * path when many short-lived threads participate.
  */
 public final class TimingProbe {
   private static volatile boolean enabled;
   private static volatile TimingBuffer buffer = new TimingBuffer(65_536);
 
+  private static final int MAX_TRACKED_GUARDS = 2_048;
+  private static final ConcurrentLinkedQueue<Guard> TRACKED = new ConcurrentLinkedQueue<>();
+  private static final AtomicInteger trackedCount = new AtomicInteger();
+  private static final AtomicInteger fallbackInFlight = new AtomicInteger();
+
   private static final class Guard {
     boolean active;
+    final boolean tracked;
+    volatile boolean publishing;
+
+    Guard(boolean tracked) {
+      this.tracked = tracked;
+    }
   }
 
-  // One state per participating thread; no global thread registry or per-invocation state.
-  private static final ThreadLocal<Guard> ACTIVE = ThreadLocal.withInitial(Guard::new);
+  private static Guard registerGuard() {
+    int previous =
+        trackedCount.getAndUpdate(n -> n < MAX_TRACKED_GUARDS ? n + 1 : n);
+    Guard guard = new Guard(previous < MAX_TRACKED_GUARDS);
+    if (guard.tracked) TRACKED.add(guard);
+    return guard;
+  }
+
+  // One state per participating thread; no per-invocation allocation or unbounded registry.
+  private static final ThreadLocal<Guard> ACTIVE = ThreadLocal.withInitial(TimingProbe::registerGuard);
   private static volatile boolean injectFault;
   private static final AtomicLong failures = new AtomicLong();
-  private static final AtomicInteger inFlight = new AtomicInteger();
   private static volatile Runnable faultAction;
 
   private TimingProbe() {}
@@ -38,7 +59,10 @@ public final class TimingProbe {
     if (!enabled || started == 0) return;
     Guard guard = ACTIVE.get();
     if (guard.active) return;
-    inFlight.incrementAndGet();
+    // The per-thread volatile mark precedes the second enabled read. Disable must either
+    // observe the mark or prevent publication; excess threads retain the atomic fallback.
+    if (guard.tracked) guard.publishing = true;
+    else fallbackInFlight.incrementAndGet();
     try {
       // A late entrant that observed enabled before shutdown cannot publish after disable.
       if (!enabled) return;
@@ -57,7 +81,8 @@ public final class TimingProbe {
         guard.active = false;
       }
     } finally {
-      inFlight.decrementAndGet();
+      if (guard.tracked) guard.publishing = false;
+      else fallbackInFlight.decrementAndGet();
     }
   }
 
@@ -85,7 +110,9 @@ public final class TimingProbe {
   }
 
   public static int inFlightExits() {
-    return inFlight.get();
+    int count = fallbackInFlight.get();
+    for (Guard guard : TRACKED) if (guard.publishing) count++;
+    return count;
   }
 
   /**
@@ -96,7 +123,7 @@ public final class TimingProbe {
       throw new IllegalArgumentException("quiescence wait bounds");
     enabled = false;
     long start = System.nanoTime();
-    while (inFlight.get() != 0) {
+    while (inFlightExits() != 0) {
       if (System.nanoTime() - start >= waitNanos) return false;
       LockSupport.parkNanos(Math.min(waitNanos, 100_000));
     }

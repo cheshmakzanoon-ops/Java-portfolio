@@ -2,6 +2,24 @@
 
 ThreadLens has functional, transformation, privacy and boundedness evidence on Java 25 HotSpot/Linux x86-64. The first complete 84-JVM overhead study failed P08-A5. A complete study of the subsequent configuration remains unexecuted; no performance acceptance or speedup is claimed.
 
+
+## Development candidate: bounded per-thread probe quiescence
+
+The probe hot path no longer increments/decrements one globally shared atomic counter
+for every instrumented exit on the first 2,048 participating threads. Each registered
+thread publishes a volatile in-flight mark before the required second enabled check;
+subsequent short-lived threads fall back to the original global atomic reservation
+path. The observer scans the bounded marks only during quiescence. Registration is
+bounded and does not capture application objects or retain a process-wide thread list.
+
+A local Java 21 compilation and four executable concurrency scenarios passed:
+24 shutdown/ring-conservation rounds, paused publisher vs seal, 2,100
+short-lived participating threads exercising overflow registration, and failure
+cleanup. These are development smoke tests only; Java 25 Maven/JUnit, unchanged
+mutation gates, virtual-thread workloads, real packaged observer startup, and the
+**full 84-JVM overhead study** still require independent execution. P08-A5 remains
+FAIL until the documented gate is met.
+
 ## Current development validation
 
 The current implementation separates live event processing, startup instrumentation ownership, child-JVM termination and report validation into explicit components. Regressions cover sealed admission, bounded drain, callback-triggered shutdown, failed startup rollback, duplicate agent declarations, directory-budget escapes, incomplete observations, immutable aggregation and adversarial report input. [Architecture](ARCHITECTURE.md) links all 36 production classes; [review findings](REVIEW.md) describes the concrete failure schedules and corrections.
