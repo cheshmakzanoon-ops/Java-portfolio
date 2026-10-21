@@ -18,7 +18,7 @@ class TimingProbeQuiescenceTest {
       TimingProbe.injectFault(false);
       TimingBuffer buffer = new TimingBuffer(8192);
       TimingProbe.configure(buffer);
-      CountDownLatch begin = new CountDownLatch(1);
+      CountDownLatch begin = new CountDownLatch(1), firstPublished = new CountDownLatch(8);
       List<Thread> workers = new ArrayList<>();
       for (int i = 0; i < 8; i++) {
         int method = i;
@@ -31,6 +31,7 @@ class TimingProbeQuiescenceTest {
                         for (int n = 0; n < 1500; n++) {
                           long started = TimingProbe.enter();
                           TimingProbe.exit(method, started, (n & 1) != 0);
+                          if (n == 0) firstPublished.countDown();
                         }
                       } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -38,6 +39,7 @@ class TimingProbeQuiescenceTest {
                     }));
       }
       begin.countDown();
+      assertTrue(firstPublished.await(5, TimeUnit.SECONDS), "all workers must publish before disable");
       assertTrue(TimingProbe.disableAndAwait(2_000_000_000L));
       for (Thread thread : workers) {
         thread.join(2000);
@@ -53,6 +55,7 @@ class TimingProbeQuiescenceTest {
             drained[0]++;
           })) {}
       assertEquals(reserved, drained[0], "every reservation must be published before seal");
+      assertTrue(drained[0] >= 8, "conservation must not pass without admitted events");
       assertEquals(0, buffer.pending());
       assertTrue(drained[0] <= 8 * 1500);
     }
