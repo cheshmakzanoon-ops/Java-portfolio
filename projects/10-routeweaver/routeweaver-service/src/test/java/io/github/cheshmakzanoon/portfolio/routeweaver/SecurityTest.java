@@ -46,6 +46,23 @@ class SecurityTest {
   }
 
   @Test
+  void invalidInputHandlerNeverEchoesExceptionDetailsOrOversizedUserContent() {
+    String canary = "tenant-secret-customer-data-" + "x".repeat(16_384);
+    var handler = new ApiErrors();
+    var invalid = handler.invalid(new IllegalArgumentException(canary));
+    assertEquals(400, invalid.getStatusCode().value());
+    assertNotNull(invalid.getBody());
+    assertFalse(invalid.getBody().contains(canary));
+    assertFalse(invalid.getBody().contains("tenant-secret"));
+    Map<?, ?> payload = Json.read(invalid.getBody(), Map.class);
+    assertEquals("INVALID_INPUT", payload.get("code"));
+    assertEquals("Invalid request", payload.get("message"));
+    assertTrue(invalid.getBody().length() < 128);
+    assertEquals(
+        invalid.getBody(), handler.invalid(new ArithmeticException("server path /private")).getBody());
+  }
+
+  @Test
   void jsonRoundtripUsesIntegerUnitsAndZone() {
     Model.Problem p = PostgresIT.problem("demo");
     assertEquals(p.canonicalHash(), Json.read(Json.write(p), Model.Problem.class).canonicalHash());

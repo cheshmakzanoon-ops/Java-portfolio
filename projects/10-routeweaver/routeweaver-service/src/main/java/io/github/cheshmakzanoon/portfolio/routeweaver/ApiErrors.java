@@ -37,10 +37,9 @@ public final class ApiErrors {
 
   @ExceptionHandler({IllegalArgumentException.class, ArithmeticException.class})
   ResponseEntity<String> invalid(RuntimeException e) {
-    return response(
-        Map.of(
-            "code", "INVALID_INPUT", "message", Objects.toString(e.getMessage(), "invalid input")),
-        400);
+    // Parser, path, and domain errors can contain full client-supplied values or internal paths.
+    // Do not reflect exception text to an unaudited caller, even for HTTP 400 responses.
+    return response(Map.of("code", "INVALID_INPUT", "message", "Invalid request"), 400);
   }
 
   @ExceptionHandler(Exception.class)
