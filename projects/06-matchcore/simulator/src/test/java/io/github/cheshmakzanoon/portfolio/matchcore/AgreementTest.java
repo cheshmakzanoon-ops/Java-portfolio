@@ -69,6 +69,50 @@ class AgreementTest {
   }
 
   @Test
+  void boundedCapacitySweepAgreesWithIndependentReferenceAcrossPricesAndQuantities() {
+    for (int cap = 1; cap <= 4; cap++) {
+      for (int demand = 1; demand <= cap * 3 + 2; demand++) {
+        for (boolean crossAllLevels : List.of(false, true)) {
+          Book production = new Book(cap);
+          ReferenceBook reference = new ReferenceBook(cap);
+          List<Command> steps = new ArrayList<>();
+          steps.add(Demo.init("buyer", 100_000, 0));
+          for (int level = 0; level < cap; level++)
+            steps.add(Demo.init("seller" + level, 0, 10));
+          for (int level = 0; level < cap; level++)
+            steps.add(
+                Demo.order(
+                    "ask" + level,
+                    "seller" + level,
+                    "ask" + level,
+                    Side.SELL,
+                    100 + level,
+                    2,
+                    Tif.GTC));
+          steps.add(
+              Demo.order(
+                  "buy",
+                  "buyer",
+                  "buy",
+                  Side.BUY,
+                  crossAllLevels ? 100 + cap - 1 : 100,
+                  demand,
+                  Tif.GTC));
+          for (int n = 0; n < steps.size(); n++) {
+            Result actual = production.apply(n + 1L, steps.get(n));
+            assertEquals(
+                reference.apply(steps.get(n)),
+                actual,
+                "capacity=" + cap + " demand=" + demand + " step=" + n);
+            assertEquals(reference.view(), production.view());
+            assertTrue(production.view().orders().size() <= cap);
+          }
+        }
+      }
+    }
+  }
+
+  @Test
   void replacementRulesAndFifo() {
     Book b = new Book();
     ReferenceBook r = new ReferenceBook();
