@@ -20,6 +20,51 @@ def canonical(reference):
     return repository + '@sha256:' + digest
 
 
+
+DOCKERFILE = re.compile(r'(?:Dockerfile(?:\.[A-Za-z0-9_-]+)?|[A-Za-z0-9_.-]+\.dockerfile)\Z')
+EXCLUDED_DIRECTORIES = {'target', '.runtime', '.work', '.git', 'node_modules', 'vendor'}
+
+
+def dockerfile_images(source):
+    """Inspect every FROM, including additional stages and aliases."""
+    used = set()
+    found = []
+    content = source.read_text(encoding='utf-8')
+    if '\\' + '\n' in content:
+        raise ValueError(str(source) + ': multiline Dockerfiles are not supported')
+    for line_number, raw in enumerate(content.splitlines(), 1):
+        line = raw.partition('#')[0].strip()
+        if not re.match(r'FROM(?:\s|$)', line, re.IGNORECASE):
+            continue
+        match = re.fullmatch(
+            r'FROM\s+(?:--platform=\S+\s+)?(\S+)(?:\s+AS\s+([A-Za-z0-9_-]+))?',
+            line, re.IGNORECASE)
+        if match is None:
+            raise ValueError(str(source) + ':' + str(line_number) + ': unresolved FROM')
+        name, alias = match.groups()
+        if name.lower() not in used and name.lower() != 'scratch':
+            found.append(name)
+        if alias is not None:
+            if alias.lower() in used or alias.lower() == 'scratch':
+                raise ValueError(str(source) + ':' + str(line_number) + ': duplicate stage')
+            used.add(alias.lower())
+    return found
+
+
+def sources_to_scan(root):
+    """Do not overlook images added outside projects/, especially in CI jobs."""
+    for scope in ('projects', 'integration', '.github'):
+        directory = root / scope
+        if not directory.is_dir():
+            continue
+        for location, dirs, files in os.walk(directory):
+            dirs[:] = sorted(d for d in dirs if d not in EXCLUDED_DIRECTORIES)
+            for name in sorted(files):
+                path = Path(location) / name
+                if path.suffix in ('.yaml', '.yml', '.java') or DOCKERFILE.fullmatch(name):
+                    yield path
+
+
 def inspect(root):
     inventory = json.loads((root / 'docs/execution/container-images.json').read_text())
     declared = {canonical(reference) for image in inventory['images']
@@ -33,11 +78,7 @@ def inspect(root):
         windows_helpers = re.findall(r'SET "TESTCONTAINERS_RYUK_CONTAINER_IMAGE=([^"\r\n]+)"', windows.read_text())
         if {canonical(image) for image in windows_helpers} != {canonical(image) for image in helpers}:
             raise ValueError('Maven wrapper cleanup-helper image defaults differ across platforms')
-    sources = []
-    for directory, dirs, names in os.walk(root / 'projects'):
-        dirs[:] = sorted(name for name in dirs if name not in {'target', '.runtime', '.work', '.git'})
-        sources.extend(Path(directory) / name for name in names if Path(name).suffix in {'.yaml', '.yml', '.java'})
-    for source in sorted(sources):
+    for source in sources_to_scan(root):
         references = []
         if source.suffix in ('.yaml', '.yml'):
             for line in source.read_text().splitlines():
@@ -48,6 +89,8 @@ def inspect(root):
                 if not match:
                     raise ValueError(str(source.relative_to(root)) + ': image syntax must be a literal block-style image key')
                 references.append(next(value for value in match.groups() if value is not None))
+        elif DOCKERFILE.fullmatch(source.name):
+            references = dockerfile_images(source)
         elif source.suffix == '.java' and '/src/test/' in source.as_posix():
             text = source.read_text()
             calls = re.findall(r'DockerImageName\.parse\s*\(', text)
