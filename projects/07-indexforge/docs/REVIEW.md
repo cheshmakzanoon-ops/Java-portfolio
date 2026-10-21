@@ -4,6 +4,7 @@ This record summarizes defects and their regression boundaries. Historical certi
 
 | Finding | Correction and regression |
 | --- | --- |
+| Quoted field operands identical to reserved syntax (`AND`, `OR`, `NOT`, parentheses, colon) were incorrectly rejected as operators. | The parser now distinguishes quoted tokens at the field-value boundary. Regression covers 8 supported fields, reserved syntax, Boolean combinations, unquoted rejections and 3,000 deterministic literal cases. Local JDK 21 parser smoke passed 3,102 cases; Java 25 Maven acceptance remains pending. |
 | Concurrent permission updates could assign increasing versions before publication, letting a delayed older writer overwrite a newer scope. | Per-principal `ConcurrentHashMap.compute` now performs revision allocation and publication in one atomic operation; a new real-thread test verifies version monotonicity, revocation and isolation. Requires current Java 25 reactor/CI revalidation. |
 | Payload-bearing ZIP directories bypassed expanded-byte accounting when the next entry implicitly drained them. | Bound every streamed member; reject directory payloads and mismatched local/central name, method, CRC and sizes. ArchiveDirectoryTest uses adversarial binary fixtures. |
 | A failed first publication could leave an orphan committed directory that blocked all later startup. | Remove only the owned uninstalled destination; preserve uncertain outcomes. GenerationLifecycleTest checks restart and successful later publication. |

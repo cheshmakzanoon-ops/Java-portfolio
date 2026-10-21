@@ -102,7 +102,7 @@ public sealed interface QueryAst permits QueryAst.Term, QueryAst.BooleanNode, Qu
             .contains(field)) throw new IllegalArgumentException("unsupported field");
         if (at >= tokens.size()) throw new IllegalArgumentException("missing field value");
         t = tokens.get(at++);
-        if (Set.of("(", ")", ":", "AND", "OR", "NOT").contains(t.text))
+        if (!t.phrase && Set.of("(", ")", ":", "AND", "OR", "NOT").contains(t.text))
           throw new IllegalArgumentException("field value");
       }
       return new Term(field, t.text, t.phrase);
