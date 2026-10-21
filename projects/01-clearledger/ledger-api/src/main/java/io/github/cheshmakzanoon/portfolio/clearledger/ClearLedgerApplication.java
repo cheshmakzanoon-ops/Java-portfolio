@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
 
 @SpringBootApplication
 public class ClearLedgerApplication {
@@ -133,7 +135,6 @@ public class ClearLedgerApplication {
         });
   }
 
-
   /**
    * Bearer tokens are supplied explicitly, so they are not ambient browser credentials. Preserve
    * CSRF checks for cookies and browser-sent Basic credentials without changing CLI/Bearer APIs.
@@ -142,16 +143,37 @@ public class ClearLedgerApplication {
     if (java.util.Set.of("GET", "HEAD", "OPTIONS", "TRACE").contains(request.getMethod()))
       return false;
     if (request.getCookies() != null && request.getCookies().length > 0) return true;
+    String cookie = request.getHeader("Cookie");
+    if (cookie != null && !cookie.isBlank()) return true;
     String authorization = request.getHeader("Authorization");
     return authorization != null
         && authorization.regionMatches(true, 0, "Basic ", 0, 6)
-        && (request.getHeader("Origin") != null
-            || request.getHeader("Sec-Fetch-Site") != null);
+        && (request.getHeader("Origin") != null || request.getHeader("Sec-Fetch-Site") != null);
   }
 
   @Bean
   SecurityFilterChain security(HttpSecurity h) throws Exception {
-    return h.csrf(csrf -> csrf.requireCsrfProtectionMatcher(ClearLedgerApplication::csrfForAmbientCredentials))
+    return h.csrf(
+            csrf ->
+                csrf.requireCsrfProtectionMatcher(ClearLedgerApplication::csrfForAmbientCredentials)
+                    .withObjectPostProcessor(
+                        new ObjectPostProcessor<CsrfFilter>() {
+                          @Override
+                          public <O extends CsrfFilter> O postProcess(O filter) {
+                            // Resource-server setup adds a bearer CSRF ignore rule. Restore the
+                            // ambient-credential boundary on the fully assembled filter.
+                            filter.setRequireCsrfProtectionMatcher(
+                                ClearLedgerApplication::csrfForAmbientCredentials);
+                            filter.setAccessDeniedHandler(
+                                (request, response, denied) -> {
+                                  // Complete the response without an authenticated /error dispatch.
+                                  response.setStatus(403);
+                                  response.setContentType("application/json");
+                                  response.getWriter().write("{\"code\":\"FORBIDDEN\"}");
+                                });
+                            return filter;
+                          }
+                        }))
         .authorizeHttpRequests(
             a ->
                 a.requestMatchers("/health")

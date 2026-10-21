@@ -7,11 +7,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.security.config.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
 
 @SpringBootApplication
 public class DecisionApplication {
@@ -119,7 +121,6 @@ public class DecisionApplication {
     };
   }
 
-
   /**
    * Bearer tokens are supplied explicitly, so they are not ambient browser credentials. Preserve
    * CSRF checks for cookies and browser-sent Basic credentials without changing CLI/Bearer APIs.
@@ -128,16 +129,40 @@ public class DecisionApplication {
     if (java.util.Set.of("GET", "HEAD", "OPTIONS", "TRACE").contains(request.getMethod()))
       return false;
     if (request.getCookies() != null && request.getCookies().length > 0) return true;
+    String cookie = request.getHeader("Cookie");
+    if (cookie != null && !cookie.isBlank()) return true;
     String authorization = request.getHeader("Authorization");
     return authorization != null
         && authorization.regionMatches(true, 0, "Basic ", 0, 6)
-        && (request.getHeader("Origin") != null
-            || request.getHeader("Sec-Fetch-Site") != null);
+        && (request.getHeader("Origin") != null || request.getHeader("Sec-Fetch-Site") != null);
   }
 
   @Bean
   SecurityFilterChain security(HttpSecurity http) throws Exception {
-    return http.csrf(csrf -> csrf.requireCsrfProtectionMatcher(DecisionApplication::csrfForAmbientCredentials))
+    return http.csrf(
+            csrf ->
+                csrf.requireCsrfProtectionMatcher(DecisionApplication::csrfForAmbientCredentials)
+                    .withObjectPostProcessor(
+                        new ObjectPostProcessor<CsrfFilter>() {
+                          @Override
+                          public <O extends CsrfFilter> O postProcess(O filter) {
+                            // Resource-server setup adds a bearer CSRF ignore rule. Restore the
+                            // ambient-credential boundary on the fully assembled filter.
+                            filter.setRequireCsrfProtectionMatcher(
+                                DecisionApplication::csrfForAmbientCredentials);
+                            filter.setAccessDeniedHandler(
+                                (request, response, denied) -> {
+                                  // Complete the response without an authenticated /error dispatch.
+                                  response.setStatus(403);
+                                  response.setContentType("application/problem+json");
+                                  response
+                                      .getWriter()
+                                      .write(
+                                          "{\"type\":\"about:blank\",\"title\":\"Forbidden\",\"status\":403,\"detail\":\"Permission denied\"}");
+                                });
+                            return filter;
+                          }
+                        }))
         .authorizeHttpRequests(
             a -> a.requestMatchers("/actuator/health").permitAll().anyRequest().authenticated())
         .exceptionHandling(e -> e.authenticationEntryPoint(DecisionApplication::unauthorized))

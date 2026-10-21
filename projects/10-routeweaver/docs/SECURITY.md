@@ -10,6 +10,12 @@ Only `/health`, `/`, `/index.html`, `/app.js`, and `/styles.css` are anonymous. 
 
 The named dev profile is an explicitly trusted disposable shortcut: it grants the synthetic demo tenant read/write access and refuses a non-loopback bind. up.sh selects it visibly. A loopback Host allowlist rejects DNS-rebinding names. Browser requests with an Origin must exactly match the request scheme, host, and port; opaque origins and cross-site Fetch Metadata are rejected before assigning the demo identity. Command-line clients may omit Origin. Anyone already able to make direct trusted-local requests can modify demo data; this mode is unsuitable for shared remote access. POST /v1/demo/reset requires this profile and demo tenant, refuses active jobs and never resets other tenants.
 
+## Browser credential enforcement
+
+The assembled `CsrfFilter` receives the ambient-credential matcher after resource-server initialization adds its bearer-token ignore rule. A nonblank raw Cookie header still requires CSRF verification when servlet parsing drops a malformed cookie. Denials return bounded JSON `403` with `code: FORBIDDEN` directly, avoiding an authentication error redispatch. The browser client sends `credentials: 'omit'` with its explicit bearer requests.
+
+The [CSRF verification receipt](../../../docs/execution/csrf-enforcement-20261021.json) preserves a failing signed-token HTTP counterexample and passing POST/PUT/PATCH/DELETE rejection checks, alongside accepted explicit-bearer and safe-method controls. These requests fail before the persistence fixture can be accessed.
+
 ## Input and output
 
 Authorization runs before request-body buffering. Authorized raw request bodies are limited to 16 MiB before Jackson parsing, including chunked requests. Domain bounds limit jobs, vehicles, matrix cells, IDs, skills, loads and time ranges. Json disables float-to-integer and scalar coercion, null primitives and ordinal enums; numeric/boolean values cannot become text fields. Unknown properties, duplicate keys, trailing values, root null and missing record components are rejected. Problem IDs are URL-safe single path segments. SQL uses prepared parameters. Transaction/connection/lock timeouts and bounded CPU/admission queues prevent accidental unbounded work.

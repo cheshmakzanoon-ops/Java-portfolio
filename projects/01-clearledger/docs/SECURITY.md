@@ -10,6 +10,12 @@ Spring Security requires `ledger.read`, `ledger.write`, or `ledger.reconcile` ac
 
 Integration tests use a loopback discovery/JWKS issuer and real RSA signatures. They exercise invalid signatures, issuer, audience, expiry, scopes, and cross-tenant identifiers. Two HTTP application instances share PostgreSQL to verify durable idempotency across instances.
 
+## Browser credential boundary
+
+Explicit bearer requests without ambient cookies do not need a CSRF token. Unsafe requests with parsed cookies, a nonblank raw Cookie header, or browser-origin Basic credentials require CSRF verification. The raw-header fallback also covers cookie values that a servlet container declines to parse. Safe methods retain the normal CSRF exemption.
+
+The matcher is installed on the assembled `CsrfFilter` because resource-server initialization otherwise adds a bearer-token ignore rule. A failed check returns a bounded `403` JSON response with `code: FORBIDDEN` directly, avoiding a second authentication decision during an error dispatch. Configured-chain tests exercise both accepted and rejected CSRF tokens; the [CSRF verification receipt](../../../docs/execution/csrf-enforcement-20261021.json) preserves the earlier counterexamples and current results.
+
 ## Development authentication
 
 `up.sh` explicitly selects the `dev` profile, which uses a known disposable HS256 key and local issuer. Startup rejects a non-loopback `server.address` in that profile. A reverse proxy can defeat the intent of a loopback binding: do not expose this profile through one.

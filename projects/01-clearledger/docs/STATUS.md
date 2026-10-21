@@ -2,9 +2,15 @@
 
 ClearLedger implements atomic posting, tenant-scoped idempotency, full reversals, period closure, statement reconciliation, and reporting replay. The full performance study and clean-checkout release validation remain incomplete. The project makes no production-capacity or regulatory claim.
 
-## Current verification, 2026-10-20
+## Current CSRF enforcement, 2026-10-21
 
-Project-scoped `-Pintegration,mutation verify` passed at **09:25:56 UTC** on the updated dependency baseline and PostgreSQL 18.6 with **67 test methods: 45 ordinary and 22 PostgreSQL, zero failures, errors, or skips**. The property suite also generated 500 accounting examples. [Current evidence](../evidence/engineering-verification-2026-10-20.json) binds these results to root/project POMs and module sources.
+The complete ordinary reactor passed **52 methods: 10 domain, 29 persistence, eight API and five verification**, with zero failures, errors or skips. Fresh-report completeness checks passed. Six new configured-chain regressions cover bearer plus cookie, raw Cookie headers, mutation and safe methods, browser Basic credentials, valid/invalid CSRF tokens, and retained authentication requirements.
+
+The resource-server default had allowed bearer requests to bypass the configured cookie boundary. The finished filter now enforces that boundary and completes a bounded HTTP 403 response directly. The [CSRF verification receipt](../../../docs/execution/csrf-enforcement-20261021.json) records the failing counterexamples, changed source hashes and passing report hashes. These focused filter-chain fixtures isolate JWT decoding; PostgreSQL integration and mutation profiles were not rerun for this change.
+
+## Historical verification, 2026-10-20
+
+Project-scoped `-Pintegration,mutation verify` passed at **09:25:56 UTC** on the updated dependency baseline and PostgreSQL 18.6 with **67 test methods: 45 ordinary and 22 PostgreSQL, zero failures, errors, or skips**. The property suite also generated 500 accounting examples. [Historical integration evidence](../evidence/engineering-verification-2026-10-20.json) binds these results to root/project POMs and module sources.
 
 ```bash
 source scripts/cloud-env.sh
@@ -18,7 +24,7 @@ python3 scripts/check-mutations.py projects/01-clearledger
 
 The PostgreSQL cases include a V2-to-V3 upgrade with retained receipts and grants, malformed privileged function inputs, forced concurrent projection and manual matching interleavings, projection failure after membership insertion, actual signed malformed subjects, and the existing before/after-commit process termination and backup/restore cases. Transaction regressions distinguish acknowledged commit plus cleanup failure from unknown commit outcome. CSV preparation, immutable retry input, exact boundaries, and export column order have ordinary regressions.
 
-| Current mutation scope | Strict killed count | Other outcomes | Required kill rate |
+| Historical mutation scope | Strict killed count | Other outcomes | Required kill rate |
 | --- | --- | --- | --- |
 | All domain classes | 35/36, 97.22% | One decimal-length boundary survivor | 70% |
 | Retry backoff, transaction executor, and statement CSV | 102/105, 97.14% | Two survivors and one timeout | 90% |
@@ -27,7 +33,7 @@ The denominator includes survivors and the timeout. The persistence survivors ch
 
 The refreshed working-checkout lifecycle also passed on a fresh PostgreSQL 18.6 Alpine cluster: runtime preparation ran six cache regressions, startup became healthy, and the live demo passed 9/9 HTTP/SQL/process assertions. Shutdown stopped the owned API and PostgreSQL service while retaining the named volume. The earlier PostgreSQL 18.3 lifecycle separately checked the unchanged documented POST/repeat/receipt examples. [Demo evidence](../evidence/engineering-demo-2026-10-20.json) retains the current executed source manifest; this is not a clean-checkout release run or evidence for transplanting an existing data volume.
 
-## Local lifecycle ownership, 2026-10-20
+## Historical local lifecycle ownership, 2026-10-20
 
 Sixteen process and control-adapter regressions passed in 69.480 seconds. They exercise actual child processes, exact kernel start identity, complete argument hashes, artifact provenance, restricted procfs executable observations, resistant shutdown, cancellation during shutdown, repeated signals during rollback, preservation of preexisting running and stopped containers, retained volume state, and failures in Compose, readiness, seeding, and cleanup. [Scoped evidence](../evidence/lifecycle-ownership-2026-10-20.json) records the six executable/test source hashes and a separate passing six-case runtime-cache regression run. Compose and HTTP are controlled adapters in this suite; it does not certify the PostgreSQL image or replace the live lifecycle run.
 
@@ -49,9 +55,9 @@ The functional smoke used 20 tenants and 1,060 of 10,000 seeded accounts. Each w
 
 | Acceptance | Historical demonstrated scope | Remaining work |
 | --- | --- | --- |
-| P01-A1 | Exact money/reference properties, invalid SQL inputs, posting permissions, bounded balances, reversal and races | Current integration suite passed; clean-checkout release reproduction remains |
+| P01-A1 | Exact money/reference properties, invalid SQL inputs, posting permissions, bounded balances, reversal and races | Historical integration suite passed; clean-checkout release reproduction remains |
 | P01-A2 | Duplicate submissions, period/reversal races, tenant isolation, two RSA/OIDC API instances, strict signed-claim types, HTTP process death and retained receipt recovery | Clean-checkout release reproduction |
-| P01-A3 | Matched, unmatched, ambiguous, duplicate, and invalid rows; duplicate-file identity; manual decisions; bounded formula-safe CSV | Current encoding, Unicode, immutable-import, and competing-decision regressions passed |
+| P01-A3 | Matched, unmatched, ambiguous, duplicate, and invalid rows; duplicate-file identity; manual decisions; bounded formula-safe CSV | Earlier encoding, Unicode, immutable-import, and competing-decision regressions passed |
 | P01-A4 | Late event commit, redelivery, shadow promotion, backup restoration with original ACLs, source audit and isolated corruption diagnostics | Clean-checkout release reproduction |
 | P01-A5 | Working-checkout demo and bounded profiled workload | Full reference study and release validation |
 
@@ -69,10 +75,10 @@ Run the complete 100,000-journal workload at 1, 8, and 32 writers for three inde
 
 Clean-checkout lifecycle reproduction and repository-wide release checks remain separate obligations. Cached artifacts do not authorize skipping correctness tests. See [operations](OPERATIONS.md), [performance](PERFORMANCE.md), and [review](REVIEW.md) for the commands and boundaries.
 
-## 2026-10-21 production hardening validation
+## Historical production hardening, 2026-10-21
 
 The storage readiness endpoint now performs a real bounded database transaction and returns HTTP 503 after its runtime pool closes, then returns 200 with a new working pool. Reconciliation materializes at most two candidate postings because only zero/one/many affect the decision. The three-candidate real-PostgreSQL regression remains ambiguous until an authorized manual decision.
 
-The combined current-source integration/mutation build passed: **45 ordinary methods and 23 PostgreSQL integration methods**, with zero failures, errors or skips. Domain mutations killed 35/36; selected persistence-policy mutations killed 102/105, with two survivors and one timeout. The timeout is included as un-killed; the unchanged 70%/90% thresholds passed. Domain coverage was 80/83 lines and 72/76 branches. These are selected-module results, not aggregate application coverage or a new performance certificate.
+The earlier combined integration/mutation build passed for its recorded source: **45 ordinary methods and 23 PostgreSQL integration methods**, with zero failures, errors or skips. Domain mutations killed 35/36; selected persistence-policy mutations killed 102/105, with two survivors and one timeout. The timeout is included as un-killed; the unchanged 70%/90% thresholds passed. Domain coverage was 80/83 lines and 72/76 branches. These are selected-module results, not aggregate application coverage or a new performance certificate.
 
 [Raw reports and source manifest](../evidence/production-hardening-20261021/validation.json) bind the run to actual source files. Standalone deployment and failure/restart observations are recorded separately when executed; historical benchmarks do not certify changed source.

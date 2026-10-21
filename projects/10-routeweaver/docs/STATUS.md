@@ -2,7 +2,13 @@
 
 RouteWeaver implements immutable bounded dispatch inputs, independent feasibility validation and a complete tiny-instance oracle, original route moves, Timefold improvement, PostgreSQL solve jobs with lease fencing, explicit publication, tenant-scoped HTTP, and a browser dispatcher. Repository-wide release certification remains separate from project checks.
 
-## Current implementation hardening
+## Current CSRF enforcement, 2026-10-21
+
+The complete ordinary reactor passed **53 methods: 10 domain, 16 planning, 14 service and 13 verification**, with zero failures, errors or skips. Fresh-report completeness checks passed. The added real-HTTP regression uses a loopback RSA OIDC issuer and the production protected filter chain: bearer plus parsed or malformed Cookie headers returns `403` for POST, PUT, PATCH and DELETE before persistence. Explicit bearer POST still reaches input validation with `400`, and safe cookie-bearing GET remains `200`.
+
+The [CSRF verification receipt](../../../docs/execution/csrf-enforcement-20261021.json) binds the changed security/test files and observed reports. It preserves the initial failure, where bearer plus cookie reached the controller with `400` instead of CSRF `403`. This run did not rerun PostgreSQL integration, mutation, packaged-browser lifecycle or performance studies; earlier results below retain their original source identities.
+
+## Historical implementation hardening, 2026-10-20
 
 The latest implementation separates JDBC transactions, immutable inputs, leased jobs and publication behind the compatible Store facade. It corrects caller-supplied candidate identity, shutdown/claim races, heartbeat and cancellation-observer failure handling, shared oracle search state, bounded route/time/fixture/HTTP inputs, and ambiguous JSON/error classification. Additive schema constraints protect state and candidate references. Launchers now bind artifact bytes and kernel process identity.
 
@@ -16,7 +22,7 @@ The first immediate restart check exposed a TIME_WAIT false positive in port own
 
 The earlier browser hardening adds a development-mode browser boundary against cross-origin mutations and DNS rebinding, a same-origin Content Security Policy, early publication/replanning request validation, and a readable responsive dispatcher. The UI keeps tokens in page memory, gates actions by durable job state, polls serially, and discards progress responses after connection details change. Unassigned jobs have readable reason labels in an accessible table; raw validation payloads and detailed score provenance are expandable. JavaScript and CSS now participate in the launcher source fingerprint.
 
-The final ordinary verification passed 41 methods at 07:32:37 UTC on 20 October 2026. The subsequent full integration reactor passed at 07:36:31 UTC: **55 methods, comprising 41 ordinary and 14 PostgreSQL, with no failures, errors, or skips**. It includes malformed publication/replanning rejection before persistence and real HTTP static-asset/CSP assertions. [Current hardening evidence](../evidence/hardening-current.json) binds source and report hashes.
+The final ordinary verification passed 41 methods at 07:32:37 UTC on 20 October 2026. The subsequent full integration reactor passed at 07:36:31 UTC: **55 methods, comprising 41 ordinary and 14 PostgreSQL, with no failures, errors, or skips**. It includes malformed publication/replanning rejection before persistence and real HTTP static-asset/CSP assertions. [Historical hardening evidence](../evidence/hardening-current.json) binds source and report hashes.
 
 The isolated Chromium/Playwright UI regression passed keyboard navigation, narrow-screen layout, safe text rendering, readable unassigned reasons, solve/publication states, same-input baseline, nonoverlapping polling, stale-response isolation, and absence of persisted browser credentials. This uses deterministic API fixtures under the same strict CSP. A separate live PostgreSQL demonstration and Chromium solve/publication round also passed, with six routes/timelines, stranded cargo, urgent work, same-input baseline, compact feedback, and no page errors. Teardown stopped the service and removed its container/network. The first live harness attempt failed because its eval-based wait violated CSP; locator assertions repaired the harness without weakening the policy, and the repeated live check passed. A final UI-only readability refinement was packaged through Maven resources/repackage with Java sources unchanged, then passed both isolated and live browser checks. The asset-refresh package command skipped tests and is not counted as another Java test run.
 
@@ -45,4 +51,4 @@ The [sealed packet](../evidence/performance-v1/packet.json) preserves all outcom
 
 ## Remaining work
 
-Project-scoped deep hardening, packaged browser and crash-recovery checks are complete. Fresh-checkout, repository-wide CI, hosted security scans, and release certification remain separate checks. Historical measurements need a new complete run before being attributed to changed runtime source.
+Earlier project-scoped deep hardening, packaged browser and crash-recovery checks remain recorded for their original source. The current CSRF change has the ordinary verification above. Fresh-checkout, repository-wide CI, hosted security scans, and release certification remain separate checks. Historical measurements need a new complete run before being attributed to changed runtime source.

@@ -18,6 +18,12 @@ The [decision decoder](../decision-service/src/main/java/io/github/cheshmakzanoo
 
 The route tenant resolves membership for `(issuer, subject)`. JWT roles and caller headers confer no authority. Administrative operations recheck the active database administrative flag in their transaction. Nonmembers cannot resolve resource or policy metadata; a retained revoked membership may observe the tenant epoch, while a nonexistent membership receives zero public versions/epoch. Tenant existence is not a secret in the fictional SaaS.
 
+## Browser credential boundary
+
+The decision-service accepts explicit bearer requests without a CSRF token when no ambient cookie is present. Unsafe requests carrying parsed cookies, a nonblank raw Cookie header, or browser-origin Basic credentials require CSRF verification; safe methods remain exempt. The raw-header check covers cookie values omitted by servlet parsing.
+
+The assembled `CsrfFilter` receives this matcher after resource-server initialization, which otherwise adds a bearer-token ignore rule. Denials finish with a bounded `403` problem response instead of redispatching into authentication. The [CSRF verification receipt](../../../docs/execution/csrf-enforcement-20261021.json) includes configured-chain positive and negative token checks and the original failing counterexamples. The separate demonstration document resource exposes only GET and is outside this mutation-path change.
+
 ## Bounded work and protocol validation
 
 | Surface | Bound or rejection |

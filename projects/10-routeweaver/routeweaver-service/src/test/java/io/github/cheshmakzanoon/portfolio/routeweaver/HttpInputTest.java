@@ -135,6 +135,60 @@ class HttpInputTest {
   }
 
   @Test
+  void protectedBearerCannotBypassCookieCsrfAndDenialsRemain403OverRealHttp() throws Exception {
+    DATABASE_TOUCHED.set(false);
+    try (LocalIssuer issuer = new LocalIssuer();
+        var context =
+            new SpringApplicationBuilder(RejectionApplication.class)
+                .run(
+                    "--server.port=0",
+                    "--server.address=127.0.0.1",
+                    "--routeweaver.auth-mode=protected",
+                    "--routeweaver.issuer=" + issuer.issuer)) {
+      int port = ((ServletWebServerApplicationContext) context).getWebServer().getPort();
+      String base = "http://127.0.0.1:" + port;
+      HttpClient client = HttpClient.newHttpClient();
+      String token = issuer.token(Map.of());
+      for (String method : java.util.List.of("POST", "PUT", "PATCH", "DELETE")) {
+        for (String cookie :
+            java.util.List.of("session=private-cookie-canary", "session=invalid cookie value")) {
+          var response =
+              client.send(
+                  HttpRequest.newBuilder(URI.create(base + "/v1/problems"))
+                      .header("Authorization", "Bearer " + token)
+                      .header("Cookie", cookie)
+                      .header("Content-Type", "application/json")
+                      .method(method, HttpRequest.BodyPublishers.ofString("null"))
+                      .build(),
+                  HttpResponse.BodyHandlers.ofString());
+          assertEquals(403, response.statusCode(), method + ": " + response.body());
+          assertEquals(Map.of("code", "FORBIDDEN"), Json.read(response.body(), Map.class));
+          assertTrue(response.headers().firstValue("WWW-Authenticate").isEmpty());
+        }
+      }
+      var explicitBearer =
+          client.send(
+              HttpRequest.newBuilder(URI.create(base + "/v1/problems"))
+                  .header("Authorization", "Bearer " + token)
+                  .header("Content-Type", "application/json")
+                  .POST(HttpRequest.BodyPublishers.ofString("null"))
+                  .build(),
+              HttpResponse.BodyHandlers.ofString());
+      assertEquals(400, explicitBearer.statusCode(), "explicit bearer reaches input validation");
+      var safeCookie =
+          client.send(
+              HttpRequest.newBuilder(URI.create(base + "/health"))
+                  .header("Authorization", "Bearer " + token)
+                  .header("Cookie", "session=ambient")
+                  .GET()
+                  .build(),
+              HttpResponse.BodyHandlers.ofString());
+      assertEquals(200, safeCookie.statusCode());
+      assertFalse(DATABASE_TOUCHED.get());
+    }
+  }
+
+  @Test
   void authenticatedPostRejectsInvalidIdsAndScalarTypesWith400BeforePersistence() throws Exception {
     DATABASE_TOUCHED.set(false);
     try (LocalIssuer issuer = new LocalIssuer();

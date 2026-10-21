@@ -2,13 +2,19 @@
 
 TenantShield has executable coverage for policy semantics, OIDC identity validation, tenant isolation, revocation, immutable publication, and mandatory audit. Results below distinguish current hardening from historical correctness and measurement evidence; historical source fingerprints do not certify subsequent code changes.
 
-## Current verification: 2026-10-20
+## Current CSRF enforcement, 2026-10-21
+
+The complete ordinary reactor passed **49 methods: 19 policy-core, 26 decision-service and four protected-service**, with zero failures, errors or skips. Fresh-report completeness checks passed. Six new configured-chain regressions cover bearer plus cookie, raw Cookie headers, mutation and safe methods, browser Basic credentials, valid/invalid CSRF tokens, and retained authentication requirements.
+
+The decision-service now applies its ambient-credential matcher after resource-server setup and writes a bounded HTTP 403 problem response directly. The [CSRF verification receipt](../../../docs/execution/csrf-enforcement-20261021.json) records failing counterexamples, changed source hashes and passing report hashes. The new filter-chain fixtures isolate JWT decoding; existing ordinary signed-token tests also ran. PostgreSQL/Keycloak integration and mutation profiles were not rerun for this change. The demonstration document service remains a GET-only resource and its security configuration is unchanged.
+
+## Historical verification: 2026-10-20
 
 The combined ordinary, integration and mutation workflow passed **56 Java test methods: 41 ordinary and 15 PostgreSQL/Keycloak integration**, with **zero failures, errors or skips**. The ordinary breakdown is 19 policy-core, 18 decision-service and four protected-service methods. The runtime baseline is JDK 25.0.4.1, Maven 3.10.0, PostgreSQL 18.6 Alpine and Keycloak 26.8.1. Both container definitions pin the exact tested digests; shared dependency versions come from the repository parent.
 
 The suite covers compiler-owned immutable plans and scope indexes, an independent interpreter, exact parser/evaluator work budgets, Unicode digest safety, concurrent cache loading, stable quota ownership, bounded typed decision responses, all nine deployed RLS/ownership boundaries, membership enforcement independent of callbacks, transaction setup/commit/rollback faults, and stored policy/attribute/membership corruption with repair. Existing real OIDC, revocation, publication and mandatory-audit regressions remain active.
 
-Broader mutation analysis selected `PolicyEngine*` and `PolicyLanguage*`, including nested types: **271 of 276 mutants killed (98.19%)**, five survived, and none were uncovered, timed out or had runner errors. The 70% gate was retained. Survivors remain visible in parser token/end/depth guards and `Compiled.hashCode`; this is not a claim of complete mutation detection. Core coverage exceeded the unchanged 85% line and 75% branch gates; format checks passed. [Current verification evidence](../evidence/current-verification.json) retains individual suites, report hashes, coverage counters, mutation survivors and baseline identities.
+Broader mutation analysis selected `PolicyEngine*` and `PolicyLanguage*`, including nested types: **271 of 276 mutants killed (98.19%)**, five survived, and none were uncovered, timed out or had runner errors. The 70% gate was retained. Survivors remain visible in parser token/end/depth guards and `Compiled.hashCode`; this is not a claim of complete mutation detection. Core coverage exceeded the unchanged 85% line and 75% branch gates; format checks passed. [Historical verification evidence](../evidence/current-verification.json) retains individual suites, report hashes, coverage counters, mutation survivors and baseline identities.
 
 **Six process/control tests passed with zero failures or skips.** They exercise resistant descendants after normal exit/deadline, terminal and repeated terminal signals, and startup migration/readiness failures removing only newly acquired resources. These use real subprocesses and controlled external adapters; they do not simulate a real Docker daemon outage.
 
@@ -23,7 +29,7 @@ source scripts/cloud-env.sh
 python3 projects/05-tenantshield/scripts/test_process_lifecycle.py -v
 ```
 
-The supported startup/demo/shutdown lifecycle also passed on a fresh isolated PostgreSQL 18.6 Alpine volume: **21 asserted OIDC/protected-resource checks**, including a fresh allow followed by denial after committed revocation. [Current demo](../evidence/current-demo.json), [output](../evidence/current-demo-output.txt) and [runtime/encoding](../evidence/current-runtime.json) identify this execution. The historical demo files were restored byte-for-byte; only the disposable certification resources were removed. No non-certification data volume was modified.
+The supported startup/demo/shutdown lifecycle also passed on a fresh isolated PostgreSQL 18.6 Alpine volume: **21 asserted OIDC/protected-resource checks**, including a fresh allow followed by denial after committed revocation. [Historical demo](../evidence/current-demo.json), [output](../evidence/current-demo-output.txt) and [runtime/encoding](../evidence/current-runtime.json) identify this execution. The historical demo files were restored byte-for-byte; only the disposable certification resources were removed. No non-certification data volume was modified.
 
 The current PostgreSQL suite uses a fresh cluster and exercises UTF-8 supplementary text as part of stored-attribute failure/recovery. It does not certify transplanting the historical Debian-created data volume into Alpine; [operations](OPERATIONS.md) requires export/restore and locale validation. No benchmark was rerun for these changes. Historical measurements below retain their original source and image identities.
 
