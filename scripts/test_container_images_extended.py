@@ -103,6 +103,61 @@ class ImageCoverageTest(unittest.TestCase):
         self.assertEqual({PG, KAFKA}, self.inspect())
         shared.unlink()
 
+    def test_job_container_shorthand_must_be_immutable(self):
+        action = self.write('.github/workflows/containers.yml',
+                            'jobs:\n  test:\n    container: ubuntu:latest\n')
+        with self.assertRaises(ValueError):
+            self.inspect()
+        action.write_text(
+            'jobs:\n  test:\n    container: "postgres@sha256:' + 'a' * 64 + '"\n')
+        self.assertEqual({PG}, self.inspect())
+
+    def test_docker_action_pulls_are_in_the_same_inventory(self):
+        action = self.write('.github/workflows/actions.yml',
+                            'jobs:\n  test:\n    steps:\n'
+                            '      - uses: docker://ubuntu:latest\n')
+        with self.assertRaises(ValueError):
+            self.inspect()
+        action.write_text(
+            'jobs:\n  test:\n    steps:\n'
+            '      - uses: docker://postgres@sha256:' + 'a' * 64 + '\n')
+        self.assertEqual({PG}, self.inspect())
+
+    def test_ci_dynamic_images_and_inline_maps_fail_closed(self):
+        image_variable = '
+        for path in ('projects/01-clearledger/target/Dockerfile',
+                     'projects/01-clearledger/.runtime/service.dockerfile',
+                     'projects/01-clearledger/node_modules/Dockerfile'):
+            self.write(path, 'FROM ubuntu:latest\n')
+        self.assertEqual({PG}, self.inspect())
+
+    def test_unpinned_testcontainers_does_not_evade_gate(self):
+        path = self.write('projects/01-clearledger/check/src/test/java/ImageIT.java',
+                          'DockerImageName.parse("ubuntu:latest");')
+        with self.assertRaises(ValueError):
+            self.inspect()
+        path.write_text('DockerImageName.parse("postgres@sha256:' + 'a' * 64 + '");')
+        self.assertEqual({PG}, self.inspect())
+
+    def test_unused_declaration_is_still_failure(self):
+        self.declare(PG, KAFKA)
+        with self.assertRaisesRegex(ValueError, 'unused'):
+            self.inspect()
+
+
+if __name__ == '__main__':
+    unittest.main()
+ + '{{ matrix.image }}'
+        for setting in ('container: ' + image_variable,
+                        'uses: docker://' + image_variable,
+                        'container: {image: "ubuntu:latest"}'):
+            with self.subTest(setting=setting):
+                path = self.write('.github/workflows/invalid.yml',
+                                  'jobs:\n  build:\n    ' + setting + '\n')
+                with self.assertRaises(ValueError):
+                    self.inspect()
+                path.unlink()
+
     def test_generated_cache_directories_are_skipped(self):
         for path in ('projects/01-clearledger/target/Dockerfile',
                      'projects/01-clearledger/.runtime/service.dockerfile',
