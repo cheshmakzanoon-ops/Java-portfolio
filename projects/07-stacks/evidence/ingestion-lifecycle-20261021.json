@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "scope": "Stacks HTTP ingestion lifecycle, typed requests and configured CSRF boundary",
+  "observed_utc": "2026-10-21T19:58:31.294990+00:00",
+  "command": "./mvnw -f projects/07-stacks/pom.xml -Dmaven.repo.local=\"$PWD/.work/A07/m2\" -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+  "runtime": "Temurin 25.0.4.1; checksum-pinned Maven 3.10.0 wrapper",
+  "result": "PASS",
+  "exit_code": 0,
+  "started_utc": "2026-10-21T19:56:29+00:00",
+  "start_identity": "Birth time of the newly created, unique invocation log before Maven execution",
+  "source_inputs": {
+    "files": 148,
+    "sha256": "fa404e090c18bd606cc3936c7fbef7a9c6dd395cb6efced272598857eb79e929",
+    "definition": "Sorted compact UTF-8 JSON map of repository-relative paths to SHA-256 for all project Java/POM files outside target, plus root pom.xml, mvnw and wrapper properties"
+  },
+  "changed_java_sha256": {
+    "projects/07-stacks/query/src/main/java/io/github/cheshmakzanoon/portfolio/stacks/AuthorizationFilter.java": "f6058824e7882d78294a7e4104ed0f36ce3e38a19a827631e8d9c7cc2bfc6f33",
+    "projects/07-stacks/query/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/AuthorizationAdmissionTest.java": "f70b756c599ca528ea30f9f8126924f61ff9960c81a230f1115c4f1196bdd767",
+    "projects/07-stacks/query/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/AuthorizationUpdateLinearizabilityTest.java": "2d0d8cdc2c3bcf5666a399cac9b73059e70087c272fc4341ef08db654c59ef0c",
+    "projects/07-stacks/query/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/QueryAstQuotedOperandTest.java": "24a42abb5571d43dbc6ac588bc9dc30a5dc194d9b6f24538501c9dcf3459f528",
+    "projects/07-stacks/service/src/main/java/io/github/cheshmakzanoon/portfolio/stacks/ErrorResponses.java": "ca665538aec42454bfb32319d570d85f4aac4bc6a8b1e26428ad44b72a1d3c0e",
+    "projects/07-stacks/service/src/main/java/io/github/cheshmakzanoon/portfolio/stacks/IngestionTasks.java": "f70661acde0420ea604f6af112325d9f5744a5e22fca52ea54c461c08a88c228",
+    "projects/07-stacks/service/src/main/java/io/github/cheshmakzanoon/portfolio/stacks/RequestJsonConfiguration.java": "ccffa588c73b8ecd94310942ba2b26c97f5f6ca3be678e6c413c54c44d147ea6",
+    "projects/07-stacks/service/src/main/java/io/github/cheshmakzanoon/portfolio/stacks/SearchController.java": "11051207d00f64fe2ee115a7b5deb012dfa11f73ef546b8b89850a9fc5a8c7a1",
+    "projects/07-stacks/service/src/main/java/io/github/cheshmakzanoon/portfolio/stacks/SecurityConfiguration.java": "23bc7d59a38048eaadbe88807e7cb648a8f637fa2f0da2b2746ed75b3b9d92a1",
+    "projects/07-stacks/service/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/BrowserCredentialBoundaryTest.java": "46cd5842852ad96325f92ebcf408774ca543437bdd4701c2dc0b53b73d4ef60c",
+    "projects/07-stacks/service/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/HttpIngestionLifecycleIT.java": "4b0ded5fc76f069669d20ea621cf9ac4e9d0bce2ad9c375991a673dcafe1a111",
+    "projects/07-stacks/service/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/IngestionTasksTest.java": "b39768c4c8c3c5ee2973969bd713b4de2f172918cd5737ce840574786a06760d",
+    "projects/07-stacks/service/src/test/java/io/github/cheshmakzanoon/portfolio/stacks/RequestJsonTest.java": "1a713838008a7cd3ba706d80a9d7d3eafcbb4037eae29a00e8c9c173c4ba0a30"
+  },
+  "verification": {
+    "counts": {
+      "tests": 248,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": [
+      {
+        "module": "ingest",
+        "counts": {
+          "surefire": {
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "index",
+        "counts": {
+          "surefire": {
+            "tests": 73,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "query",
+        "counts": {
+          "surefire": {
+            "tests": 73,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "service",
+        "counts": {
+          "surefire": {
+            "tests": 34,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "evaluation",
+        "counts": {
+          "surefire": {
+            "tests": 37,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "cli",
+        "counts": {
+          "surefire": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ],
+    "failures": []
+  },
+  "log_sha256": "53d561dd9bf4d846d060b7a423e9d6b713a859ff4fcdcab5a096eddc8ef9a355",
+  "report_sha256": {
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.AuthorizationAdmissionTest.xml": "b88b7b41df6762ea05370a8d5d729365b04cc873940c62fe7d2b0b31f9358d50",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingIdentityRestartTest.xml": "f4f879b24baeb324d327893645f927e1bfd4d12f81403ac55748d4b3b9e834b0",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.CursorCacheLifetimeTest.xml": "e602046017e346e4c7c223eba28c4665bfb579529a649334ac7c01103b1937c3",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.EngineLifecycleTest.xml": "af691cc6d63b68da242eac454ab20aca811563df52739a7af4561633cb271f97",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.AuthorizationUpdateLinearizabilityTest.xml": "11018920bb8fd42d63217011ac855a8b33ef41364e267180c0705d7ee91dece1",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceUsageRankerTest.xml": "963cef188891219612afecf71aa173da5cc6095d298ff2e9b7dc260b7f06f83b",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingWave2Test.xml": "5da1864cb51ee757848168a095319fb5be20f4576a4ae07cc32c656aa393c12f",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SearchSecurityTest.xml": "375d5d1feb3a79ee60a66f815af26adc7eb80aca9e5b43c12c8ce78ad8f9b725",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceServingTest.xml": "96fa13395b308fc7d839a29ce924f1319caeff6f90338c7a7501637c951f5752",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingCodeIdentityTest.xml": "e48a452efce9c06ef0be004e9ea8df1bee97aba55c23f3e0da1e7ef0dc65e970",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SearchRequestIdentityTest.xml": "0f70a26c595d553542f97bae8e29f838a0090dbabf70421795d25558de432e7d",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SnippetBuilderTest.xml": "6cf69ca25eee3f2fcde9a9a7c05c2e62eab3cc4c71bce4ab69c78976d21c89c8",
+    "projects/07-stacks/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.QueryAstQuotedOperandTest.xml": "2dc4d5ce8aeaa42d96cde7d4ca94bc43e459aa8dee5fdb597cc80fe3d3e0fe83",
+    "projects/07-stacks/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.CliArgumentsTest.xml": "2d73bb85ba706745461f64386d89b266cf173f022219d9626085ab265dd819fb",
+    "projects/07-stacks/ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.ArchiveDirectoryTest.xml": "aba3714e385ab4a231c9b9fde8fee05d4bbb6b70dccc4dd3ba91b661a18e19dc",
+    "projects/07-stacks/ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.IngestionSafetyTest.xml": "ef1d27a91cdd33b61bcc39a2d2c9b71a2d2d21a0bf1c1cb87ac3437659b2ebbe",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.CodeFeaturesTest.xml": "ae3c27cb4b4d2781b0c2fd2087eaf1ce41e4dc5d3f3a5c3f748e60c712b312c1",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceParserTest.xml": "38ba3a9cda2be53846d3d4096b6843450426e6857207c2a6e33e54741cea3f00",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.DeclarationScannerTest.xml": "7891bdc4f6df427433c9dcd4ce607d6faf325768b52c22ddd5a96a9e59f8d52b",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceGenerationTest.xml": "b1ebc95c703248ef3cd14b3b1f481ecdc7ffd8b5ad66382130f8a7ae363829b8",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceSymbolGraphTest.xml": "39582763a074d8f37abd2f3b2a3069d2f53c18f696329e12a6d6d53992a4a23e",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.IdentifierTermBoundaryTest.xml": "324b013bf3278def986d4b311cefb612689242c9031d2ceef82db8b1838baa50",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceRelationsTest.xml": "887e7c2447e259fdd27a1d1534dc32e21683b0afa6abfffb759482bc4286845e",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceCatalogTest.xml": "39cd6724434358d25d79bc928dee983e96b0dfa20c7c592e5d14c264d700ac69",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.GenerationLifecycleTest.xml": "85d91139d82efde38a133d089c9c02d97b1d903f6f32122fbdc497bf2584b172",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceKernelBoundaryTest.xml": "61553a8be3f2d4a106a5a3f61d492709e9b4c93b4a7f7af41c160a3dcd4dbd3a",
+    "projects/07-stacks/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceRepositoryFactsTest.xml": "58c81a098a4608ae24d8eeac0bba7d23b59d724db8247acc9d95a66847034513",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceFeaturePacketTest.xml": "4260b530867653c93b09f73dc99c8ba4ec8ee3e03ba18914aac066fc1bf1b1b7",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RelevanceMetricsTest.xml": "903839d82127aee2e1f6eaadf647b4899b195802c2ad466d8ab7c3581a4e7b55",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.EvaluationJudgmentsTest.xml": "cc81b8b1ef54bd09d1e29553eb97cf7f34c46d5b4214302ce4b93e438e5cafd3",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceStudyBoundaryTest.xml": "12f57a977ffdb67e6fed5a521fc1ebe48fd15d75e7166093a8ba6e60412fec32",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.EvaluationSealTest.xml": "9b852c50fde9c647bec056bf2f5e81659d46a7eaa61a14a3f9620ea2e281f4e9",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourcePairwiseSelectionTest.xml": "c904ba74d7c9e96e80ca3e3385cc6c067a0af2400d184d35c4729853debd60b5",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourceWave3StudyTest.xml": "df208f571f7afc8e2c4959743489a62e92654d335269d77b585f0d1b5046ecfb",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.EvaluationFingerprintTest.xml": "e4fb60c70c86c76213085836c845c03ae58f0efbc2c605282c902e12db14bb20",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.PairwiseTrainingTest.xml": "392f9cc13467ddc765f6637b1125ba2d62fae37528bcbf22609c1f2b68c4336e",
+    "projects/07-stacks/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.Wave2ProtocolTest.xml": "5175758b29b2d5cb4f5ea0a7cb93c183429ba84f190597cc187783ee86e1dec2",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.TokenValidationTest.xml": "84526da878baf8c5d8371b5b67179711650ca9d638ac8ffb53487435269193bc",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RequestJsonTest.xml": "c0c31b99d9732de01ae440e5b3d9d84000065f5470c87daa959f6c98aeb97720",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.BrowserCredentialBoundaryTest.xml": "184938fa516e20f89c1c7723daf17b19233bda86f8216948ee598893b9fa5d95",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingConfigurationTest.xml": "e4ca83679280be8123f141a3e62f647aa0835546352c1f524b9c913af8b7a3a5",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.TenantMetricsTest.xml": "b63094d44660ac9073e2944e4e5c7b470fb45ffe6d8463a5fbd9d3746f2b2924",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.IssuerLifecycleTest.xml": "5bcfc1b745e2734910f677332e1522987683a7f288c02abd537307dcaa98bf77",
+    "projects/07-stacks/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.IngestionTasksTest.xml": "3d7d5ac167f04f6ec635684e80ee6decfc65d89e696417a88f3a26b99b78b08e",
+    "projects/07-stacks/cli/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SourcePackagedIT.xml": "b7910cefcb76a8dbe7f13ccc7c91fbd98f76eb2b7400966b9cfdf5233e163107",
+    "projects/07-stacks/index/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.KernelDiskFullIT.xml": "d080153531ea8c3374c43797852ac22e6914c55afbf2d263dcac3b984eeea72c",
+    "projects/07-stacks/service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.HttpIngestionLifecycleIT.xml": "a0795d4b6e676c51aa03d54d6be27a72e51299bc1ce07e97d70f272efbebf812",
+    "projects/07-stacks/service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.HttpSecurityIT.xml": "9d95e9813c8034da0ec38afe505deededf64b6d76a70b1b3c5b43957bee94b28"
+  },
+  "earlier_attempts": [
+    {
+      "result": "FAIL",
+      "trigger": "Strict Boolean JSON regression exposed empty-string coercion; fixed with explicit EmptyString rejection",
+      "log_sha256": "80eb9f3bfa45b4fbdcd90ee3ec685eb09da16df44ae544458f355ef8f0af6d5e"
+    },
+    {
+      "result": "FAIL",
+      "trigger": "Existing real HTTP cookie-plus-bearer CSRF assertion returned202 due to resource-server ignore matcher",
+      "log_sha256": "d99a42ae5a20451ad59b537c4ae4a443619c2514526ede3da5e462c0f9f059ed"
+    },
+    {
+      "result": "FAIL",
+      "trigger": "Restored CSRF matcher denied the request but default error dispatch returned401; direct redacted403 handler fixed the declared contract",
+      "log_sha256": "404cde54bdd4329830a354e5af0050df6a42f2f087b91c3dda0a7b561ae21ebc"
+    }
+  ],
+  "not_certified": [
+    "Fresh mutation campaign",
+    "Held-out relevance targets",
+    "Current-source performance",
+    "Repository-wide release or security certification",
+    "Hosted CI"
+  ]
+}

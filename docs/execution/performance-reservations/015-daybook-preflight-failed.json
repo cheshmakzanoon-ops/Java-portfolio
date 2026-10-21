@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-18T08:47:03.920129+00:00",
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T08:45:48.171965+00:00",
+    "command": [
+      "bash",
+      ".work/A01/run-full-reference.sh",
+      "--execute",
+      "--reservation",
+      "quiet-reference-15-daybook"
+    ],
+    "sourceRevision": "78d9e35afaeea66a9c22c9254ac69f7c2b0416c3",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T08:45:48.179415+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 7237013504,
+    "exitCode": 1,
+    "completedAtUtc": "2026-10-18T08:45:48.934005+00:00",
+    "elapsedSeconds": 0.7548022379996837,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "FAIL"
+  },
+  "status": "FAILED_PREFLIGHT_NO_MEASUREMENT",
+  "failure": "StudyError: Quiet boundary violated: active Java or unrelated containers",
+  "diagnosis": "Runner java_processes included historical stateZ entries by comm despite empty cmdline. Root outer census excluded zombies and recorded no live JVM. A narrow scratch-runner census correction and meaningful controls are required before a fresh full attempt.",
+  "measurementPhasesExecuted": 0,
+  "ownedDependenciesStarted": false,
+  "rawRun": {
+    "path": ".work/A01/full-reference/20261018T084548Z-a3f75597/run.json",
+    "sha256": "7e1c60427c596c03cd1482e1a6e8a7017551b3bbd4239ded5d1deb445c9b812a"
+  },
+  "rawCensus": {
+    "path": ".work/A01/full-reference/20261018T084548Z-a3f75597/preflight-quiet.json",
+    "sha256": "4bdfec686c4f26f61d1c38217ec9a4c4deaa330ea0b8c8f053b35042a6ede9ea",
+    "javaEntries": 68
+  },
+  "preservation": "Original attempt and83902016 runner are retained; no pass inferred or prior data replaced."
+}

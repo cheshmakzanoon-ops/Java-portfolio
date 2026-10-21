@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "project": "daybook",
+  "recordedAtUtc": "2026-10-18T01:48:01.430194+00:00",
+  "commitObservedAfterRun": "217d679a2c12c3f17bf9684b95fefa8053707167",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "productionSourceManifest": "evidence/integration-current.json",
+  "commandSequence": [
+    "projects/01-daybook/scripts/demo.sh",
+    "./scripts/portfolio.sh up daybook",
+    "./scripts/portfolio.sh reset-demo daybook",
+    "./scripts/portfolio.sh demo daybook",
+    "./scripts/portfolio.sh down daybook"
+  ],
+  "enclosingShellExitCode": 0,
+  "runs": [
+    {
+      "schemaVersion": 1,
+      "project": "daybook",
+      "sourceRevision": "working-tree:c71a10af9416f36878039baaad18ba9bb3ad98ad2cc9753b381e29c752d95292",
+      "workload": "five-minute-demo-v1",
+      "seed": 20261017,
+      "command": "projects/01-daybook/scripts/demo.sh",
+      "exitCode": 0,
+      "assertions": {
+        "passed": 9,
+        "failed": 0
+      },
+      "observations": [
+        "balanced journal committed",
+        "unbalanced journal rejected",
+        "same key returned original identifier",
+        "killed writer after commit; recovered retained receipt without duplicate",
+        "full reversal preserved source; repeated reversal request returned receipt",
+        "same file preserved results: matched, ambiguous, unmatched, duplicate, invalid",
+        "verified shadow replay promoted with zero pending events",
+        "authoritative statement returned keyset cursor and visibility boundary",
+        "source invariant audit: zero unbalanced or short journals"
+      ],
+      "measurements": {},
+      "limitations": [
+        "local disposable HS256 dev profile; protected RSA/OIDC behavior tested separately in integration suite",
+        "synthetic data only; no payment network",
+        "writer killed at database commit barrier before response headers of an actual HTTP request are emitted"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "project": "daybook",
+      "sourceRevision": "working-tree:c71a10af9416f36878039baaad18ba9bb3ad98ad2cc9753b381e29c752d95292",
+      "workload": "five-minute-demo-v1",
+      "seed": 20261017,
+      "command": "projects/01-daybook/scripts/demo.sh",
+      "exitCode": 0,
+      "assertions": {
+        "passed": 9,
+        "failed": 0
+      },
+      "observations": [
+        "balanced journal committed",
+        "unbalanced journal rejected",
+        "same key returned original identifier",
+        "killed writer after commit; recovered retained receipt without duplicate",
+        "full reversal preserved source; repeated reversal request returned receipt",
+        "same file preserved results: matched, ambiguous, unmatched, duplicate, invalid",
+        "verified shadow replay promoted with zero pending events",
+        "authoritative statement returned keyset cursor and visibility boundary",
+        "source invariant audit: zero unbalanced or short journals"
+      ],
+      "measurements": {},
+      "limitations": [
+        "local disposable HS256 dev profile; protected RSA/OIDC behavior tested separately in integration suite",
+        "synthetic data only; no payment network",
+        "writer killed at database commit barrier before response headers of an actual HTTP request are emitted"
+      ]
+    }
+  ],
+  "rawArtifacts": [
+    ".work/A01/demo-current.log",
+    ".work/A01/up-repeat.log",
+    ".work/A01/reset-repeat.log",
+    ".work/A01/demo-repeat.log",
+    ".work/A01/down-current.log"
+  ],
+  "teardownAssertions": {
+    "apiPortClosed": true,
+    "noOwnedRunningContainer": true
+  },
+  "limitations": [
+    "current working checkout; clean-checkout certification remains separate",
+    "local disposable HS256 dev profile; real RSA OIDC tested in integration",
+    "shared host; no performance timing inferred",
+    "the subsequent launcher sequence retained its enclosing shell status and terminal successful command markers, rather than separately logged numeric statuses"
+  ]
+}

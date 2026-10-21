@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "scope": "Faultline exact rule models and SARIF baseline configuration boundary",
+  "result": "PASS",
+  "exit_code": 0,
+  "observed_utc": "2026-10-21T20:18:49.823174+00:00",
+  "command": "./mvnw -B -ntp -f projects/09-faultline/pom.xml com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify",
+  "environment": {
+    "jdk": "Temurin 25.0.4.1+1",
+    "maven": "Checksum-pinned Maven 3.10.0 wrapper",
+    "preparation": "source scripts/cloud-env.sh; select the provisioned JDK in JAVA_HOME and PATH",
+    "external_services": "None; packaged tests start real local JVMs"
+  },
+  "run_log_created_epoch": 1792613570,
+  "freshness_basis": "Creation time of the unique redirected log before this Maven invocation, rounded down to the second; all selected reports must be newer. Queue waiting is included.",
+  "finished_utc": "2026-10-21T20:15:49Z",
+  "source_inputs": {
+    "manifest": "projects/09-faultline/evidence/configuration-hardening-20261021/source-manifest.sha256",
+    "files": 323,
+    "manifest_sha256": "588b5ed9248e54071e48e2556d425125dfe8a3ddd7d49b4f0c9cf77fb3051eaa",
+    "definition": "Project src files, POMs, rule and contract fixtures, plus root POM, Maven wrapper and wrapper properties; excludes target output"
+  },
+  "verification": {
+    "counts": {
+      "tests": 146,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": [
+      {
+        "module": "analysis-core",
+        "counts": {
+          "surefire": {
+            "tests": 70,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "report",
+        "counts": {
+          "surefire": {
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "cli",
+        "counts": {
+          "surefire": {
+            "tests": 16,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "evaluation",
+        "counts": {
+          "surefire": {
+            "tests": 37,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ],
+    "failures": []
+  },
+  "mutation": {
+    "modules": [
+      {
+        "module": "analysis-core",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 527,
+          "SURVIVED": 106,
+          "NO_COVERAGE": 94
+        },
+        "killedPercent": 72.48968363136176,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "report",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 30
+        },
+        "killedPercent": 100.0,
+        "requiredKilledPercent": 70
+      }
+    ],
+    "outcomes": {
+      "KILLED": 557,
+      "SURVIVED": 106,
+      "NO_COVERAGE": 94
+    },
+    "failures": []
+  },
+  "core_aggregate_coverage": {
+    "INSTRUCTION": {
+      "covered": 9683,
+      "missed": 448
+    },
+    "BRANCH": {
+      "covered": 1111,
+      "missed": 192
+    },
+    "LINE": {
+      "covered": 1735,
+      "missed": 87
+    },
+    "COMPLEXITY": {
+      "covered": 744,
+      "missed": 204
+    },
+    "METHOD": {
+      "covered": 230,
+      "missed": 22
+    },
+    "CLASS": {
+      "covered": 49,
+      "missed": 0
+    }
+  },
+  "regressions": [
+    "Exact JSON shapes and integer types; required arrays; supported fields and contexts; duplicate keys and declarations; trailing documents",
+    "Actual byte budgets, regular nonsymlink files, bounded depth and numeric tokens, and redacted diagnostics before target parsing",
+    "Method descriptor validation before ASM allocation; constructor void return and implicit receiver; returned-value source and sanitizer contracts",
+    "Explicit Faultline SARIF version/model/rule/fingerprint identity while allowing unrelated SARIF extensions",
+    "Real shaded CLI emits a legal long-identity SARIF larger than 700 KiB, then reads the same file as an unchanged baseline under a 128 MiB child heap"
+  ],
+  "artifact": {
+    "path": "projects/09-faultline/cli/target/faultline-cli-1.0.0-SNAPSHOT.jar",
+    "sha256": "9e19bd8ae04b48a7cada6285ba6d6c9f1c49186a7fd5d7008c45d81475d9c93d"
+  },
+  "log_sha256": "7777be524f92ef83a813fdca89d11c36fad61e45a07f5ebce064d254f39d00f8",
+  "report_sha256": {
+    "projects/09-faultline/analysis-core/target/pit-reports/mutations.xml": "4c5e65337b15f6d57148268f7d670eda259615398aa7bc6740364ca5457c5881",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.ArchiveIntegrityTest.xml": "826951163acfaaaf101b71257548488fc557db3c66e8fb7addff6d47e5f1732b",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.DescriptorBudgetTest.xml": "1402b4a35347e25318e453e2184cb5b66931ff2621d2e36151bd2a18c98697e7",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.EngineTest.xml": "63e0deb941a4a4ae825175366afc9d934f3416b2c107a60d8ba348fa3e086b74",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.InputManifestOwnershipTest.xml": "8b7bca63f96a72b8a4a043436c282fbe8bdcbaee2a0e6ce9c634304514425c36",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.InvocationSemanticsTest.xml": "d342960f105623ef4a5357d4f320cb247a6127280d54d0ae047117e941a94b54",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.LatticePropertiesTest.xml": "e8a09dc1912fe66d352adb7410d1f61b3fef4ac745da9d113f3e8b1ca5261cf6",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.MethodSummaryContractTest.xml": "10fdf432e972dcf4ba46c376233d6fc286a273384a53098473e17ee855ad248a",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.OpcodeTest.xml": "a1171dc96a60c85580c1a007d58db72f297d93b7acd153b20c5a0100d4b19367",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.SourceIdentityInputTest.xml": "be7e3b63d8e742935f56c038f4a1e92409005d90673f1b85a14689431d8046d0",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.StructuralCoverageTest.xml": "42514ce25613d9db21d3f35f2222dfd932a52a56980135b0d049d016869af95c",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.VerifierFramesTest.xml": "45ead3b27cdfa73c51092705234061732b45acb842c4b20afa28807cdaf9312f",
+    "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.dataflow.InvocationEffectsTest.xml": "63995992f6bf088bfe785817900e9d006cb649457e4fa34cf484b6f3d4a101ac",
+    "projects/09-faultline/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.cli.ConfigurationFailureTest.xml": "c90bacbdb3210a82b58576afb8da67c2a0cede6e608461c81fbc4bba9c2a2a82",
+    "projects/09-faultline/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.cli.RuleModelLoaderTest.xml": "1862c032ea16266459cadf8919494297a52f23d5d109ff48d9c5d3b5f72c1ae0",
+    "projects/09-faultline/evaluation/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.CliProcessIT.xml": "9875bddac05d67b404476eae566803fa2004392c48d888663d71d44e6718f4dd",
+    "projects/09-faultline/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.BoundaryTest.xml": "ab08b1b2cca77e777d303edf5eea4d963d84d7a5329a6935a1816b90f820e0f7",
+    "projects/09-faultline/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.CorpusTest.xml": "3ab918b467295d44bca01854f4ed38a14ddae4ab3a1feff45f30d028e44634d0",
+    "projects/09-faultline/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.OutputSafetyTest.xml": "36796813f13c9b12afc4608e3153668537bbddcbd20f45200ff883648e56719d",
+    "projects/09-faultline/report/target/pit-reports/mutations.xml": "26647e25f4a4880e023b18e6b4ad11c074770822577a28aab1d71fd42dca24d1",
+    "projects/09-faultline/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.report.ConfigurationBoundaryTest.xml": "e2b1aa8ffb159fed21be01a10fc6cba39af53131ca6314069d259e0e6fcca05d",
+    "projects/09-faultline/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.report.ExplanationOwnershipTest.xml": "9bf2f7195cb206df02e62bdb50ddb7314dd1a2d3fedfaee335099ddedbc984e9",
+    "projects/09-faultline/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.report.StableIdentityTest.xml": "0540eb2e4717fc4dfe4cbb21deb6dcf4bda77f50a8cdd95764274d84d7d0863c"
+  },
+  "limits": [
+    "Existing PIT targets and 70% gates were preserved; new parser classes are not claimed as part of that mutation target set",
+    "106 surviving and 94 uncovered core mutants remain counted; no exclusions or threshold reductions",
+    "Frozen 120-case corpus and labels were not changed; synthetic controls do not establish field accuracy or security certification",
+    "No fresh performance benchmark, demo lifecycle, hosted CI certification, or repository-wide release certificate"
+  ],
+  "review_corrections": [
+    "Independent review reproduced an impossible nonvoid constructor contract; exact constructor semantics are now required",
+    "Independent review reproduced rejection of Faultline own 724094-byte SARIF by a blanket 65536-character string cap; string bounds now follow the existing document byte budget and a real packaged roundtrip guards compatibility"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "identity": {
+    "certifiedBuild": 22,
+    "sourceFingerprint": "69d4198a6b69bc6ed26750141d39651e4be180c200a7d3c8879c7d4b97219041",
+    "cliJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+    "prespecifiedRulesSha256": "462fddb9978da91fb808c33b575ae2f3b200eacdf378a8784f655997e21465ae"
+  },
+  "profile": "CODE_NONE",
+  "selectedMode": "NO_PATH",
+  "validation": {
+    "ndcg10": 0.5532469484631737,
+    "identifierMRR10": 0.7833333333333333
+  },
+  "objective": 0.7376625979508983,
+  "modes": {
+    "BASELINE": {
+      "ndcg10": 0.4369789084142504,
+      "identifierMRR10": 0.75
+    },
+    "SOURCE_AWARE": {
+      "ndcg10": 0.5523154629166996,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_IDENTIFIERS": {
+      "ndcg10": 0.555764901884786,
+      "identifierMRR10": 0.7
+    },
+    "NO_PATH": {
+      "ndcg10": 0.5532469484631737,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_PROSE": {
+      "ndcg10": 0.4836436701351396,
+      "identifierMRR10": 0.75
+    },
+    "NO_CONCEPTS": {
+      "ndcg10": 0.5088927626037897,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_COVERAGE": {
+      "ndcg10": 0.5523154629166996,
+      "identifierMRR10": 0.7833333333333333
+    },
+    "NO_SIMILARITY": {
+      "ndcg10": 0.5417399157401148,
+      "identifierMRR10": 0.7666666666666666
+    },
+    "NO_CODE_FEATURES": {
+      "ndcg10": 0.5523154629166996,
+      "identifierMRR10": 0.7833333333333333
+    }
+  },
+  "decision": "Pre-held-out selection from development/validation only: NO_PATH\nRanking profile: CODE_NONE\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: 40f2af1627ba33470563b060c3737b2ff32049eca4eaa438ed3873520690a6af\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+  "command": [
+    "/workspace/.tools/jdk-25/bin/java",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Xms128m",
+    "-Xmx2g",
+    "-Dstacks.ranking-profile=CODE_NONE",
+    "-jar",
+    "/workspace/Java-portfolio/.work/A07/artifacts/build22-cli.jar",
+    "evaluate",
+    ".work/A07/code-build22-code_none",
+    "projects/07-stacks/fixtures",
+    "projects/07-stacks/evidence/relevance/code-build22/code_none/attempt-1",
+    "development"
+  ],
+  "rawLog": ".work/A07/code-build22-code_none-attempt-1.log",
+  "rawLogSha256": "f0671f4a7d6ebde2e2bd3df2d5e2e2f60ccbd04095e4f46f96adefe1a4a861d7",
+  "perQuery": "projects/07-stacks/evidence/relevance/code-build22/code_none/attempt-1/development-per-query.csv",
+  "perQuerySha256": "e6bdb05da4b40312467b7f77b754a7ea75ee8d9d1fa2d33fb38d45f5d1f6b447",
+  "selectionFile": "projects/07-stacks/evidence/relevance/code-build22/code_none/attempt-1/selection.txt",
+  "selectionFileSha256": "47e0970f538638606fdb8a2f7ffb87f2c0b53c472b5a8598d170ba00dc9b489f"
+}

@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "project": "backtrace",
+  "sourceRevision": "49116867098a5ac17986c4ccc49361c0d49f8303",
+  "buildInputFingerprint": "ff419c716c4d8a613db19bd1c2909463e80fd26b3982dcf2eff9880efc4631f9",
+  "sourceArchiveSha256": "21a8fbbaac5cd4ebb93be026982b09379fc8cbdf2359b2a2710b94122a4138b6",
+  "agentJarSha256": "86fd35575c882790dc3d3a8aced428a51a9ec136b6f2b1b443a6b6ae184481f8",
+  "workload": "production-live-observer-cardinality-slow-consumer-v1",
+  "environment": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "jvmFlags": [
+      "-Xms256m",
+      "-Xmx256m",
+      "-XX:ActiveProcessorCount=2"
+    ],
+    "javaRuntimeVersion": "25.0.4.1+1-LTS",
+    "javaVendor": "Eclipse Adoptium",
+    "hostContention": "shared build host; functional boundedness only, not overhead evidence"
+  },
+  "command": [
+    "java",
+    "-Xms256m",
+    "-Xmx256m",
+    "-XX:ActiveProcessorCount=2",
+    "-javaagent:/workspace/Java-portfolio/.work/A08/final-observer-stress-6/agent.jar=config=/workspace/Java-portfolio/.work/A08/final-observer-stress-6/agent.yaml",
+    "-cp",
+    "/workspace/Java-portfolio/projects/08-backtrace/cli/target/classes:/workspace/Java-portfolio/projects/08-backtrace/jfr/target/backtrace-jfr-1.0.0-SNAPSHOT.jar:/workspace/Java-portfolio/projects/08-backtrace/probe/target/backtrace-probe-1.0.0-SNAPSHOT.jar:/workspace/Java-portfolio/projects/08-backtrace/analysis/target/backtrace-analysis-1.0.0-SNAPSHOT.jar:/workspace/Java-portfolio/projects/08-backtrace/report/target/backtrace-report-1.0.0-SNAPSHOT.jar:/workspace/Java-portfolio/projects/08-backtrace/workloads/target/backtrace-workloads-1.0.0-SNAPSHOT.jar:/workspace/Java-portfolio/.work/A08/m2/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.jar:/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-databind/2.21.5/jackson-databind-2.21.5.jar:/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar:/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-core/2.21.5/jackson-core-2.21.5.jar",
+    "io.github.cheshmakzanoon.portfolio.backtrace.cli.ObserverStress",
+    "1200",
+    "/workspace/Java-portfolio/.work/A08/final-observer-stress-6/observer"
+  ],
+  "startedUtc": "2026-10-18T01:26:34.908068+00:00",
+  "completedUtc": "2026-10-18T01:46:57.321225+00:00",
+  "exitCode": 0,
+  "assertions": {
+    "durationAtLeast1200Seconds": true,
+    "heapBelow256MiB": true,
+    "queuePayloadBelow64MiB": true,
+    "queueDrained": true,
+    "directoryBelow512MiB": true,
+    "retainedRecordingBelow256MiB": true,
+    "methodsWithin10000": true,
+    "windowsWithin900": true,
+    "hostWorkersMadeProgress": true,
+    "queueDropsObserved": true,
+    "allRetainedWindowsIncomplete": true,
+    "liveNormalizedFixtureSecretAbsent": true,
+    "replayedNormalizedFixtureSecretAbsent": true,
+    "probeHealthyWithoutLoss": true,
+    "acceptedTimingsEqualActualMonitorHostOperations": true
+  },
+  "measurements": {
+    "allWindowsIncomplete": true,
+    "boundedMethods": 10000,
+    "boundedWindows": 900,
+    "contention": "functional stress on shared build host; not overhead evidence",
+    "elapsedSeconds": 1204.969420742,
+    "fixtureSecretAbsent": true,
+    "hostOperations": [
+      1138170,
+      2678687,
+      87210,
+      87449
+    ],
+    "hostWorkerFailed": false,
+    "observerDirectoryBytes": 32222726,
+    "overflowCounters": {
+      "allocationOverflow": 0,
+      "callbackFailures": 0,
+      "clippedStrings": 60850,
+      "consumerFailures": 0,
+      "contentionOverflow": 0,
+      "durationClipped": 0,
+      "jfrDataLossBytes": 0,
+      "missingSampleStacks": 0,
+      "queueDrops": 46361673,
+      "stackOverflow": 280438,
+      "timingOverflow": 0,
+      "truncatedStacks": 0,
+      "unsupportedFields": 0,
+      "windowOverflow": 22139
+    },
+    "passed": true,
+    "peakConservativeQueuePayloadBytes": 29225528,
+    "peakObservedHeapBytes": 200043080,
+    "peakObserverDirectoryBytes": 32222726,
+    "profileEventCount": 153386,
+    "queueDrops": 46361673,
+    "queueRetainedBytesAfterDrain": 0,
+    "recordingBytes": 27365839,
+    "requestedSeconds": 1200,
+    "stopReason": "closed",
+    "syntheticIngressOffered": 45590000
+  },
+  "agentStatus": {
+    "collectionHealthy": "true",
+    "queueDrops": "0",
+    "shutdownDiscarded": "0",
+    "incomplete": "false",
+    "probeFailures": "0",
+    "methodOverflow": "0",
+    "timingHistogramOverflow": "0",
+    "durationClipped": "0",
+    "observedTimingEvents": "174659",
+    "rawTimingRowsOmitted": "164659",
+    "activeMethodIdLimit": "1",
+    "activeQueueCapacity": "65536",
+    "skips": "{constructorOrInitializer=3, namedModule=1, outsideAllowlist=522, outsideMethodSelection=3, toolOrJdk=36, unsupportedLoader=902}"
+  },
+  "rawArtifact": ".work/A08/final-observer-stress-6",
+  "rawSummarySha256": "99d542390c1f820de7df3725c4019764bce3f0d32a4279a6774adf198bbc522e",
+  "limitations": [
+    "Shared-host functional boundedness; not overhead evidence.",
+    "Synthetic high-cardinality samples share the actual production queue/aggregators with live JFR; synthetic sample counts are not claimed as native CPU observations.",
+    "JFR15-minute retention intentionally covers less than this20-minute live run; live aggregate and offline retained-file scopes differ.",
+    "Queue drops include native JFR and synthetic offers; syntheticIngressOffered alone is not a total-offer conservation denominator.",
+    "Final source changes after this run are test-only assertion removal and a clarified report-unit text; collector/probe/transformer/aggregation/settings remain unchanged. Final certification records that component identity."
+  ],
+  "jsonHtmlExportPrivacyChecks": [
+    {
+      "path": ".work/A08/final-observer-stress-6/observer/report.json",
+      "sha256": "bf9fdfefc2c63e59977ad650b860c8080de0ffa846eb5aa8e85c4d0bb125af0b",
+      "fixtureSecretAbsent": true
+    },
+    {
+      "path": ".work/A08/final-observer-stress-6/observer/report.html",
+      "sha256": "b30a704984fc6c581ceea730701ce626e3244dde5cc49fec436cd942242b4aa8",
+      "fixtureSecretAbsent": true
+    },
+    {
+      "path": ".work/A08/final-observer-stress-6/replayed-report/report.json",
+      "sha256": "a99bda6f20e7d56a0cadd864feff59078940f3dc51b5591d5110a56ece000f89",
+      "fixtureSecretAbsent": true
+    },
+    {
+      "path": ".work/A08/final-observer-stress-6/replayed-report/report.html",
+      "sha256": "ef2aec3443d8319b4753a45c494e5186917bfb18513e513ac4f96da2470ddc01",
+      "fixtureSecretAbsent": true
+    }
+  ]
+}

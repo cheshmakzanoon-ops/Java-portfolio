@@ -1,0 +1,27 @@
+{
+  "requestedAtUtc": "2026-10-18T03:35:20.991341+00:00",
+  "command": [
+    "bash",
+    "-c",
+    "source scripts/cloud-env.sh; projects/09-faultline/scripts/benchmark.sh"
+  ],
+  "sourceRevision": "badaaffb09ba9b0f631242cefdc8a64b98d49d26",
+  "lockPaths": [
+    "/workspace/Java-portfolio/.work/build-slots/0.lock",
+    "/workspace/Java-portfolio/.work/build-slots/1.lock",
+    "/workspace/Java-portfolio/.work/build-slots/2.lock"
+  ],
+  "startedAtUtc": "2026-10-18T03:35:20.994042+00:00",
+  "otherJavaProcessesAtReservation": [],
+  "otherApplicationContainersAtReservation": [],
+  "cpuQuota": "400000 100000",
+  "memoryLimit": "34359738368",
+  "filesystemType": "overlayfs",
+  "freeDiskBytes": 8251764736,
+  "exitCode": 0,
+  "completedAtUtc": "2026-10-18T03:35:35.779489+00:00",
+  "elapsedSeconds": 14.785904148000554,
+  "remainingJavaProcesses": [],
+  "remainingApplicationContainers": [],
+  "result": "PASS"
+}

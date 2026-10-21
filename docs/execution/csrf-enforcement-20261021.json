@@ -1,10 +1,10 @@
 {
   "recorded_at_utc": "2026-10-21T20:19:56.419401+00:00",
-  "scope": "Configured CSRF enforcement and complete ordinary verification for ClearLedger, TenantShield, and RouteWeaver. DurableFlow has a separate integration receipt.",
+  "scope": "Configured CSRF enforcement and complete ordinary verification for Daybook, Gatehouse, and Switchback. Handoff has a separate integration receipt.",
   "projects": [
     {
-      "project": "01-clearledger",
-      "verify_command": "./mvnw -f projects/01-clearledger/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "project": "01-daybook",
+      "verify_command": "./mvnw -f projects/01-daybook/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
       "exit_code": 0,
       "started_at_utc": "2026-10-21T20:12:39.155897+00:00",
       "counts": {
@@ -18,17 +18,17 @@
       "pre_fix_counterexample_log_sha256": "0715008b16807e7c9800902e0de54170537cef510e0148753dd97b703a5a0490",
       "changed_sources": [
         {
-          "path": "projects/01-clearledger/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/clearledger/ClearLedgerApplication.java",
+          "path": "projects/01-daybook/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/DaybookApplication.java",
           "sha256": "51ed4dc8b9b68f9025255712614c87aea4cb55c47b02e1079c1667c6e11635df"
         },
         {
-          "path": "projects/01-clearledger/ledger-api/src/test/java/io/github/cheshmakzanoon/portfolio/clearledger/ConfiguredCsrfTest.java",
+          "path": "projects/01-daybook/ledger-api/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/ConfiguredCsrfTest.java",
           "sha256": "85b3e14f36d5c40110f7adeb78e844c070cde44275a61d3cf4bc11eed5b011a2"
         }
       ],
       "reports": [
         {
-          "path": "projects/01-clearledger/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.BrowserCsrfTest.xml",
+          "path": "projects/01-daybook/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.BrowserCsrfTest.xml",
           "sha256": "e4aa3a4529124ca241a5062e8b518dedce5bfcac44068c436c8a486546f4cd92",
           "tests": 1,
           "failures": 0,
@@ -36,7 +36,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.ConfiguredCsrfTest.xml",
+          "path": "projects/01-daybook/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.ConfiguredCsrfTest.xml",
           "sha256": "59070a35724f882608fd68105a6d7f1d1419869eef8db27951aa0bd2bd8cfdac",
           "tests": 6,
           "failures": 0,
@@ -44,7 +44,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.RequestJsonTest.xml",
+          "path": "projects/01-daybook/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.RequestJsonTest.xml",
           "sha256": "ef6324b524e20585a68392fc5b323fdb7fe136f37cb4bf41f0c2435eb7d297fc",
           "tests": 1,
           "failures": 0,
@@ -52,7 +52,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.AccountingProperties.xml",
+          "path": "projects/01-daybook/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.AccountingProperties.xml",
           "sha256": "2d1a6d3eff9723badcd5f7cf251b151f7de35429ee2519b2d1128556fa44af6e",
           "tests": 2,
           "failures": 0,
@@ -60,7 +60,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.AccountingTest.xml",
+          "path": "projects/01-daybook/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.AccountingTest.xml",
           "sha256": "a8b527b94e95da3b27d2588e945d1b2536c9ca5df45a0dac0ae5a8db872555c4",
           "tests": 7,
           "failures": 0,
@@ -68,7 +68,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.DomainArchitectureTest.xml",
+          "path": "projects/01-daybook/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.DomainArchitectureTest.xml",
           "sha256": "f3dbac74590bda81813c2955c9fba741ae630c621afa29f16de448ff2b0ab529",
           "tests": 1,
           "failures": 0,
@@ -76,7 +76,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.ReconciliationTest.xml",
+          "path": "projects/01-daybook/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.ReconciliationTest.xml",
           "sha256": "746c783586965939da225f970f2026898024a71770155452eaf14bd83e8dce2d",
           "tests": 9,
           "failures": 0,
@@ -84,7 +84,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.RetryBackoffTest.xml",
+          "path": "projects/01-daybook/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.RetryBackoffTest.xml",
           "sha256": "59cb37986f45bbe2f146504401d6247832a554cd0b9e3c1c8969c8fcd59c58d4",
           "tests": 5,
           "failures": 0,
@@ -92,7 +92,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.TransactionRetryTest.xml",
+          "path": "projects/01-daybook/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.TransactionRetryTest.xml",
           "sha256": "c1dccd102a7402ad16caebb1624ed851f05ca9cca0fb990934bdda95a8a90008",
           "tests": 15,
           "failures": 0,
@@ -100,7 +100,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/01-clearledger/ledger-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.clearledger.WorkloadClientRetryTest.xml",
+          "path": "projects/01-daybook/ledger-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.WorkloadClientRetryTest.xml",
           "sha256": "e0f99be3cc30d7c70ea0776576ee28514f075bb5461e3e42010714480844dcc4",
           "tests": 5,
           "failures": 0,
@@ -121,8 +121,8 @@
       }
     },
     {
-      "project": "05-tenantshield",
-      "verify_command": "./mvnw -f projects/05-tenantshield/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "project": "05-gatehouse",
+      "verify_command": "./mvnw -f projects/05-gatehouse/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
       "exit_code": 0,
       "started_at_utc": "2026-10-21T20:12:44.189826+00:00",
       "counts": {
@@ -136,17 +136,17 @@
       "pre_fix_counterexample_log_sha256": "b3c5c2c62d67ca32d087cd23d6fc2e0348baed8cb099ee389ee53b39e9217923",
       "changed_sources": [
         {
-          "path": "projects/05-tenantshield/decision-service/src/main/java/io/github/cheshmakzanoon/portfolio/tenantshield/DecisionApplication.java",
+          "path": "projects/05-gatehouse/decision-service/src/main/java/io/github/cheshmakzanoon/portfolio/gatehouse/DecisionApplication.java",
           "sha256": "56e4963c2308175b254eb1fa369ad4742355e48c1f9cc7eb6539f766cc0eb982"
         },
         {
-          "path": "projects/05-tenantshield/decision-service/src/test/java/io/github/cheshmakzanoon/portfolio/tenantshield/ConfiguredCsrfTest.java",
+          "path": "projects/05-gatehouse/decision-service/src/test/java/io/github/cheshmakzanoon/portfolio/gatehouse/ConfiguredCsrfTest.java",
           "sha256": "821b9d8829dfd97e932f1a4daaefd327230bfdc850fbaf780eab34febff8e453"
         }
       ],
       "reports": [
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.BrowserCsrfTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.BrowserCsrfTest.xml",
           "sha256": "1664eb57d62953503287cab98c51e36186ed55029de3a0813441d495480d96d1",
           "tests": 2,
           "failures": 0,
@@ -154,7 +154,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.CompiledPoliciesTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.CompiledPoliciesTest.xml",
           "sha256": "032629ab05a7eb61e7e79a99911242ed99bafb5b4605455b60f327f832131127",
           "tests": 3,
           "failures": 0,
@@ -162,7 +162,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.ConfiguredCsrfTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.ConfiguredCsrfTest.xml",
           "sha256": "e39af34a3fda3d12acac0e6c1d57c4cd989309a9f667ef68cf7a91d3fa886e7a",
           "tests": 6,
           "failures": 0,
@@ -170,7 +170,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.JsonConfigurationTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.JsonConfigurationTest.xml",
           "sha256": "5fabef24df3fabb28e3719527605e8670826392e2eb9433131f59bbb3a71e7e7",
           "tests": 1,
           "failures": 0,
@@ -178,7 +178,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.JwtSecurityTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.JwtSecurityTest.xml",
           "sha256": "a4a2acd6a30e00d73276107f8173fe9461745ddfe166426e47b069f9feeb8f1a",
           "tests": 1,
           "failures": 0,
@@ -186,7 +186,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.PublicationPreconditionsTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.PublicationPreconditionsTest.xml",
           "sha256": "842f985e01820bd3c1b64fe2398b5bf5d771374fa0a9bad8db1cf9a6bf1b7a4e",
           "tests": 3,
           "failures": 0,
@@ -194,7 +194,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.RequestBoundsTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.RequestBoundsTest.xml",
           "sha256": "1af19d5091e13006a4bb49787351398a28f6336799694bcf24d853ab74df65e4",
           "tests": 4,
           "failures": 0,
@@ -202,7 +202,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.SnapshotAuthorizationTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.SnapshotAuthorizationTest.xml",
           "sha256": "ba34c0fe6c3a70892a0c5dd4c7a7c2fe986d3016bc960777cd19abcda6104704",
           "tests": 3,
           "failures": 0,
@@ -210,7 +210,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.TenantAdmissionTest.xml",
+          "path": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.TenantAdmissionTest.xml",
           "sha256": "24abc7802916ecaa26a32ac6628633cc3e40371809829688cb739c7f04ba9edf",
           "tests": 3,
           "failures": 0,
@@ -218,7 +218,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.DocumentAuthorizationTest.xml",
+          "path": "projects/05-gatehouse/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.DocumentAuthorizationTest.xml",
           "sha256": "e54b31c2a8d95b251cb464c486526a67019e9052b0c09188c0713f998f4e968b",
           "tests": 3,
           "failures": 0,
@@ -226,7 +226,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.ProtectedClaimsTest.xml",
+          "path": "projects/05-gatehouse/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.ProtectedClaimsTest.xml",
           "sha256": "318dadf57609ef07df7cfa0c3d77fe6545fc6d7f40ce44b1bd495f6e326fb772",
           "tests": 1,
           "failures": 0,
@@ -234,7 +234,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.ArchitectureTest.xml",
+          "path": "projects/05-gatehouse/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.ArchitectureTest.xml",
           "sha256": "960448dfe395bfd81a929e248ae6a720e2e42d0cf046e9867b0650a0e4715494",
           "tests": 1,
           "failures": 0,
@@ -242,7 +242,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/05-tenantshield/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.tenantshield.PolicyEngineTest.xml",
+          "path": "projects/05-gatehouse/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest.xml",
           "sha256": "cf64dafe312ceaaeed200264217e46cbf882ed7cf74f2c33803efb8f9bfb2342",
           "tests": 18,
           "failures": 0,
@@ -263,8 +263,8 @@
       }
     },
     {
-      "project": "10-routeweaver",
-      "verify_command": "./mvnw -f projects/10-routeweaver/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "project": "10-switchback",
+      "verify_command": "./mvnw -f projects/10-switchback/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
       "exit_code": 0,
       "started_at_utc": "2026-10-21T20:13:39.472684+00:00",
       "counts": {
@@ -278,17 +278,17 @@
       "pre_fix_counterexample_log_sha256": "362d3daf729c5cd1ca33426cb3541beed7a6ec43503b06f637e92d30bfc108f5",
       "changed_sources": [
         {
-          "path": "projects/10-routeweaver/routeweaver-service/src/main/java/io/github/cheshmakzanoon/portfolio/routeweaver/Security.java",
+          "path": "projects/10-switchback/switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Security.java",
           "sha256": "834d5f4ed2edd392fb40c5ab1e79cce7198b31c3640211ebc6f0909531e4d4eb"
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-service/src/test/java/io/github/cheshmakzanoon/portfolio/routeweaver/HttpInputTest.java",
+          "path": "projects/10-switchback/switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/HttpInputTest.java",
           "sha256": "1e5be0c34e0515adbcb5e1124335a79c288b45eae06821ba0c76d6ac0b922645"
         }
       ],
       "reports": [
         {
-          "path": "projects/10-routeweaver/routeweaver-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.DomainBoundsTest.xml",
+          "path": "projects/10-switchback/switchback-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.DomainBoundsTest.xml",
           "sha256": "bc3dcdcb08b57943138ddfe8f4c1ba232f30b2e7689678c85fa4fc2db324e3ad",
           "tests": 3,
           "failures": 0,
@@ -296,7 +296,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.ModelTest.xml",
+          "path": "projects/10-switchback/switchback-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.ModelTest.xml",
           "sha256": "dd48f39de23d7ae041049bb5e863c3c2052d0304d4b1506d51cc00d5dd17301c",
           "tests": 7,
           "failures": 0,
@@ -304,7 +304,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.CancellationFailureTest.xml",
+          "path": "projects/10-switchback/switchback-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.CancellationFailureTest.xml",
           "sha256": "e9787b053b96f42d4729ae75c2d7a953bf22d7b94cd09108e011adea6ff5659e",
           "tests": 1,
           "failures": 0,
@@ -312,7 +312,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.PlanningTest.xml",
+          "path": "projects/10-switchback/switchback-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.PlanningTest.xml",
           "sha256": "195f75ffcc644673f6e5a37522cf2bced5ea790674c5b0daeb16a6ae901b8ff3",
           "tests": 15,
           "failures": 0,
@@ -320,7 +320,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.CancellationPollTest.xml",
+          "path": "projects/10-switchback/switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.CancellationPollTest.xml",
           "sha256": "8c9f7fc8e1cb53e31c7527cc0c2dbb878106f0da89e51c480d8c2361806457d8",
           "tests": 2,
           "failures": 0,
@@ -328,7 +328,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.HttpInputTest.xml",
+          "path": "projects/10-switchback/switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.HttpInputTest.xml",
           "sha256": "95380b4727c115e3502af796b81e41e112a15677325c51b8d6c9d430ad8b49d7",
           "tests": 4,
           "failures": 0,
@@ -336,7 +336,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.OidcTest.xml",
+          "path": "projects/10-switchback/switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.OidcTest.xml",
           "sha256": "7269f5a97fee2fc0a3d312c86d9f88c5a8c28f86fb0a49d2e701cac6e62a057b",
           "tests": 1,
           "failures": 0,
@@ -344,7 +344,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.SecurityTest.xml",
+          "path": "projects/10-switchback/switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.SecurityTest.xml",
           "sha256": "9ceea784ad36bb7b7669893d124288ad0bd5188c631c4b18cd06537287513d10",
           "tests": 6,
           "failures": 0,
@@ -352,7 +352,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.TransactionTest.xml",
+          "path": "projects/10-switchback/switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.TransactionTest.xml",
           "sha256": "a3208a19c175424473135105455126945d96b89c7acefc6f51c0c7356a0725bf",
           "tests": 1,
           "failures": 0,
@@ -360,7 +360,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.ArchitectureTest.xml",
+          "path": "projects/10-switchback/switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest.xml",
           "sha256": "fa84a4c5392684f5c3f37f36645e56f30cd5f3e3cc5c53b54177d329fc6a1247",
           "tests": 2,
           "failures": 0,
@@ -368,7 +368,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.DriverInputTest.xml",
+          "path": "projects/10-switchback/switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.DriverInputTest.xml",
           "sha256": "27a3d842d066850e7a91b0bf9924b951750556efbcbe8555d31b956899b937ef",
           "tests": 2,
           "failures": 0,
@@ -376,7 +376,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.OracleConcurrencyTest.xml",
+          "path": "projects/10-switchback/switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.OracleConcurrencyTest.xml",
           "sha256": "6dd4d4812335a45fde72f4e830a00b2c307b05e0303fc68011508157f40ede6e",
           "tests": 1,
           "failures": 0,
@@ -384,7 +384,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.VerificationPropertiesTest.xml",
+          "path": "projects/10-switchback/switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest.xml",
           "sha256": "c1b7910366926df6688fb9c7f32b0a03307c431c699099b7773cbc96419a7ed0",
           "tests": 2,
           "failures": 0,
@@ -392,7 +392,7 @@
           "skipped": 0
         },
         {
-          "path": "projects/10-routeweaver/routeweaver-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.routeweaver.VerificationTest.xml",
+          "path": "projects/10-switchback/switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.VerificationTest.xml",
           "sha256": "d620d2856dd9255ef727e473871b53e3afdd6cc0610d5540b0741b9d3d7f2123",
           "tests": 6,
           "failures": 0,
@@ -412,8 +412,8 @@
     }
   ],
   "unmodified_read_only_services": [
-    "projects/04-pulsestream/service (GET-only query endpoints)",
-    "projects/05-tenantshield/demo-resource-server (GET-only document endpoint)"
+    "projects/04-latearrival/service (GET-only query endpoints)",
+    "projects/05-gatehouse/demo-resource-server (GET-only document endpoint)"
   ],
   "schema_version": 1,
   "runtime": {
@@ -424,8 +424,8 @@
   "limits": [
     "No PostgreSQL, Keycloak, or Docker integration profile was rerun for these three projects in this verification.",
     "No mutation, benchmark, hosted CI, or release certification is claimed by this receipt.",
-    "ClearLedger and TenantShield configured-filter-chain fixtures stub only JwtDecoder; they exercise the actual production security chain, CSRF token repository, authentication requirement, and direct denial responses.",
-    "RouteWeaver uses a real embedded HTTP application and a loopback RSA OIDC discovery/JWKS issuer. Its rejection fixture fails if persistence is accessed.",
+    "Daybook and Gatehouse configured-filter-chain fixtures stub only JwtDecoder; they exercise the actual production security chain, CSRF token repository, authentication requirement, and direct denial responses.",
+    "Switchback uses a real embedded HTTP application and a loopback RSA OIDC discovery/JWKS issuer. Its rejection fixture fails if persistence is accessed.",
     "Source hashes identify the changed production and regression files. Report paths are repository-relative; raw Maven reports remain in ignored target directories and local build logs are represented by hashes.",
     "Prior project integration, mutation, deployment and performance receipts remain historical and unchanged."
   ],

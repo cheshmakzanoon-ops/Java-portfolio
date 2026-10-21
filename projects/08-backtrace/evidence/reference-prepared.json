@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "project": "backtrace",
+  "status": "PREPARED_NOT_RUN",
+  "verificationWorkingTreeFingerprint": "ad35aee1cc5395e36b1cde9ddac88db635ac78be26a1c51f963b834153fbb351",
+  "buildInputFingerprint": "093130d380c82a02e564d062cebecf7a483efc33211e339c83931bf27f91b67f",
+  "sourceRevision": "1d80b995d983cad0772844f2b1b614f49aa34b5d",
+  "manifestPath": ".work/A08/reference-study-8-inputs/manifest.json",
+  "manifestSha256BeforeExecution": "1d47ac232701f4e50a1cf518d9f0180a291f6ec913dcd45ef69ea24226a587c6",
+  "sourceArchiveSha256": "745e6e5b356aed8156c0ef04cbacb2e5a4248b31756cb763719d5562b9876961",
+  "agentSha256": "86fd35575c882790dc3d3a8aced428a51a9ec136b6f2b1b443a6b6ae184481f8",
+  "runtimeArtifactCount": 10,
+  "protocol": {
+    "workloads": [
+      "cpu",
+      "allocation",
+      "contention",
+      "virtual"
+    ],
+    "randomSeed": 42908,
+    "pairedBlocksPerWorkload": 7,
+    "modes": [
+      "baseline",
+      "jfr",
+      "instrumented"
+    ],
+    "warmupSeconds": 30,
+    "measurementSeconds": 60,
+    "freshJvmRuns": 84,
+    "fixedObservationSeconds": 7560
+  },
+  "executor": ".work/A08/execute-prepared-reference-8.py",
+  "reservationGuardObserved": {
+    "exitCode": 1,
+    "manifestUnchanged": true,
+    "outputNotCreated": true
+  },
+  "limitations": [
+    "The full reference experiment has not started; P08-A5 is NOT_RUN.",
+    "Coordinator must reserve a quiet host and run the unchanged full protocol.",
+    "Input copies and source archive are immutable; future source changes require fresh prepared inputs and output."
+  ]
+}

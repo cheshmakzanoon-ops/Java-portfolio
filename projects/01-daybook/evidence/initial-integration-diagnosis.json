@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "project": "daybook",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/01-daybook/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A01/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+  "exitCode": 1,
+  "observedAtUtc": "2026-10-18T00:08:13Z",
+  "sourceRevision": "intermediate uncommitted implementation, before promote_shadow fix; not release evidence",
+  "tests": {"executed": 8, "failed": 1, "errors": 1, "skipped": 0},
+  "failures": [
+    {"test": "projectionHandlesEarlierAllocatedEventCommittedLater", "cause": "PostgreSQL runtime role denied SHARE lock on immutable outbox", "correction": "Move lock, source verification and promotion to restricted SECURITY DEFINER promote_shadow function; retain runtime source-write denial"},
+    {"test": "closeRacesWritersWithoutPostingIntoClosedPeriod", "cause": "JDBC returned PostgreSQL boolean spelling t; test expected true", "correction": "Cast closed to text in assertion query"}
+  ],
+  "rawArtifact": "ledger-verification/target/failsafe-reports/ (local generated reports; later reruns overwrite)",
+  "limitations": ["This is a diagnostic failure record, not a passed release gate", "Subsequent corrections require a complete rerun"]
+}

@@ -25,12 +25,12 @@
   },
   "projects": [
     {
-      "project": "01-clearledger",
+      "project": "01-daybook",
       "status": "PASS",
       "ordinary_methods": 52,
       "integration_methods": null,
       "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
-      "command": "./mvnw -f projects/01-clearledger/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "command": "./mvnw -f projects/01-daybook/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
       "finished_at": "2026-10-22T05:13:15+09:00",
       "exit_code": 0,
       "log_sha256": "df0d7ca6359336e08013a9ed5c507848c345529343de77ec43c6f3a160e27b6d",
@@ -104,12 +104,12 @@
       "detailed_receipt": "docs/execution/csrf-enforcement-20261021.json"
     },
     {
-      "project": "02-durableflow",
+      "project": "02-handoff",
       "status": "PASS",
       "ordinary_methods": 123,
       "integration_methods": 33,
       "integration_scope": "Complete selected integration profile",
-      "command": "./mvnw -f projects/02-durableflow/pom.xml -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+      "command": "./mvnw -f projects/02-handoff/pom.xml -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
       "finished_at": "2026-10-21T20:28:21Z",
       "exit_code": 0,
       "log_sha256": "b9a97b6a564d600011154b5af0ac6b48b35832e45d7df0c2b627c913cdd39755",
@@ -208,15 +208,15 @@
         "sha256": "157c00b967865623634282306d93a31adbf6b12f6a2d9bd36983482db7d798a3"
       },
       "started_epoch": 1792614440.528004,
-      "detailed_receipt": "projects/02-durableflow/evidence/csrf-recovery-20261021/validation.json"
+      "detailed_receipt": "projects/02-handoff/evidence/csrf-recovery-20261021/validation.json"
     },
     {
-      "project": "03-quorumkv",
+      "project": "03-majority",
       "status": "PASS",
       "ordinary_methods": 69,
       "integration_methods": null,
       "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
-      "command": "bash scripts/portfolio.sh verify quorumkv",
+      "command": "bash scripts/portfolio.sh verify majority",
       "finished_at": "2026-10-22T05:12:54+09:00",
       "exit_code": 0,
       "log_sha256": "da1dacc4c851475830282b1635732252f9aed80b40986d827717cf7131acd818",
@@ -310,12 +310,12 @@
       }
     },
     {
-      "project": "04-pulsestream",
+      "project": "04-latearrival",
       "status": "PASS",
       "ordinary_methods": 37,
       "integration_methods": null,
       "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
-      "command": "bash scripts/portfolio.sh verify pulsestream",
+      "command": "bash scripts/portfolio.sh verify latearrival",
       "finished_at": "2026-10-22T05:12:54+09:00",
       "exit_code": 0,
       "log_sha256": "7d68675199d950ca3a2cd08aa9a0f1b837f5c36a0835e14aa9105eca6b13ec68",
@@ -398,12 +398,12 @@
       }
     },
     {
-      "project": "05-tenantshield",
+      "project": "05-gatehouse",
       "status": "PASS",
       "ordinary_methods": 49,
       "integration_methods": null,
       "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
-      "command": "./mvnw -f projects/05-tenantshield/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "command": "./mvnw -f projects/05-gatehouse/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
       "finished_at": "2026-10-22T05:13:25+09:00",
       "exit_code": 0,
       "log_sha256": "c7d82c88122244ad39bf041f85e07c73de4908c111c94bfcb27fdce90eda221d",
@@ -466,12 +466,12 @@
       "detailed_receipt": "docs/execution/csrf-enforcement-20261021.json"
     },
     {
-      "project": "06-matchcore",
+      "project": "06-thepit",
       "status": "PASS",
       "ordinary_methods": 48,
       "integration_methods": null,
       "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
-      "command": "bash scripts/portfolio.sh verify matchcore",
+      "command": "bash scripts/portfolio.sh verify thepit",
       "finished_at": "2026-10-22T05:17:40+09:00",
       "exit_code": 0,
       "log_sha256": "ba80b14c76f4923b5e88482df2e2b0f0c8737dd1bc6c9029a77059e8b546a2ef",
@@ -554,12 +554,12 @@
       }
     },
     {
-      "project": "07-indexforge",
+      "project": "07-stacks",
       "status": "PASS",
       "ordinary_methods": 248,
       "integration_methods": 11,
       "integration_scope": "Complete selected integration profile",
-      "command": "./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=\"$PWD/.work/A07/m2\" -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+      "command": "./mvnw -f projects/07-stacks/pom.xml -Dmaven.repo.local=\"$PWD/.work/A07/m2\" -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
       "finished_at": "2026-10-21T20:15:09+00:00",
       "exit_code": 0,
       "log_sha256": "f5d1a8f616a9bf55ec81989359b04bb65f080a25adb1f6054d90e83b43dc6fc7",
@@ -670,15 +670,15 @@
         "sha256": "205abd0c3813f4a99e93e19217b0e0a38e0e6810761f1cc51f0d2699848814ca"
       },
       "started_epoch": 1792613615.2757704,
-      "detailed_receipt": "projects/07-indexforge/evidence/tenant-binding-20261021/validation.json"
+      "detailed_receipt": "projects/07-stacks/evidence/tenant-binding-20261021/validation.json"
     },
     {
-      "project": "08-threadlens",
+      "project": "08-backtrace",
       "status": "PASS",
       "ordinary_methods": 208,
       "integration_methods": 7,
       "integration_scope": "Complete selected integration profile",
-      "command": "./mvnw -o -B -ntp -f projects/08-threadlens/pom.xml -Dmaven.repo.local=\"$PWD/.work/threadlens/m2\" -Pintegration,mutation verify",
+      "command": "./mvnw -o -B -ntp -f projects/08-backtrace/pom.xml -Dmaven.repo.local=\"$PWD/.work/backtrace/m2\" -Pintegration,mutation verify",
       "finished_at": "2026-10-21T20:39:17Z",
       "exit_code": 0,
       "log_sha256": "cf370c552dc1c289da3afa375b7863f64a4c66381529fc1c4ed943bcbdc1e56e",
@@ -788,15 +788,15 @@
         "sha256": "54b8a94b36ca6db91fd6d0e030a1fbb44561b44380b06192cfc025c11c9059fe"
       },
       "started_epoch": 1792614962.2989519,
-      "detailed_receipt": "projects/08-threadlens/evidence/job-readiness-final-20261021.json"
+      "detailed_receipt": "projects/08-backtrace/evidence/job-readiness-final-20261021.json"
     },
     {
-      "project": "09-byteguard",
+      "project": "09-faultline",
       "status": "PASS",
       "ordinary_methods": 143,
       "integration_methods": 3,
       "integration_scope": "Complete selected integration profile",
-      "command": "./mvnw -B -ntp -f projects/09-byteguard/pom.xml com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify",
+      "command": "./mvnw -B -ntp -f projects/09-faultline/pom.xml com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify",
       "finished_at": "2026-10-21T20:15:49Z",
       "exit_code": 0,
       "log_sha256": "7777be524f92ef83a813fdca89d11c36fad61e45a07f5ebce064d254f39d00f8",
@@ -873,15 +873,15 @@
         "sha256": "ecdd8b8134406ab14532685f51e183c27a088766d6b9341ae57171424c7cb0a0"
       },
       "started_epoch": 1792613570,
-      "detailed_receipt": "projects/09-byteguard/evidence/configuration-hardening-20261021/validation.json"
+      "detailed_receipt": "projects/09-faultline/evidence/configuration-hardening-20261021/validation.json"
     },
     {
-      "project": "10-routeweaver",
+      "project": "10-switchback",
       "status": "PASS",
       "ordinary_methods": 53,
       "integration_methods": null,
       "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
-      "command": "./mvnw -f projects/10-routeweaver/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "command": "./mvnw -f projects/10-switchback/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
       "finished_at": "2026-10-22T05:16:19+09:00",
       "exit_code": 0,
       "log_sha256": "e34c4705067207e7d836947ed56b57706eb7b6c105478abe0458ab176bb04974",
@@ -895,7 +895,7 @@
         },
         "modules": [
           {
-            "module": "routeweaver-domain",
+            "module": "switchback-domain",
             "counts": {
               "surefire": {
                 "tests": 10,
@@ -906,7 +906,7 @@
             }
           },
           {
-            "module": "routeweaver-planning",
+            "module": "switchback-planning",
             "counts": {
               "surefire": {
                 "tests": 16,
@@ -917,7 +917,7 @@
             }
           },
           {
-            "module": "routeweaver-service",
+            "module": "switchback-service",
             "counts": {
               "surefire": {
                 "tests": 14,
@@ -928,7 +928,7 @@
             }
           },
           {
-            "module": "routeweaver-verification",
+            "module": "switchback-verification",
             "counts": {
               "surefire": {
                 "tests": 13,
@@ -956,8 +956,8 @@
     }
   ],
   "mutation": {
-    "durableflow": {
-      "receipt": "projects/02-durableflow/evidence/inspection-hardening-20261021/validation.json",
+    "handoff": {
+      "receipt": "projects/02-handoff/evidence/inspection-hardening-20261021/validation.json",
       "scope": "Inspection changes in workflow-model, workflow-engine and workflow-persistence; precedes later CSRF adapter and integration-test-only follow-up",
       "modules": [
         {
@@ -991,8 +991,8 @@
       "generated": 264,
       "survived": 5
     },
-    "threadlens": {
-      "receipt": "projects/08-threadlens/evidence/job-readiness-final-20261021.json",
+    "backtrace": {
+      "receipt": "projects/08-backtrace/evidence/job-readiness-final-20261021.json",
       "modules": [
         {
           "module": "probe",
@@ -1067,8 +1067,8 @@
       },
       "thresholds_unchanged": true
     },
-    "byteguard": {
-      "receipt": "projects/09-byteguard/evidence/configuration-hardening-20261021/validation.json",
+    "faultline": {
+      "receipt": "projects/09-faultline/evidence/configuration-hardening-20261021/validation.json",
       "modules": [
         {
           "module": "analysis-core",
@@ -1178,8 +1178,8 @@
       "interpretation": "Expected FAIL: twenty incomplete historical rows and missing complete current release certificate; no suppression or threshold change"
     }
   },
-  "matchcore_walkthrough": {
-    "command": "bash scripts/portfolio.sh demo matchcore",
+  "thepit_walkthrough": {
+    "command": "bash scripts/portfolio.sh demo thepit",
     "exit_code": 0,
     "output": "PASS executions=4 lots=8 aliceCash=19200 aliceLots=8 openOrders=0 results=12 digest=4e226aa11dbed09f79d746c5df50ac857e30804a2e43d3ccf39893d656f959e3",
     "log_sha256": "7bfd1c4d9590ea8c3b74df489786a9f3ca1a230dff039bc39e4d2df834acab59",
@@ -1235,32 +1235,32 @@
       "path": "docs/execution/csrf-enforcement-20261021.json",
       "sha256": "471b47c2d58c5c1aac48c913c1e223c60f4e675f62210de5ce087c0fd935392a"
     },
-    "durableflow": {
-      "path": "projects/02-durableflow/evidence/csrf-recovery-20261021/validation.json",
+    "handoff": {
+      "path": "projects/02-handoff/evidence/csrf-recovery-20261021/validation.json",
       "sha256": "902977bdedf136a17d074d9e45aff4064f52ecf066762f2030136ffb5bc81e4d"
     },
-    "durableflow_inspection": {
-      "path": "projects/02-durableflow/evidence/inspection-hardening-20261021/validation.json",
+    "handoff_inspection": {
+      "path": "projects/02-handoff/evidence/inspection-hardening-20261021/validation.json",
       "sha256": "ad2d055f74316743d7ced0ed8620c69f459a52b8fc4827a660599dff0656c2c4"
     },
-    "indexforge": {
-      "path": "projects/07-indexforge/evidence/tenant-binding-20261021/validation.json",
+    "stacks": {
+      "path": "projects/07-stacks/evidence/tenant-binding-20261021/validation.json",
       "sha256": "96916aa8a3a7bb2a59149abb0d81c600d56a6e204915575f0c429564dc22eba4"
     },
-    "indexforge_lifecycle": {
-      "path": "projects/07-indexforge/evidence/ingestion-lifecycle-20261021.json",
+    "stacks_lifecycle": {
+      "path": "projects/07-stacks/evidence/ingestion-lifecycle-20261021.json",
       "sha256": "b252caa3aef8f4e250b10c3bf8f1b26acb24acb4b0f628b35aa6c18d5392b71b"
     },
-    "threadlens": {
-      "path": "projects/08-threadlens/evidence/job-readiness-final-20261021.json",
+    "backtrace": {
+      "path": "projects/08-backtrace/evidence/job-readiness-final-20261021.json",
       "sha256": "176d26b10ac27746dedde771671ed2dea6b63e21f931bd567bfc5884cf991d3a"
     },
-    "threadlens_comparison": {
-      "path": "projects/08-threadlens/evidence/job-readiness-diagnostics-20261021.json",
+    "backtrace_comparison": {
+      "path": "projects/08-backtrace/evidence/job-readiness-diagnostics-20261021.json",
       "sha256": "9ed906913a69ad8722c66b537105d9f939e8f5daef7afb5b8275e0500c0de6f9"
     },
-    "byteguard": {
-      "path": "projects/09-byteguard/evidence/configuration-hardening-20261021/validation.json",
+    "faultline": {
+      "path": "projects/09-faultline/evidence/configuration-hardening-20261021/validation.json",
       "sha256": "2154228be49640b7140f671919700b09d769371443795ecebc5332f23cd80f08"
     }
   },
@@ -1326,20 +1326,20 @@
     ]
   },
   "unsuccessful_attempts": [
-    "Pre-fix CSRF counterexamples are preserved in the cross-service and DurableFlow receipts",
-    "DurableFlow first integration failure exposed a pre-commit test synchronization race; the failed source/log/report identities and corrected controlled-boundary test are preserved",
-    "ThreadLens supplementary transport interruption and restricted-socket retry are preserved separately from its successful final full invocation",
-    "ByteGuard independent review exposed rejected analyzer-produced long-identity SARIF; the packaged roundtrip regression and corrected boundary are documented in its receipt"
+    "Pre-fix CSRF counterexamples are preserved in the cross-service and Handoff receipts",
+    "Handoff first integration failure exposed a pre-commit test synchronization race; the failed source/log/report identities and corrected controlled-boundary test are preserved",
+    "Backtrace supplementary transport interruption and restricted-socket retry are preserved separately from its successful final full invocation",
+    "Faultline independent review exposed rejected analyzer-produced long-identity SARIF; the packaged roundtrip regression and corrected boundary are documented in its receipt"
   ],
   "remaining_acceptance_work": [
     {
-      "area": "IndexForge relevance",
+      "area": "Stacks relevance",
       "criterion": "P07-A4",
       "status": "FAIL",
       "detail": "Exposed held-out results remain below 0.75 nDCG and 0.90 identifier-MRR targets; correctness does not establish ranking quality. An independent corpus/protocol and frozen model are required."
     },
     {
-      "area": "ThreadLens overhead",
+      "area": "Backtrace overhead",
       "criterion": "P08-A5",
       "status": "FAIL",
       "detail": "Historical full 84-JVM study failed six of eight comparisons. Prescribed current-source remeasurement needs a quiet host and at least 126 minutes of observation; not rerun here."
@@ -1357,7 +1357,7 @@
     {
       "area": "Interactive browser",
       "status": "NOT_RERUN",
-      "detail": "ThreadLens comparison structure/escaping is tested; current interactive layout/keyboard checks were not completed. Current ClearLedger/TenantShield CSRF checks use assembled filters with mock requests; RouteWeaver also exercises actual HTTP."
+      "detail": "Backtrace comparison structure/escaping is tested; current interactive layout/keyboard checks were not completed. Current Daybook/Gatehouse CSRF checks use assembled filters with mock requests; Switchback also exercises actual HTTP."
     }
   ],
   "limits": [

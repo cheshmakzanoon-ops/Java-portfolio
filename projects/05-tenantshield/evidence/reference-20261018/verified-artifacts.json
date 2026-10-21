@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
-  "artifactsSha256": {
-    "decision-service/target/tenantshield-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
-    "demo-resource-server/target/tenantshield-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
-    "verification/target/tenantshield-verification-1.0.0-SNAPSHOT-exec.jar": "a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330"
-  }
-}

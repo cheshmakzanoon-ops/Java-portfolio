@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "project": "handoff",
+  "sourceRevision": "sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "timestamp": "2026-10-18T02:51:03.389863+00:00",
+  "workload": "actual-launcher-repeat-persistence-reset-two-fault-demos-and-smoke-v1",
+  "command": ".work/A02/run-finite-lifecycle.sh",
+  "exitCode": 0,
+  "assertions": {
+    "commandSteps": 14,
+    "failed": 0,
+    "skipped": 0,
+    "faultDemoRuns": 2,
+    "smokeExecutions": 100,
+    "preservedLiveProcessIdentities": 7,
+    "persistedWorkflowInstancesBeforeDown": 104,
+    "persistedWorkflowInstancesAfterUp": 104,
+    "workflowInstancesAfterReset": 0,
+    "finalNoOwnedRuntime": true,
+    "finalApplicationContainerStopped": true
+  },
+  "measurements": {
+    "steps": [
+      {
+        "step": "prepared-cache",
+        "started": "2026-10-18T02:41:04Z",
+        "finished": "2026-10-18T02:41:04Z",
+        "exitCode": 0,
+        "command": [
+          "python3",
+          "/workspace/Java-portfolio/projects/02-handoff/scripts/prepared-build.py",
+          "verify"
+        ]
+      },
+      {
+        "step": "initial-reset",
+        "started": "2026-10-18T02:41:04Z",
+        "finished": "2026-10-18T02:41:06Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "reset-demo",
+          "handoff"
+        ]
+      },
+      {
+        "step": "first-up",
+        "started": "2026-10-18T02:41:06Z",
+        "finished": "2026-10-18T02:41:50Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "up",
+          "handoff"
+        ]
+      },
+      {
+        "step": "repeated-up",
+        "started": "2026-10-18T02:41:50Z",
+        "finished": "2026-10-18T02:41:54Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "up",
+          "handoff"
+        ]
+      },
+      {
+        "step": "fault-demo-1",
+        "started": "2026-10-18T02:41:54Z",
+        "finished": "2026-10-18T02:43:25Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "demo",
+          "handoff"
+        ]
+      },
+      {
+        "step": "smoke-100",
+        "started": "2026-10-18T02:43:25Z",
+        "finished": "2026-10-18T02:44:24Z",
+        "exitCode": 0,
+        "command": [
+          "/workspace/Java-portfolio/projects/02-handoff/scripts/benchmark.sh",
+          "--smoke"
+        ]
+      },
+      {
+        "step": "first-down",
+        "started": "2026-10-18T02:44:25Z",
+        "finished": "2026-10-18T02:45:31Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "down",
+          "handoff"
+        ]
+      },
+      {
+        "step": "idle-after-down",
+        "started": "2026-10-18T02:45:31Z",
+        "finished": "2026-10-18T02:45:31Z",
+        "exitCode": 0,
+        "command": [
+          "python3",
+          "/workspace/Java-portfolio/projects/02-handoff/scripts/prepared-build.py",
+          "idle"
+        ]
+      },
+      {
+        "step": "persisted-up",
+        "started": "2026-10-18T02:45:32Z",
+        "finished": "2026-10-18T02:46:06Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "up",
+          "handoff"
+        ]
+      },
+      {
+        "step": "reset-demo",
+        "started": "2026-10-18T02:46:07Z",
+        "finished": "2026-10-18T02:46:53Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "reset-demo",
+          "handoff"
+        ]
+      },
+      {
+        "step": "reset-up",
+        "started": "2026-10-18T02:46:53Z",
+        "finished": "2026-10-18T02:47:45Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "up",
+          "handoff"
+        ]
+      },
+      {
+        "step": "fault-demo-2",
+        "started": "2026-10-18T02:47:46Z",
+        "finished": "2026-10-18T02:49:24Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "demo",
+          "handoff"
+        ]
+      },
+      {
+        "step": "final-down",
+        "started": "2026-10-18T02:49:24Z",
+        "finished": "2026-10-18T02:50:06Z",
+        "exitCode": 0,
+        "command": [
+          "./scripts/portfolio.sh",
+          "down",
+          "handoff"
+        ]
+      },
+      {
+        "step": "final-idle",
+        "started": "2026-10-18T02:50:06Z",
+        "finished": "2026-10-18T02:50:06Z",
+        "exitCode": 0,
+        "command": [
+          "python3",
+          "/workspace/Java-portfolio/projects/02-handoff/scripts/prepared-build.py",
+          "idle"
+        ]
+      }
+    ],
+    "repeatedProcessIdentities": {
+      "worker-2": 304932,
+      "provider": 304928,
+      "scheduler-1": 304929,
+      "worker-3": 304933,
+      "worker-1": 304931,
+      "scheduler-2": 304930,
+      "api": 304927
+    },
+    "providerAssertions": "independent-provider-assertions.json",
+    "smokeEnvelope": "../smoke-100/envelope.json",
+    "demo1Seconds": 91,
+    "demo2Seconds": 98,
+    "firstDownSeconds": 66,
+    "finalDownSeconds": 42
+  },
+  "rawArtifact": "command.log",
+  "rawCapture": ".work/A02/lifecycle-20261018T024104",
+  "textArtifacts": [
+    {
+      "path": "lifecycle/cleanup-down.log",
+      "sha256": "531acc00f2222b41393987124b119f57b2a6e819dff8198140aee45ee68b0bba",
+      "bytes": 117
+    },
+    {
+      "path": "lifecycle/cleanup-idle.log",
+      "sha256": "ef9336e494f38ef3fad0b9480b66292bb52974b17e6b95cc64b98694db4da90a",
+      "bytes": 34
+    },
+    {
+      "path": "lifecycle/command.log",
+      "sha256": "bd8d2e620f0d9e755263574d6f229c8106767a0101f51b0ff91c52e84240f0c7",
+      "bytes": 1452
+    },
+    {
+      "path": "lifecycle/database-after-reset-count.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "lifecycle/database-after-up-count.txt",
+      "sha256": "77a60c200656e08ac5403f38b58657ecec155293323bd5313290399b75cf1c3d",
+      "bytes": 4
+    },
+    {
+      "path": "lifecycle/database-before-down-count.txt",
+      "sha256": "77a60c200656e08ac5403f38b58657ecec155293323bd5313290399b75cf1c3d",
+      "bytes": 4
+    },
+    {
+      "path": "lifecycle/demo-1.json",
+      "sha256": "581bc9d842cc4cc1729fc55b05a97a04c3f8e7f98996b0dd4777e6fa0a0fee7f",
+      "bytes": 851
+    },
+    {
+      "path": "lifecycle/demo-2.json",
+      "sha256": "edd803f31797e74191bff1288b01259124c93879430b92084cbe491f6e30467e",
+      "bytes": 851
+    },
+    {
+      "path": "lifecycle/exit-code.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "lifecycle/fault-demo-1.log",
+      "sha256": "0d47d7d8c81e4c8787a93c32b29534ddd351c18574481fb590b43f6312a3a574",
+      "bytes": 897
+    },
+    {
+      "path": "lifecycle/fault-demo-2.log",
+      "sha256": "e2a67021d1048c6985333c00c21d76fe4807c36d8408a592990a1a0a37f0952c",
+      "bytes": 897
+    },
+    {
+      "path": "lifecycle/final-down.log",
+      "sha256": "531acc00f2222b41393987124b119f57b2a6e819dff8198140aee45ee68b0bba",
+      "bytes": 117
+    },
+    {
+      "path": "lifecycle/final-idle.log",
+      "sha256": "ef9336e494f38ef3fad0b9480b66292bb52974b17e6b95cc64b98694db4da90a",
+      "bytes": 34
+    },
+    {
+      "path": "lifecycle/first-down.log",
+      "sha256": "531acc00f2222b41393987124b119f57b2a6e819dff8198140aee45ee68b0bba",
+      "bytes": 117
+    },
+    {
+      "path": "lifecycle/first-runtime-after-down-states.json",
+      "sha256": "6fdf07bff3251090bcecc12a38461f839a8cb23713e56ca38076665a18acd07b",
+      "bytes": 585
+    },
+    {
+      "path": "lifecycle/first-up.log",
+      "sha256": "5c761ef49637658965a81650dc93ba8b09651bf56abe0918a51f4944826c8081",
+      "bytes": 3218
+    },
+    {
+      "path": "lifecycle/idle-after-down.log",
+      "sha256": "ef9336e494f38ef3fad0b9480b66292bb52974b17e6b95cc64b98694db4da90a",
+      "bytes": 34
+    },
+    {
+      "path": "lifecycle/independent-provider-assertions.json",
+      "sha256": "5659cb43e112e5ea307dc2ed8372609d71475083948f93fde6f2de5122aba5e4",
+      "bytes": 588
+    },
+    {
+      "path": "lifecycle/initial-reset.log",
+      "sha256": "c1973e8444fe325f7f4a1c8435f6614ab797d30bb6ba146e2f7c30b76bee50da",
+      "bytes": 137
+    },
+    {
+      "path": "lifecycle/persisted-up.log",
+      "sha256": "817ff0ce1a4df5d611b1c65cae54d3d07bf067da13210fd34b72e63f24837ad3",
+      "bytes": 2687
+    },
+    {
+      "path": "lifecycle/prepared-cache.log",
+      "sha256": "1e07a4b396aace9a605b28717dfba1709312dc9f7f1c8d67dada8eb08a55bffa",
+      "bytes": 100
+    },
+    {
+      "path": "lifecycle/provider-demo-2.log",
+      "sha256": "bea36dc8c89609b87badb50fe531443ce9a2305ad44aaf75d1fc02f544c22c34",
+      "bytes": 7750
+    },
+    {
+      "path": "lifecycle/repeated-up.log",
+      "sha256": "16bd152ff9962e04061d77b12b686d64747b2f541aa7a8e05ebdf0e97c3ec93f",
+      "bytes": 318
+    },
+    {
+      "path": "lifecycle/reset-demo.log",
+      "sha256": "bc3cb9c1c29f2d2fe77e5e365b45112794d5632308bfbbdac86219b6b7a1ed14",
+      "bytes": 718
+    },
+    {
+      "path": "lifecycle/reset-up.log",
+      "sha256": "c2478100ae647431c19bc1d30b63850cbfbdb4f16af8331179ca5f890ce0cf9d",
+      "bytes": 3217
+    },
+    {
+      "path": "lifecycle/scenario-process.log",
+      "sha256": "86931de4ce2f97d4434e5a1994a4d7ca56cc642b5dfcf2bc2d1ce04299b998f8",
+      "bytes": 3560
+    },
+    {
+      "path": "lifecycle/smoke-100.log",
+      "sha256": "d98ec7c37bdf3d18780640674123a34e4c841e8ce5aacea57894bc59475cc85c",
+      "bytes": 703
+    },
+    {
+      "path": "lifecycle/steps.jsonl",
+      "sha256": "6935255bb412be00718296344465b5dc856a4542b88fc72f874c528a940f0d84",
+      "bytes": 2597
+    }
+  ],
+  "limitations": [
+    "This finite wave is not the three full10000x8 quiet-host workload gate.",
+    "Cold startup and command duration reflect shared finite verification load.",
+    "Adopted zombie PIDs cause bounded5-second-per-PID down waits after runtimes stop.",
+    "Demo recoveryDelaySeconds runs from worker kill to recovered order completion, including scheduler restart/resume work.",
+    "Heavy JFR/GC/allocation originals remain in ignored target/.work paths listed in smoke envelope."
+  ]
+}

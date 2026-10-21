@@ -1,2 +1,0 @@
-ByteGuard verified source cache 09192fec3fde8a17c6a92ad6c43a35da9ca638964b4de71cdc3a663e1d1e8e36
-PASS: first build; identical source/artifact cache hit; actual Java source change rebuild; artifact tamper rebuild.

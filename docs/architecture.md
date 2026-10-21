@@ -20,16 +20,16 @@ The projects use different consistency models deliberately. Their acknowledgment
 
 | Project | Decision boundary | Durable acknowledgment or completion | Design guide |
 | --- | --- | --- | --- |
-| ClearLedger | Balanced journal and account/period invariants | Serializable transaction commits journal, postings, receipt and audit together | [Transaction and lock ownership](../projects/01-clearledger/docs/ARCHITECTURE.md) |
-| DurableFlow | Version-pinned deterministic replay | Instance history and task/timer changes commit together; external effects have a separate uncertainty boundary | [Replay and execution](../projects/02-durableflow/docs/ARCHITECTURE.md) |
-| QuorumKV | Single-owner Raft state machine | Leader acknowledgment follows the documented quorum, durable-log and application rules | [Consensus and persistence](../projects/03-quorumkv/docs/ARCHITECTURE.md) |
-| PulseStream | Event-time transitions and partition ownership | SQL state, source position and outbox changes share a transaction; Kafka delivery remains retryable | [Watermarks and recovery](../projects/04-pulsestream/docs/ARCHITECTURE.md) |
-| TenantShield | Bounded policy evaluation over an authorized snapshot | Published versions and tenant-scoped data define the decision snapshot | [Policy and tenant boundaries](../projects/05-tenantshield/docs/ARCHITECTURE.md) |
-| MatchCore | Serialized price/time matching and risk reservations | Forced journal and deterministic replay define command durability | [Command ownership](../projects/06-matchcore/docs/ARCHITECTURE.md) |
-| IndexForge | Authorized retrieval from immutable generations | Generation commit and pointer publication define visibility; readers hold generation leases | [Ingestion and publication](../projects/07-indexforge/docs/ARCHITECTURE.md) |
-| ThreadLens | Bounded observation outside the host application's semantics | Completed reports declare observation coverage and losses; samples do not establish causality | [Collection and instrumentation](../projects/08-threadlens/docs/ARCHITECTURE.md) |
-| ByteGuard | Bounded abstract interpretation of class files | Reports distinguish complete analysis from exhausted budgets; target classes are never executed | [Analysis and coverage](../projects/09-byteguard/docs/ARCHITECTURE.md) |
-| RouteWeaver | Independent validation before incumbent publication | Durable job fencing and version checks precede publication of an immutable plan | [Planning and publication](../projects/10-routeweaver/docs/ARCHITECTURE.md) |
+| Daybook | Balanced journal and account/period invariants | Serializable transaction commits journal, postings, receipt and audit together | [Transaction and lock ownership](../projects/01-daybook/docs/ARCHITECTURE.md) |
+| Handoff | Version-pinned deterministic replay | Instance history and task/timer changes commit together; external effects have a separate uncertainty boundary | [Replay and execution](../projects/02-handoff/docs/ARCHITECTURE.md) |
+| Majority | Single-owner Raft state machine | Leader acknowledgment follows the documented quorum, durable-log and application rules | [Consensus and persistence](../projects/03-majority/docs/ARCHITECTURE.md) |
+| Late Arrival | Event-time transitions and partition ownership | SQL state, source position and outbox changes share a transaction; Kafka delivery remains retryable | [Watermarks and recovery](../projects/04-latearrival/docs/ARCHITECTURE.md) |
+| Gatehouse | Bounded policy evaluation over an authorized snapshot | Published versions and tenant-scoped data define the decision snapshot | [Policy and tenant boundaries](../projects/05-gatehouse/docs/ARCHITECTURE.md) |
+| The Pit | Serialized price/time matching and risk reservations | Forced journal and deterministic replay define command durability | [Command ownership](../projects/06-thepit/docs/ARCHITECTURE.md) |
+| Stacks | Authorized retrieval from immutable generations | Generation commit and pointer publication define visibility; readers hold generation leases | [Ingestion and publication](../projects/07-stacks/docs/ARCHITECTURE.md) |
+| Backtrace | Bounded observation outside the host application's semantics | Completed reports declare observation coverage and losses; samples do not establish causality | [Collection and instrumentation](../projects/08-backtrace/docs/ARCHITECTURE.md) |
+| Faultline | Bounded abstract interpretation of class files | Reports distinguish complete analysis from exhausted budgets; target classes are never executed | [Analysis and coverage](../projects/09-faultline/docs/ARCHITECTURE.md) |
+| Switchback | Independent validation before incumbent publication | Durable job fencing and version checks precede publication of an immutable plan | [Planning and publication](../projects/10-switchback/docs/ARCHITECTURE.md) |
 
 ## Dependency boundaries
 
@@ -39,7 +39,7 @@ Adapters translate external formats into validated values and map domain outcome
 
 ```bash
 # Build first; the check rejects missing compiled production classes.
-python3 scripts/check-architecture.py --bytecode matchcore
+python3 scripts/check-architecture.py --bytecode thepit
 ```
 
 CI runs this check after each ordinary project build. It is a static type/dependency boundary check, not a proof about reflection, dynamically loaded classes or arbitrary runtime configuration. Project-local duplication is preferable to coupling unrelated systems through a portfolio utility framework.

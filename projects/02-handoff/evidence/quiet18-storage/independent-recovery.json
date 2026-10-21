@@ -1,0 +1,28 @@
+{
+  "status": "PASS_INDEPENDENT_PHYSICAL_RESTORE_ORIGINALS_RETAINED",
+  "completedAtUtc": "2026-10-18T10:51:23.160133+00:00",
+  "checks": [
+    {
+      "source": "/workspace/Java-portfolio/projects/02-handoff/target/performance/20261018T095149-10000-746947",
+      "archive": "/tmp/handoff-quiet18-preservation-6f1_cbot/20261018T095149-10000-746947.tar.gz",
+      "archiveSha256": "2890dc149177f59cfc6bd049b76b60db10c7e871b56f1e30baf03c5864a2240d",
+      "manifestSha256": "277f027d6868ad148b0f85d95996b080cddc581c46748aecbe78d4da7911c028",
+      "files": 22,
+      "bytesRestoredAndCompared": 1959535911,
+      "completeSetsModesMtimesBytesHashesMatch": true,
+      "originalsRetained": true
+    },
+    {
+      "source": "/workspace/Java-portfolio/projects/02-handoff/target/performance/20261018T101046-10000-760867",
+      "archive": "/tmp/handoff-quiet18-preservation-6f1_cbot/20261018T101046-10000-760867.tar.gz",
+      "archiveSha256": "37a99f19534748febc7efbc56e9174fe67dd6f0a8827f251fc89efde75468b13",
+      "manifestSha256": "fb1e2a33ba455b6558ff1369f37a8e0d85476f0567c5102f2f6e9e8fd54fc25d",
+      "files": 22,
+      "bytesRestoredAndCompared": 1953165976,
+      "completeSetsModesMtimesBytesHashesMatch": true,
+      "originalsRetained": true
+    }
+  ],
+  "files": 44,
+  "bytesRestoredAndCompared": 3912701887
+}

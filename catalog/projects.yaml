@@ -3,9 +3,9 @@
   "projects": [
     {
       "id": "A01",
-      "name": "ClearLedger",
-      "slug": "clearledger",
-      "path": "projects/01-clearledger",
+      "name": "Daybook",
+      "slug": "daybook",
+      "path": "projects/01-daybook",
       "ports": [
         18100,
         18101,
@@ -19,17 +19,17 @@
         18109
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up clearledger",
-      "verify": "./scripts/portfolio.sh verify clearledger",
-      "demo": "./scripts/portfolio.sh demo clearledger",
-      "evidence": "projects/01-clearledger/evidence",
-      "status": "projects/01-clearledger/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up daybook",
+      "verify": "./scripts/portfolio.sh verify daybook",
+      "demo": "./scripts/portfolio.sh demo daybook",
+      "evidence": "projects/01-daybook/evidence",
+      "status": "projects/01-daybook/docs/STATUS.md"
     },
     {
       "id": "A02",
-      "name": "DurableFlow",
-      "slug": "durableflow",
-      "path": "projects/02-durableflow",
+      "name": "Handoff",
+      "slug": "handoff",
+      "path": "projects/02-handoff",
       "ports": [
         18200,
         18201,
@@ -43,17 +43,17 @@
         18209
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up durableflow",
-      "verify": "./scripts/portfolio.sh verify durableflow",
-      "demo": "./scripts/portfolio.sh demo durableflow",
-      "evidence": "projects/02-durableflow/evidence",
-      "status": "projects/02-durableflow/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up handoff",
+      "verify": "./scripts/portfolio.sh verify handoff",
+      "demo": "./scripts/portfolio.sh demo handoff",
+      "evidence": "projects/02-handoff/evidence",
+      "status": "projects/02-handoff/docs/STATUS.md"
     },
     {
       "id": "A03",
-      "name": "QuorumKV",
-      "slug": "quorumkv",
-      "path": "projects/03-quorumkv",
+      "name": "Majority",
+      "slug": "majority",
+      "path": "projects/03-majority",
       "ports": [
         18300,
         18301,
@@ -67,17 +67,17 @@
         18309
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up quorumkv",
-      "verify": "./scripts/portfolio.sh verify quorumkv",
-      "demo": "./scripts/portfolio.sh demo quorumkv",
-      "evidence": "projects/03-quorumkv/evidence",
-      "status": "projects/03-quorumkv/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up majority",
+      "verify": "./scripts/portfolio.sh verify majority",
+      "demo": "./scripts/portfolio.sh demo majority",
+      "evidence": "projects/03-majority/evidence",
+      "status": "projects/03-majority/docs/STATUS.md"
     },
     {
       "id": "A04",
-      "name": "PulseStream",
-      "slug": "pulsestream",
-      "path": "projects/04-pulsestream",
+      "name": "LateArrival",
+      "slug": "latearrival",
+      "path": "projects/04-latearrival",
       "ports": [
         18400,
         18401,
@@ -91,17 +91,17 @@
         18409
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up pulsestream",
-      "verify": "./scripts/portfolio.sh verify pulsestream",
-      "demo": "./scripts/portfolio.sh demo pulsestream",
-      "evidence": "projects/04-pulsestream/evidence",
-      "status": "projects/04-pulsestream/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up latearrival",
+      "verify": "./scripts/portfolio.sh verify latearrival",
+      "demo": "./scripts/portfolio.sh demo latearrival",
+      "evidence": "projects/04-latearrival/evidence",
+      "status": "projects/04-latearrival/docs/STATUS.md"
     },
     {
       "id": "A05",
-      "name": "TenantShield",
-      "slug": "tenantshield",
-      "path": "projects/05-tenantshield",
+      "name": "Gatehouse",
+      "slug": "gatehouse",
+      "path": "projects/05-gatehouse",
       "ports": [
         18500,
         18501,
@@ -115,17 +115,17 @@
         18509
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up tenantshield",
-      "verify": "./scripts/portfolio.sh verify tenantshield",
-      "demo": "./scripts/portfolio.sh demo tenantshield",
-      "evidence": "projects/05-tenantshield/evidence",
-      "status": "projects/05-tenantshield/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up gatehouse",
+      "verify": "./scripts/portfolio.sh verify gatehouse",
+      "demo": "./scripts/portfolio.sh demo gatehouse",
+      "evidence": "projects/05-gatehouse/evidence",
+      "status": "projects/05-gatehouse/docs/STATUS.md"
     },
     {
       "id": "A06",
-      "name": "MatchCore",
-      "slug": "matchcore",
-      "path": "projects/06-matchcore",
+      "name": "ThePit",
+      "slug": "thepit",
+      "path": "projects/06-thepit",
       "ports": [
         18600,
         18601,
@@ -139,17 +139,17 @@
         18609
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up matchcore",
-      "verify": "./scripts/portfolio.sh verify matchcore",
-      "demo": "./scripts/portfolio.sh demo matchcore",
-      "evidence": "projects/06-matchcore/evidence",
-      "status": "projects/06-matchcore/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up thepit",
+      "verify": "./scripts/portfolio.sh verify thepit",
+      "demo": "./scripts/portfolio.sh demo thepit",
+      "evidence": "projects/06-thepit/evidence",
+      "status": "projects/06-thepit/docs/STATUS.md"
     },
     {
       "id": "A07",
-      "name": "IndexForge",
-      "slug": "indexforge",
-      "path": "projects/07-indexforge",
+      "name": "Stacks",
+      "slug": "stacks",
+      "path": "projects/07-stacks",
       "ports": [
         18700,
         18701,
@@ -163,43 +163,43 @@
         18709
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up indexforge",
-      "verify": "./scripts/portfolio.sh verify indexforge",
-      "demo": "./scripts/portfolio.sh demo indexforge",
-      "evidence": "projects/07-indexforge/evidence",
-      "status": "projects/07-indexforge/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up stacks",
+      "verify": "./scripts/portfolio.sh verify stacks",
+      "demo": "./scripts/portfolio.sh demo stacks",
+      "evidence": "projects/07-stacks/evidence",
+      "status": "projects/07-stacks/docs/STATUS.md"
     },
     {
       "id": "A08",
-      "name": "ThreadLens",
-      "slug": "threadlens",
-      "path": "projects/08-threadlens",
+      "name": "Backtrace",
+      "slug": "backtrace",
+      "path": "projects/08-backtrace",
       "ports": [],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up threadlens",
-      "verify": "./scripts/portfolio.sh verify threadlens",
-      "demo": "./scripts/portfolio.sh demo threadlens",
-      "evidence": "projects/08-threadlens/evidence",
-      "status": "projects/08-threadlens/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up backtrace",
+      "verify": "./scripts/portfolio.sh verify backtrace",
+      "demo": "./scripts/portfolio.sh demo backtrace",
+      "evidence": "projects/08-backtrace/evidence",
+      "status": "projects/08-backtrace/docs/STATUS.md"
     },
     {
       "id": "A09",
-      "name": "ByteGuard",
-      "slug": "byteguard",
-      "path": "projects/09-byteguard",
+      "name": "Faultline",
+      "slug": "faultline",
+      "path": "projects/09-faultline",
       "ports": [],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up byteguard",
-      "verify": "./scripts/portfolio.sh verify byteguard",
-      "demo": "./scripts/portfolio.sh demo byteguard",
-      "evidence": "projects/09-byteguard/evidence",
-      "status": "projects/09-byteguard/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up faultline",
+      "verify": "./scripts/portfolio.sh verify faultline",
+      "demo": "./scripts/portfolio.sh demo faultline",
+      "evidence": "projects/09-faultline/evidence",
+      "status": "projects/09-faultline/docs/STATUS.md"
     },
     {
       "id": "A10",
-      "name": "RouteWeaver",
-      "slug": "routeweaver",
-      "path": "projects/10-routeweaver",
+      "name": "Switchback",
+      "slug": "switchback",
+      "path": "projects/10-switchback",
       "ports": [
         19000,
         19001,
@@ -213,11 +213,11 @@
         19009
       ],
       "maturity": "IN_PROGRESS",
-      "launch": "./scripts/portfolio.sh up routeweaver",
-      "verify": "./scripts/portfolio.sh verify routeweaver",
-      "demo": "./scripts/portfolio.sh demo routeweaver",
-      "evidence": "projects/10-routeweaver/evidence",
-      "status": "projects/10-routeweaver/docs/STATUS.md"
+      "launch": "./scripts/portfolio.sh up switchback",
+      "verify": "./scripts/portfolio.sh verify switchback",
+      "demo": "./scripts/portfolio.sh demo switchback",
+      "evidence": "projects/10-switchback/evidence",
+      "status": "projects/10-switchback/docs/STATUS.md"
     }
   ]
 }

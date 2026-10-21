@@ -1,0 +1,56 @@
+{
+  "sourceRevision": "working-tree:9def7ecf9345245cbe65d47303ffa6a72981dcf140cf2974d98f2a1e390ad2eb",
+  "exitCode": 0,
+  "acceptanceEligible": false,
+  "reason": "Only100operations per combination and one run. Isolated diagnostic does not replace100k\u00d73 reference workload.",
+  "startedAtUtc": "2026-10-18T02:07:45.103952+00:00",
+  "completedAtUtc": "2026-10-18T02:08:39.974998+00:00",
+  "buildLocksHeld": [
+    0,
+    1,
+    2
+  ],
+  "otherJavaProcessesAtReservation": [],
+  "otherApplicationContainersAtReservation": [],
+  "scenarios": [
+    {
+      "profile": "read-heavy",
+      "clients": 1,
+      "operations": 100,
+      "errors": 0
+    },
+    {
+      "profile": "read-heavy",
+      "clients": 8,
+      "operations": 100,
+      "errors": 0
+    },
+    {
+      "profile": "read-heavy",
+      "clients": 32,
+      "operations": 100,
+      "errors": 0
+    },
+    {
+      "profile": "mixed",
+      "clients": 1,
+      "operations": 100,
+      "errors": 0
+    },
+    {
+      "profile": "mixed",
+      "clients": 8,
+      "operations": 100,
+      "errors": 0
+    },
+    {
+      "profile": "mixed",
+      "clients": 32,
+      "operations": 100,
+      "errors": 0
+    }
+  ],
+  "rawArtifact": ".work/coordinator/quiet-reference-1/majority-smoke.log",
+  "rawDirectory": ".work/A03/benchmark-36LidKTB",
+  "interpretation": "The unchanged binary/settings passed all six combinations in isolation after a contended32-client failure. This supports scheduling pressure as a factor; it does not prove all prior errors were caused by contention. No production timing was changed."
+}

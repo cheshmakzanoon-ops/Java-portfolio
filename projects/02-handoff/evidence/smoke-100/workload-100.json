@@ -1,0 +1,83 @@
+{
+  "project": "handoff",
+  "measurements": {
+    "elapsedSeconds": 33.877216387,
+    "executions": 100,
+    "activities": 800,
+    "timerWaits": 50,
+    "seed": 42,
+    "peakSampledQueueDepth": 15,
+    "expectedTransientFirstFailures": 160,
+    "databaseBytesBefore": 8476351,
+    "driverHeapUsedBytes": 47634832,
+    "completionLatencyMs": "{5215.4265,9074.5855,9878.537990000003}",
+    "scheduleToStartMs": "{87.5155,253.74179999999996,601.6923999999998}",
+    "completedActivities": "800",
+    "firedBusinessTimers": "50",
+    "acceptedUniqueSignals": "100",
+    "attemptsPerLogicalTask": "1.2000000000000000",
+    "queuedAtEnd": "0",
+    "leaseExpirations": "0",
+    "transientRejectedAttempts": "160",
+    "timerLatenessMs": "{64.8925,176.48259999999988,422.5539699999995}",
+    "databaseBytesAtEnd": 10458815,
+    "databaseGrowthBytes": 1982464,
+    "independentProviderEffects": 800
+  },
+  "startedAt": "2026-10-18T02:43:46.727428654Z",
+  "limitations": [
+    "Closed-loop submissions and shared host: coordinated omission possible",
+    "Recovery/lease expiry measured separately by fault demo",
+    "Database size includes prior demo data; run reset-demo first"
+  ],
+  "timeline": [
+    {
+      "queueDepth": 15,
+      "completed": 83,
+      "elapsedSeconds": 29.75634774
+    },
+    {
+      "queueDepth": 12,
+      "completed": 87,
+      "elapsedSeconds": 30.335888613
+    },
+    {
+      "queueDepth": 8,
+      "completed": 90,
+      "elapsedSeconds": 31.001681514
+    },
+    {
+      "queueDepth": 6,
+      "completed": 94,
+      "elapsedSeconds": 31.617566063
+    },
+    {
+      "queueDepth": 6,
+      "completed": 94,
+      "elapsedSeconds": 32.221620768
+    },
+    {
+      "queueDepth": 4,
+      "completed": 96,
+      "elapsedSeconds": 32.81466918
+    },
+    {
+      "queueDepth": 0,
+      "completed": 100,
+      "elapsedSeconds": 33.376747802
+    }
+  ],
+  "workload": "seeded-eight-activities-v1",
+  "schemaVersion": 1,
+  "sourceRevision": "sha256:104e648ae642e84a02ce3031ac7439e4a71f20767285404b87a96b4019254187",
+  "environment": "environment.json",
+  "command": "projects/02-handoff/scripts/benchmark.sh --smoke",
+  "driverExitCode": 0,
+  "assertions": {
+    "completedExecutions": 100,
+    "failed": 0
+  },
+  "rawArtifact": "workload-100.json",
+  "exitCode": 0,
+  "profilingCaptured": true
+}

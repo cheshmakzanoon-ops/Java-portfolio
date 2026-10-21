@@ -13,7 +13,7 @@ from maven_evidence import EvidenceError, reactor_modules
 ROOT = Path(__file__).resolve().parents[1]
 NS = {'m': 'http://maven.apache.org/POM/4.0.0'}
 PURE = {'ledger-domain', 'workflow-model', 'workflow-engine', 'raft-core', 'matching-core',
-        'policy-core', 'routeweaver-domain', 'analysis', 'analysis-core', 'engine'}
+        'policy-core', 'switchback-domain', 'analysis', 'analysis-core', 'engine'}
 
 
 def inspect(root):

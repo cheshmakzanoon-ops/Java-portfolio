@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "project": "faultline",
+  "status": "PASS",
+  "sourceRevision": "working-tree-sha256:ab3bcced780387c1bd7407968fa9a0473295b48ffaa075c1df1d28d6a337f10a",
+  "timestampUtc": "2026-10-18T02:00:42.495207+00:00",
+  "command": "scripts/reset-demo.sh; scripts/up.sh; scripts/demo.sh; scripts/demo.sh; scripts/down.sh",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 20,
+    "failed": 0
+  },
+  "observedScanExitCodesPerDemo": [
+    1,
+    0,
+    3,
+    0
+  ],
+  "operations": [
+    {
+      "scenario": "reset",
+      "command": "reset-demo.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/operations-reset.log"
+    },
+    {
+      "scenario": "up",
+      "command": "up.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/operations-up.log"
+    },
+    {
+      "scenario": "demo",
+      "command": "demo.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/demo.log"
+    },
+    {
+      "scenario": "reuse",
+      "command": "demo.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/demo-cache-reuse.log"
+    },
+    {
+      "scenario": "down",
+      "command": "down.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/operations-down.log"
+    }
+  ],
+  "scenarios": {
+    "positive": {
+      "findings": 1,
+      "partial": false,
+      "unfinishedFrontier": []
+    },
+    "corrected": {
+      "findings": 0,
+      "partial": false,
+      "unfinishedFrontier": []
+    },
+    "partial": {
+      "findings": 0,
+      "partial": true,
+      "unfinishedFrontier": [
+        "parser:Demo.class"
+      ]
+    },
+    "baseline": {
+      "findings": 1,
+      "partial": false,
+      "unfinishedFrontier": [],
+      "baselineState": "unchanged"
+    }
+  },
+  "cache": "First actual demo cache-missed and ordinary verify succeeded before scanning; second demo reused exact source/artifact cache. Separate isolated behavioral control covers source-change/tamper invalidation.",
+  "packagedArtifactSha256": "a338bbe9f0a8b2e9e57d442044ab991ba204d72c16f2a1b8262245752764b891",
+  "rawArtifact": ".work/A09/demo.log",
+  "cacheReuseRawArtifact": ".work/A09/demo-cache-reuse.log",
+  "limitations": [
+    "The earlier combined format/verification tool-session exit1 remains explicitly preserved despite successful reactor reports; this actual user entrypoint independently returned0."
+  ]
+}

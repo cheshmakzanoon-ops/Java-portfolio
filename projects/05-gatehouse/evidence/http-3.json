@@ -1,0 +1,38 @@
+{
+  "schemaVersion" : 1,
+  "project" : "gatehouse",
+  "workload" : "50x200x100x1000-authenticated-http-100k-v1",
+  "sourceRevision" : "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+  "timestamp" : "2026-10-18T04:07:19.136442986Z",
+  "command" : "/workspace/.tools/jdk-25/bin/java -Xmx512m -XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A05/runtime/http-3.jfr,settings=profile,dumponexit=true -cp /workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes:/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/lib/* io.github.cheshmakzanoon.portfolio.gatehouse.Workload http /workspace/Java-portfolio/projects/05-gatehouse/evidence/http-3.json 100000",
+  "environment" : "environment.json",
+  "rawArtifact" : ".work/A05/runtime/http-3.jfr",
+  "seed" : 20261018,
+  "tenants" : 50,
+  "policyVersionsPerTenant" : 200,
+  "rolesPerPolicy" : 100,
+  "activeRulesPerTenant" : 200,
+  "resourcesPerTenant" : 1000,
+  "requests" : 100000,
+  "concurrency" : 16,
+  "warmupRequests" : 1000,
+  "poolSize" : 8,
+  "measurements" : {
+    "p50Millis" : 34.6898,
+    "p99Millis" : 176.965851,
+    "errors" : 0,
+    "maximumClientInFlight" : 16,
+    "queryCountIncludingMetricsReads" : 700150,
+    "p95Millis" : 102.45147,
+    "cacheSize" : 50,
+    "denials" : 20000,
+    "throughputPerSecond" : 367.2634789637416,
+    "durationSeconds" : 272.284084119
+  },
+  "assertions" : {
+    "failed" : 0,
+    "passed" : 1
+  },
+  "exitCode" : 0,
+  "limitations" : [ "Closed-loop load; coordinated omission underestimates latency during server stalls.", "Disposable local OIDC; tokens obtained before measurement, JWT validation occurs per request.", "Telemetry reads are included in SQL query delta; no invented CPU/allocation measurements." ]
+}

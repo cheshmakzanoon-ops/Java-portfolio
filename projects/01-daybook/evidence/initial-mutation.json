@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "project": "daybook",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/01-daybook/pom.xml -pl ledger-domain -Dmaven.repo.local=/workspace/Java-portfolio/.work/A01/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pmutation verify",
+  "sourceRevision": "uncommitted domain tree before added accumulation/economic-digest regressions; not final release test tree",
+  "exitCode": 0,
+  "observedAtUtc": "2026-10-18T00:22:56Z",
+  "measurements": {"generated": 31,"killed": 27,"survived": 4,"noCoverage": 0,"timedOut": 0,"mutationScorePercent": 87},
+  "analysis": [
+    "Surviving decimal.length>64 boundary is redundant for valid30-digit-bounded money; exact64-character numeric inputs are already terminally rejected by amount/scale constraints",
+    "Non-equivalent survivor removing per-line canonical digest representation: new direct tests compare equal-reference journals with changed amount, side and account",
+    "Two non-equivalent survivors removing debit/credit reference accumulation: new direct test applies10then20then reverses10 and independently expects20"
+  ],
+  "rawArtifact": "ledger-domain/target/pit-reports/ (generated local HTML)",
+  "limitations": ["Final regressions need ordinary verification and a mutation rerun; no survivor excluded"]
+}

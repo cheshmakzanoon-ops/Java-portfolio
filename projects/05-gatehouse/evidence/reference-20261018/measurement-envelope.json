@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 1,
+  "project": "gatehouse",
+  "classification": "quiet-reference",
+  "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+  "timestamp": "2026-10-18T04:12:11.289734+00:00",
+  "command": [
+    "env",
+    "GATEHOUSE_QUIET_GRANTED=1",
+    "bash",
+    ".work/A05/run-reference-window.sh"
+  ],
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T03:53:56.086098+00:00",
+    "command": [
+      "env",
+      "GATEHOUSE_QUIET_GRANTED=1",
+      "bash",
+      ".work/A05/run-reference-window.sh"
+    ],
+    "sourceRevision": "7770cfee7cf2055c69e5612acfd03934f97b57b9",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T03:53:56.096602+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 7640432640,
+    "exitCode": 0,
+    "completedAtUtc": "2026-10-18T04:07:30.175597+00:00",
+    "elapsedSeconds": 814.0799638919998,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "PASS"
+  },
+  "rawArchive": ".work/A05/reference-20261018-quiet6",
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "visibleLogicalCores": 5,
+    "memoryLimit": "34359738368",
+    "cpuQuota": "400000 100000",
+    "jdk": [
+      "openjdk version \"25.0.4.1\" 2026-08-18 LTS",
+      "OpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)",
+      "OpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)"
+    ],
+    "jvmFlags": [
+      "Maven:-Xmx512m",
+      "Tests:-Xmx512m",
+      "Services:-Xmx256m",
+      "JMH:-Xms128m -Xmx256m"
+    ],
+    "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+    "containersShareHost": true,
+    "integrationConcurrentStacks": 2,
+    "performanceIsolation": "Coordinator explicitly granted quiet host; no other active Java process at protocol entry; own PostgreSQL/Keycloak and two required services run during measurements",
+    "poolSize": 8,
+    "capturedAt": "2026-10-18T03:54:53.313421+00:00",
+    "containers": {
+      "postgres": "18.3",
+      "keycloak": "26.8.1",
+      "keycloakHeapMiB": 768,
+      "keycloakActiveProcessorCount": 2,
+      "fixtureAccessTokenSeconds": 1800
+    },
+    "jdkFlagsBoundary": "Configured invocations; JMH and workload result envelopes record actual commands",
+    "effectiveTestFramework": {
+      "integration4JUnit": "6.0.3",
+      "postMaintenanceUnitJUnit": "6.1.3",
+      "integration5JUnit": "6.1.3"
+    },
+    "integrationDirectPoolSize": 2,
+    "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+    "measurementClass": "quiet-baseline",
+    "kernel": "6.18.55",
+    "runtimeArtifactManifest": {
+      "schemaVersion": 1,
+      "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+      "artifactsSha256": {
+        "decision-service/target/gatehouse-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
+        "demo-resource-server/target/gatehouse-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
+        "verification/target/gatehouse-verification-1.0.0-SNAPSHOT-exec.jar": "a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330"
+      }
+    },
+    "ownServicePids": {
+      "decision-service": 341409,
+      "demo-resource-server": 341410
+    }
+  },
+  "protocol": {
+    "tenants": 50,
+    "immutableVersionsPerTenant": 200,
+    "activeRulesPerTenant": 200,
+    "rolesPerVersion": 100,
+    "resourcesPerTenant": 1000,
+    "seed": 20261018,
+    "httpRuns": 3,
+    "requestsPerRun": 100000,
+    "warmupPerRun": 1000,
+    "clientConcurrency": 16,
+    "poolSize": 8,
+    "policyCacheLimit": 500,
+    "jwtVerificationPerRequest": true,
+    "freshDatabaseSnapshotPerRequest": true,
+    "committedMandatoryAuditPerRequest": true,
+    "clientJvmFreshPerRun": true,
+    "backendRestartedBetweenRuns": false,
+    "jmhMethods": 2,
+    "jmhForksPerMethod": 3
+  },
+  "exitCode": 0,
+  "assertions": {
+    "fullHttpRunsPassed": 3,
+    "measuredRequests": 300000,
+    "expectedDenialsPerRun": 20000,
+    "totalDenials": 60000,
+    "totalErrors": 0,
+    "jmhMethodsCompleted": 2,
+    "profileFilesRetained": 6
+  },
+  "httpResults": [
+    {
+      "repetition": 1,
+      "rawFile": "../http-1.json",
+      "result": {
+        "schemaVersion": 1,
+        "project": "gatehouse",
+        "workload": "50x200x100x1000-authenticated-http-100k-v1",
+        "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+        "timestamp": "2026-10-18T03:59:00.500314215Z",
+        "command": "/workspace/.tools/jdk-25/bin/java -Xmx512m -XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A05/runtime/http-1.jfr,settings=profile,dumponexit=true -cp /workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes:/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/lib/* io.github.cheshmakzanoon.portfolio.gatehouse.Workload http /workspace/Java-portfolio/projects/05-gatehouse/evidence/http-1.json 100000",
+        "environment": "environment.json",
+        "rawArtifact": ".work/A05/runtime/http-1.jfr",
+        "seed": 20261018,
+        "tenants": 50,
+        "policyVersionsPerTenant": 200,
+        "rolesPerPolicy": 100,
+        "activeRulesPerTenant": 200,
+        "resourcesPerTenant": 1000,
+        "requests": 100000,
+        "concurrency": 16,
+        "warmupRequests": 1000,
+        "poolSize": 8,
+        "measurements": {
+          "maximumClientInFlight": 16,
+          "errors": 0,
+          "p99Millis": 133.285308,
+          "p50Millis": 19.406382,
+          "durationSeconds": 168.555978902,
+          "throughputPerSecond": 593.274712955397,
+          "denials": 20000,
+          "cacheSize": 50,
+          "p95Millis": 66.606079,
+          "queryCountIncludingMetricsReads": 700150
+        },
+        "assertions": {
+          "failed": 0,
+          "passed": 1
+        },
+        "exitCode": 0,
+        "limitations": [
+          "Closed-loop load; coordinated omission underestimates latency during server stalls.",
+          "Disposable local OIDC; tokens obtained before measurement, JWT validation occurs per request.",
+          "Telemetry reads are included in SQL query delta; no invented CPU/allocation measurements."
+        ]
+      }
+    },
+    {
+      "repetition": 2,
+      "rawFile": "../http-2.json",
+      "result": {
+        "schemaVersion": 1,
+        "project": "gatehouse",
+        "workload": "50x200x100x1000-authenticated-http-100k-v1",
+        "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+        "timestamp": "2026-10-18T04:02:32.395372758Z",
+        "command": "/workspace/.tools/jdk-25/bin/java -Xmx512m -XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A05/runtime/http-2.jfr,settings=profile,dumponexit=true -cp /workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes:/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/lib/* io.github.cheshmakzanoon.portfolio.gatehouse.Workload http /workspace/Java-portfolio/projects/05-gatehouse/evidence/http-2.json 100000",
+        "environment": "environment.json",
+        "rawArtifact": ".work/A05/runtime/http-2.jfr",
+        "seed": 20261018,
+        "tenants": 50,
+        "policyVersionsPerTenant": 200,
+        "rolesPerPolicy": 100,
+        "activeRulesPerTenant": 200,
+        "resourcesPerTenant": 1000,
+        "requests": 100000,
+        "concurrency": 16,
+        "warmupRequests": 1000,
+        "poolSize": 8,
+        "measurements": {
+          "throughputPerSecond": 504.9580103411728,
+          "durationSeconds": 198.036268268,
+          "p50Millis": 25.160335,
+          "p99Millis": 121.010419,
+          "errors": 0,
+          "maximumClientInFlight": 16,
+          "queryCountIncludingMetricsReads": 700150,
+          "p95Millis": 70.952558,
+          "cacheSize": 50,
+          "denials": 20000
+        },
+        "assertions": {
+          "failed": 0,
+          "passed": 1
+        },
+        "exitCode": 0,
+        "limitations": [
+          "Closed-loop load; coordinated omission underestimates latency during server stalls.",
+          "Disposable local OIDC; tokens obtained before measurement, JWT validation occurs per request.",
+          "Telemetry reads are included in SQL query delta; no invented CPU/allocation measurements."
+        ]
+      }
+    },
+    {
+      "repetition": 3,
+      "rawFile": "../http-3.json",
+      "result": {
+        "schemaVersion": 1,
+        "project": "gatehouse",
+        "workload": "50x200x100x1000-authenticated-http-100k-v1",
+        "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+        "timestamp": "2026-10-18T04:07:19.136442986Z",
+        "command": "/workspace/.tools/jdk-25/bin/java -Xmx512m -XX:StartFlightRecording=filename=/workspace/Java-portfolio/.work/A05/runtime/http-3.jfr,settings=profile,dumponexit=true -cp /workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/classes:/workspace/Java-portfolio/.work/A05/runtime/classpath-v3/a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330/lib/* io.github.cheshmakzanoon.portfolio.gatehouse.Workload http /workspace/Java-portfolio/projects/05-gatehouse/evidence/http-3.json 100000",
+        "environment": "environment.json",
+        "rawArtifact": ".work/A05/runtime/http-3.jfr",
+        "seed": 20261018,
+        "tenants": 50,
+        "policyVersionsPerTenant": 200,
+        "rolesPerPolicy": 100,
+        "activeRulesPerTenant": 200,
+        "resourcesPerTenant": 1000,
+        "requests": 100000,
+        "concurrency": 16,
+        "warmupRequests": 1000,
+        "poolSize": 8,
+        "measurements": {
+          "p50Millis": 34.6898,
+          "p99Millis": 176.965851,
+          "errors": 0,
+          "maximumClientInFlight": 16,
+          "queryCountIncludingMetricsReads": 700150,
+          "p95Millis": 102.45147,
+          "cacheSize": 50,
+          "denials": 20000,
+          "throughputPerSecond": 367.2634789637416,
+          "durationSeconds": 272.284084119
+        },
+        "assertions": {
+          "failed": 0,
+          "passed": 1
+        },
+        "exitCode": 0,
+        "limitations": [
+          "Closed-loop load; coordinated omission underestimates latency during server stalls.",
+          "Disposable local OIDC; tokens obtained before measurement, JWT validation occurs per request.",
+          "Telemetry reads are included in SQL query delta; no invented CPU/allocation measurements."
+        ]
+      }
+    }
+  ],
+  "httpSummary": {
+    "maximumClientInFlight": {
+      "count": 3,
+      "minimum": 16,
+      "median": 16,
+      "maximum": 16,
+      "mean": 16,
+      "sampleStddev": 0.0,
+      "sampleCoefficientOfVariationPercent": 0.0
+    },
+    "errors": {
+      "count": 3,
+      "minimum": 0,
+      "median": 0,
+      "maximum": 0,
+      "mean": 0,
+      "sampleStddev": 0.0,
+      "sampleCoefficientOfVariationPercent": null
+    },
+    "p99Millis": {
+      "count": 3,
+      "minimum": 121.010419,
+      "median": 133.285308,
+      "maximum": 176.965851,
+      "mean": 143.7538593333333,
+      "sampleStddev": 29.409956100624022,
+      "sampleCoefficientOfVariationPercent": 20.45855063440687
+    },
+    "p50Millis": {
+      "count": 3,
+      "minimum": 19.406382,
+      "median": 25.160335,
+      "maximum": 34.6898,
+      "mean": 26.418839,
+      "sampleStddev": 7.71904078750676,
+      "sampleCoefficientOfVariationPercent": 29.21794098335192
+    },
+    "durationSeconds": {
+      "count": 3,
+      "minimum": 168.555978902,
+      "median": 198.036268268,
+      "maximum": 272.284084119,
+      "mean": 212.95877709633334,
+      "sampleStddev": 53.44989153661606,
+      "sampleCoefficientOfVariationPercent": 25.098703263325767
+    },
+    "throughputPerSecond": {
+      "count": 3,
+      "minimum": 367.2634789637416,
+      "median": 504.9580103411728,
+      "maximum": 593.274712955397,
+      "mean": 488.49873408677047,
+      "sampleStddev": 113.90105488414827,
+      "sampleCoefficientOfVariationPercent": 23.316550675833767
+    },
+    "denials": {
+      "count": 3,
+      "minimum": 20000,
+      "median": 20000,
+      "maximum": 20000,
+      "mean": 20000,
+      "sampleStddev": 0.0,
+      "sampleCoefficientOfVariationPercent": 0.0
+    },
+    "cacheSize": {
+      "count": 3,
+      "minimum": 50,
+      "median": 50,
+      "maximum": 50,
+      "mean": 50,
+      "sampleStddev": 0.0,
+      "sampleCoefficientOfVariationPercent": 0.0
+    },
+    "p95Millis": {
+      "count": 3,
+      "minimum": 66.606079,
+      "median": 70.952558,
+      "maximum": 102.45147,
+      "mean": 80.00336899999999,
+      "sampleStddev": 19.561720241430997,
+      "sampleCoefficientOfVariationPercent": 24.451120603972313
+    },
+    "queryCountIncludingMetricsReads": {
+      "count": 3,
+      "minimum": 700150,
+      "median": 700150,
+      "maximum": 700150,
+      "mean": 700150,
+      "sampleStddev": 0.0,
+      "sampleCoefficientOfVariationPercent": 0.0
+    }
+  },
+  "throughputFirstToThirdDeclinePercent": 38.09554478831245,
+  "jmhSummary": [
+    {
+      "benchmark": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyBenchmark.coldCompilation",
+      "mode": "sample",
+      "forks": 3,
+      "warmupIterations": 3,
+      "measurementIterations": 3,
+      "jvmArgs": [
+        "-Xmx512m",
+        "-Xms128m",
+        "-Xmx256m"
+      ],
+      "sampleCount": 7929,
+      "scoreUs": 1133.871816370286,
+      "scoreErrorUs": 114.32794362811927,
+      "scoreConfidenceUs": [
+        1019.5438727421667,
+        1248.1997599984054
+      ],
+      "percentilesUs": {
+        "0.0": 416.25600000000003,
+        "50.0": 616.448,
+        "90.0": 2113.536,
+        "95.0": 3342.3360000000002,
+        "99.0": 6850.150399999991,
+        "99.9": 36810.260479999546,
+        "99.99": 162267.136,
+        "99.999": 162267.136,
+        "99.9999": 162267.136,
+        "100.0": 162267.136
+      },
+      "allocationBytesPerOp": 1548097.581507139,
+      "allocationErrorBytesPerOp": 8921.805049109504,
+      "gcCount": 156.0,
+      "gcTimeMillis": 275.0
+    },
+    {
+      "benchmark": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyBenchmark.warmIndexedEvaluation",
+      "mode": "sample",
+      "forks": 3,
+      "warmupIterations": 3,
+      "measurementIterations": 3,
+      "jvmArgs": [
+        "-Xmx512m",
+        "-Xms128m",
+        "-Xmx256m"
+      ],
+      "sampleCount": 235850,
+      "scoreUs": 12.7237796226415,
+      "scoreErrorUs": 1.354712777445276,
+      "scoreConfidenceUs": [
+        11.369066845196224,
+        14.078492400086775
+      ],
+      "percentilesUs": {
+        "0.0": 4.5840000000000005,
+        "50.0": 5.36,
+        "90.0": 5.824,
+        "95.0": 9.344,
+        "99.0": 41.28,
+        "99.9": 2056.8023040001394,
+        "99.99": 7067.259699184418,
+        "99.999": 31055.80941322136,
+        "99.9999": 42795.008,
+        "100.0": 42795.008
+      },
+      "allocationBytesPerOp": 5540.264154445999,
+      "allocationErrorBytesPerOp": 122.7321642577286,
+      "gcCount": 67.0,
+      "gcTimeMillis": 186.0
+    }
+  ],
+  "serverProfiles": [
+    {
+      "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+      "rawArtifact": "/workspace/Java-portfolio/.work/A05/runtime/http-server-1.jfr",
+      "boundary": "decision-service JVM during authenticated HTTP workload",
+      "cpuSamples": 190,
+      "meanJvmCpuFraction": 0.2475163153384959,
+      "maximumJvmCpuFraction": 0.5125240683555603,
+      "garbageCollections": 392,
+      "totalGcEventMillis": 6549.264795999999,
+      "allocationSamples": 52396,
+      "sampledAllocationWeightBytes": 22964967672,
+      "limitations": [
+        "CPU is periodic JFR sampling normalized by JVM processor count; this is not exact cgroup utilization.",
+        "Allocation weight is sampled estimation, not exact allocation per decision.",
+        "GC event duration includes collector-specific concurrent work and is not total application pause time."
+      ]
+    },
+    {
+      "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+      "rawArtifact": "/workspace/Java-portfolio/.work/A05/runtime/http-server-2.jfr",
+      "boundary": "decision-service JVM during authenticated HTTP workload",
+      "cpuSamples": 207,
+      "meanJvmCpuFraction": 0.20474486321307592,
+      "maximumJvmCpuFraction": 0.3400000035762787,
+      "garbageCollections": 350,
+      "totalGcEventMillis": 2324.6607700000004,
+      "allocationSamples": 58425,
+      "sampledAllocationWeightBytes": 45731167256,
+      "limitations": [
+        "CPU is periodic JFR sampling normalized by JVM processor count; this is not exact cgroup utilization.",
+        "Allocation weight is sampled estimation, not exact allocation per decision.",
+        "GC event duration includes collector-specific concurrent work and is not total application pause time."
+      ]
+    },
+    {
+      "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+      "rawArtifact": "/workspace/Java-portfolio/.work/A05/runtime/http-server-3.jfr",
+      "boundary": "decision-service JVM during authenticated HTTP workload",
+      "cpuSamples": 279,
+      "meanJvmCpuFraction": 0.1803556099370469,
+      "maximumJvmCpuFraction": 0.27290838956832886,
+      "garbageCollections": 351,
+      "totalGcEventMillis": 2861.509481999997,
+      "allocationSamples": 78466,
+      "sampledAllocationWeightBytes": 68489084256,
+      "limitations": [
+        "CPU is periodic JFR sampling normalized by JVM processor count; this is not exact cgroup utilization.",
+        "Allocation weight is sampled estimation, not exact allocation per decision.",
+        "GC event duration includes collector-specific concurrent work and is not total application pause time."
+      ]
+    }
+  ],
+  "verifiedArtifacts": {
+    "schemaVersion": 1,
+    "sourceRevision": "working-tree-sha256:832dfc3ccd0bf9399528721f8a31710c4b0197129b0b183aadcd5a1afeb92c11",
+    "artifactsSha256": {
+      "decision-service/target/gatehouse-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
+      "demo-resource-server/target/gatehouse-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
+      "verification/target/gatehouse-verification-1.0.0-SNAPSHOT-exec.jar": "a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330"
+    }
+  },
+  "rawFiles": [
+    {
+      "path": ".work/A05/reference-20261018-quiet6/profiles/http-1.jfr",
+      "originalPath": ".work/A05/runtime/http-1.jfr",
+      "bytes": 4071610,
+      "sha256": "e8f781ad0120e7d1f7d7a88fd2132237102f2cce03915500426c684b1e3c13b4"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/profiles/http-server-1.jfr",
+      "originalPath": ".work/A05/runtime/http-server-1.jfr",
+      "bytes": 20637558,
+      "sha256": "63369142478b87eb20bf9e2f7b5bdb9958d7a04b2f968a73a6aa16e94753a653"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/http-1.json",
+      "originalPath": "projects/05-gatehouse/evidence/http-1.json",
+      "bytes": 1921,
+      "sha256": "f18fa00a0e45d3feb344b02352206ef20251fa9996af709406dbd2c0f637fd86"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/http-server-1.json",
+      "originalPath": "projects/05-gatehouse/evidence/http-server-1.json",
+      "bytes": 849,
+      "sha256": "3197e5a556381eae9183ccfa21b4b6dca9e6661e07f6aa4eef49cec0fb8375d3"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/profiles/http-2.jfr",
+      "originalPath": ".work/A05/runtime/http-2.jfr",
+      "bytes": 4434479,
+      "sha256": "ed69a88e0e8133cf686cb39883eeb9e325549ecdbe066d7708d154b0cf2c442b"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/profiles/http-server-2.jfr",
+      "originalPath": ".work/A05/runtime/http-server-2.jfr",
+      "bytes": 16104615,
+      "sha256": "acf94e7f8be5c4011cee7f074c8a4e6b48b2a51120478c9dc89c81d55012009f"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/http-2.json",
+      "originalPath": "projects/05-gatehouse/evidence/http-2.json",
+      "bytes": 1922,
+      "sha256": "117cea1c091480b62af17e5e560939cb8d9bb6d070971f3bb4321ff2bd64e6d8"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/http-server-2.json",
+      "originalPath": "projects/05-gatehouse/evidence/http-server-2.json",
+      "bytes": 851,
+      "sha256": "c08d540d7e7c02915e02bb06b9d72b5e4b47a680856e1d97a87384825f2add2e"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/profiles/http-3.jfr",
+      "originalPath": ".work/A05/runtime/http-3.jfr",
+      "bytes": 5732277,
+      "sha256": "8039109101b7d055f29eed28dca6c782714f82b44781fc88429f9968a3e04977"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/profiles/http-server-3.jfr",
+      "originalPath": ".work/A05/runtime/http-server-3.jfr",
+      "bytes": 19951452,
+      "sha256": "271277f7bfe5697984fbaf9198fb38e230d125c194302999f82e04da5b2e507c"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/http-3.json",
+      "originalPath": "projects/05-gatehouse/evidence/http-3.json",
+      "bytes": 1920,
+      "sha256": "70b1901e40f454443b6f7bf75939a5d66bd1f16bee157683ddcb95ca7d1b87d9"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/http-server-3.json",
+      "originalPath": "projects/05-gatehouse/evidence/http-server-3.json",
+      "bytes": 850,
+      "sha256": "e935aab7380334052b9fc471b2f1182a252ba06ec297190f754cd2606026130b"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/jmh.json",
+      "originalPath": "projects/05-gatehouse/evidence/jmh.json",
+      "bytes": 653063,
+      "sha256": "171bdd4caf130ac206a48d2ad417dae3c654f68a28b041b832692944821abbbc"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/jmh-envelope.json",
+      "originalPath": "projects/05-gatehouse/evidence/jmh-envelope.json",
+      "bytes": 1043794,
+      "sha256": "3c5c8302df1a9c9591d25a358d0b9b27d0c5d0b092df2d66d5fd890acebce906"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/results/environment.json",
+      "originalPath": "projects/05-gatehouse/evidence/environment.json",
+      "bytes": 2352,
+      "sha256": "76e7a252f1a2d241e523a04a8e6f5a3d27782515e7ed47af270ada325931e242"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/logs/performance.log",
+      "originalPath": ".work/A05/performance.log",
+      "bytes": 27436,
+      "sha256": "7b1b5d2f5697d26fc76c7f9fee2a0b3ed241fca62422becd39106c1128b64ad4"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/logs/performance-up.log",
+      "originalPath": ".work/A05/performance-up.log",
+      "bytes": 1539,
+      "sha256": "12ded7663a1a19f6bc5419b9dbf95b47121517ffac45ef8f529851d35c29ca35"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/logs/performance-down.log",
+      "originalPath": ".work/A05/performance-down.log",
+      "bytes": 585,
+      "sha256": "d2a024e7e167f1a94c8422233a6f9684d91c006c0366347d1d6a507eee47d44f"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/logs/reference-cache-check.log",
+      "originalPath": ".work/A05/reference-cache-check.log",
+      "bytes": 77,
+      "sha256": "167cba97950612a18d2e07c83af5cbf0df394c4fca8dfadcc0e88c02ba7bcf1b"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/logs/reference-exit-code.txt",
+      "originalPath": ".work/A05/reference-exit-code.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/verified-artifacts.json",
+      "originalPath": ".work/A05/runtime/build-manifest.json",
+      "bytes": 619,
+      "sha256": "cee491a3110742a8f161408e3bc8c8e6f2a55f916351a645c844c53bf3620204"
+    },
+    {
+      "path": ".work/A05/reference-20261018-quiet6/reservation.json",
+      "originalPath": ".work/coordinator/quiet-reference-6-gatehouse/reservation.json",
+      "bytes": 912,
+      "sha256": "bfce6f01513739718083bc39e825bfdf54e8fe671947f631a499c76d2fe3a550"
+    }
+  ],
+  "limits": [
+    "Three fixed-seed fresh client JVMs against the same continuing decision/protected services and PostgreSQL dataset; backend state and accumulated audit records were not reset between runs.",
+    "Progressive throughput slowdown593.275->504.958->367.263 requests/s; sampleCV23.3166%; first-to-third decline38.0955%. Stable capacity is not established; no causal attribution or selective removal.",
+    "Sixteen closed-loop clients; coordinated omission understates offered-load latency during stalls. No overload or throughput threshold guarantee.",
+    "Latency percentiles are per-run distributions; summary medians are medians of those percentiles, not pooled samples.",
+    "1000warmup requests excluded from each client timed loop. ServerJFR includes token/warmup/metrics and recording boundaries beyond that loop; clientJFR includes JVM setup/warmup/telemetry.",
+    "Query metric counts application PreparedStatement creations in committed tenant transactions, including tenant-context/epoch/membership/policy/resource/audit work and telemetry reads; excludes commit/rollback/network/database-trigger internal work.",
+    "Policy cache holds50 active entries; no500-entry cache-eviction stress is inferred from this workload. No allow-decision cache exists.",
+    "JFR CPU fractions are periodicCPULoad observations, not exact cgroup utilization. Allocation weights are sampling estimates and are not converted to exact per-request allocation; sequential recordings share one long-livedJVM and sampling state.",
+    "GarbageCollection event durations include collector-specific concurrent work and are not summed stop-the-world pause time.",
+    "Profiles are preserved with SHA256/size and original FlightSummaryJSON; analysis did not run fresh Java/JFRCLI recounts or expensive attribution experiments.",
+    "JMH uncached compilation operates on an already constructed200-rule/100-role definition with warmed JVM code; it excludes HTTP/JWT/JDBC/JSON input. Warm evaluation is a separate in-memory component boundary.",
+    "JMH sample-time averages/percentiles/error bars and normalized GC allocation are component observations, not authenticated request latency, worst-case latency or production capacity.",
+    "Required PostgreSQL/Keycloak/twoHTTP services shared the reserved host with the benchmark; other Java/apps absent at reservation/completion. Physical cloud neighbors and underlying overlay-storage device remain unknown.",
+    "Failedquietattempt5 remains preserved separately. No before/after performance optimization or stable speedup claim. Clean-checkout/global/remoteCI/release validation and independent measured-artifact review remain open."
+  ],
+  "sourceEvidence": [
+    {
+      "path": "projects/05-gatehouse/evidence/correctness.json",
+      "bytes": 1437,
+      "sha256": "85e4e8b940754b10c81555288c8af66047b2f9072d1593f70b6bf10788d486f1"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/mutation.json",
+      "bytes": 1966,
+      "sha256": "3cbd1e0f899ed0aad2501ce4815e9d9b8e45badfdc7af4adfc0a2bed48591339"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/cache-preparation.json",
+      "bytes": 2391,
+      "sha256": "bc272e27795803787f79e0ff29fb61298821407f28e4d5be2cd938c13969e635"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/jmh-discovery.json",
+      "bytes": 2646,
+      "sha256": "e74a3b103277a1f80f2bed463ca9ee686fd36e02ee32c59e2fc690809ef75bc1"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/jmh-fix-verification.json",
+      "bytes": 4187,
+      "sha256": "34dd126e35eb12bd1f0695f3f2e58dc7f77ce0302314769adc3fcfc59d48da52"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/reference-attempt-5-failed.json",
+      "bytes": 3959,
+      "sha256": "9871d918eb9fc2c905af6a7c6ddef1fbd0b3666032065efc03543b5f24e16f24"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/preparation.json",
+      "bytes": 773,
+      "sha256": "ef239c56a0006b8f62a558c6a4c57aed7fc1d0c5e695a30920155c5b1c07693a"
+    },
+    {
+      "path": "projects/05-gatehouse/evidence/demo.json",
+      "bytes": 1512,
+      "sha256": "fb288c5bd1a6a778982b7b9521cae0ab52132924528dab8c9688a824f40efd24"
+    }
+  ]
+}

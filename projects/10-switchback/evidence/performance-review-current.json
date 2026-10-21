@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-18T09:47:56.205629+00:00",
+  "project": "switchback",
+  "reviewer": "A03, Majority owner",
+  "result": "SCOPED_PASS",
+  "packet": "performance-v1/packet.json",
+  "packetVersion": 1,
+  "packetSha256": "aef369a9ef0f2b97a2a8903af91b40ae1fe778728c90d6db86a2c6589445806b",
+  "sourceFingerprint": "d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+  "verifiedScope": [
+    "all packet attachment lengths/hashes and root receipt",
+    "all 30 selected raw system fields, regenerated canonical identities and score/time trace endpoints/order/nondegradation",
+    "all six exact primary/secondary JMH metrics, fork statistics and 18 nonnull instance descriptive-statistic groups",
+    "actual 811 resource samples and current service/client GC boundaries",
+    "final PERFORMANCE, STATUS, CASE_STUDY, RESUME, INTERVIEW, REVIEW and evidence README"
+  ],
+  "acceptedLimits": [
+    "partial feasibility remains explicit",
+    "six actual step-cap outcomes and three baseline-budget exhaustion cases",
+    "31.552836-second cooperative overshoot",
+    "sparse secondary gc.time [3,2,3] preserved without filling",
+    "combined original-move/Timefold credit; standalone JMH is separate from service PHASE_ASSERT mode",
+    "three samples do not establish request latency percentiles or a universal improvement guarantee"
+  ],
+  "unresolvedBlockersInScope": [],
+  "immutablePacketNote": "Version1 REVIEW_PENDING records its sealing-time state; this separate acknowledgment records subsequent scoped closure without modifying the seal.",
+  "remainingReleaseGates": [
+    "root-owned fresh-checkout certification",
+    "global/CI/release checks"
+  ],
+  "noNewMeasurementsDuringReview": true
+}

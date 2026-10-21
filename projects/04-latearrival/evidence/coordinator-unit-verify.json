@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "project": "latearrival",
+  "sourceRevision": "sha256:0e3279d077fef65b9e13644d9bfe0814f2eebca30373dcad2a2528ba32378415",
+  "rootPomSha256": "41a9d9845f49911c8bfec4a7c6b80739c07491a780c1ba3df4e7cc867be72f1f",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/04-latearrival/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply verify",
+  "exitCode": 0,
+  "rawArtifact": ".work/coordinator/latearrival-verify.log",
+  "reports": [
+    {
+      "path": "projects/04-latearrival/engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.latearrival.EngineTest.xml",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "panesAgreeWithIndependentMembershipOracle",
+        "invalidRecordsConflictOverflowOffsetsAndQuotasAreAtomic",
+        "slidingMergeOverflowAndClockBoundsPreserveState",
+        "malformedAndRoutingValidationDoNotChangeAggregation",
+        "sourceSilenceRequiresEligibleNoBacklogAndAllIdleHolds",
+        "exactDemoLateAndDuplicateWithIndependentSlidingOutcomes"
+      ]
+    },
+    {
+      "path": "projects/04-latearrival/kafka-adapter/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest.xml",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "validatesVersionedWireAndRouting"
+      ]
+    },
+    {
+      "path": "projects/04-latearrival/postgres-store/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.latearrival.RetentionTest.xml",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "nextPositionMaySkipOffsetsButNeverRetention"
+      ]
+    },
+    {
+      "path": "projects/04-latearrival/verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.latearrival.SchedulePropertyTest.xml",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "recordedLateArrivalHistoriesMatchIndependentOracle"
+      ]
+    }
+  ],
+  "coreCoverage": {
+    "BRANCH": {
+      "missed": 16,
+      "covered": 146
+    },
+    "LINE": {
+      "missed": 2,
+      "covered": 190
+    }
+  },
+  "limitations": [
+    "Unit/property/format/coverage verification only. Required integration, mutation, demo and full performance remain pending.",
+    "Shared4CPU-quota host with other functional builds; no benchmark claim."
+  ],
+  "runnerCounts": {
+    "engine": 6,
+    "eventCodec": 1,
+    "retention": 1,
+    "scheduleProperty": 1,
+    "totalMethods": 9
+  },
+  "reportNote": "Surefire XML suite-level count undercounts mixed jqwik/Jupiter EngineTest (suite tests=5 but6 testcase entries). Console runner explicitly reports6 engine tests; exact testcase names preserved. Property tries are separate from method counts."
+}

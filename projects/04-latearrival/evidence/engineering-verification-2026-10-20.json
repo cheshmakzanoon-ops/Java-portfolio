@@ -1,0 +1,447 @@
+{
+  "schemaVersion": 1,
+  "project": "latearrival",
+  "recordedAt": "2026-10-20T09:26:51.460332+00:00",
+  "scope": "Maven application source, dependency baseline and actual Kafka/PostgreSQL functional integration; lifecycle scripts are certified separately",
+  "command": "./mvnw -f projects/04-latearrival/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp -Pintegration verify",
+  "result": "PASS",
+  "finishedAt": "2026-10-20T08:59:08Z",
+  "counts": {
+    "tests": 48,
+    "ordinary": 37,
+    "integration": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "generatedHistories": {
+    "eventTime": 120,
+    "progressAndControl": 80
+  },
+  "sourceFiles": {
+    "pom.xml": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+    "projects/04-latearrival/engine/pom.xml": "6455b392bb3c34bcc4038e503c7d5492716c18642eecf2d75743549b164e990d",
+    "projects/04-latearrival/engine/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/Engine.java": "c6f137cd0abb8f1e05e2978a2128b33f8c7f3d1694284961b3c38848377cda53",
+    "projects/04-latearrival/engine/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/EnginePropertyTest.java": "77a8c8241b1ed1702d14034761b268d148e6093ff9ae79a2af448b3e2ae821ad",
+    "projects/04-latearrival/engine/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/EngineTest.java": "beaddff7ec45b81103d3fe0988f4c714adb5d05565ef7ce71ce4725d1f246549",
+    "projects/04-latearrival/kafka-adapter/pom.xml": "bdf108025ea60755dcb127035898d63763c3aaffdaa6ef3e4bd9d9a90e741316",
+    "projects/04-latearrival/kafka-adapter/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/EventCodec.java": "8a0022d4fa1082144c971833039748be5b27c7757374925dea98e1e9d037c6aa",
+    "projects/04-latearrival/kafka-adapter/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/KafkaPump.java": "483dc2596a8a81a990874fa88401d37c24f7a9b2a485bfcbda3acb9cf6f83b59",
+    "projects/04-latearrival/kafka-adapter/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/KafkaResultPublisher.java": "796b3b05850c59f22b49674b00da3fd86f871d576628007ad2ed66938de592d4",
+    "projects/04-latearrival/kafka-adapter/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/ThreadTermination.java": "359df5393a9728c3c3bb68af36d2c6228c85f9fd3db88dc3da390d4875e31fb3",
+    "projects/04-latearrival/kafka-adapter/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/EventCodecTest.java": "f66b431e422029976c5f7aa1b0e601d41ad1e1c5837cacd8875d0c6b0265074e",
+    "projects/04-latearrival/kafka-adapter/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/KafkaPumpLifecycleTest.java": "a83db01aa35c62cddd797f4754e12b1ba9ecdea2586554ded0352cbce2c9698b",
+    "projects/04-latearrival/kafka-adapter/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/ThreadTerminationTest.java": "75e58459c8071dc1c088aef954fa0d1771b2d49013f99ca8fbba79849da8b25a",
+    "projects/04-latearrival/pom.xml": "f104d943c73e218271c9a5f882d20ebd02759bb6d5c5f1ba12f93a21ac6ed7b8",
+    "projects/04-latearrival/postgres-store/pom.xml": "3655e3bf1da58ea984568a6a40aa8835ac133b28c2d482d6c9ab42073e55f7ed",
+    "projects/04-latearrival/postgres-store/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/PostgresStore.java": "d9bf312969eee4b57404a13b3fab8530ddc59dff03f50bb1d5d3c5e48b2450d1",
+    "projects/04-latearrival/postgres-store/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/SnapshotCodec.java": "12874e09405152241597f12c2e52345177dca9cceb74a4faaa890d6a72cb49ca",
+    "projects/04-latearrival/postgres-store/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/SqlTransactions.java": "16ba81e94302707072218aaba6ce221710bab7fd890bdbe04bce09b135d1b07b",
+    "projects/04-latearrival/postgres-store/src/main/resources/db/migration/V1__durable_run.sql": "1a5b0faf563bdd7e2578cda9b0add528ff05090ca18bfb81d0e255068bff2acd",
+    "projects/04-latearrival/postgres-store/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/RetentionTest.java": "a3d8adda760cb87c518e27020d7a12e4bcd56951088d0c36ba05c2d41b3b1532",
+    "projects/04-latearrival/postgres-store/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/SnapshotCodecTest.java": "7225fe62c4a3a36b5b6c67a3625620b3ae97c59e12c1408d4a2c03bd790a17c6",
+    "projects/04-latearrival/postgres-store/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/SqlTransactionsTest.java": "fe5a254f1f7a372d9b632d9406ef57f4a0b370aececea256a37c18bd9c9e5f51",
+    "projects/04-latearrival/service/pom.xml": "0f0d3d0d3d8c4aefa567d6ba32cc5d52688ca5029df7ee7e69f4530ef872a5ad",
+    "projects/04-latearrival/service/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/ApiSecurity.java": "c83d372cb0fb8a7e11ffdfe889417b9b9d3174fef300300962e11d5c1f167172",
+    "projects/04-latearrival/service/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/DurableSession.java": "53da8c29649d52845d0eb76b6f6a7c870f6ec56cbe7e7e7db479f0ca98f13c82",
+    "projects/04-latearrival/service/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/NoBodyFilter.java": "1675ae9c6c8a88fb933682c95fa2502ae46332253d63ea66295499d88c50efce",
+    "projects/04-latearrival/service/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/PulseApplication.java": "16489d7129948cc7dc065376cafdb5dbf883f3fe3788f67bf7d4dd516f3b8194",
+    "projects/04-latearrival/service/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/QueryApi.java": "6c23411230603823521bdc7f0c711fae30a60bc119be54d71cf25ccc0590d004",
+    "projects/04-latearrival/service/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/StrictIdentityDecoder.java": "97218ab9d510d32c2639d9b46e75babf37966ae9e9d2102cb5f9eb8e2fd0092a",
+    "projects/04-latearrival/service/src/main/resources/application.properties": "d6990926ae3175c47c5632cc3f838896fc6d91f90a53ca46649f13fe3fdbdbec",
+    "projects/04-latearrival/service/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/QueryReadinessTest.java": "fa89593c998eef8ee54351ef2c9b1cb935612938e78c292ad80c25d5b1022414",
+    "projects/04-latearrival/verification/pom.xml": "2d563ec93208d6b129e0c38674b89d3fb1b08f98730b54ed6f49f977d7776224",
+    "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/BatchOracle.java": "3b3a9f88d11809f7ce2dff70ef12f18c27a30a7813d1475f01b3e2f920035b8e",
+    "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/EngineBenchmark.java": "9e4bb2254183dd3587d7f43c84a3747bb6c1439842c14c33aa898e894597ebbf",
+    "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/ReplayWorker.java": "7fe364f2c92f75cf363233fd0d00d9c4fe1723ad40109513bf24dd8e1cb04f16",
+    "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/Workload.java": "214fc358283084397a32b9d7cd8a22bd1d3d6044770f85670aedbd8da82ff82a",
+    "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/WorkloadOracle.java": "c647c9d72d1d729f5c105080d3547281282da189669a1a8e1d999ca658d49fdb",
+    "projects/04-latearrival/verification/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/DurabilityIT.java": "0798b879625a5665d7a87b31fc399d39d43f0f1f8afa80553c68192274d6c786",
+    "projects/04-latearrival/verification/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/LocalIssuer.java": "380b2bd451a053c05fdea01a4861b1215ee56e30cb67ff66add4996c6fea4ab2",
+    "projects/04-latearrival/verification/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/SchedulePropertyTest.java": "5c7c0b808453fa8bcca4910b303e783d7c9677029d39b07d44a084ed67be9fdc",
+    "projects/04-latearrival/verification/src/test/java/io/github/cheshmakzanoon/portfolio/latearrival/WorkloadOracleTest.java": "d7fac9878293b78f34e0499fe3167c4d5e943f3bef8e509efde7510e74977e08"
+  },
+  "methods": [
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "EnginePropertyTest",
+      "method": "panesAgreeWithIndependentMembershipOracle",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "invalidRecordsConflictOverflowOffsetsAndQuotasAreAtomic",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "progressInsideAtomicBatchFinalizesBeforeLaterArrivalAtExactLatenessEdge",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "slidingMergeOverflowAndClockBoundsPreserveState",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "fullyLateRecordDoesNotConsumePaneQuotaOrMutateRetainedFinals",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "malformedAndRoutingValidationDoNotChangeAggregation",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "sourceSilenceRequiresEligibleNoBacklogAndAllIdleHolds",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "firstLateWindowPublishesUnderUnchangedWatermarkAndFinalizesOnce",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "exactDemoLateAndDuplicateWithIndependentSlidingOutcomes",
+      "outcome": "PASS"
+    },
+    {
+      "module": "engine",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EngineTest",
+      "method": "exactSourceAndRetentionEdgesHaveExplicitOutcomes",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.ThreadTerminationTest",
+      "method": "stalledOwnerIsReportedWithoutPretendingItStopped",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.ThreadTerminationTest",
+      "method": "interruptedCallerStillWaitsForOwnerAndRetainsItsInterrupt",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.ThreadTerminationTest",
+      "method": "ownerCannotJoinItself",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.KafkaPumpLifecycleTest",
+      "method": "failedStartupCanCloseUnstartedConsumerAndReleaseItsJmxRegistration",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.KafkaPumpLifecycleTest",
+      "method": "closedPumpRejectsStartupAndCompletesReadinessWithoutAWait",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.KafkaPumpLifecycleTest",
+      "method": "uncommittedHandoffContinuesToBlockSourceSilenceAndOnlyAcknowledgedOffsetsMirror",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.KafkaPumpLifecycleTest",
+      "method": "unavailableRetainedPositionFailsReadinessAndClosesTheConsumer",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest",
+      "method": "byteBoundaryAndUnknownFieldsArePartOfTheWireContract",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest",
+      "method": "validatesVersionedWireAndRouting",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest",
+      "method": "explicitlySuppliedRecordTypeMustBeARecognizedString",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest",
+      "method": "omittedLegacyRecordTypeStillDefaultsToMeasurement",
+      "outcome": "PASS"
+    },
+    {
+      "module": "kafka-adapter",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest",
+      "method": "partitioningMatchesFixedKafkaMurmur2Vectors",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.RetentionTest",
+      "method": "nextPositionMaySkipOffsetsButNeverRetention",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest",
+      "method": "byteBudgetCountsSingleBulkAndSkippedBytesAndAllowsExactEof",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest",
+      "method": "limitsAreInclusiveAndApplyBeforeArrayAllocation",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest",
+      "method": "rejectsUnrelatedJavaClassesAndWrongPayloadTypes",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest",
+      "method": "legacyBytesRestoreTheCompleteRetainedGraphAndResultPayload",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest",
+      "method": "byteBudgetAccountsForZeroBytesAndSuccessfulMultiChunkSkips",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest",
+      "method": "encodingFailureRetainsTheIoCause",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SqlTransactionsTest",
+      "method": "cleanupPreservesPrimarySqlRuntimeAndFatalFailures",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SqlTransactionsTest",
+      "method": "successfulWorkCommitsBeforeCloseAndPreservesItsResult",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SqlTransactionsTest",
+      "method": "identicalRollbackFailureDoesNotReplaceTheOriginalOrSuppressItself",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SqlTransactionsTest",
+      "method": "rejectedOrUnknownCommitRollsBackAndNeverReplaysWork",
+      "outcome": "PASS"
+    },
+    {
+      "module": "postgres-store",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.SqlTransactionsTest",
+      "method": "acknowledgedCommitSurvivesCleanupFailureWithoutReplay",
+      "outcome": "PASS"
+    },
+    {
+      "module": "service",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.QueryReadinessTest",
+      "method": "queryOnlyProcessCannotReportReadyWhenItsStoreIsUnavailable",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "ordinary",
+      "class": "SchedulePropertyTest",
+      "method": "recordedLateArrivalHistoriesMatchIndependentOracle",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "ordinary",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.WorkloadOracleTest",
+      "method": "directEnumerationHasHalfOpenEdgesAndSlidingOverlap",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "interruptedShutdownWaitsForInFlightCommitThenReleasesOwnershipForRecovery",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "actualDatabaseOutagePoisonsSessionWithoutPublishingCandidate",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "fencedOwnerRollbackQuotasAndTopicIdentity",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "actualTopicRecreationAndPartitionGrowthFailStartup",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "brokerRetentionGapIsVisibleAndBoundedQueueSurvivesDatabasePause",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "diagnosticGrowthHasHardDurableQuotaAndRollback",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "outboxTransactionRenewsLeaseAfterSlowDeliveryWhileRetainingOwnershipLock",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "failedOutboxPublicationRollsBackAllDeliveryMarksAndRetriesStableRevisionIdentities",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "malformedRecordTypesAreDurablyQuarantinedWithoutConsumingEventIdentity",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "realProcessCrashesBeforeAndAfterCommitAndDuringOutbox",
+      "outcome": "PASS"
+    },
+    {
+      "module": "verification",
+      "kind": "integration",
+      "class": "io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT",
+      "method": "protectedApiUsesRealLocalIssuerAndEnforcesTenantAndLimits",
+      "outcome": "PASS"
+    }
+  ],
+  "images": {
+    "postgres": "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873",
+    "kafka": "apache/kafka:4.2.2@sha256:1213eb3943d551e5ed1fca7a4e109001cee35770b66a02a0c37a8964efe09b69"
+  },
+  "logSha256": "294e07789f87f27632486f1daa89f6bcc19b1a8301404049818efcb9d89674e9",
+  "reports": {
+    ".work/A04/deep-review/current-integration/reports/engine-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.EnginePropertyTest.xml": "5869de6449fe8cf58033b56584191cffe934c298291463b8aa2b38be42efb7ea",
+    ".work/A04/deep-review/current-integration/reports/engine-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.EngineTest.xml": "12cbdd2972eb642eefbdba2c7f0198ebf701ef8276278a9dc755f50b943db310",
+    ".work/A04/deep-review/current-integration/reports/kafka-adapter-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.EventCodecTest.xml": "d743141cf7b79d5be5d8aba52d26846f8d5710db73a41863eab0518dcc1baf84",
+    ".work/A04/deep-review/current-integration/reports/kafka-adapter-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.KafkaPumpLifecycleTest.xml": "de81e9bf153c9787ce4c93044c61de37539eeaa49962bf7c1702feae87bd56d1",
+    ".work/A04/deep-review/current-integration/reports/kafka-adapter-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.ThreadTerminationTest.xml": "10d44045f2d123ce6b35270f88d7bd66d44b4d5a581c1cd8fa86475377087b47",
+    ".work/A04/deep-review/current-integration/reports/postgres-store-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.RetentionTest.xml": "6b62ea994feb11cc31403b00486519befdbee6350b19d74149734250782f0466",
+    ".work/A04/deep-review/current-integration/reports/postgres-store-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.SnapshotCodecTest.xml": "44b5f159f4606f443339abc2fd3e989196fd6c2e09a08a7fdcad8587d6dd9df8",
+    ".work/A04/deep-review/current-integration/reports/postgres-store-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.SqlTransactionsTest.xml": "f5c44c47422df60a815fdc90a509e89f966ffb6165b91cc4bb76e05f5f4cb1f5",
+    ".work/A04/deep-review/current-integration/reports/service-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.QueryReadinessTest.xml": "6dcfc14c6cf6ecd149c8edbfbe4722a867d3e07d713c26feb60d2c95e2acc15e",
+    ".work/A04/deep-review/current-integration/reports/verification-failsafe-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.DurabilityIT.xml": "648edde38d4451d5548ced0c022330d4ef9eadefe9446b977f7d58f8266f1819",
+    ".work/A04/deep-review/current-integration/reports/verification-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.SchedulePropertyTest.xml": "e031b83eea8fb3d67b109c5ff6dc21107ed47bfdeb888e00cd5fb792d7cc1282",
+    ".work/A04/deep-review/current-integration/reports/verification-surefire-reports-TEST-io.github.cheshmakzanoon.portfolio.latearrival.WorkloadOracleTest.xml": "e143fdec3f3e9cb6ead2a05efff9ace844cd7f807978ec47f62ba1f0f933b38e"
+  },
+  "executionBoundary": [
+    "Other project Maven jobs were paused for this functional run. All existing budgets remained unchanged.",
+    "This is a working-checkout functional observation, not a performance or clean-checkout release result.",
+    "The earlier failed11-method integration attempt remains recorded separately.",
+    "Selected mutation gates passed earlier against identical selected module source/POM inputs. The overall earlier command failed integration; that mutation observation does not relabel it as success.",
+    "Lifecycle-only changes made after this Maven run are covered by their scoped process and live-lifecycle records."
+  ],
+  "runtimePreparation": {
+    "finishedAt": "2026-10-20T09:30:44Z",
+    "result": "PASS",
+    "command": "./mvnw -f projects/04-latearrival/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp verify",
+    "counts": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "fingerprint": "working-tree-sha256:82fef5535a3380097068b5e6479e3d1bc2d96045fb11a7d36c961d2d86307189",
+    "logSha256": "a65feba23c81cf4727113699a59fc7847db3216026718aa2a8fb067392cd85e3",
+    "artifacts": {
+      "/workspace/Java-portfolio/projects/04-latearrival/service/target/latearrival-service-1.0.0-SNAPSHOT-exec.jar": "156d8d4b760e1c84d9a6de03f47800ade916fa2843b4bb498e1caf0957f74325",
+      "/workspace/Java-portfolio/projects/04-latearrival/verification/target/latearrival-verification-1.0.0-SNAPSHOT.jar": "8afe489dcc0193eafd199e60129a6c5443b4899bddc950268252b26c961589c5"
+    },
+    "boundary": "Repeats the37 ordinary application methods; does not add37 unique tests or rerun integration/mutation.",
+    "entrypoint": "build from scripts/common.sh, under the local lifecycle lock"
+  }
+}

@@ -1,4 +1,0 @@
--- Disposable local fixtures only. Run as migration owner after V1, never as runtime.
-INSERT INTO tenant(tenant_id) VALUES ('harbor'),('orchard') ON CONFLICT DO NOTHING;
-INSERT INTO membership VALUES ('harbor','http://127.0.0.1:18502/realms/tenantshield','admin',ARRAY['reader'],'support',9,false,true,true),('harbor','http://127.0.0.1:18502/realms/tenantshield','alice',ARRAY['reader'],'support',3,false,false,true),('orchard','http://127.0.0.1:18502/realms/tenantshield','admin',ARRAY['reader'],'support',9,false,true,true) ON CONFLICT(tenant_id,issuer,subject_id) DO NOTHING;
-INSERT INTO resource VALUES ('harbor','doc-7','document','support',2,1),('harbor','doc-other','document','finance',2,1),('harbor','doc-missing','document','support',NULL,1),('orchard','doc-7','document','support',2,1) ON CONFLICT DO NOTHING;

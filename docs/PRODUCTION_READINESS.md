@@ -7,7 +7,7 @@ This register distinguishes current execution from historical evidence. It is no
 
 The [job-readiness engineering pass](job-readiness-20261021.md) and its [execution receipt](execution/job-readiness-20261021.json) supersede the in-progress ownership snapshot below for this continuation. Current local checks cover 1,030 ordinary Java methods across all ten projects, 54 selected integration methods, and 114 shared tooling tests. Verified milestones are committed directly to `main` and pushed. The receipt identifies current source and explicitly distinguishes real loopback PostgreSQL integration from Docker execution, which was unavailable in this environment.
 
-Concrete fixes include read-only workflow inspection and stable history pagination, ingestion task retirement, authenticated tenant continuity, assembled-filter CSRF enforcement, richer JFR comparison evidence, strict ByteGuard rule/baseline parsing, and repaired build/evidence tools. The [release contract](release.md) remains unchanged: relevance, observer-overhead, security-feed/image findings, hosted CI and full deployment evidence still require their own successful results. Historical failures are preserved.
+Concrete fixes include read-only workflow inspection and stable history pagination, ingestion task retirement, authenticated tenant continuity, assembled-filter CSRF enforcement, richer JFR comparison evidence, strict Faultline rule/baseline parsing, and repaired build/evidence tools. The [release contract](release.md) remains unchanged: relevance, observer-overhead, security-feed/image findings, hosted CI and full deployment evidence still require their own successful results. Historical failures are preserved.
 
 ## Release contract
 
@@ -27,12 +27,12 @@ All 63 criteria in [release.md](release.md) and [acceptance-matrix.md](acceptanc
 | Scope | Work | Current state |
 | --- | --- | --- |
 | Shared tooling, workflows, security, integration, release | Primary agent | Baseline inspection; Git HTTPS read and dry-run push succeeded; Docker 28.4.0 available |
-| 01 ClearLedger / 02 DurableFlow | Independent project agent | Source audit and real-PostgreSQL integration underway |
-| 03 QuorumKV / 04 PulseStream | Independent project agent | Source audit and verification underway |
-| 05 TenantShield / 06 MatchCore | Independent project agent | Source audit and verification underway |
-| 07 IndexForge | Independent project agent | Current functional baseline underway; relevance/performance gates open |
-| 08 ThreadLens | Independent project agent | Current functional baseline underway; overhead gate open |
-| 09 ByteGuard / 10 RouteWeaver | Independent project agent | Source audit and verification underway |
+| 01 Daybook / 02 Handoff | Independent project agent | Source audit and real-PostgreSQL integration underway |
+| 03 Majority / 04 Late Arrival | Independent project agent | Source audit and verification underway |
+| 05 Gatehouse / 06 The Pit | Independent project agent | Source audit and verification underway |
+| 07 Stacks | Independent project agent | Current functional baseline underway; relevance/performance gates open |
+| 08 Backtrace | Independent project agent | Current functional baseline underway; overhead gate open |
+| 09 Faultline / 10 Switchback | Independent project agent | Source audit and verification underway |
 
 ## Baseline issues and dependencies
 
@@ -40,8 +40,8 @@ All 63 criteria in [release.md](release.md) and [acceptance-matrix.md](acceptanc
 | --- | --- | --- | --- |
 | Release blocker | Existing matrix has 43 historical PASS, 18 IN_PROGRESS and 2 FAIL; none is inherited as current certification | All 63 | Current-source test and criterion evidence, then strict release audit |
 | High | Workflows pass `25.0.4.1+1` to setup-java's semver parser | R-A02/R-A03/R-A07/R-A10 | Checksum-verified exact Temurin installation using a supported action configuration |
-| High | IndexForge published held-out relevance misses .75 nDCG / .90 identifier MRR; existing corpus was exposed | P07-A4 | Valid independent protocol and corpus, model frozen before evaluation, full baseline/ablation/per-query evidence |
-| High | ThreadLens historical 84-JVM overhead study fails thresholds | P08-A5 | Diagnose/repair and rerun full prescribed 84×90-second study on quiet host (126 minutes minimum observation) |
+| High | Stacks published held-out relevance misses .75 nDCG / .90 identifier MRR; existing corpus was exposed | P07-A4 | Valid independent protocol and corpus, model frozen before evaluation, full baseline/ablation/per-query evidence |
+| High | Backtrace historical 84-JVM overhead study fails thresholds | P08-A5 | Diagnose/repair and rerun full prescribed 84×90-second study on quiet host (126 minutes minimum observation) |
 | High | Hosted Actions success is unverified; GitHub REST is denied by the current egress proxy and CLI authentication is unusable | R-A02/R-A10 | Observe actual runs through an accessible supported channel; Git push does not prove Actions success |
 | High | Mandatory current container/dependency security scans not yet executed | R-A07 and security release prerequisite | Current scanner database, exact pinned images and regenerated complete SBOM |
 | Medium | Windows/macOS execution unavailable on this Linux host | R-A02 | Run available platform checks; state native platforms remain unverified |
@@ -64,17 +64,17 @@ The original release audit accepted historical PASS rows solely when their refer
 
 [Release-control evidence](execution/production-release-controls-20261021.json): 56 tooling tests pass, including six failure-boundary regressions. The release audit still fails as intended: 20 historical rows remain incomplete and a complete current release receipt does not yet exist. This control verifies identity and completeness; it does not replace review of the actual criterion-specific results.
 
-## Milestone: ClearLedger bounded reconciliation and readiness
+## Milestone: Daybook bounded reconciliation and readiness
 
-ClearLedger `/health` now performs a query through the bounded application database transaction path and returns 503 when storage is unavailable. Reconciliation materializes at most two candidate postings, sufficient to distinguish unique from ambiguous matches, rather than reading all matching postings for every CSV row. No SQL schema, posting API or durable receipt format changed.
+Daybook `/health` now performs a query through the bounded application database transaction path and returns 503 when storage is unavailable. Reconciliation materializes at most two candidate postings, sufficient to distinguish unique from ambiguous matches, rather than reading all matching postings for every CSV row. No SQL schema, posting API or durable receipt format changed.
 
-[Current validation](../projects/01-clearledger/evidence/production-hardening-20261021/validation.json): 45 ordinary and 23 real-PostgreSQL tests passed with no failures/errors/skips; strict mutation gates passed (domain 35/36, persistence 102/105). Two survivors and one timeout remain nonkills. Six cache and sixteen lifecycle regressions also passed. Deployment, concurrent-service demo and capacity certification remain separate pending checks.
+[Current validation](../projects/01-daybook/evidence/production-hardening-20261021/validation.json): 45 ordinary and 23 real-PostgreSQL tests passed with no failures/errors/skips; strict mutation gates passed (domain 35/36, persistence 102/105). Two survivors and one timeout remain nonkills. Six cache and sixteen lifecycle regressions also passed. Deployment, concurrent-service demo and capacity certification remain separate pending checks.
 
-## Milestone: DurableFlow transaction outcomes and input boundaries
+## Milestone: Handoff transaction outcomes and input boundaries
 
 An acknowledged JDBC commit now remains successful if returning/closing its connection subsequently fails; a failed commit acknowledgement still propagates uncertainty. Connection cleanup emits a bounded warning. The HTTP JSON mapper now rejects duplicate fields, multiple JSON documents, fractional integer inputs, null primitives, numeric enum ordinals and scalar coercion, with valid wire fields retained.
 
-[Current validation](../projects/02-durableflow/evidence/production-hardening-20261021/validation.json): 98 ordinary and 22 real-PostgreSQL tests passed with no failures/errors/skips. Strict per-module mutation gates passed: data 41/41, interpreter 158/162, persistence 54/55; all five survivors remain in the denominator. Nine preparation and ten lifecycle helper tests passed. Historical workload measurements are not current certification; simultaneous demos and recovery checks follow separately.
+[Current validation](../projects/02-handoff/evidence/production-hardening-20261021/validation.json): 98 ordinary and 22 real-PostgreSQL tests passed with no failures/errors/skips. Strict per-module mutation gates passed: data 41/41, interpreter 158/162, persistence 54/55; all five survivors remain in the denominator. Nine preparation and ten lifecycle helper tests passed. Historical workload measurements are not current certification; simultaneous demos and recovery checks follow separately.
 
 
 ## Milestone: wire OWASP's NVD API credential without exposing it
@@ -91,14 +91,14 @@ security scan or a completed release.
 ## Milestone: portfolio demonstration and source-quality follow-up
 
 The security-source SARIF artifact from the earlier hosted run identifies seven explicit CSRF
-disable calls and four non-cryptographic-randomness flows into **synthetic** MatchCore command
+disable calls and four non-cryptographic-randomness flows into **synthetic** The Pit command
 identities. Subsequent commits removed these CSRF disable calls, added cookie/Basic browser
 credential regressions, and generated test/benchmark account and order fixture IDs from
 reproducible command positions rather than random API output. No scanner exclusions, exception
 allowlists, or relaxed security thresholds were introduced. These changes still require a
 fresh **current-source CodeQL run** before any finding can be marked resolved.
 
-MatchCore's bounded book now preflights the **actual number of resting slots after fully
+The Pit's bounded book now preflights the **actual number of resting slots after fully
 consumed makers** before rejecting a GTC remainder. The indexed engine and independent
 flat-list reference were updated together; direct and capacity-sweep regression cases compare
 all executions, balances, orders, and outcomes. A separate deterministic Python state-model
@@ -106,14 +106,14 @@ check exercised 25,000 generated book/crossing scenarios without a mismatch; thi
 algorithmic corroboration only, **not** a JVM build or a replacement for JUnit execution.
 
 The [hiring guide](hiring-guide.md) presents runnable flagship projects and a native
-Windows PowerShell MatchCore demo. The Windows path still needs independent Windows/JDK 25
+Windows PowerShell The Pit demo. The Windows path still needs independent Windows/JDK 25
 execution to be called supported. GitHub Actions has been delayed during the public
 [21 October Actions incident](https://www.githubstatus.com/). A pushed SHA or queued
 run is not a successful test or security result.
 
 **Remaining hard blockers are unchanged:** current-source hosted CI/integration/mutation/
 security/release evidence; an administrator-provided `NVD_API_KEY` secret for OWASP;
-IndexForge P07-A4's 0.75 nDCG / 0.90 identifier MRR blind relevance target; ThreadLens
+Stacks P07-A4's 0.75 nDCG / 0.90 identifier MRR blind relevance target; Backtrace
 P08-A5's full observer-overhead study; and HIGH/CRITICAL findings in pinned upstream
 Kafka/PostgreSQL images. Historical FAIL/IN_PROGRESS entries retain their status.
 This milestone is **not** a production readiness certificate.
@@ -122,7 +122,7 @@ This milestone is **not** a production readiness certificate.
 ## Native Windows Java 25 verification required
 
 A Windows Server 2025 CI job now installs Temurin Java 25 through the immutable
-setup-java v5.5.0 action, then executes the native PowerShell preflight, MatchCore
+setup-java v5.5.0 action, then executes the native PowerShell preflight, The Pit
 verification and recovery/accounting demo. The aggregate required CI gate now
 fails if this job fails or does not execute. Windows resolves a Java 25 feature
 version rather than the Linux checksum-pinned JDK archive; identical runtime

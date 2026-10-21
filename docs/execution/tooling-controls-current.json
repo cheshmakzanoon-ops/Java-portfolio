@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "observedAtUtc": "2026-10-18T08:43:58.725130+00:00",
-  "reservation": "quiet-validation-13-threadlens-stress",
+  "reservation": "quiet-validation-13-backtrace-stress",
   "sourceFiles": {
     ".work/A08/prepare-reference-9.py": "e0c29aca2eb67cdd84370ea809b1ff3e63f23ec07e449ae2ec6fa6759d83476f",
     ".work/A08/execute-prepared-reference-9.py": "20621fb941c36b443a8274b13c87233a1e6d459ef193d6b3080f86c432a0f8e7",
@@ -11,13 +11,13 @@
     ".work/A02/test-cleancheck-review.py": "6afb64408040af84a7c5869211c90eae665f3ee9b30cf66f978be60c31e5bfd1",
     ".work/A02/cleancheck-process-controls.py": "b89334390973761818d870a4b42cf77b7ca85fb4996bedb92e090333d4dc78e0"
   },
-  "threadlensHelpers": {
+  "backtraceHelpers": {
     "actualTests": 13,
     "failures": 0,
     "errors": 0,
     "exitCode": 0,
     "elapsedSeconds": 7.661,
-    "log": ".work/coordinator/quiet-validation-13-threadlens-stress/command.log"
+    "log": ".work/coordinator/quiet-validation-13-backtrace-stress/command.log"
   },
   "cleanCheckoutPureControls": {
     "actualTests": 15,
@@ -38,13 +38,13 @@
   },
   "limitations": [
     "Bounded exercised cases do not prove every process interleaving.",
-    "Actual clean checkout/builds/demos and the ThreadLens complete84 overhead study remain pending."
+    "Actual clean checkout/builds/demos and the Backtrace complete84 overhead study remain pending."
   ],
-  "threadlensStress": {
+  "backtraceStress": {
     "status": "PASS",
     "requestedSeconds": 1200,
     "actualSeconds": 1202.66918876,
     "scope": "Functional stress with intentional overload/incomplete windows; not overhead acceptance.",
-    "receipt": "docs/execution/performance-reservations/013-threadlens-stress.json"
+    "receipt": "docs/execution/performance-reservations/013-backtrace-stress.json"
   }
 }

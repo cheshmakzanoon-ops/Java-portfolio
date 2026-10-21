@@ -1,0 +1,300 @@
+{
+  "phase": "strict-build25",
+  "recordedUtc": "2026-10-18T06:34:49.497585+00:00",
+  "startedEpoch": 1792304877,
+  "result": "PASS",
+  "sourceFingerprint": "c0ab80c6a5e14d5836b9e69813f18d16acda382a97686df2d020c45622a2e8d2",
+  "cliJar": ".work/A07/artifacts/wave2-build25-cli.jar",
+  "cliJarSha256": "e2d947c97a6b5b5a5fc6d6696d1ca56241eed11f9cfbb772b0d1880a6217dbc7",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "effectiveJupiter": "6.1.3",
+  "preregistrationSha256": "2528feedca5c2e048fc4e773f0a4dd666f71de399f00a7efdef573547736903a",
+  "protocolManifestSha256": "da02dee92134b3b12a44aa8d6e37e808590b4d96304122d5825960003bdae1e7",
+  "testTotals": {
+    "tests": 88,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "testReports": {
+    "ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.IngestionSafetyTest.xml": {
+      "sha256": "45eea9a28b3ffb53c1fd97aab5a2b5bede94c822bd17b0b26d6fb994d8acaaeb",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.DeclarationScannerTest.xml": {
+      "sha256": "13ed7dbc6a11eb09ef7978c3ffeb3c7e811662c67da6dfac8c3cd13095c77fe1",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.GenerationLifecycleTest.xml": {
+      "sha256": "584776a34bc6dba88c470b4cdce0c903710a2cce83fb23e4cc99d267863fb309",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.CodeFeaturesTest.xml": {
+      "sha256": "2fc6bc6c9b6f237799551f4d59f54468cdb46847da1c689e794c750a67a321b9",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "index/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.KernelDiskFullIT.xml": {
+      "sha256": "19c9cc19994ca507046589ad5a901443e8b665dcb87bcee478a49d5a0c6d3e98",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.SearchSecurityTest.xml": {
+      "sha256": "238d298cc7475cd4d6d8b6aea2dcb6cf62abdc9aba3b4fdd248610c451f022a6",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingWave2Test.xml": {
+      "sha256": "23438d8c9589ada39e46d4cc8416edc4d08d6cceb287bf6247b83396158423b8",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingCodeIdentityTest.xml": {
+      "sha256": "b4761453d78060d14a3b8f19d125a02c12b8df31c949028cf3ac2cb843b93744",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingIdentityRestartTest.xml": {
+      "sha256": "04c1e2c04557145615ff53ddadbc6ea0f63a6183eb1f7dae22526b12b6dbe0eb",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.TokenValidationTest.xml": {
+      "sha256": "420bc7d0b1ed70186f13a61030d6221b4ad2a4cfdc41a727c0c642b1494c857a",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RankingConfigurationTest.xml": {
+      "sha256": "67f4abd646733d19528357f6d19de8bc05c2a72a6f15f13f475356a9997a5c66",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.HttpSecurityIT.xml": {
+      "sha256": "e821050cfba33eaea5a25aebbfb03505c221317b3668ddc77298b90460ba8cef",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.PairwiseTrainingTest.xml": {
+      "sha256": "be0953d44e23fcfa5e81ea4bd7b5ab87fa954b596b803b100aaf8ca776bcffb2",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.Wave2ProtocolTest.xml": {
+      "sha256": "bb95b86b9df4c34353dda0b0076c33f706e08a8d1a743038a85e73c88202c21a",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.RelevanceMetricsTest.xml": {
+      "sha256": "c1a6f33d651ca85cb45bd638fd96f925ae2c9885b7059ec751e3082409ac965c",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.stacks.EvaluationSealTest.xml": {
+      "sha256": "63177517ce93b30f2c1d4329acd33d03f073f5395873060f33951993d47d29b9",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "mutation": {
+    "ingest": {
+      "sha256": "01125170844637ffc59c3ba0458667f77b1145fd0c5b44670716fea3003a35f5",
+      "html": true,
+      "outcomes": {
+        "KILLED": 11
+      },
+      "killedPercent": 100.0
+    },
+    "index": {
+      "sha256": "1082571517146857b495c07c96e99ba7d4374210e71b84339604453804847f50",
+      "html": true,
+      "outcomes": {
+        "KILLED": 21
+      },
+      "killedPercent": 100.0
+    },
+    "query": {
+      "sha256": "4f6df8a94541f47d3624aa063696812fdb2bf634a00e4957f656b1efedf2cc58",
+      "html": true,
+      "outcomes": {
+        "KILLED": 258,
+        "SURVIVED": 44,
+        "TIMED_OUT": 1
+      },
+      "killedPercent": 85.14851485148515
+    },
+    "evaluation": {
+      "sha256": "c54f3c03d75c6db76a9c49383b54166335f88af11ca41797c36096059dd7ee44",
+      "html": true,
+      "outcomes": {
+        "KILLED": 234,
+        "SURVIVED": 56,
+        "NO_COVERAGE": 3
+      },
+      "killedPercent": 79.86348122866895
+    }
+  },
+  "mutationTotals": {
+    "KILLED": 524,
+    "SURVIVED": 100,
+    "TIMED_OUT": 1,
+    "NO_COVERAGE": 3
+  },
+  "strictKilledPercent": 83.43949044585987,
+  "coverage": {
+    "ingest": {
+      "LINE": {
+        "covered": 381,
+        "missed": 17,
+        "ratio": 0.957286432160804
+      },
+      "BRANCH": {
+        "covered": 245,
+        "missed": 53,
+        "ratio": 0.8221476510067114
+      }
+    },
+    "index": {
+      "LINE": {
+        "covered": 541,
+        "missed": 46,
+        "ratio": 0.9216354344122658
+      },
+      "BRANCH": {
+        "covered": 304,
+        "missed": 68,
+        "ratio": 0.8172043010752689
+      }
+    },
+    "query": {
+      "LINE": {
+        "covered": 1136,
+        "missed": 38,
+        "ratio": 0.9676320272572402
+      },
+      "BRANCH": {
+        "covered": 651,
+        "missed": 93,
+        "ratio": 0.875
+      }
+    },
+    "service": {
+      "LINE": {
+        "covered": 249,
+        "missed": 62,
+        "ratio": 0.8006430868167203
+      },
+      "BRANCH": {
+        "covered": 97,
+        "missed": 69,
+        "ratio": 0.5843373493975904
+      }
+    },
+    "evaluation": {
+      "LINE": {
+        "covered": 556,
+        "missed": 770,
+        "ratio": 0.4193061840120664
+      },
+      "BRANCH": {
+        "covered": 370,
+        "missed": 432,
+        "ratio": 0.4613466334164589
+      },
+      "selectedClasses": {
+        "PairwiseSelection": {
+          "BRANCH": {
+            "covered": 58,
+            "missed": 16
+          },
+          "LINE": {
+            "covered": 112,
+            "missed": 6
+          }
+        },
+        "PairwiseTrainer": {
+          "BRANCH": {
+            "covered": 74,
+            "missed": 8
+          },
+          "LINE": {
+            "covered": 113,
+            "missed": 2
+          }
+        },
+        "GroupedFolds": {
+          "BRANCH": {
+            "covered": 34,
+            "missed": 4
+          },
+          "LINE": {
+            "covered": 38,
+            "missed": 0
+          }
+        },
+        "RelevanceMetrics": {
+          "BRANCH": {
+            "covered": 26,
+            "missed": 0
+          },
+          "LINE": {
+            "covered": 20,
+            "missed": 0
+          }
+        },
+        "DevelopmentScaler": {
+          "BRANCH": {
+            "covered": 33,
+            "missed": 5
+          },
+          "LINE": {
+            "covered": 44,
+            "missed": 1
+          }
+        }
+      }
+    }
+  },
+  "command": "source scripts/cloud-env.sh; export PORTFOLIO_TEST_RUN_STARTED=$(date +%s); ./mvnw -f projects/07-stacks/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A07/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify",
+  "rawLogSha256": "22574b6a8ddb7ec534fa70ebb2ea9523d4375ff1d4dfd24e25cc4b62f4f25196",
+  "rawLog": ".work/A07/verify-wave2-build25.log",
+  "limitations": [
+    "100 surviving and3 no-coverage mutants retained;1 timeout is a terminal injected-mutant outcome, not a runner error",
+    "no new wave2 ranking metrics or performance yet",
+    "heldout not authorized or inspected"
+  ]
+}

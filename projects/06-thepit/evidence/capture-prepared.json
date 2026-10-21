@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceFingerprint": "834135a9f9ddb7743c1a2ef304a50dc20f1ab0b446fc1ce65dff73c60376e8b6",
+  "observedAtUtc": "2026-10-18T02:21:43Z",
+  "command": "source scripts/cloud-env.sh\n./mvnw -f projects/06-thepit/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A06/m2 -B -ntp verify",
+  "exitCode": 0,
+  "totals": {
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "rawLog": ".work/A06/capture-final-verify.log",
+  "rawLogSha256": "118752183f765bcb0648a4ccce4420120dd287b1054b5fee60e11e3559015bdc",
+  "fullJavaIntegrationMutationEvidence": "evidence/prebaseline-verification.json",
+  "changesSinceFullIntegration": [
+    "Capture process-list parsing excludes defunct zombies and records their count separately",
+    "Fixture README documents v2 generator"
+  ],
+  "quietGuardCheck": {
+    "expectedExitCode": 1,
+    "observedExitCode": 1,
+    "activeMavenJvms": 3,
+    "activeOtherJavaJvms": 5,
+    "excludedDefunctJavaProcesses": 26,
+    "rawEnvironment": ".work/A06/capture-guard-check/environment.json"
+  },
+  "preparedRunner": ".work/A06/run-reference-window.sh",
+  "runnerExecuted": false,
+  "remaining": [
+    "Six independently launched full million-command runs and three-fork JMH require coordinator quiet grant",
+    "Measurement analysis and final source/artifact review",
+    "Clean checkout and remote CI release checks"
+  ]
+}

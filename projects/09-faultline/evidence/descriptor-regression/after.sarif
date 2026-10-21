@@ -1,0 +1,25 @@
+{
+  "version" : "2.1.0",
+  "runs" : [ {
+    "tool" : {
+      "driver" : {
+        "name" : "Faultline",
+        "version" : "1.0.0"
+      }
+    },
+    "results" : [ ],
+    "invocations" : [ {
+      "executionSuccessful" : false,
+      "toolExecutionNotifications" : [ {
+        "level" : "error",
+        "message" : {
+          "text" : "malformed class structure: Oversized.class: IllegalArgumentException"
+        }
+      } ]
+    } ],
+    "properties" : {
+      "partial" : false,
+      "unfinishedFrontier" : [ "invalid input/configuration" ]
+    }
+  } ]
+}

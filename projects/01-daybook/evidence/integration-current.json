@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "project": "daybook",
+  "recordedAtUtc": "2026-10-18T02:01:07.614089+00:00",
+  "sourceRevision": "working-tree:java-sql-pom-sha256:eebeeb1d9fcc06a1ca914fc2fbafcba37983a4726d5bc0908a07d356d38436c5",
+  "sourceHashScope": "sorted project-relative Java/SQL/POM path+NUL+bytes+NUL, excluding target",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/01-daybook/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A01/m2 -B -ntp -Pintegration verify",
+  "rawArtifact": ".work/A01/audit-integration.log",
+  "exitCode": 0,
+  "testReports": [
+    {
+      "file": "projects/01-daybook/ledger-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.RequestJsonTest.xml",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "projects/01-daybook/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.AccountingProperties.xml",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "projects/01-daybook/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.AccountingTest.xml",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "projects/01-daybook/ledger-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.DomainArchitectureTest.xml",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "projects/01-daybook/ledger-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.ReconciliationTest.xml",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "projects/01-daybook/ledger-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT.xml",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "testMethods": [
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.RequestJsonTest",
+      "method": "decimalStringsAndNamedSidesRejectScalarCoercionAndDuplicateKeys"
+    },
+    {
+      "class": "AccountingProperties",
+      "method": "imbalanceAlwaysRejected"
+    },
+    {
+      "class": "AccountingProperties",
+      "method": "reversalIsAnInvolution"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.AccountingTest",
+      "method": "accumulationAndDigestIncludeEveryEconomicLine"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.AccountingTest",
+      "method": "strictCurrencyAndBounds"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.AccountingTest",
+      "method": "canonicalDigestIgnoresLineOrderButPreservesIntent"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.AccountingTest",
+      "method": "limitsPreserveAtomicReferenceAndReversibleLongReferences"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.DomainArchitectureTest",
+      "method": "domainHasNoAdapters"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.ReconciliationTest",
+      "method": "csvIsBoundedAndQuoted"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.ReconciliationTest",
+      "method": "rowBoundaryAndSpreadsheetEscaping"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "projectionHandlesEarlierAllocatedEventCommittedLater"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "blankReferencesNeverAutomatchOnAmountAlone"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "devProfileRefusesNonLoopbackBinding"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "balanceOverflowRejectsWholeJournalAndReceipt"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "closeRacesWritersWithoutPostingIntoClosedPeriod"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "statementSnapshotExcludesLaterCommittedJournal"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "databaseMatchesIndependentGeneratedModelAndPrivileges"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "sixtyFourDuplicateRequestsAndRacingReversals"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "backupRestoreReauditsImmutableSource"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "protectedOidcAndTwoApiInstances"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "actualProcessTerminationBeforeAndAfterCommit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "rawRuntimeSqlRejectsGeneratedInvalidJournalsAtomically"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "sqlNullMalformedShapesAndDeferredBackstopRejectAtomically"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "sourceAuditFindsAdministratorCorruptionOutsideRuntimePermissions"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT",
+      "method": "reconciliationDistinguishesRowsAndPreservesDuplicateImport"
+    }
+  ],
+  "testTotal": 25,
+  "propertyCases": 500,
+  "actualDependencyJars": [
+    "HikariCP-7.0.2.jar",
+    "annotations-17.0.0.jar",
+    "apiguardian-api-1.1.2.jar",
+    "archunit-1.4.1.jar",
+    "archunit-junit5-1.4.1.jar",
+    "archunit-junit5-api-1.4.1.jar",
+    "archunit-junit5-engine-1.4.1.jar",
+    "archunit-junit5-engine-api-1.4.1.jar",
+    "checker-qual-3.55.1.jar",
+    "daybook-api-1.0.0-SNAPSHOT.jar",
+    "daybook-domain-1.0.0-SNAPSHOT.jar",
+    "daybook-persistence-1.0.0-SNAPSHOT.jar",
+    "daybook-verification-1.0.0-SNAPSHOT.jar",
+    "commons-codec-1.21.0.jar",
+    "commons-compress-1.28.0.jar",
+    "commons-io-2.20.0.jar",
+    "commons-lang3-3.20.0.jar",
+    "commons-logging-1.3.6.jar",
+    "docker-java-api-3.7.1.jar",
+    "docker-java-transport-3.7.1.jar",
+    "docker-java-transport-zerodep-3.7.1.jar",
+    "duct-tape-1.0.8.jar",
+    "flyway-core-12.4.0.jar",
+    "flyway-database-postgresql-12.4.0.jar",
+    "jackson-annotations-2.21.jar",
+    "jackson-core-2.21.5.jar",
+    "jackson-core-3.1.5.jar",
+    "jackson-databind-2.21.5.jar",
+    "jackson-databind-3.1.5.jar",
+    "jakarta.annotation-api-3.0.0.jar",
+    "jna-5.18.1.jar",
+    "jqwik-1.9.3.jar",
+    "jqwik-api-1.9.3.jar",
+    "jqwik-engine-1.9.3.jar",
+    "jqwik-time-1.9.3.jar",
+    "jqwik-web-1.9.3.jar",
+    "jspecify-1.0.1.jar",
+    "jul-to-slf4j-2.0.18.jar",
+    "junit-jupiter-6.1.3.jar",
+    "junit-jupiter-api-6.1.3.jar",
+    "junit-jupiter-engine-6.1.3.jar",
+    "junit-jupiter-params-6.1.3.jar",
+    "junit-platform-commons-6.1.3.jar",
+    "junit-platform-engine-6.1.3.jar",
+    "log4j-api-2.25.5.jar",
+    "log4j-to-slf4j-2.25.5.jar",
+    "logback-classic-1.5.38.jar",
+    "logback-core-1.5.38.jar",
+    "micrometer-commons-1.17.1.jar",
+    "micrometer-observation-1.17.1.jar",
+    "nimbus-jose-jwt-10.9.1.jar",
+    "opentest4j-1.3.0.jar",
+    "postgresql-42.7.13.jar",
+    "slf4j-api-2.0.18.jar",
+    "snakeyaml-2.6.jar",
+    "spring-aop-7.0.9.jar",
+    "spring-beans-7.0.9.jar",
+    "spring-boot-4.1.1.jar",
+    "spring-boot-autoconfigure-4.1.1.jar",
+    "spring-boot-http-converter-4.1.1.jar",
+    "spring-boot-jackson-4.1.1.jar",
+    "spring-boot-security-4.1.1.jar",
+    "spring-boot-security-oauth2-resource-server-4.1.1.jar",
+    "spring-boot-servlet-4.1.1.jar",
+    "spring-boot-starter-4.1.1.jar",
+    "spring-boot-starter-jackson-4.1.1.jar",
+    "spring-boot-starter-logging-4.1.1.jar",
+    "spring-boot-starter-oauth2-resource-server-4.1.1.jar",
+    "spring-boot-starter-security-4.1.1.jar",
+    "spring-boot-starter-tomcat-4.1.1.jar",
+    "spring-boot-starter-tomcat-runtime-4.1.1.jar",
+    "spring-boot-starter-webmvc-4.1.1.jar",
+    "spring-boot-tomcat-4.1.1.jar",
+    "spring-boot-web-server-4.1.1.jar",
+    "spring-boot-webmvc-4.1.1.jar",
+    "spring-context-7.0.9.jar",
+    "spring-core-7.0.9.jar",
+    "spring-expression-7.0.9.jar",
+    "spring-security-config-7.1.1.jar",
+    "spring-security-core-7.1.1.jar",
+    "spring-security-crypto-7.1.1.jar",
+    "spring-security-oauth2-core-7.1.1.jar",
+    "spring-security-oauth2-jose-7.1.1.jar",
+    "spring-security-oauth2-resource-server-7.1.1.jar",
+    "spring-security-web-7.1.1.jar",
+    "spring-web-7.0.9.jar",
+    "spring-webmvc-7.0.9.jar",
+    "testcontainers-2.0.5.jar",
+    "testcontainers-database-commons-2.0.5.jar",
+    "testcontainers-jdbc-2.0.5.jar",
+    "testcontainers-junit-jupiter-2.0.5.jar",
+    "testcontainers-postgresql-2.0.5.jar",
+    "tomcat-embed-core-11.0.24.jar",
+    "tomcat-embed-el-11.0.24.jar",
+    "tomcat-embed-websocket-11.0.24.jar"
+  ],
+  "coreCoverage": {
+    "BRANCH": {
+      "covered": 51,
+      "missed": 5
+    },
+    "LINE": {
+      "covered": 76,
+      "missed": 3
+    }
+  },
+  "sourceManifest": {
+    "ledger-api/pom.xml": "7c2e9d6f0d6b622e969028f45e37437ef986b61417afb54c5a051275071d78f2",
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/DaybookApplication.java": "d10e01b3cd1e99e9e411e09ad08004d4b9e7d97fcfee789058a755bac432cb66",
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerController.java": "56658bef0731bfd2a67875ecbc2ec6c8be50e785872b9da2ea6b73a2271ca47a",
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/RequestBoundsFilter.java": "68634a178f2ec1c528fad50c1056df5a131e104bae53e933d00a2d2e3b2ab774",
+    "ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/StrictIdentityDecoder.java": "e540d582eda762f51216f1e7504c04ac0d25acb8de1fe3fafcee27e5a0e417a6",
+    "ledger-api/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/RequestJsonTest.java": "f34afabdb090fdfb42b52ea58e7512dc50548ca02cd2cb013a40e4645bbf8d4e",
+    "ledger-benchmarks/pom.xml": "464d506b95fc504a5bacf012f5269cba30322e45e391f7d9d773b9a69b3b87b0",
+    "ledger-benchmarks/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/AccountingBenchmark.java": "dcd309ede17c900901f89e2303b56304589d8faf6cb39e8762ee85dc55f3b0c3",
+    "ledger-domain/pom.xml": "cc682db8b1150a2dc3ba26ed3341b35c464695f23540c780fea43d114b33aea3",
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Journal.java": "641b5cbbb286d3bfe2410674244b99bae96360f9e4d20e5375d24b87ac0d6f24",
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Money.java": "81a08508031dc202f1c6bfd8542af64decbcadd9d536c8fdca9963155301b3ff",
+    "ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/ReferenceLedger.java": "a628d518560a8b0d4fba44dcf134f89b76f7b5a8e610801bdd56b291c6679a12",
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/AccountingProperties.java": "aaeefb11248647f02ab311340fb0f346085c5355381774deaa24a5ca780dcef5",
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/AccountingTest.java": "f64dad5e086f9152f79d57100740110939dda08b59cf090564928305f4422940",
+    "ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/DomainArchitectureTest.java": "e2c27c5ac05ecccc407cc9260d465b2913fbe4fe3526cd9047c6b58e70397b61",
+    "ledger-persistence/pom.xml": "44f91cc682e55d5a25a71e9a075db5ed131f197226b05f56050ae48a1b68f9c0",
+    "ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerStore.java": "85763b7e625ec072dd4900a8dec67a5d317370717c9058b8b526011a780699bf",
+    "ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Projector.java": "bd323c40bfc6d78e3325857b5728c9bf45442a4bee69eb0be0fa65f689855ae3",
+    "ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Reconciliation.java": "2d392ada5106ead458bd714472221a06876c0bf31df748cb7492a333c33fceb9",
+    "ledger-persistence/src/main/resources/db/migration/V1__ledger.sql": "598b9824337a111f9f728177496ebde5284a20a5a2a24fca3098797b99038bcb",
+    "ledger-persistence/src/main/resources/db/migration/V2__null_safe_posting_and_deferred_audit.sql": "78048d1f2b897fe63cdf8789a2a2566c7ec0700e76107038a2b00f50d248eaa5",
+    "ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/ReconciliationTest.java": "ec5a367b7e14150ed6ea41ecfb77bb298018c73bf173d43708c6cf22710ce6d2",
+    "ledger-verification/pom.xml": "3e31024493c683c7a8ba3b83781b31d2730e3e19e20c95d81a3d4378cdfe02e3",
+    "ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/CrashWriter.java": "34912528fedae2532e68f340740c81f069a3712ffc0657d7fb51f411ab837fcb",
+    "ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/SourceAudit.java": "12fa8537b4ac715209be94d3c1bee48cafb02ea452b3eab60f5022f0216b0872",
+    "ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Workload.java": "346865199f0368267222f32f63c3745829b0cc73908cecc6c7a968083df56fd6",
+    "ledger-verification/src/main/resources/daybook/source-audit.sql": "20d06488aaf0f086eab922e90bb6cea65ebc4ab30af4314b7d8bc23cb78f6c74",
+    "ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerPostgresIT.java": "63d44b14cc3710215022813ace556b061fde5f3b9c2ca3d4e671e44239dd395e",
+    "ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/LocalIssuer.java": "b76fb1a7eb4e33b717bd1068506117b91a9adb5cbb8fda0f121108347b5e03ed",
+    "pom.xml": "fa4a3258f9dc31b0c90005765b72ece9fa206c289d7356eb910b0ef4e0d1810b"
+  },
+  "acceptance": {
+    "P01-A1": {
+      "status": "PASS",
+      "methods": [
+        "databaseMatchesIndependentGeneratedModelAndPrivileges",
+        "rawRuntimeSqlRejectsGeneratedInvalidJournalsAtomically",
+        "sqlNullMalformedShapesAndDeferredBackstopRejectAtomically",
+        "balanceOverflowRejectsWholeJournalAndReceipt",
+        "sixtyFourDuplicateRequestsAndRacingReversals"
+      ]
+    },
+    "P01-A2": {
+      "status": "PASS",
+      "methods": [
+        "sixtyFourDuplicateRequestsAndRacingReversals",
+        "closeRacesWritersWithoutPostingIntoClosedPeriod",
+        "actualProcessTerminationBeforeAndAfterCommit",
+        "protectedOidcAndTwoApiInstances",
+        "statementSnapshotExcludesLaterCommittedJournal"
+      ]
+    },
+    "P01-A3": {
+      "status": "PASS",
+      "methods": [
+        "reconciliationDistinguishesRowsAndPreservesDuplicateImport",
+        "blankReferencesNeverAutomatchOnAmountAlone"
+      ]
+    },
+    "P01-A4": {
+      "status": "PASS",
+      "methods": [
+        "projectionHandlesEarlierAllocatedEventCommittedLater",
+        "backupRestoreReauditsImmutableSource",
+        "sourceAuditFindsAdministratorCorruptionOutsideRuntimePermissions"
+      ]
+    },
+    "P01-A5": {
+      "status": "IN_PROGRESS",
+      "remaining": [
+        "actual repeatable demo/reset/up/down",
+        "full quiet100k workload writer1/8/32 three rounds",
+        "JMH/JFR/raw environment and performance interpretation",
+        "clean-checkout certification"
+      ]
+    }
+  },
+  "limitations": [
+    "bounded generated, race and subprocess histories on one host",
+    "system workload and demo are distinct unrun gates",
+    "historical mutation evidence retained separately; no implied whole-adapter mutation coverage"
+  ]
+}

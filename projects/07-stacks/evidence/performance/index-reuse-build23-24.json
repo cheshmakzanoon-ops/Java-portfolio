@@ -1,0 +1,15 @@
+{
+  "oldJarSha256": "02e227a9c6a4e824662e02c591bbae637be47d66b9dd3353dee3f5746fed158d",
+  "newJarSha256": "6c2ae0c414013a55e8d83bcfd9e65707ccfb984fa684054bf83910f08c4d564d",
+  "changedEntries": [
+    {
+      "entry": "io/github/cheshmakzanoon/portfolio/stacks/SearchEngine.class",
+      "beforeSha256": "f94c5e347d9e5f5d8853ef79142dbb605dfaeecb1b358468dfb2c8478e34b217",
+      "afterSha256": "b5e5e76868416fd81a611891b46cb52157140543be1782951caa2f325bfbdca3"
+    }
+  ],
+  "allOtherEntriesByteIdentical": true,
+  "indexSchemaAndBuilderAndMapperAndGeneratorUnchanged": true,
+  "priorPreparationSha256": "aab63b687280d54cfa6034bfe3d973125c8afc2d6ff761453156c17c562c9715",
+  "reason": "Only query request-context cache/cursor digest canonicalization changed; all indexing/dependency/resource entries are byte-identical."
+}

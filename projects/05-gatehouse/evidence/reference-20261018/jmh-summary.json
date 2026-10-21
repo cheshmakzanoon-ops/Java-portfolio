@@ -1,0 +1,72 @@
+[
+  {
+    "benchmark": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyBenchmark.coldCompilation",
+    "mode": "sample",
+    "forks": 3,
+    "warmupIterations": 3,
+    "measurementIterations": 3,
+    "jvmArgs": [
+      "-Xmx512m",
+      "-Xms128m",
+      "-Xmx256m"
+    ],
+    "sampleCount": 7929,
+    "scoreUs": 1133.871816370286,
+    "scoreErrorUs": 114.32794362811927,
+    "scoreConfidenceUs": [
+      1019.5438727421667,
+      1248.1997599984054
+    ],
+    "percentilesUs": {
+      "0.0": 416.25600000000003,
+      "50.0": 616.448,
+      "90.0": 2113.536,
+      "95.0": 3342.3360000000002,
+      "99.0": 6850.150399999991,
+      "99.9": 36810.260479999546,
+      "99.99": 162267.136,
+      "99.999": 162267.136,
+      "99.9999": 162267.136,
+      "100.0": 162267.136
+    },
+    "allocationBytesPerOp": 1548097.581507139,
+    "allocationErrorBytesPerOp": 8921.805049109504,
+    "gcCount": 156.0,
+    "gcTimeMillis": 275.0
+  },
+  {
+    "benchmark": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyBenchmark.warmIndexedEvaluation",
+    "mode": "sample",
+    "forks": 3,
+    "warmupIterations": 3,
+    "measurementIterations": 3,
+    "jvmArgs": [
+      "-Xmx512m",
+      "-Xms128m",
+      "-Xmx256m"
+    ],
+    "sampleCount": 235850,
+    "scoreUs": 12.7237796226415,
+    "scoreErrorUs": 1.354712777445276,
+    "scoreConfidenceUs": [
+      11.369066845196224,
+      14.078492400086775
+    ],
+    "percentilesUs": {
+      "0.0": 4.5840000000000005,
+      "50.0": 5.36,
+      "90.0": 5.824,
+      "95.0": 9.344,
+      "99.0": 41.28,
+      "99.9": 2056.8023040001394,
+      "99.99": 7067.259699184418,
+      "99.999": 31055.80941322136,
+      "99.9999": 42795.008,
+      "100.0": 42795.008
+    },
+    "allocationBytesPerOp": 5540.264154445999,
+    "allocationErrorBytesPerOp": 122.7321642577286,
+    "gcCount": 67.0,
+    "gcTimeMillis": 186.0
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "project": "gatehouse",
+  "sourceRevision": "working-tree-sha256:4bd439735ed2a4399ba8c0f9d7abfa3d28dcbec9bec81130d6472dfa27ea124d",
+  "timestamp": "2026-10-18T01:58:32.149280+00:00",
+  "environment": "environment.json",
+  "workload": "full-seed-demo-reset-repeat-preparation-v1",
+  "command": ".work/A05/preparation.sh",
+  "rawArtifact": "../../../.work/A05/preparation.log",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 4,
+    "failed": 0
+  },
+  "seedRows": {
+    "tenants": 50,
+    "policyVersions": 10000,
+    "roles": 1000000,
+    "roleEdges": 990000,
+    "resources": 50000,
+    "activePolicies": 50
+  },
+  "demoAssertionsPerRun": 21,
+  "limitations": [
+    "Preparation only: no performance measurements or quiet-window claim."
+  ]
+}

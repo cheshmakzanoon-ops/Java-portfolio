@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "project": "switchback",
+  "sourceRevision": "working-tree-sha256:737a05c43355a525c49f3dd81a19935a9dc4dd1fe7b53fe4f48277834a1abf3b",
+  "timestampUtc": "2026-10-18T01:15:29.351266+00:00",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/10-switchback/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A10/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+  "exitCode": 0,
+  "tests": [
+    {
+      "module": "domain",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "kind": "surefire",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "planning",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "kind": "surefire",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.OidcTest",
+      "kind": "surefire",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "kind": "surefire",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "kind": "failsafe",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest",
+      "kind": "surefire",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest",
+      "kind": "surefire",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "kind": "surefire",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totalTestMethods": 45,
+  "propertyChecks": 40,
+  "completeOracleLeaves": 95901,
+  "coreCoverage": {
+    "domain": {
+      "BRANCH": {
+        "covered": 119,
+        "missed": 1
+      },
+      "LINE": {
+        "covered": 225,
+        "missed": 6
+      }
+    },
+    "planning": {
+      "BRANCH": {
+        "covered": 296,
+        "missed": 40
+      },
+      "LINE": {
+        "covered": 507,
+        "missed": 16
+      }
+    }
+  },
+  "rawLog": ".work/A10/integration-first.log",
+  "environment": "environment.json",
+  "guarantees": [
+    "independent directed-route evaluation and forged-score rejection",
+    "exact bounded assignments including unassigned and permutations",
+    "same-snapshot incumbent retention",
+    "onboard/frozen/completed state preservation",
+    "PostgreSQL lease fencing and recovery",
+    "five actual cancellation/completion race schedules",
+    "concurrent revision-CAS single winner",
+    "stale completion publication rejection",
+    "signed OIDC original-claim types and protected HTTP",
+    "raw chunked request-body byte bound"
+  ],
+  "pending": [
+    "live60jobHTTPdemo",
+    "actualprocessSIGKILLrestart",
+    "Validator70percentmutationgate",
+    "quiet-hostten-instance3runcorpus",
+    "finalindependentreview"
+  ]
+}

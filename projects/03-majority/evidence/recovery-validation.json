@@ -1,0 +1,111 @@
+{
+  "completed_at_utc": "2026-10-20T07:31:15Z",
+  "workflow": "extended simulation, unit/property/storage tests and TLS-process integration",
+  "command": "source scripts/cloud-env.sh && ./mvnw -f projects/03-majority/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A03/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pextended,integration verify",
+  "exit_code": 0,
+  "toolchain": {
+    "java": "Temurin 25.0.4.1+1",
+    "maven": "3.10.0"
+  },
+  "simulation_seeds": 1000,
+  "test_totals": {
+    "tests": 46,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.MutationIdentityTest",
+      "module": "kv-client",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.CodecTest",
+      "module": "raft-core",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.RaftTest",
+      "module": "raft-core",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.RegistersPropertyTest",
+      "module": "raft-core",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.SimulationTest",
+      "module": "raft-core",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.JournalTest",
+      "module": "raft-storage",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.BinaryTest",
+      "module": "raft-transport",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.ProcessFaultIT",
+      "module": "raft-verification",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.BoundaryTest",
+      "module": "raft-verification",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.majority.HistoryCheckerTest",
+      "module": "raft-verification",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "reviewed_source_sha256": {
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/majority/Model.java": "64138d66c4d7fb209a0149b51a996c22a99040ec09f7dc531811e868135bee36",
+    "raft-core/src/main/java/io/github/cheshmakzanoon/portfolio/majority/Raft.java": "6e4703766207127a7ba2372ca746582b6a13c95b1f415f7dd7e5507e0e8c700e",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/majority/CodecTest.java": "a218e237c274a07fa384e9e8236c0a3aa472c5782e0e99f82fdea9f72c054910",
+    "raft-core/src/test/java/io/github/cheshmakzanoon/portfolio/majority/RaftTest.java": "34ef263c6b98b05e27ada76791e4b001d5a7f8042ce1d2bd430e6b52a47f7294"
+  },
+  "validation_log_sha256": "8c7482292490478274cc61302547c8a620e61bcd651b80afb1377473349d2742",
+  "not_run": [
+    "current-source mutation testing",
+    "full prescribed performance workload",
+    "clean-checkout/full-reactor/hosted CI release checks"
+  ]
+}

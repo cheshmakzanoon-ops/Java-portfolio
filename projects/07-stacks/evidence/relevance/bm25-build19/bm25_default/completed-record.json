@@ -1,0 +1,70 @@
+{
+  "identity": {
+    "certifiedBuild": 19,
+    "sourceFingerprint": "35a2fa042be7990b2c0139ae7f17d3be11f04ab914dd1e4b23558aa1c011c550",
+    "cliJarSha256": "b64594bc1b55c7c2e8c2d718810cb5047145e821906421fb1c85a5b4eab3fb9b",
+    "prespecifiedRulesSha256": "c80577a87db5e8707d6a6e676d58ef40badfbbc679b9ffea1e6e49751002c8c3"
+  },
+  "profile": "BM25_DEFAULT",
+  "selectedMode": "SOURCE_AWARE",
+  "validation": {
+    "ndcg10": 0.5417399157401148,
+    "identifierMRR10": 0.7666666666666666
+  },
+  "objective": 0.7223198876534864,
+  "modes": {
+    "BASELINE": {
+      "ndcg10": 0.4369789084142504,
+      "identifierMRR10": 0.75
+    },
+    "SOURCE_AWARE": {
+      "ndcg10": 0.5417399157401148,
+      "identifierMRR10": 0.7666666666666666
+    },
+    "NO_IDENTIFIERS": {
+      "ndcg10": 0.5235016381602042,
+      "identifierMRR10": 0.7
+    },
+    "NO_PATH": {
+      "ndcg10": 0.5416762223631318,
+      "identifierMRR10": 0.7666666666666666
+    },
+    "NO_PROSE": {
+      "ndcg10": 0.48396930876182903,
+      "identifierMRR10": 0.75
+    },
+    "NO_CONCEPTS": {
+      "ndcg10": 0.5008859723401922,
+      "identifierMRR10": 0.7666666666666666
+    },
+    "NO_COVERAGE": {
+      "ndcg10": 0.5417399157401148,
+      "identifierMRR10": 0.7666666666666666
+    },
+    "NO_SIMILARITY": {
+      "ndcg10": 0.5417399157401148,
+      "identifierMRR10": 0.7666666666666666
+    }
+  },
+  "decision": "Pre-held-out selection from development/validation only: SOURCE_AWARE\nRanking profile: BM25_DEFAULT\nObjective: maximize min(validation nDCG10/.75, identifierMRR10/.90), no baseline regression\nModel SHA256: 914330d42884528788d6cd2d06a1678a6b3a89d40a2409c5b3665d1544dbd3d4\nFrozen fixture SHA256: 0c8975d47c3014732e00b8f6ea20654bf89c50659785382eca8092d2d7d0fd20\n",
+  "command": [
+    "/workspace/.tools/jdk-25/bin/java",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Xms128m",
+    "-Xmx2g",
+    "-Dstacks.ranking-profile=BM25_DEFAULT",
+    "-jar",
+    "/workspace/Java-portfolio/.work/A07/artifacts/build19-cli.jar",
+    "evaluate",
+    ".work/A07/bm25-build19-bm25_default",
+    "projects/07-stacks/fixtures",
+    "projects/07-stacks/evidence/relevance/bm25-build19/bm25_default/attempt-1",
+    "development"
+  ],
+  "rawLog": ".work/A07/bm25-build19-bm25_default-attempt-1.log",
+  "rawLogSha256": "d64e89e8a9bf935154df3d060d7fe937518e2b806188a4540400e10d38b5499f",
+  "perQuery": "projects/07-stacks/evidence/relevance/bm25-build19/bm25_default/attempt-1/development-per-query.csv",
+  "perQuerySha256": "a1a3266131a6dcfa5a3fe7eb3b23110a293fbe743fc2ed32bb3224a336c3084c",
+  "selectionFile": "projects/07-stacks/evidence/relevance/bm25-build19/bm25_default/attempt-1/selection.txt",
+  "selectionFileSha256": "c8d88d3dee7b78ce39ef06bfb75257a50c8a30448a6941604db842c3a8428987"
+}

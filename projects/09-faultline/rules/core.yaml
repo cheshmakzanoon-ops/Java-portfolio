@@ -1,0 +1,100 @@
+{
+  "model": "faultline-core",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "BG-SQL-TEXT",
+      "contextMask": 1,
+      "sink": "SQL text argument, including prepareStatement SQL text",
+      "safe": "separately bound values; fixtures.Safe.sqlIdentifier(String)"
+    },
+    {
+      "id": "BG-SHELL-COMMAND",
+      "contextMask": 2,
+      "sink": "Runtime.exec(String[]) or ProcessBuilder.start with /bin/sh or sh or /bin/bash and -c",
+      "safe": "argument vector without shell; fixtures.Safe.shellToken(String)"
+    },
+    {
+      "id": "BG-PATH-ACCESS",
+      "contextMask": 4,
+      "sink": "Files.readString/readAllBytes(Path), FileInputStream(String)",
+      "safe": "fixtures.Safe.confinedPath(String) trusted confinement contract"
+    }
+  ],
+  "sources": [
+    "java/lang/System.getenv(Ljava/lang/String;)Ljava/lang/String;",
+    "java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;",
+    "java/io/BufferedReader.readLine()Ljava/lang/String;",
+    "java/util/Scanner.nextLine()Ljava/lang/String;",
+    "java/io/Console.readLine()Ljava/lang/String;"
+  ],
+  "sinks": [
+    {
+      "descriptor": "java/sql/Statement.execute(Ljava/lang/String;)Z",
+      "rule": "BG-SQL-TEXT",
+      "mask": 1,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/sql/Statement.executeQuery(Ljava/lang/String;)Ljava/sql/ResultSet;",
+      "rule": "BG-SQL-TEXT",
+      "mask": 1,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/sql/Statement.executeUpdate(Ljava/lang/String;)I",
+      "rule": "BG-SQL-TEXT",
+      "mask": 1,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/sql/Connection.prepareStatement(Ljava/lang/String;)Ljava/sql/PreparedStatement;",
+      "rule": "BG-SQL-TEXT",
+      "mask": 1,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/nio/file/Files.readString(Ljava/nio/file/Path;)Ljava/lang/String;",
+      "rule": "BG-PATH-ACCESS",
+      "mask": 4,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/nio/file/Files.readAllBytes(Ljava/nio/file/Path;)[B",
+      "rule": "BG-PATH-ACCESS",
+      "mask": 4,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/io/FileInputStream.<init>(Ljava/lang/String;)V",
+      "rule": "BG-PATH-ACCESS",
+      "mask": 4,
+      "argument": 0
+    }
+  ],
+  "sanitizers": [
+    {
+      "descriptor": "fixtures/Safe.sqlIdentifier(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 1,
+      "trustedImplementation": "corpus/src/fixtures/Safe.java"
+    },
+    {
+      "descriptor": "fixtures/Safe.shellToken(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 2,
+      "trustedImplementation": "corpus/src/fixtures/Safe.java"
+    },
+    {
+      "descriptor": "fixtures/Safe.confinedPath(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 4,
+      "trustedImplementation": "corpus/src/fixtures/Safe.java"
+    }
+  ],
+  "libraryModels": {
+    "StringConcatFactory": "union arguments; no implicit branch taint",
+    "LambdaMetafactory": "captured taint and supported function pass-through",
+    "StringBuilder": "allocation-site object elements",
+    "collections": "pass-through with argument-element write summaries",
+    "shell": "separate finite shell-marker proof plus tainted argument-array elements; plain Runtime.exec(String) is not a shell rule",
+    "unknown": "union receiver/arguments and unknown bit; native/unresolved diagnostics"
+  }
+}

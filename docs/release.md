@@ -7,7 +7,7 @@ A release requires all mandatory criteria, current test results, verified demos,
 Historical register entries alone cannot authorize a current release. `scripts/release-audit.py` also requires `docs/execution/release-current.json`: schema version 1, a current `sourceFingerprint` from `scripts/release_evidence.py`, and a `criteria` object containing exactly these mandatory identifiers. Each criterion must be `PASS` with a nonempty `evidence` mapping of repository-relative file paths to SHA-256 hashes. Changed source/tests/configuration or altered/missing evidence invalidates the receipt. Generate a receipt only after reviewing actual current results; filling its fields is not a substitute for executing a gate. Keep unresolved criteria visible and retain failed runs.
 
 
-## ClearLedger
+## Daybook
 
 - **P01-A1:** Domain/property and real-PostgreSQL tests demonstrate all stated posting and reversal invariants.
 - **P01-A2:** Concurrent duplicates, tenant isolation, period closing, and crash/retry scenarios pass with preserved receipts.
@@ -15,7 +15,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P01-A4:** Shadow replay and restore audit reproduce the source-derived balances.
 - **P01-A5:** A clean checkout can run the scripted demo and workload; evidence includes actual commands, commit SHA, seeds, raw results, and limitations.
 
-## DurableFlow
+## Handoff
 
 - **P02-A1:** Replay and state-model tests produce identical logical decisions across supported histories and restarts.
 - **P02-A2:** Duplicate starts/signals, expired leases, and stale completions cannot create duplicate logical tasks or corrupt state.
@@ -23,7 +23,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P02-A4:** Timer, parallel, cancellation, compensation, and definition-version race cases have executable evidence.
 - **P02-A5:** The bounded workload and demo run from a clean checkout with raw measurements, failure timelines, and an operator runbook.
 
-## QuorumKV
+## Majority
 
 - **P03-A1:** Named Raft safety regressions and the seeded simulator pass without ignored events or disabled invariants.
 - **P03-A2:** WAL, term/vote, truncation, snapshot-publication, and corruption tests cover explicit crash boundaries.
@@ -31,7 +31,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P03-A4:** The real three-process fault demonstration preserves acknowledged data under the documented storage assumptions.
 - **P03-A5:** Benchmarks are reproducible and honestly labelled; the README distinguishes tested evidence from protocol arguments, assumptions, and unsupported features.
 
-## PulseStream
+## Late Arrival
 
 - **P04-A1:** Both original window algorithms agree with the independent oracle across generated boundary cases.
 - **P04-A2:** Idle/resume and restart never move watermark backward or mutate a finalized window.
@@ -39,7 +39,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P04-A4:** Dedup scope, quotas, outbox retries and retention-gap behavior are tested and documented.
 - **P04-A5:** Bounded workload report, demo transcript and recovery digests are reproducible.
 
-## TenantShield
+## Gatehouse
 
 - **P05-A1:** Original parser/compiler/evaluator agrees with the reference interpreter and enforces resource bounds.
 - **P05-A2:** Real OIDC verification and tenant binding defeat the specified adversarial requests.
@@ -47,7 +47,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P05-A4:** Post-revocation snapshots deny correctly; versioned cache and pooled connections never cross tenants.
 - **P05-A5:** Protected-resource demo, concurrent workload and redacted audit evidence are reproducible.
 
-## MatchCore
+## The Pit
 
 - **P06-A1:** Original indexed price-time book and independent reference model agree for generated histories.
 - **P06-A2:** Priority changes, FOK, self-trade prevention and fixed-point risk preserve stated invariants.
@@ -55,7 +55,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P06-A4:** Corrupt journals fail visibly, snapshots fall back safely, reads expose consistent sequences and admission remains bounded.
 - **P06-A5:** Exact demo totals, replay digest and separately labeled core/durable workload evidence are reproducible.
 
-## IndexForge
+## Stacks
 
 - **P07-A1:** Repeated ingestion of 10,000 identical records produces one logical copy per key; manifest replacement removes exactly the specified deleted records.
 - **P07-A2:** At least 100 seeded kill/failure schedules across build, commit, pointer publication, and retirement yield either the previous valid generation or the complete new one; no mixed-generation response.
@@ -64,7 +64,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P07-A5:** On the documented reference machine, 100,000 documents and 30 search requests/second sustain p95 below 200 ms after warm-up, using at most 2 GiB configured heap; publish errors, GC, and CPU alongside latency.
 - **P07-A6:** Invalid UTF-8, oversized files, archive expansion limits, path escape, symlink escape, disk-full, cancellation, and corrupt staging metadata fail explicitly while the previous generation remains searchable.
 
-## ThreadLens
+## Backtrace
 
 - **P08-A1:** Replaying one recording twice produces identical normalized aggregates; synthetic event fixtures prove inclusive/self counts, allocation weights, and window boundaries.
 - **P08-A2:** The known CPU hotspot appears in the top three observed sampled methods; allocation and contention regressions identify their planted causes in at least six of seven controlled trials.
@@ -73,7 +73,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P08-A5:** Reference-workload median throughput regression is at most 5% for the declared JFR-only configuration and 10% with the documented method allowlist; p99 regression is at most 10% and 15% respectively. Publish all trials.
 - **P08-A6:** A 20-minute cardinality/slow-consumer stress run respects configured observer limits; report windows affected by drops as incomplete and test that fixture secrets never appear in normalized exports.
 
-## ByteGuard
+## Faultline
 
 - **P09-A1:** All supported bytecode-shape fixtures produce valid CFG/frame states; property tests verify lattice laws, monotone transfers, and schedule-independent fixed points.
 - **P09-A2:** Detect all 60 labeled positive cases and classify at least 57 of 60 negatives correctly; publish every result and the per-rule confusion matrix. These are corpus results, not field accuracy claims.
@@ -82,7 +82,7 @@ Historical register entries alone cannot authorize a current release. `scripts/r
 - **P09-A5:** SARIF passes the pinned schema; witness locations resolve to fixture bytecode/source; unchanged findings keep fingerprints when unrelated methods are added.
 - **P09-A6:** On the documented reference machine, a fixed 10,000-class workload finishes within 120 seconds using at most 2 GiB configured heap, or terminates explicitly as partial at its declared budget. Completion requires a successful full run on the supported benchmark corpus.
 
-## RouteWeaver
+## Switchback
 
 - **P10-A1:** The independent validator and tiny exact oracle agree on complete bounded fixtures; invalid routes are rejected without trusting solver scores.
 - **P10-A2:** Baseline and solver obey the same units, time semantics, and constraints; a candidate never degrades the valid incumbent for the same immutable problem/matrix/freeze/objective version under the defined lexicographic objective.

@@ -7,8 +7,8 @@ Each project contains its implementation, executable examples, tests, design dec
 ## Start here if you are reviewing this portfolio
 
 For an efficient hiring review, see the [five-minute runnable example and backend
-engineering walkthrough](docs/hiring-guide.md). Start with **MatchCore** if you do not
-have Docker, or **ClearLedger**, **DurableFlow**, and **TenantShield** for backend
+engineering walkthrough](docs/hiring-guide.md). Start with **The Pit** if you do not
+have Docker, or **Daybook**, **Handoff**, and **Gatehouse** for backend
 architecture, transaction semantics, and authorization. Source code, tests, operating
 limits, and failure evidence are linked directly; historical checks do not certify
 later changes.
@@ -21,26 +21,26 @@ counts and the acceptance work that remains open.
 
 | Project | Engineering focus | Start here |
 | --- | --- | --- |
-| [ClearLedger](projects/01-clearledger) | Balanced integer journals, serializable posting, idempotency, reversals, and reconciliation | [Invariants](projects/01-clearledger/docs/INVARIANTS.md) |
-| [DurableFlow](projects/02-durableflow) | Deterministic replay, task leases, fencing, timers, and uncertain external effects | [External-effect semantics](projects/02-durableflow/docs/DECISIONS/001-external-effects.md) |
-| [QuorumKV](projects/03-quorumkv) | Raft consensus, checksummed storage, snapshots, quorum reads, and history checking | [Architecture](projects/03-quorumkv/docs/ARCHITECTURE.md) |
-| [PulseStream](projects/04-pulsestream) | Event-time windows, watermarks, deduplication, and atomic recovery over Kafka/PostgreSQL | [Architecture](projects/04-pulsestream/docs/ARCHITECTURE.md) |
-| [TenantShield](projects/05-tenantshield) | A bounded policy language, immutable compilation, tenant isolation, and OIDC | [Security model](projects/05-tenantshield/docs/SECURITY.md) |
-| [MatchCore](projects/06-matchcore) | Price/time matching, exact risk reservations, forced journals, and restart-safe commands | [Invariants](projects/06-matchcore/docs/INVARIANTS.md) |
-| [IndexForge](projects/07-indexforge) | Immutable indexes, bounded ingestion, authorized retrieval, and relevance evaluation | [Architecture](projects/07-indexforge/docs/ARCHITECTURE.md) |
-| [ThreadLens](projects/08-threadlens) | JFR collection, bounded bytecode instrumentation, and differential diagnosis | [Architecture](projects/08-threadlens/docs/ARCHITECTURE.md) |
-| [ByteGuard](projects/09-byteguard) | Bytecode control flow, abstract interpretation, taint propagation, and SARIF | [Analysis contract](projects/09-byteguard/docs/ARCHITECTURE.md) |
-| [RouteWeaver](projects/10-routeweaver) | Route validation, exact small-instance oracles, optimization, and fenced publication | [Architecture](projects/10-routeweaver/docs/ARCHITECTURE.md) |
+| [Daybook](projects/01-daybook) | Balanced integer journals, serializable posting, idempotency, reversals, and reconciliation | [Invariants](projects/01-daybook/docs/INVARIANTS.md) |
+| [Handoff](projects/02-handoff) | Deterministic replay, task leases, fencing, timers, and uncertain external effects | [External-effect semantics](projects/02-handoff/docs/DECISIONS/001-external-effects.md) |
+| [Majority](projects/03-majority) | Raft consensus, checksummed storage, snapshots, quorum reads, and history checking | [Architecture](projects/03-majority/docs/ARCHITECTURE.md) |
+| [Late Arrival](projects/04-latearrival) | Event-time windows, watermarks, deduplication, and atomic recovery over Kafka/PostgreSQL | [Architecture](projects/04-latearrival/docs/ARCHITECTURE.md) |
+| [Gatehouse](projects/05-gatehouse) | A bounded policy language, immutable compilation, tenant isolation, and OIDC | [Security model](projects/05-gatehouse/docs/SECURITY.md) |
+| [The Pit](projects/06-thepit) | Price/time matching, exact risk reservations, forced journals, and restart-safe commands | [Invariants](projects/06-thepit/docs/INVARIANTS.md) |
+| [Stacks](projects/07-stacks) | Immutable indexes, bounded ingestion, authorized retrieval, and relevance evaluation | [Architecture](projects/07-stacks/docs/ARCHITECTURE.md) |
+| [Backtrace](projects/08-backtrace) | JFR collection, bounded bytecode instrumentation, and differential diagnosis | [Architecture](projects/08-backtrace/docs/ARCHITECTURE.md) |
+| [Faultline](projects/09-faultline) | Bytecode control flow, abstract interpretation, taint propagation, and SARIF | [Analysis contract](projects/09-faultline/docs/ARCHITECTURE.md) |
+| [Switchback](projects/10-switchback) | Route validation, exact small-instance oracles, optimization, and fenced publication | [Architecture](projects/10-switchback/docs/ARCHITECTURE.md) |
 
 ## Build and run
 
-Prerequisites: JDK 25, Bash, Python 3, and the included Maven wrapper. Docker with Compose is required for database, broker, and issuer integration; it is unnecessary for MatchCore's CLI workflow.
+Prerequisites: JDK 25, Bash, Python 3, and the included Maven wrapper. Docker with Compose is required for database, broker, and issuer integration; it is unnecessary for The Pit's CLI workflow.
 
 ```bash
 # Run from the repository root with JDK 25 on PATH.
-./scripts/portfolio.sh verify matchcore
-./scripts/portfolio.sh integration matchcore
-./scripts/portfolio.sh demo matchcore
+./scripts/portfolio.sh verify thepit
+./scripts/portfolio.sh integration thepit
+./scripts/portfolio.sh demo thepit
 ```
 
 The demo checks allocation order, replacement priority, command deduplication, and recovery after an interrupted durable cancellation. It asserts four executions, eight lots traded, Alice's cash balance of 19,200 ticks, inventory of eight lots, and no open orders.
@@ -48,9 +48,9 @@ The demo checks allocation order, replacement priority, command deduplication, a
 For a service project, use its documented configuration and lifecycle:
 
 ```bash
-./scripts/portfolio.sh up clearledger
-./scripts/portfolio.sh demo clearledger
-./scripts/portfolio.sh down clearledger
+./scripts/portfolio.sh up daybook
+./scripts/portfolio.sh demo daybook
+./scripts/portfolio.sh down daybook
 ```
 
 `./scripts/portfolio.sh list` lists project entry points. `./mvnw -B -ntp verify` builds the ordinary reactor. See [development](docs/development.md) for toolchain setup, isolated dependency caches, integration tests, formatting, and shared build limits. In the managed cloud workspace, source `scripts/cloud-env.sh` before Maven.

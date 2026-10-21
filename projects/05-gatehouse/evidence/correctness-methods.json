@@ -1,0 +1,195 @@
+{
+  "capturedAt": "2026-10-18T02:02:36.648826+00:00",
+  "sourceRevision": "working-tree-sha256:4bd439735ed2a4399ba8c0f9d7abfa3d28dcbec9bec81130d6472dfa27ea124d",
+  "methods": [
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.JsonConfigurationTest",
+      "method": "actualApplicationPropertiesBindAndRejectAmbiguousJson",
+      "seconds": 2.688,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.JwtSecurityTest",
+      "method": "fixedTrustVerifiesSignaturesAndAllRequiredClaimsWithoutDiscovery",
+      "seconds": 4.236,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.RequestBoundsTest",
+      "method": "encodedTenantAliasesShareTheSameQuota",
+      "seconds": 0.64,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.RequestBoundsTest",
+      "method": "unknownLengthAndDishonestLengthBodiesAreLimitedBeforeDownstreamAllocation",
+      "seconds": 0.084,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.RequestBoundsTest",
+      "method": "concurrentBoundRejectsExcessAndReleasesPermitsAfterCompletion",
+      "seconds": 0.087,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.ProtectedClaimsTest",
+      "method": "documentEnforcementRejectsCorrectlySignedMissingAudienceOrSubject",
+      "seconds": 4.647,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.ArchitectureTest",
+      "method": "policyDomainHasNoFrameworkOrPersistenceDependency",
+      "seconds": 2.529,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "contentDigestDistinguishesEverySecurityRelevantComponentAndDagReusesAncestors",
+      "seconds": 0.237,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "rejectsUnsafeOrIllTypedOrOversizedPolicies",
+      "seconds": 0.019,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "rejectsDuplicateGrantsBeforeDatabasePersistence",
+      "seconds": 0.002,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "rejectsRoleCyclesMissingParentsDuplicatesAndUnknownPredicates",
+      "seconds": 0.005,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "inheritedGrantAndAbacBothRequired",
+      "seconds": 0.009,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "orderedStringIntegerBooleanAndEscapes",
+      "seconds": 0.003,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "generatedExpressionsAndIndexedDecisionsAgreeWithOracle",
+      "seconds": 0.679,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "unknownNegationAndExplicitDenyAreConservative",
+      "seconds": 0.003,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "typedEnumsAndMissingComparisons",
+      "seconds": 0.003,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "publicationRejectsInvalidIdentifiersAndHonorsInclusiveCollectionBounds",
+      "seconds": 0.019,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "method": "immutableClosureAndStableTrace",
+      "seconds": 0.004,
+      "status": "PASS",
+      "suite": "unit"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "chunkedBodyLimitRunsBeforeJsonBinding",
+      "seconds": 0.795,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "resourceMaintenanceIncrementsVersionAndEpoch",
+      "seconds": 0.177,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "simulationIsPrivilegedAndDoesNotPublishOrGrant",
+      "seconds": 0.697,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "pooledTenantIsolationImmutableRevisionsAndSnapshotRevocationBoundary",
+      "seconds": 1.91,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "pausedDatabaseReturnsExplicitFailure",
+      "seconds": 5.191,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "realOidcAndTenantBindingRejectAdversarialRequests",
+      "seconds": 1.071,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "rollbackCopiesAndPublishesNewMonotonicRevisionAtomically",
+      "seconds": 0.068,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "concurrentPublicationKeepsVersionedCacheImmutable",
+      "seconds": 1.467,
+      "status": "PASS",
+      "suite": "integration"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "method": "requiredAuditAndDatabaseOutageNeverReturnAllow",
+      "seconds": 0.063,
+      "status": "PASS",
+      "suite": "integration"
+    }
+  ]
+}

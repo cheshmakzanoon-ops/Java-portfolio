@@ -81,19 +81,19 @@
   "components" : [
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "clearledger",
+      "name" : "daybook",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-domain@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-domain@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "clearledger-domain",
+      "name" : "daybook-domain",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-domain@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-domain@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -225,11 +225,11 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-persistence@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-persistence@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "clearledger-persistence",
+      "name" : "daybook-persistence",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-persistence@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-persistence@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -903,11 +903,11 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-api@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-api@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "clearledger-api",
+      "name" : "daybook-api",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-api@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-api@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -3968,59 +3968,59 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-verification@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-verification@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "clearledger-verification",
+      "name" : "daybook-verification",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-verification@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-verification@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow",
+      "name" : "handoff",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-model@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-model@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow-workflow-model",
+      "name" : "handoff-workflow-model",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-model@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-model@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-engine@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-engine@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow-workflow-engine",
+      "name" : "handoff-workflow-engine",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-engine@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-engine@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-persistence@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-persistence@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow-workflow-persistence",
+      "name" : "handoff-workflow-persistence",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-persistence@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-persistence@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow-workflow-worker-sdk",
+      "name" : "handoff-workflow-worker-sdk",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-api@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-api@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow-workflow-api",
+      "name" : "handoff-workflow-api",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-api@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-api@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -4090,43 +4090,43 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-verification@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-verification@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "durableflow-workflow-verification",
+      "name" : "handoff-workflow-verification",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-verification@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-verification@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv",
+      "name" : "majority",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv-raft-core",
+      "name" : "majority-raft-core",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-storage@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-storage@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv-raft-storage",
+      "name" : "majority-raft-storage",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-storage@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-storage@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv-raft-transport",
+      "name" : "majority-raft-transport",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -4592,51 +4592,51 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-server@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-server@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv-kv-server",
+      "name" : "majority-kv-server",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-server@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-server@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-client@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-client@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv-kv-client",
+      "name" : "majority-kv-client",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-client@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-client@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-verification@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-verification@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "quorumkv-raft-verification",
+      "name" : "majority-raft-verification",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-verification@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-verification@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "pulsestream",
+      "name" : "latearrival",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "pulsestream-engine",
+      "name" : "latearrival-engine",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "pulsestream-kafka-adapter",
+      "name" : "latearrival-kafka-adapter",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-kafka-adapter@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-kafka-adapter@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -4878,19 +4878,19 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-postgres-store@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-postgres-store@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "pulsestream-postgres-store",
+      "name" : "latearrival-postgres-store",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-postgres-store@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-postgres-store@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-service@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-service@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "pulsestream-service",
+      "name" : "latearrival-service",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-service@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-service@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -5117,11 +5117,11 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-verification@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-verification@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "pulsestream-verification",
+      "name" : "latearrival-verification",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-verification@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-verification@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -5397,35 +5397,35 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "tenantshield",
+      "name" : "gatehouse",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-core@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-core@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "tenantshield-policy-core",
+      "name" : "gatehouse-policy-core",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-core@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-core@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-store@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-store@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "tenantshield-policy-store",
+      "name" : "gatehouse-policy-store",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-store@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-store@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-decision-service@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-decision-service@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "tenantshield-decision-service",
+      "name" : "gatehouse-decision-service",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-decision-service@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-decision-service@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -6207,91 +6207,91 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-demo-resource-server@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-demo-resource-server@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "tenantshield-demo-resource-server",
+      "name" : "gatehouse-demo-resource-server",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-demo-resource-server@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-demo-resource-server@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-verification@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-verification@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "tenantshield-verification",
+      "name" : "gatehouse-verification",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-verification@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-verification@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "matchcore",
+      "name" : "thepit",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "matchcore-matching-core",
+      "name" : "thepit-matching-core",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "matchcore-journal",
+      "name" : "thepit-journal",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-gateway@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-gateway@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "matchcore-gateway",
+      "name" : "thepit-gateway",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-gateway@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-gateway@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-simulator@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-simulator@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "matchcore-simulator",
+      "name" : "thepit-simulator",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-simulator@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-simulator@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-benchmarks@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-benchmarks@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "matchcore-benchmarks",
+      "name" : "thepit-benchmarks",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-benchmarks@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-benchmarks@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge",
+      "name" : "stacks",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-ingest@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-ingest@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge-ingest",
+      "name" : "stacks-ingest",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-ingest@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-ingest@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-index@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-index@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge-index",
+      "name" : "stacks-index",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-index@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-index@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -6441,75 +6441,75 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge-query",
+      "name" : "stacks-query",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-service@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-service@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge-service",
+      "name" : "stacks-service",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-service@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-service@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-evaluation@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-evaluation@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge-evaluation",
+      "name" : "stacks-evaluation",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-evaluation@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-evaluation@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-cli@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-cli@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "indexforge-cli",
+      "name" : "stacks-cli",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-cli@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-cli@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens",
+      "name" : "backtrace",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-probe",
+      "name" : "backtrace-probe",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-analysis@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-analysis",
+      "name" : "backtrace-analysis",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-analysis@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-jfr@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-jfr",
+      "name" : "backtrace-jfr",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-jfr@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-agent@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-agent@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-agent",
+      "name" : "backtrace-agent",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-agent@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-agent@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -6663,67 +6663,67 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-report@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-report",
+      "name" : "backtrace-report",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-report@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-workloads@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-workloads",
+      "name" : "backtrace-workloads",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-workloads@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-cli@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-cli@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-cli",
+      "name" : "backtrace-cli",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-cli@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-cli@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-compatibility@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-compatibility@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "threadlens-compatibility",
+      "name" : "backtrace-compatibility",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-compatibility@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-compatibility@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "byteguard",
+      "name" : "faultline",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-analysis-core@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "byteguard-analysis-core",
+      "name" : "faultline-analysis-core",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-analysis-core@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-report@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-report@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "byteguard-report",
+      "name" : "faultline-report",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-report@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-report@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-cli@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-cli@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "byteguard-cli",
+      "name" : "faultline-cli",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-cli@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-cli@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -6788,35 +6788,35 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-evaluation@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-evaluation@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "byteguard-evaluation",
+      "name" : "faultline-evaluation",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-evaluation@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-evaluation@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver@1.0.0-SNAPSHOT?type=pom",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback@1.0.0-SNAPSHOT?type=pom",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "routeweaver",
+      "name" : "switchback",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver@1.0.0-SNAPSHOT?type=pom"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback@1.0.0-SNAPSHOT?type=pom"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "routeweaver-domain",
+      "name" : "switchback-domain",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-planning@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-planning@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "routeweaver-planning",
+      "name" : "switchback-planning",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-planning@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-planning@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -7591,11 +7591,11 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-service@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-service@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "routeweaver-service",
+      "name" : "switchback-service",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-service@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-service@1.0.0-SNAPSHOT?type=jar"
     },
     {
       "type" : "library",
@@ -8131,47 +8131,47 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-verification@1.0.0-SNAPSHOT?type=jar",
+      "bom-ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-verification@1.0.0-SNAPSHOT?type=jar",
       "group" : "io.github.cheshmakzanoon.portfolio",
-      "name" : "routeweaver-verification",
+      "name" : "switchback-verification",
       "version" : "1.0.0-SNAPSHOT",
-      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-verification@1.0.0-SNAPSHOT?type=jar"
+      "purl" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-verification@1.0.0-SNAPSHOT?type=jar"
     }
   ],
   "dependencies" : [
     {
       "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/java-portfolio@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard@1.0.0-SNAPSHOT?type=pom",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver@1.0.0-SNAPSHOT?type=pom"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline@1.0.0-SNAPSHOT?type=pom",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback@1.0.0-SNAPSHOT?type=pom"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-domain@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-persistence@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-api@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-verification@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-domain@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-persistence@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-api@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-verification@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-domain@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-domain@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-persistence@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-persistence@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/com.zaxxer/HikariCP@7.0.2?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-domain@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-domain@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
         "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
         "pkg:maven/org.flywaydb/flyway-database-postgresql@12.4.0?type=jar",
@@ -8237,9 +8237,9 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-api@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-api@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-persistence@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-persistence@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-security@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar"
@@ -8581,37 +8581,37 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-verification@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-verification@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-api@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/clearledger-persistence@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-api@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/daybook-persistence@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-model@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-engine@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-persistence@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-api@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-verification@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-model@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-engine@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-persistence@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-api@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-verification@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-model@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-model@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-engine@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-engine@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-model@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-model@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-persistence@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-persistence@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-engine@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-engine@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
         "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
         "pkg:maven/org.flywaydb/flyway-database-postgresql@12.4.0?type=jar",
@@ -8620,15 +8620,15 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-persistence@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-persistence@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-api@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-api@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-worker-sdk@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-web@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-security@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar"
@@ -8644,36 +8644,36 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-verification@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-verification@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/durableflow-workflow-api@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/handoff-workflow-api@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-storage@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-server@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-client@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-verification@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-storage@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-server@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-client@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-verification@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-storage@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-storage@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/io.netty/netty-transport@4.2.17.Final?type=jar",
         "pkg:maven/io.netty/netty-handler@4.2.17.Final?type=jar",
         "pkg:maven/io.netty/netty-codec-base@4.2.17.Final?type=jar"
@@ -8731,48 +8731,48 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-server@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-server@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-storage@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-storage@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-client@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-client@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-verification@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-verification@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-storage@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-raft-transport@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-server@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/quorumkv-kv-client@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-storage@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-raft-transport@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-server@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/majority-kv-client@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-postgres-store@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-service@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-verification@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-postgres-store@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-verification@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.apache.kafka/kafka-clients@4.2.1?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
@@ -8799,28 +8799,28 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-postgres-store@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-postgres-store@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
         "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
         "pkg:maven/org.flywaydb/flyway-database-postgresql@12.4.0?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-service@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-service@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-engine@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-postgres-store@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-engine@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-kafka-adapter@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-postgres-store@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-verification@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-verification@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/pulsestream-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/latearrival-service@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-core@1.37?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-generator-annprocess@1.37?type=jar"
       ]
@@ -8847,23 +8847,23 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-store@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-decision-service@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-demo-resource-server@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-verification@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-store@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-decision-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-demo-resource-server@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-verification@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-core@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-core@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-store@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-store@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-core@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
         "pkg:maven/com.zaxxer/HikariCP@7.0.2?type=jar",
         "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
@@ -8871,9 +8871,9 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-decision-service@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-decision-service@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-policy-store@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-policy-store@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@4.1.1?type=jar",
@@ -8966,88 +8966,88 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-demo-resource-server@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-demo-resource-server@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-verification@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-verification@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/tenantshield-decision-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/gatehouse-decision-service@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-core@1.37?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-generator-annprocess@1.37?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-gateway@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-simulator@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-benchmarks@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-gateway@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-simulator@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-benchmarks@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-gateway@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-gateway@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar",
         "pkg:maven/org.springframework.security/spring-security-oauth2-jose@7.1.1?type=jar",
         "pkg:maven/org.springframework.security/spring-security-oauth2-resource-server@7.1.1?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-simulator@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-simulator@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-gateway@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-gateway@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-benchmarks@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-benchmarks@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-matching-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-journal@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/matchcore-gateway@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-matching-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-journal@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/thepit-gateway@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-core@1.37?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-generator-annprocess@1.37?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-ingest@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-index@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-service@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-evaluation@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-cli@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-ingest@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-index@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-evaluation@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-cli@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-ingest@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-ingest@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-index@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-index@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-ingest@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-ingest@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.apache.lucene/lucene-core@10.3.2?type=jar",
         "pkg:maven/org.apache.lucene/lucene-analysis-common@10.3.2?type=jar"
       ]
@@ -9063,68 +9063,68 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-index@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-index@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-service@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-service@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-oauth2-resource-server@4.1.1?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-evaluation@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-evaluation@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-cli@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-cli@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-query@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/indexforge-evaluation@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-query@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/stacks-evaluation@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-agent@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-cli@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-compatibility@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-analysis@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-jfr@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-agent@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-report@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-workloads@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-cli@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-compatibility@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-analysis@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.hdrhistogram/HdrHistogram@2.2.2?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-jfr@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-analysis@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-agent@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-agent@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/org.hdrhistogram/HdrHistogram@2.2.2?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-probe@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-probe@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.ow2.asm/asm@9.9.1?type=jar",
         "pkg:maven/org.ow2.asm/asm-commons@9.9.1?type=jar"
       ]
@@ -9147,64 +9147,64 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-report@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-analysis@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-analysis@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-workloads@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/org.hdrhistogram/HdrHistogram@2.2.2?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-cli@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-cli@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-jfr@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-report@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-workloads@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-compatibility@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-compatibility@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-agent@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-jfr@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-report@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/threadlens-workloads@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-agent@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-jfr@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-report@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/backtrace-workloads@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-report@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-cli@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-evaluation@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-analysis-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-report@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-cli@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-evaluation@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-analysis-core@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/org.ow2.asm/asm@9.9.1?type=jar",
         "pkg:maven/org.ow2.asm/asm-tree@9.9.1?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-report@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-report@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-analysis-core@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.7?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-cli@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-cli@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
         "pkg:maven/info.picocli/picocli@4.7.7?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-report@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-report@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
@@ -9212,29 +9212,29 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-evaluation@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-evaluation@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-analysis-core@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/byteguard-cli@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-analysis-core@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/faultline-cli@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver@1.0.0-SNAPSHOT?type=pom",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback@1.0.0-SNAPSHOT?type=pom",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-planning@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-service@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-verification@1.0.0-SNAPSHOT?type=jar"
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-planning@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-verification@1.0.0-SNAPSHOT?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-planning@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-planning@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/ai.timefold.solver/timefold-solver-core@2.7.1?type=jar"
       ]
     },
@@ -9318,10 +9318,10 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-service@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-service@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-planning@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-planning@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-web@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-jdbc@4.1.1?type=jar",
         "pkg:maven/org.springframework.boot/spring-boot-starter-security@4.1.1?type=jar",
@@ -9393,11 +9393,11 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-verification@1.0.0-SNAPSHOT?type=jar",
+      "ref" : "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-verification@1.0.0-SNAPSHOT?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-domain@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-planning@1.0.0-SNAPSHOT?type=jar",
-        "pkg:maven/io.github.cheshmakzanoon.portfolio/routeweaver-service@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-domain@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-planning@1.0.0-SNAPSHOT?type=jar",
+        "pkg:maven/io.github.cheshmakzanoon.portfolio/switchback-service@1.0.0-SNAPSHOT?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-core@1.37?type=jar",
         "pkg:maven/org.openjdk.jmh/jmh-generator-annprocess@1.37?type=jar"
       ]

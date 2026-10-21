@@ -1,0 +1,228 @@
+{
+  "build": 18,
+  "effectiveJUnit": "6.1.3",
+  "log": ".work/A07/verify-eighteenth.log",
+  "sourceFingerprint": "2f31ecea5b8d7add7220c0794ea6e7c0bbf1136deeeb608cd87da11cc790e8cf",
+  "cliJarSha256": "a7c61014fcae7edd259b1a54860901bc704da3bc4a408fba7630eb26ee0c827f",
+  "testSuites": [
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.IngestionSafetyTest",
+      "tests": "16",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.DeclarationScannerTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.GenerationLifecycleTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.KernelDiskFullIT",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.SearchSecurityTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.TokenValidationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.HttpSecurityIT",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.stacks.RelevanceMetricsTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "coverage": {
+    "ingest": {
+      "INSTRUCTION": {
+        "covered": 2060,
+        "missed": 157
+      },
+      "BRANCH": {
+        "covered": 245,
+        "missed": 53
+      },
+      "LINE": {
+        "covered": 381,
+        "missed": 17
+      },
+      "COMPLEXITY": {
+        "covered": 136,
+        "missed": 53
+      },
+      "METHOD": {
+        "covered": 39,
+        "missed": 1
+      },
+      "CLASS": {
+        "covered": 11,
+        "missed": 0
+      }
+    },
+    "index": {
+      "INSTRUCTION": {
+        "covered": 2552,
+        "missed": 258
+      },
+      "BRANCH": {
+        "covered": 248,
+        "missed": 68
+      },
+      "LINE": {
+        "covered": 489,
+        "missed": 46
+      },
+      "COMPLEXITY": {
+        "covered": 158,
+        "missed": 60
+      },
+      "METHOD": {
+        "covered": 58,
+        "missed": 2
+      },
+      "CLASS": {
+        "covered": 15,
+        "missed": 1
+      }
+    },
+    "query": {
+      "INSTRUCTION": {
+        "covered": 3596,
+        "missed": 129
+      },
+      "BRANCH": {
+        "covered": 338,
+        "missed": 56
+      },
+      "LINE": {
+        "covered": 622,
+        "missed": 21
+      },
+      "COMPLEXITY": {
+        "covered": 232,
+        "missed": 59
+      },
+      "METHOD": {
+        "covered": 91,
+        "missed": 3
+      },
+      "CLASS": {
+        "covered": 26,
+        "missed": 0
+      }
+    },
+    "service": {
+      "INSTRUCTION": {
+        "covered": 1240,
+        "missed": 316
+      },
+      "BRANCH": {
+        "covered": 97,
+        "missed": 69
+      },
+      "LINE": {
+        "covered": 245,
+        "missed": 62
+      },
+      "COMPLEXITY": {
+        "covered": 75,
+        "missed": 79
+      },
+      "METHOD": {
+        "covered": 55,
+        "missed": 16
+      },
+      "CLASS": {
+        "covered": 12,
+        "missed": 0
+      }
+    },
+    "evaluation": {
+      "INSTRUCTION": {
+        "covered": 194,
+        "missed": 2109
+      },
+      "BRANCH": {
+        "covered": 26,
+        "missed": 152
+      },
+      "LINE": {
+        "covered": 21,
+        "missed": 372
+      },
+      "COMPLEXITY": {
+        "covered": 17,
+        "missed": 105
+      },
+      "METHOD": {
+        "covered": 4,
+        "missed": 29
+      },
+      "CLASS": {
+        "covered": 2,
+        "missed": 6
+      }
+    }
+  },
+  "mutation": {
+    "ingest": {
+      "total": 11,
+      "statuses": {
+        "KILLED": 11
+      },
+      "sha256": "30552f1d2419e812d0bde38adc497302ea651601b31dd8ada860eda222bb050e"
+    },
+    "index": {
+      "total": 21,
+      "statuses": {
+        "KILLED": 21
+      },
+      "sha256": "1082571517146857b495c07c96e99ba7d4374210e71b84339604453804847f50"
+    },
+    "query": {
+      "total": 24,
+      "statuses": {
+        "KILLED": 24
+      },
+      "sha256": "ccdebaed01786548824e9f066b8ed128c34e858b1caf906559de585abe913568"
+    },
+    "evaluation": {
+      "total": 39,
+      "statuses": {
+        "KILLED": 39
+      },
+      "sha256": "617fe681e45b3bfe11494b5fc5c5e5c00bf1de3d9a9b4ce072af46abad37120e"
+    }
+  },
+  "recordedUtc": "2026-10-18T02:31:13.912629+00:00"
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "project": "latearrival",
+  "reservation": {
+    "requestedAtUtc": "2026-10-18T06:54:52.076628+00:00",
+    "command": [
+      "env",
+      "PULSE_QUIET_RESERVATION=quiet-reference-10-latearrival",
+      "python3",
+      ".work/A04/run-quiet.py"
+    ],
+    "sourceRevision": "e60cdd11d89b0608f02ff5aa6c9b520d16dafefe",
+    "lockPaths": [
+      "/workspace/Java-portfolio/.work/build-slots/0.lock",
+      "/workspace/Java-portfolio/.work/build-slots/1.lock",
+      "/workspace/Java-portfolio/.work/build-slots/2.lock"
+    ],
+    "startedAtUtc": "2026-10-18T06:54:52.085077+00:00",
+    "otherJavaProcessesAtReservation": [],
+    "otherApplicationContainersAtReservation": [],
+    "cpuQuota": "400000 100000",
+    "memoryLimit": "34359738368",
+    "filesystemType": "overlayfs",
+    "freeDiskBytes": 10114543616,
+    "exitCode": 1,
+    "completedAtUtc": "2026-10-18T06:56:23.634062+00:00",
+    "elapsedSeconds": 91.54968523400021,
+    "remainingJavaProcesses": [],
+    "remainingApplicationContainers": [],
+    "result": "FAIL"
+  },
+  "runnerSummary": ".work/A04/quiet-runs/20261018T065452Z-395501/summary.json",
+  "runnerSummarySha256": "a8cc329b82b81e328698f9075621d5fa3a3102bfc35402653c70b584aaad74a4",
+  "result": "FAIL_HARNESS_BEFORE_DURABLE_WORKLOAD",
+  "error": "PermissionError: [Errno 13] Permission denied: '/proc/396725/ns/pid'",
+  "phases": [
+    {
+      "name": "engine-original",
+      "started": "2026-10-18T06:54:54.087374+00:00",
+      "exitCode": 0,
+      "ended": "2026-10-18T06:55:21.749351+00:00"
+    },
+    {
+      "name": "engine-current",
+      "started": "2026-10-18T06:55:22.324215+00:00",
+      "exitCode": 0,
+      "ended": "2026-10-18T06:55:48.530724+00:00"
+    },
+    {
+      "name": "dependencies-up",
+      "started": "2026-10-18T06:55:49.123441+00:00",
+      "exitCode": 130,
+      "ended": "2026-10-18T06:55:51.390701+00:00"
+    }
+  ],
+  "teardown": {
+    "attempted": true,
+    "composeStopExitCode": 0,
+    "fallbackContainerIds": [],
+    "errors": [],
+    "success": true
+  },
+  "interpretation": "Both complete three-fork microbenchmarks were preserved. Dependency startup monitoring failed on a restricted container process namespace read. No million-event driver ran. This attempt does not satisfy the full study; a reviewed harness repair and a separate full attempt are required."
+}

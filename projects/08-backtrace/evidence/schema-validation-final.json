@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "project": "backtrace",
+  "timestampUtc": "2026-10-18T01:59:33.360912+00:00",
+  "workingTreeFingerprint": "ad35aee1cc5395e36b1cde9ddac88db635ac78be26a1c51f963b834153fbb351",
+  "validator": "jsonschema 4.26.0",
+  "draft": "2020-12",
+  "schemaSha256": "87732144c8955cebebd667c5c94ecc16ca2c2de9137d6c3de997838609617449",
+  "validatedReports": 52,
+  "failures": 0,
+  "finalDemoTimingBoundaryLabelVerified": true,
+  "reports": [
+    {
+      "path": "projects/08-backtrace/target/demo/allocation-baseline/report/report.json",
+      "sha256": "b78921893165515c16ca9793b29e080948241254a91ee0ef006bf01f6a4430d3",
+      "sampleCount": 64
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/allocation-regressed/report/report.json",
+      "sha256": "3506427e305a29761ae3ed5545406d92e3527cfa4bcf4a1b2033f637e955e0dc",
+      "sampleCount": 10
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/contention-baseline/report/report.json",
+      "sha256": "f1c1888bf6fbd1784abc34e75451b626590a46109df56b87eebff734772ca746",
+      "sampleCount": 2
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/contention-regressed/report/report.json",
+      "sha256": "528f30b665faa5f01c70083394a9041a53ec851084f683ad3ef4e50a9df870c2",
+      "sampleCount": 2
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/cpu-baseline/report/report.json",
+      "sha256": "7caabd16efa8cda1d7b81eee83b9c1d51c0e6f904007cf30f8bdf7eec89a228f",
+      "sampleCount": 65
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/cpu-regressed/report/report.json",
+      "sha256": "666b71345daa66cf31117c1820484f50606e88f0904943665c19ad9d257b7782",
+      "sampleCount": 93
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/virtual-baseline/report/report.json",
+      "sha256": "0c0bcc36cd0eba858198736dbd6c53b85b8030586299afe6ccb7dad87e9d7ee6",
+      "sampleCount": 8
+    },
+    {
+      "path": "projects/08-backtrace/target/demo/virtual-regressed/report/report.json",
+      "sha256": "f21b4bbb1ec72033e8eb06b4868da3369804e5feb7bd31086f2985d1f214cfd3",
+      "sampleCount": 5
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-0-baseline/report/report.json",
+      "sha256": "97400e3065b814c31327bb12eb340195e6f2591ce845da40ffe23167e37c0126",
+      "sampleCount": 183
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-0-regressed/report/report.json",
+      "sha256": "317c5531a7274aedc907e3ecf374980d42bac89ee69ddcb3975d607618eef1fe",
+      "sampleCount": 15
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-1-baseline/report/report.json",
+      "sha256": "a5de230403073d8bb5af36a8cc2a0dfe90143a87632de5a7eb2484cca7c6a6cb",
+      "sampleCount": 187
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-1-regressed/report/report.json",
+      "sha256": "410e273355ed6d8d80b26f355fbe3a3ebda963abdc045496badf040721850409",
+      "sampleCount": 34
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-2-baseline/report/report.json",
+      "sha256": "50423a94189d3c2fef55885ba629a29bda06dd3dce0249bccf0b83ef4511890b",
+      "sampleCount": 147
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-2-regressed/report/report.json",
+      "sha256": "22185c60d953b4018bd0cdaa6ad9328d4dd22df7d14d094871c2a1e9aaf6904a",
+      "sampleCount": 13
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-3-baseline/report/report.json",
+      "sha256": "80af47833324ce543d8b466dcb77e0cb74afdb939af5cc5e383871fa83209176",
+      "sampleCount": 174
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-3-regressed/report/report.json",
+      "sha256": "a79e526ce32062f492898c930d3125b08744f3e591f752fe3b2b68bf0a37dca1",
+      "sampleCount": 27
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-4-baseline/report/report.json",
+      "sha256": "549de531bd816fcb96f4e5f38d1689f50b17661951a561b9928368cea869b619",
+      "sampleCount": 156
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-4-regressed/report/report.json",
+      "sha256": "49dc340f1606a9dd18f6cf477e118ea71823403e1753525b6061ae89e227ca25",
+      "sampleCount": 9
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-5-baseline/report/report.json",
+      "sha256": "7de4f85eb6caa2c515c79a7218f60029539916a847b47044c8e23949b370df2a",
+      "sampleCount": 189
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-5-regressed/report/report.json",
+      "sha256": "fd39ee155c7540993b1dc85bd120c5ff2c525e64ab1a5d3cf256a01f416a9ad1",
+      "sampleCount": 29
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-6-baseline/report/report.json",
+      "sha256": "015651143f419bb9efe786dc1367947fe665c8e979dac0a9ad53d394c1c54d73",
+      "sampleCount": 219
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/allocation-6-regressed/report/report.json",
+      "sha256": "ef1789af6dad1e1782c6442dd0266581fd58b8da9fefbe5d80530ec7492ecdba",
+      "sampleCount": 31
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-0-baseline/report/report.json",
+      "sha256": "f376e120bf97641cbf9cccec2968b89184e74710b95f9d5741b1a51f9ee405b8",
+      "sampleCount": 3
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-0-regressed/report/report.json",
+      "sha256": "de4c490e29809d589f9b10198bafc9151652bcf1962b775ad8de3bf581c7e086",
+      "sampleCount": 3
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-1-baseline/report/report.json",
+      "sha256": "6dc53b6f10fdd13bf60e9e20471acba8656dedf978dbabf018567406bb051b6c",
+      "sampleCount": 1
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-1-regressed/report/report.json",
+      "sha256": "3b31c2283b6f71ce82f4f5831ed8d387f1aad8fae606bcd1a12e34819a9571f8",
+      "sampleCount": 0
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-2-baseline/report/report.json",
+      "sha256": "2dca859709a12c534beac4d9a9ad59e646677014824ee20b2cf57a579945d1e3",
+      "sampleCount": 5
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-2-regressed/report/report.json",
+      "sha256": "2f8ba74cce9e58d7326ea0afcae6f90c2d80d619089ceed96157837631bcec71",
+      "sampleCount": 2
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-3-baseline/report/report.json",
+      "sha256": "eedf91cfe90ba438f5aca5b0eadc4b4f97ffc1d648534a04504fa11755da67fc",
+      "sampleCount": 5
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-3-regressed/report/report.json",
+      "sha256": "b2e1ef62ee6461357bc8410062958eb841b402b56db661bd412ed11728ae9010",
+      "sampleCount": 4
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-4-baseline/report/report.json",
+      "sha256": "e477044d8c4d0a3647b36b052f28318e94953b5cc0e70231d39d57ec674d9dbb",
+      "sampleCount": 5
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-4-regressed/report/report.json",
+      "sha256": "d45e4fd8c4aff8250a946f8e6945664ecb4eac6efb6f8b4bc09f6fe2b9ea3e72",
+      "sampleCount": 0
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-5-baseline/report/report.json",
+      "sha256": "9a11c7264ab493cb20d80d18648c1cec2dfc56b6ae42a27cf5557301f8a0af82",
+      "sampleCount": 9
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-5-regressed/report/report.json",
+      "sha256": "21990cb6eea60a7c85f22802167c5ff27a9f26d2de0b2388a0712947cb4962ef",
+      "sampleCount": 1
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-6-baseline/report/report.json",
+      "sha256": "9f6daf4b27e7fba480a48993bc129ac53a6231416d8d6ed63fdfd508d5e69169",
+      "sampleCount": 6
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/contention-6-regressed/report/report.json",
+      "sha256": "9648a00767158b01ee7ba1d5d4f597915938a96c628f18e3590ba8795aaa7a3f",
+      "sampleCount": 5
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-0-baseline/report/report.json",
+      "sha256": "56b95fc8f64785d80104d2fd134ebd463fca859aa606c8a5b7d7dc1d573bf068",
+      "sampleCount": 151
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-0-regressed/report/report.json",
+      "sha256": "3213d86f34b84d3d798965fac7c5dd4b2bc1ecdd18fdd792d5dff53e1f84db89",
+      "sampleCount": 175
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-1-baseline/report/report.json",
+      "sha256": "c90bf3034aee229fa0d7c1f0dbbc4f61e7c7d43c367406def295da12d96ae1e2",
+      "sampleCount": 219
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-1-regressed/report/report.json",
+      "sha256": "a1a336768135b67dafd00599b45ca6b86d5adeb69aacea5aad59a46a7b04d5a6",
+      "sampleCount": 222
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-2-baseline/report/report.json",
+      "sha256": "934378a9e702192ee314a39f0d6f33cbd7b7a38ce00c50a913aeccbb9479387f",
+      "sampleCount": 139
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-2-regressed/report/report.json",
+      "sha256": "37a25472d470e3922db713c92caaf88afb872d4dba3384d340beb0b6a42d0767",
+      "sampleCount": 74
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-3-baseline/report/report.json",
+      "sha256": "3af29fd2020ea2c2279171ab1dec9cf3e6454cc64296fa65094f3382130381a3",
+      "sampleCount": 66
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-3-regressed/report/report.json",
+      "sha256": "dedbc1a43e134a06c7365536da9a2521c21a20f4a2c90ccf2e2b2cd4f4f84fd8",
+      "sampleCount": 182
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-4-baseline/report/report.json",
+      "sha256": "9b2fe670771b7d76790ea15e1c4cbff8883f287f01fd232d080cfbf694c1a8a0",
+      "sampleCount": 156
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-4-regressed/report/report.json",
+      "sha256": "1e2f1947fd29d9dce9318a2677b7afe08dacc03bc86f434e0e3db5f682753b76",
+      "sampleCount": 140
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-5-baseline/report/report.json",
+      "sha256": "c08fc85ab66e8b4db9113ec6f78a4833d4d534cda2a4d08bfd11d51791e2d8b8",
+      "sampleCount": 95
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-5-regressed/report/report.json",
+      "sha256": "aa776c6c26651d0e3ef44d74ccb3496f18b07a08b6afb1bd4e8b455c4801233e",
+      "sampleCount": 106
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-6-baseline/report/report.json",
+      "sha256": "b05b22dfa6f0dd4de548fc42fb9531dd81d2f07d388ca2f5bb02cb5ec8df9b9b",
+      "sampleCount": 146
+    },
+    {
+      "path": "projects/08-backtrace/target/regression-trials/cpu-6-regressed/report/report.json",
+      "sha256": "d48c23f042583d7d3043ba8e04130460cf2636251bfe6e33f8088d02230c467e",
+      "sampleCount": 136
+    },
+    {
+      "path": ".work/A08/final-observer-stress-6/observer/report.json",
+      "sha256": "bf9fdfefc2c63e59977ad650b860c8080de0ffa846eb5aa8e85c4d0bb125af0b",
+      "sampleCount": 150218
+    },
+    {
+      "path": ".work/A08/final-observer-stress-6/replayed-report/report.json",
+      "sha256": "a99bda6f20e7d56a0cadd864feff59078940f3dc51b5591d5110a56ece000f89",
+      "sampleCount": 16203
+    }
+  ],
+  "scope": "8final8 demo reports plus42cause-study and2archived stress reports. Collection-equivalent older reports retain their original presentation wording."
+}

@@ -1,5 +1,0 @@
-Oct 18, 2026 4:16:16 AM org.apache.lucene.internal.vectorization.VectorizationProvider lookup
-WARNING: Java vector incubator module is not readable. For optimal vector performance, pass '--add-modules jdk.incubator.vector' to enable Vector API.
-{"run":0,"requests":900,"offeredRps":30,"completedRps":30.031272741531648,"errors":0,"p50Ms":0.443015,"p95Ms":4.727653,"p99Ms":7.199465,"gcMillis":5,"processCpuNanos":3830000000,"threadAllocatedBytes":164609000,"allocationSupported":true,"queuePeak":1,"durationNanos":29968759824}
-{"run":1,"requests":900,"offeredRps":30,"completedRps":30.031467262703092,"errors":0,"p50Ms":0.407162,"p95Ms":6.977346,"p99Ms":11.408312,"gcMillis":0,"processCpuNanos":3500000000,"threadAllocatedBytes":194448912,"allocationSupported":true,"queuePeak":2,"durationNanos":29968565709}
-{"run":2,"requests":900,"offeredRps":30,"completedRps":30.031828620914574,"errors":0,"p50Ms":0.378412,"p95Ms":2.607306,"p99Ms":5.040925,"gcMillis":0,"processCpuNanos":1240000000,"threadAllocatedBytes":194051600,"allocationSupported":true,"queuePeak":1,"durationNanos":29968205112}

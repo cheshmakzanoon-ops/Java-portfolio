@@ -3,18 +3,18 @@
   "sourceRevision": "2094ae847f4b04f3289ede0b260b4b5719e340bf",
   "workingTreeNote": "Each service uses its owner-verified current application artifacts; root SHA alone does not identify uncommitted source. Linked project envelopes contain exact source identities.",
   "projectEvidence": [
-    "projects/01-clearledger/evidence/integration-current.json",
-    "projects/04-pulsestream/docs/STATUS.md"
+    "projects/01-daybook/evidence/integration-current.json",
+    "projects/04-latearrival/docs/STATUS.md"
   ],
   "responses": {
-    "clearledger": {
+    "daybook": {
       "url": "http://127.0.0.1:18100/health",
       "status": 200,
       "body": {
         "status": "UP"
       }
     },
-    "pulsestream": {
+    "latearrival": {
       "url": "http://127.0.0.1:18400/health",
       "status": 200,
       "body": {
@@ -33,8 +33,8 @@
   },
   "containers": [
     {
-      "name": "java-portfolio-clearledger-postgres-1",
-      "project": "java-portfolio-clearledger",
+      "name": "java-portfolio-daybook-postgres-1",
+      "project": "java-portfolio-daybook",
       "image": "postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7",
       "ports": {
         "5432/tcp": [
@@ -47,8 +47,8 @@
       "running": true
     },
     {
-      "name": "java-portfolio-pulsestream-postgres-1",
-      "project": "java-portfolio-pulsestream",
+      "name": "java-portfolio-latearrival-postgres-1",
+      "project": "java-portfolio-latearrival",
       "image": "postgres:18.3-alpine",
       "ports": {
         "5432/tcp": [
@@ -61,8 +61,8 @@
       "running": true
     },
     {
-      "name": "java-portfolio-pulsestream-kafka-1",
-      "project": "java-portfolio-pulsestream",
+      "name": "java-portfolio-latearrival-kafka-1",
+      "project": "java-portfolio-latearrival",
       "image": "apache/kafka:4.2.1",
       "ports": {
         "19092/tcp": [
@@ -80,6 +80,6 @@
   "limitations": [
     "No shared database, application port or broker namespace.",
     "Clean-checkout demo/release checks remain separate.",
-    "PulseStream owner found Kafka volume path configuration still requires correction and recreation validation; this coexistence result does not certify that recovery path."
+    "LateArrival owner found Kafka volume path configuration still requires correction and recreation validation; this coexistence result does not certify that recovery path."
   ]
 }

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "project": "faultline",
+  "status": "PASS",
+  "sourceRevision": "working-tree-sha256:a6055cdfb18245240a3341c4a712c256e5502541dcdb85523e662423d7edf09c",
+  "timestampUtc": "2026-10-18T03:43:36.737714+00:00",
+  "command": "bash scripts/portfolio.sh {reset-demo,up,demo,demo,down} faultline (separate actual subprocesses)",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 12,
+    "failed": 0,
+    "scope": "Six explicit Python assertions per actual demo, two demos; shell also checked four expected scanner exits per demo."
+  },
+  "observedScanExitCodesPerDemo": [
+    1,
+    0,
+    3,
+    0
+  ],
+  "operations": [
+    {
+      "operation": "reset-demo",
+      "exitCode": 0,
+      "elapsedSeconds": 0.1849940529991727,
+      "rawLog": ".work/coordinator/faultline-current-demo/0-reset-demo.log"
+    },
+    {
+      "operation": "up",
+      "exitCode": 0,
+      "elapsedSeconds": 0.1537359310004831,
+      "rawLog": ".work/coordinator/faultline-current-demo/1-up.log"
+    },
+    {
+      "operation": "demo",
+      "exitCode": 0,
+      "elapsedSeconds": 4.243307700000514,
+      "rawLog": ".work/coordinator/faultline-current-demo/2-demo.log"
+    },
+    {
+      "operation": "demo",
+      "exitCode": 0,
+      "elapsedSeconds": 4.972492430000784,
+      "rawLog": ".work/coordinator/faultline-current-demo/3-demo.log"
+    },
+    {
+      "operation": "down",
+      "exitCode": 0,
+      "elapsedSeconds": 0.18718133100082923,
+      "rawLog": ".work/coordinator/faultline-current-demo/4-down.log"
+    }
+  ],
+  "scenarios": {
+    "positive": {
+      "findings": 1,
+      "partial": false,
+      "unfinishedFrontier": []
+    },
+    "corrected": {
+      "findings": 0,
+      "partial": false,
+      "unfinishedFrontier": []
+    },
+    "partial": {
+      "findings": 0,
+      "partial": true,
+      "unfinishedFrontier": [
+        "parser:Demo.class"
+      ]
+    },
+    "baseline": {
+      "findings": 1,
+      "partial": false,
+      "unfinishedFrontier": [],
+      "baselineState": "unchanged"
+    }
+  },
+  "cache": "Both current demos used the exact verified source/artifact cache; each asserted scan exits1/0/3/0. Historical miss/invalidation controls retained separately.",
+  "packagedArtifactSha256": "390a7a39ef6041fdcbc347b5a0be437eead09a9feb0bb2277b11951a6783db93",
+  "limitations": [
+    "Local current-artifact entrypoint validation; repository-wide clean-checkout verification remains separate."
+  ]
+}

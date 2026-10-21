@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "project": "faultline",
+  "status": "CHECKS_PASSED_EXIT_DISCREPANCY",
+  "timestampUtc": "2026-10-18T01:57:47.517319+00:00",
+  "sourceRevision": "working-tree-sha256:ab3bcced780387c1bd7407968fa9a0473295b48ffaa075c1df1d28d6a337f10a",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/09-faultline/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A09/m2 -B -ntp -Pintegration,mutation verify",
+  "exitCode": 1,
+  "suites": [
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.faultline.EngineTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.EngineTest.xml",
+      "reportSha256": "082c821697a38d31193e14403e81ba68745bbdc15e9246a372a3027e34d9e838"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.faultline.LatticePropertiesTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.LatticePropertiesTest.xml",
+      "reportSha256": "f554f9dd7f2666efcdd78d84ae42c4b2740efe4d63e5955548f993c61e78237f"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.faultline.OpcodeTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/09-faultline/analysis-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.OpcodeTest.xml",
+      "reportSha256": "3081176e68066ca9d5bf662430979e680ed43e889b4dbaa89cf397081a692776"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.faultline.evaluation.BoundaryTest",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/09-faultline/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.BoundaryTest.xml",
+      "reportSha256": "e5cb387532940e46c676f681ad4dd3f41bb70c843561fd4dd157b7badcfafa6f"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.faultline.evaluation.CorpusTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/09-faultline/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.CorpusTest.xml",
+      "reportSha256": "786240926fb098a40b60570d44e382be3c78bc253b1ae02a1282a32ee4b057f0"
+    },
+    {
+      "class": "io.github.cheshmakzanoon.portfolio.faultline.evaluation.CliProcessIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/09-faultline/evaluation/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.faultline.evaluation.CliProcessIT.xml",
+      "reportSha256": "2d71970ef7d85f6fec374ec0d8c056bc327c1a66ae440130998a18e575d88166"
+    }
+  ],
+  "testCount": 59,
+  "packagedArtifactSha256": "a338bbe9f0a8b2e9e57d442044ab991ba204d72c16f2a1b8262245752764b891",
+  "environment": {
+    "jdk": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+    "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+    "junitEffectiveVersion": [
+      "6.1.3"
+    ],
+    "cpuQuota": "400000 100000",
+    "memoryMax": "34359738368",
+    "os": "Linux 6.18.55 x86_64 GNU/Linux"
+  },
+  "rawArtifact": ".work/A09/release-final.log",
+  "limitations": [
+    "Verification covers the declared bounded model; full benchmark and asserted script demo are separate release gates.",
+    "Weak mutable heap aliases can contaminate reused helper callers; independently observed false-positive control is preserved.",
+    "Combined outer tool-session return1 is unexplained and retained; no claim that combined command returned0. Actual ordinary verification/demo later returned0 on unchanged source."
+  ],
+  "reactorReportedBuildSuccess": true,
+  "outerCommandStatus": "Tool session reported1 despite clean reactor success; launcher return under investigation. No final gate claim until resolved.",
+  "currentDemoPackagedArtifactSha256": "a338bbe9f0a8b2e9e57d442044ab991ba204d72c16f2a1b8262245752764b891",
+  "subsequentActualEntrypoint": {
+    "command": "projects/09-faultline/scripts/demo.sh",
+    "exitCode": 0,
+    "cacheMissOrdinaryVerify": "BUILD SUCCESS then all scanner assertions; script set-e would stop on failed Maven command",
+    "cacheReuseExitCode": 0,
+    "rawArtifact": ".work/A09/demo.log"
+  }
+}

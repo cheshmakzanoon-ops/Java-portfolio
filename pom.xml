@@ -7,16 +7,16 @@
   <packaging>pom</packaging>
   <name>Java Engineering Portfolio</name>
   <modules>
-    <module>projects/01-clearledger</module>
-    <module>projects/02-durableflow</module>
-    <module>projects/03-quorumkv</module>
-    <module>projects/04-pulsestream</module>
-    <module>projects/05-tenantshield</module>
-    <module>projects/06-matchcore</module>
-    <module>projects/07-indexforge</module>
-    <module>projects/08-threadlens</module>
-    <module>projects/09-byteguard</module>
-    <module>projects/10-routeweaver</module>
+    <module>projects/01-daybook</module>
+    <module>projects/02-handoff</module>
+    <module>projects/03-majority</module>
+    <module>projects/04-latearrival</module>
+    <module>projects/05-gatehouse</module>
+    <module>projects/06-thepit</module>
+    <module>projects/07-stacks</module>
+    <module>projects/08-backtrace</module>
+    <module>projects/09-faultline</module>
+    <module>projects/10-switchback</module>
   </modules>
   <properties>
     <maven.compiler.release>25</maven.compiler.release>

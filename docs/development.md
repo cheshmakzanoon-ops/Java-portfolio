@@ -22,9 +22,9 @@ GitHub Actions uses `.github/actions/setup-toolchain` and the same checksum-pinn
 Run commands from the repository root. For example:
 
 ```bash
-./scripts/portfolio.sh verify matchcore
-./scripts/portfolio.sh integration matchcore
-./scripts/portfolio.sh mutation matchcore
+./scripts/portfolio.sh verify thepit
+./scripts/portfolio.sh integration thepit
+./scripts/portfolio.sh mutation thepit
 ```
 
 The ordinary gate compiles the project, runs unit/property/architecture tests, generates coverage reports, and checks formatting. The integration profile adds Failsafe `*IT` tests; a missing required dependency must fail visibly. Mutation testing is a separate, more expensive check of selected core behavior. Each selected module must independently meet its declared threshold, with a repository minimum of 70%; a strong module cannot mask a weak one. Only `KILLED` is a confirmed kill. Survivors, uncovered mutations and timeouts stay in the denominator; runner and memory errors fail verification. The launcher's report checks reject empty, failed, skipped, malformed or stale test runs. Reports must contain test cases whose outcomes agree with the suite counters. Every selected module containing conventionally named tests needs a fresh report; each integration module needs fresh Failsafe execution. The cutoff records fractional Unix time before Maven starts. A report left by an earlier run cannot certify a module that Maven did not execute.
@@ -32,8 +32,8 @@ The ordinary gate compiles the project, runs unit/property/architecture tests, g
 To use a separate Maven cache or run a project directly:
 
 ```bash
-./mvnw -f projects/06-matchcore/pom.xml \
-  -Dmaven.repo.local="$PWD/.work/matchcore/m2" -B -ntp verify
+./mvnw -f projects/06-thepit/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/thepit/m2" -B -ntp verify
 ```
 
 Use a distinct cache for concurrent builds that install mutable project artifacts. The Linux wrapper limits the shared host to three builds through a FIFO lock queue; always invoke the wrapper so nested builds retain their slot. Limit application Docker stacks to two. Measurements require a quiet host and the project's declared performance protocol.
@@ -41,16 +41,16 @@ Use a distinct cache for concurrent builds that install mutable project artifact
 Format only the changed project:
 
 ```bash
-./mvnw -f projects/06-matchcore/pom.xml -B -ntp \
+./mvnw -f projects/06-thepit/pom.xml -B -ntp \
   com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply
 ```
 
 ## Services and local data
 
 ```bash
-./scripts/portfolio.sh up clearledger
-./scripts/portfolio.sh demo clearledger
-./scripts/portfolio.sh down clearledger
+./scripts/portfolio.sh up daybook
+./scripts/portfolio.sh demo daybook
+./scripts/portfolio.sh down daybook
 ```
 
 Read the selected project's operations and security guides before startup. Demo credentials, trusted-local modes, and synthetic fixtures are development conveniences. They are unsuitable for deployment. `reset-demo` is project-specific and destructive to the selected demo state; inspect its contract before use. CLI-first projects may prepare local state without starting a background service.
@@ -64,7 +64,7 @@ python3 -m unittest discover -s scripts -p 'test_*.py' -v
 python3 scripts/check-links.py
 python3 scripts/check-architecture.py
 # After the selected project has been compiled:
-python3 scripts/check-architecture.py --bytecode matchcore
+python3 scripts/check-architecture.py --bytecode thepit
 python3 scripts/container-images.py
 ```
 

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "project": "daybook",
+  "recordedAtUtc": "2026-10-18T02:21:59.269028+00:00",
+  "status": "FAILED_DIAGNOSTIC_SMOKE",
+  "command": "projects/01-daybook/scripts/benchmark.sh 1000 1",
+  "exitCode": 1,
+  "sourceRevision": "working-tree:45eba96c48181722c967b44badb2ca258e55773a995bc8ca3726d1dc7e02af29",
+  "sourceCommit": "c4d0d6713b0bfff060f8bfba6553f8ff143f6bd3",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "workload": {
+    "seed": 20261017,
+    "inputGroups": 1000,
+    "writerSequence": [
+      1,
+      8,
+      32
+    ],
+    "rounds": 1
+  },
+  "observations": {
+    "writer1": {
+      "status": "PASS",
+      "completedInputGroups": 1000,
+      "assertions": {
+        "journalBalance": "PASS",
+        "duplicateReceipts": "PASS",
+        "shadowReplay": "PASS",
+        "referenceBalances": "PASS"
+      },
+      "independentSql": {
+        "journals": 1001,
+        "receipts": 1001,
+        "outboxEvents": 1001,
+        "pendingAfterReplay": 0,
+        "tenantsTouched": 20,
+        "accountsTouched": 1060
+      }
+    },
+    "writer8": {
+      "status": "FAIL",
+      "processExitCode": 1,
+      "cause": "Actual PostgreSQL40001 serialization failure during full reversal exhausted the unchanged 12-attempt transaction budget; returned temporary DATABASE_REJECTED escaped the original driver.",
+      "partialCommittedJournalCount": null,
+      "partialCommittedCountLimitation": "Not independently queried before stack teardown; no zero or full completion claim."
+    },
+    "writer32": {
+      "status": "NOT_RUN"
+    }
+  },
+  "rawArtifacts": ".work/A01/system-smoke-first-failed",
+  "rawConsole": ".work/A01/system-smoke.log",
+  "correctionScope": "Proposed driver-only bounded same-key temporary retries, inclusive logical-operation latency and separate temporary/additional-call/exhaustion counters; production transaction retry budget unchanged.",
+  "limitations": [
+    "Shared-host functional smoke, not quiet-host capacity evidence.",
+    "Retry correction was made after this preserved failure and requires separate verification and rerun.",
+    "Subsequent pool-closed warnings followed failed-future cleanup and are not the primary SQL root cause."
+  ],
+  "originalDriverSource": {
+    "path": ".work/A01/system-smoke-first-failed/Workload.java",
+    "sha256": "346865199f0368267222f32f63c3745829b0cc73908cecc6c7a968083df56fd6",
+    "verifiedAgainst": "preserved environment source manifest; exact byte identity, not a claimed historical commit checkout"
+  }
+}

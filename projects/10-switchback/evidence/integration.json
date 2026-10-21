@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "project": "switchback",
+  "sourceRevision": "working-tree-sha256:d5964723baa5e51619d4d85316f02ae3ccc370726ad7eb3b41617a200ced88d0",
+  "sourceHashScope": "sorted project-relative runtime Java/POM/XML/properties/SQL/HTML/shell/YAML/Python path+bytes plus root POM; excludes target/.runtime and Markdown/JSON documentation/evidence",
+  "rootPomSha256": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+  "completedAtUtc": "2026-10-18T02:50:25Z",
+  "recordedAtUtc": "2026-10-18T02:50:36.350002+00:00",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/10-switchback/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A10/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation,benchmarks verify",
+  "exitCode": 0,
+  "testMethods": 54,
+  "ordinaryMethods": 40,
+  "postgresqlMethods": 14,
+  "propertyChecks": 40,
+  "completeOracleLeaves": 95901,
+  "effectiveJUnit": "6.1.3",
+  "testSuites": [
+    {
+      "module": "switchback-domain",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "kind": "ordinary",
+      "report": "switchback-domain/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.ModelTest.xml",
+      "reportSha256": "ad2be84a8bccffd41da60c0da446828bac95e11c824fc329a1fa7cd5f5df58e4",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-planning",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "kind": "ordinary",
+      "report": "switchback-planning/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.PlanningTest.xml",
+      "reportSha256": "d7f8a67360f17ee292af6f6ab775741f67a4a8b2a80c339f65dc08aa30f130cb",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.CancellationPollTest",
+      "kind": "ordinary",
+      "report": "switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.CancellationPollTest.xml",
+      "reportSha256": "8940c44f044edc27b1973b0cd7a76aa965c732fef326ba7d876ebe7f28ced0bb",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.HttpInputTest",
+      "kind": "ordinary",
+      "report": "switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.HttpInputTest.xml",
+      "reportSha256": "1b7c305e5bf677d5d7989a3b0996216e337c7b2f43ed69fb0594800b3b5b9a64",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.OidcTest",
+      "kind": "ordinary",
+      "report": "switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.OidcTest.xml",
+      "reportSha256": "41663603470e581fd4ee528fdad2d1cc1d95bdaa320baa4c30af078262a6bd9d",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "kind": "ordinary",
+      "report": "switchback-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.SecurityTest.xml",
+      "reportSha256": "9c7e7a52d2c88521a95dbb171042d24d1576ca290d711133648c37a6f8b64738",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-service",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "kind": "postgresql",
+      "report": "switchback-service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.PostgresIT.xml",
+      "reportSha256": "7d804bced38ca61ddb5104e7afb0d695851ebe44bc8b21be41035a7df480baec",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest",
+      "kind": "ordinary",
+      "report": "switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest.xml",
+      "reportSha256": "241e877bfce438a196736ee3dc03f101113e88fa43d4c9639de084a8d6c1d7b5",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest",
+      "kind": "ordinary",
+      "report": "switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest.xml",
+      "reportSha256": "9cd7cbd5b5be10b6d89904d31fbdd8db10c462b18e6f78b8774aa0e2962b1ad4",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "module": "switchback-verification",
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "kind": "ordinary",
+      "report": "switchback-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.switchback.VerificationTest.xml",
+      "reportSha256": "f2d7928b84d02a1ba21a91a7f9ec4ced21d22c5014c4dfb3b7901054583b99c7",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "executedMethods": [
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "lexicographicScoreAndExplicitDispatchability"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "rejectsResidualInconsistencyAndCompletedOverlap"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "canonicalIdentityAndDeepImmutability"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "problemIdsAreAddressableSingleSegments"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "timeZonesAmbiguousNonexistentAndCrossMidnight"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "residualHistoryIdentityAndCanonicalCacheRemainStable"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "method": "rejectsBoundsMalformedMatrixAndTime"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "cancellationDuringSolverStartupKeepsTerminationWatcherAlive"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "residualRevisionRejectsUnsupportedObservationsAndPreservesFrozenCargo"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "crossVehicleMovesAndCancellationPreserveImmutableIncumbent"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "forgedSolverScoreCannotMakeInvalidCandidateReplaceIncumbent"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "returnBoundaryAndDirectedMoveExhaustion"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "skillsCapacityWindowsShiftAndReturn"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "structuralViolationsCannotMaskEachOtherAndReasonsDoNotOverclaim"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "sameConstraintsSeparateTimefoldScorer"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "objectiveAndIncumbentRetention"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "allVehiclesLoadAndReturnToDeclaredSharedDepotWhichNeedNotBeZero"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "validatedWaitingRouteCrossesServiceAreaMidnight"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "residualCargoFreezeAndStranded"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "analyticDirectedCostAndFullReversal"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "baselineMovesAndBoundedTimefold"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "method": "partitionDuplicateAndUnknown"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.CancellationPollTest",
+      "method": "hotLoopBoundsDatabaseReadsAndCancellationLatchesAtNextPoll"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.CancellationPollTest",
+      "method": "monotonicClockMayHaveNegativeOriginAndWrapAround"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.HttpInputTest",
+      "method": "authenticatedPostRejectsInvalidIdsAndScalarTypesWith400BeforePersistence"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.OidcTest",
+      "method": "realLocalOidcSignatureIssuerAudienceExpiryAndClaims"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "method": "malformedDuplicateAndTrailingJsonAreRejected"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "method": "integerUnitsRejectFractionalNullAndStringValuesAndTextRejectsNumbers"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "method": "jsonRoundtripUsesIntegerUnitsAndZone"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "method": "requiresExplicitExpSubAudienceAndTypedTenant"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "immutableSnapshotIdempotencyAndCrossTenant"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "cancelledExpiredLeaseRecoversTerminal"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "concurrentPublishHasOneWinnerAndStaleVersionRejected"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "realConcurrentCancelAndCompletionAlwaysSerializeToLegalTerminal"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "backupRestorePreservesImmutableInputsValidatedPlanAndDurableQueue"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "completionFirstMakesCancellationIdempotent"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "admissionBoundsAndQueuedCancellation"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "databaseRefusesMutationOfImmutableInputAndCandidateSnapshots"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "protectedHttpUsesLocalOidcAndBoundsRawChunkedBody"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "leaseRecoveryFencesExpiredWorkerAndStoresHistory"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "invalidCandidateNeverReplacesValidatedIncumbent"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "dispatcherFencesSourceMismatchAndResumesOnlyMatchingSourceWithoutMislabeledCandidates"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "cancellationSerializesBeforeCompletionAndIncumbentRetained"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PostgresIT",
+      "method": "completionAfterInputSupersededRemainsHistorical"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest",
+      "method": "immutableDomainHasNoSolverOrFramework"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest",
+      "method": "projectsRemainIndependent"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest",
+      "method": "independentlyValidatedHeuristicNeverBeatsCompletedOracle"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest",
+      "method": "generatedSingleConstraintMutationsAreRejected"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "method": "exhaustedOracleCanProveNoDispatchableCandidateAndInterruptedCannot"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "method": "jmhFixturesExerciseCompleteFeasibleRoutesAtEveryCorpusSize"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "method": "maximumBoundExhaustsAll95901AssignmentsAndPermutations"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "method": "analyticOracleCostAndZeroCapacity"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "method": "completeOracleIncludesUnassignedAssignmentsAndEmptyRoutes"
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "method": "breakdownKeepsCompletedCargoAndUrgentAtDepot"
+    }
+  ],
+  "coreCoverage": {
+    "switchback-domain": {
+      "BRANCH": {
+        "covered": 121,
+        "missed": 1
+      },
+      "LINE": {
+        "covered": 227,
+        "missed": 6
+      }
+    },
+    "switchback-planning": {
+      "BRANCH": {
+        "covered": 297,
+        "missed": 39
+      },
+      "LINE": {
+        "covered": 507,
+        "missed": 16
+      }
+    }
+  },
+  "mutation": {
+    "target": "io.github.cheshmakzanoon.portfolio.switchback.Validator*",
+    "generated": 82,
+    "statusCounts": {
+      "KILLED": 82
+    },
+    "strictKillPercent": 100,
+    "thresholdPercent": 70,
+    "xml": "switchback-planning/target/pit-reports/mutations.xml",
+    "html": "switchback-planning/target/pit-reports/index.html",
+    "xmlSha256": "f7e8175c74d307d2bfa2f85ba9f3495b463c160cd194aa4a67d60fa0ae5bc5cb",
+    "preservedCopy": ".work/A10/pit-source-compatibility"
+  },
+  "rawLog": ".work/A10/source-compatibility-integration.log",
+  "preservedReports": ".work/A10/source-compatibility-reports",
+  "sourceManifest": {
+    "root-pom.xml": "3743d1ba382977b3f8d8609e1191190f220cdf272a5338d538869f96a7b7230d",
+    "infra/compose.yaml": "b3d22d2790175094ec27a1697610cff776f189d54e3cf4d5345597e5b9e5318f",
+    "pom.xml": "15ae65c6928d8990e1176776f0f28f3e2449ec7df4ba76b0c8cf6037a988981e",
+    "switchback-domain/pom.xml": "8202e65e03311bf0503264e688b442adcf3ccfea601108c88e687f5d806c4935",
+    "switchback-domain/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Model.java": "8e125539a3eb0b3596e5a25aea9bea1f43b2a95c72c847a6910f7b313e94be6b",
+    "switchback-domain/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/ModelTest.java": "c14f6f4b807ce8e39cd20a2ffcf22e5a082a95898cc2a3ffe398f970a4c4baba",
+    "switchback-planning/pom.xml": "77b2f735aa3bcff87c3d5a940700d6d95078bfbf1550d019d802d23e4cbd60d9",
+    "switchback-planning/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Heuristics.java": "f0f0cab88497c0a5383680efddb574137b1f0ae2603470fa5cc44f18aff73960",
+    "switchback-planning/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Replanner.java": "964b7fa03597c167aa9fe090035fa51ded14c6963a7ac84788bd0f61fd592246",
+    "switchback-planning/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/TimefoldAdapter.java": "f272b3cbe51961a2e225e3adf065494dc80188f20958fb0b764e15c36c92a69d",
+    "switchback-planning/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Validator.java": "8b4b96262cc991247a7bec48997e84fc3a6ee822dc2d1ce8334cfcd370e6cd2b",
+    "switchback-planning/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/PlanningTest.java": "da499e1053075efdb1624650264140e6815b8898ba11f79526ef894ec8f446e2",
+    "switchback-service/pom.xml": "626025fe55d06790f6e65cb409a077f24f4f6b54b0f06655acaea91fc580fda2",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Api.java": "33270838d6a8493f2009aa0eaf65556203acdb7a194f0ff0b15f17e70fec8794",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/CancellationPoll.java": "56557dca551171302083210f0a85fb91eec1c68d8c36bddeabedb9a324ad9d78",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Dispatcher.java": "26ff3e44adb5b1facca92324f0948089db7f4fa78685b999ea1c3c475b9c9da1",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Json.java": "d455c2673c13feda5492828707464a9978544a884632179ff02a12ecc6cccf87",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/SwitchbackApplication.java": "718e496ae85483d7719d1a744a0f0de8739d6e2d4f906dbad749af7979f0c197",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Security.java": "30bd119a9858b24365b2810a08e7cc9bbf7d9216b804cc82cf1259182a25f529",
+    "switchback-service/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Store.java": "747b247c6374ea024ce8202dc964bb3265977075e98bde5c2e956e3907ee4d45",
+    "switchback-service/src/main/resources/application.properties": "4ae2bbb24e51aed3f2cf74b4795749ce8a945bdc9a8f96d4ce4d8605a2c5098d",
+    "switchback-service/src/main/resources/schema.sql": "dd15aced70348469d0fbc62ff8ad68f6b7284abd67091e34d9ec338f0ea0da1c",
+    "switchback-service/src/main/resources/static/index.html": "59f2e24c7d8fec73c04e30109c08cfb800640a8be9f8881e1a299ec61635c1be",
+    "switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/CancellationPollTest.java": "365115ef37c2dbc6eb6d8e477e776f1620031aa107481064328163c8c073b097",
+    "switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/HttpInputTest.java": "bedc4afcba350f66ffc2323dbfffbf703234b47909f40da62e7597474c0b9809",
+    "switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/LocalIssuer.java": "ddfb1397979b7e9c26a84039456e0a32d38ba8cc068606b35cf758ec18e61b2f",
+    "switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/OidcTest.java": "cf9b35df9fb311ed69f69c5466aa7d2a4a3a4b17f815dd81f0df5070a6c895a5",
+    "switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/PostgresIT.java": "fb10f278b971cdcfd4b60a3caf712a929aa1b59aad3fff420c77e265e304000c",
+    "switchback-service/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/SecurityTest.java": "a66941409a24faa6d65e8a95c2ac7dd651d52aec980857bdee65ec2017cf3580",
+    "switchback-verification/pom.xml": "14d547327a10c35b1956d200131d18663b59f0da4e3cec78db30ec4206f0fd97",
+    "switchback-verification/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Driver.java": "a5ce2389e9ac21f3d7b1ba9901f0b3f8dfd0b0d3f4dee5fccb938c3b9cb09068",
+    "switchback-verification/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/ExactOracle.java": "583149e2a742c209c531386923e4441cc2849196863cd20629c868ea4945d7c3",
+    "switchback-verification/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/Fixtures.java": "9d5b1d40141db54daca5f765422bf7c3b15a82181c1856595607d9fd0a6f03e1",
+    "switchback-verification/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/PollingDiagnostic.java": "657fc23e7cdf8852b897ced996d55343cbe30cb39b95f534aec5bd05d75c85be",
+    "switchback-verification/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/ValidationBenchmark.java": "13b6681ac6b6a3936d636488e4b22900071957db1a4091728805870cc92e346f",
+    "switchback-verification/src/main/resources/logback.xml": "347cf5144dc34cd2b14c0c591764acca07bf0f5a2995fbbb3ebeffd4b1e1161a",
+    "switchback-verification/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/ArchitectureTest.java": "1d52f1047a4eab74621c513642e68068d59a9cc66520cedf5a832ce6d49053c0",
+    "switchback-verification/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/VerificationPropertiesTest.java": "cf111e04b8596bab5267e2820ae642937574b7c4b9f2bec433d33c8edd5d68e6",
+    "switchback-verification/src/test/java/io/github/cheshmakzanoon/portfolio/switchback/VerificationTest.java": "ca0bf6e83dbb458ab60fa39fa6fea0dcbb267068a0a504c142072c7e779ab5fc",
+    "scripts/benchmark.sh": "79f7f58de34acff2241ef65193cae5933c1c38d5298fb9900eb0d1e0e746e9fc",
+    "scripts/browser-check.py": "9232a6d7a871e15c45950867916b62249277489ca6a2f636883a26ca8dd5f7c5",
+    "scripts/build.sh": "a24d5a1a1adfd1e1742aebe77ca81685c239154e75da6088292d2f39ed05a6a8",
+    "scripts/common.sh": "a366f6a1c88d9004370604b0703f066876068a3fe9eedd5c55ee2f21ed974235",
+    "scripts/demo.sh": "b528aa3b4b093c97f54e0144cd00f7dbf3b342b14c44745872607d9ca2ffcc62",
+    "scripts/down.sh": "810d6951a09dba588736213e48a644ac8861caf820bb7c8910e80e8b5fd7b87f",
+    "scripts/poll-diagnostic.sh": "438a2c64fbd77772ac55c86a50ac88fd6a0a914dd788210840bb9c712f27426d",
+    "scripts/reset-demo.sh": "c79b2ed7479c11d92cffe12885527b7a0d6123b6cca8914bafd89c52829a7d0e",
+    "scripts/restart-check.sh": "9144d72d125c036a88bbb57162eda944c8c367c505e44f4bc8d46c8c55edb3b1",
+    "scripts/up.sh": "4587c13ecd2e04e8892ca7b64a7ff59b7313bb3b583d6230339606af319fd83d"
+  },
+  "sourceCompatibilityRegression": {
+    "expiredOldSource": "FAILED with unchanged independently valid historical incumbent, no new candidate; old fence cannot finish/publish",
+    "queuedOldSource": "FAILED without incumbent or trace",
+    "sameSourceRecovery": "COMPLETED at newer fence with valid nondegraded incumbent and new authoritative candidate",
+    "newSourceSubmission": "COMPLETED"
+  },
+  "historicalLiveEvidence": "live.json records actual first/repeat 60-job demos, Chromium and SIGKILL under source2aa7d7da; not relabeled to current binary",
+  "acceptance": {
+    "P10-A1": "PASS scoped bounded validator/oracle checks",
+    "P10-A2": "PASS baseline/Timefold/directed/residual/nondegradation checks",
+    "P10-A3": "PASS current real PostgreSQL recovery/fencing/source-compatibility; historical actual process SIGKILL preserved",
+    "P10-A4": "PASS historical real60-job6-vehicle demo; compact-UI final-browser preflight pending",
+    "P10-A5": "IN_PROGRESS quiet corpus/JMH and clean-checkout pending"
+  },
+  "unrun": [
+    "final-source compact-UI browser preflight",
+    "quiet10instance3runcorpus",
+    "quietJMHmeasurement",
+    "finalcleancheckout"
+  ],
+  "limitations": [
+    "bounded checks on a shared host are not universal proofs",
+    "no large-instance optimality or production claim",
+    "no accepted performance run yet"
+  ]
+}

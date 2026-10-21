@@ -1,0 +1,434 @@
+{
+  "recorded_at_utc": "2026-10-21T20:32:59.334964+00:00",
+  "repository_head_at_recording": "7b6cec4c72e843211e36f165ff6156328f8fe2c0",
+  "working_tree_evidence": true,
+  "source_identity": {
+    "file_count": 79,
+    "manifest": "source-manifest.sha256",
+    "sha256": "3db90b75a8f85a74f1ac5cfc88e3046e3269de94749703b55e828c0ab724d46b",
+    "scope": "Prior complete project Java/POM/resource/OpenAPI inputs and root build inputs, plus the new configured-chain test and activation/completeness/build-slot helpers."
+  },
+  "previous_evidence": {
+    "path": "projects/02-handoff/evidence/inspection-hardening-20261021/validation.json",
+    "sha256": "ad2d055f74316743d7ced0ed8620c69f459a52b8fc4827a660599dff0656c2c4",
+    "preserved_unchanged": true,
+    "source_manifest_sha256": "6378f58a7c2383825602dba7b41e684feef6d473eb2e0a7d0fff7c8e899bcae6"
+  },
+  "runtime": {
+    "java": "Temurin 25.0.4.1+1",
+    "maven": "3.10.0",
+    "postgresql": "18.6",
+    "database_mode": "Explicit native loopback PostgreSQL; unprivileged server process; unique owned schema per integration class. The pinned Testcontainers image remains the default when no native fixture is selected.",
+    "binary_provenance_receipt": "projects/02-handoff/evidence/inspection-hardening-20261021/validation.json"
+  },
+  "command": {
+    "invocation": "./mvnw -f projects/02-handoff/pom.xml -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+    "activation": "source scripts/cloud-env.sh; JAVA_HOME points to the task-installed Temurin 25 JDK and its bin directory is first on PATH",
+    "maven_repository": "default /root/.m2/repository; no repository override",
+    "database_selection": "HANDOFF_TEST_JDBC_URL selects the disposable loopback handoff_inspection database; test-only credentials are supplied through the environment and omitted from this receipt",
+    "started_at_utc": "2026-10-21T20:27:20.528004+00:00",
+    "finished_at_utc": "2026-10-21T20:28:21Z",
+    "exit_code": 0,
+    "log_sha256": "b9a97b6a564d600011154b5af0ac6b48b35832e45d7df0c2b627c913cdd39755",
+    "test_selection": "Complete ordinary and integration reactor; no test-selection filters or skip flags"
+  },
+  "ordinary": {
+    "report_count": 26,
+    "tests": 123,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reports": [
+      {
+        "path": "projects/02-handoff/workflow-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.BrowserCsrfTest.xml",
+        "sha256": "181ca4c80bc62e92edf9df5168499c1288734af4f9c28c5ad6a985868ca7efa4",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.ConfiguredCsrfTest.xml",
+        "sha256": "4707905a9f67d02daee409f9696b95d868a449ba3969a58fffa816f4cdd76892",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-api/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.RequestJsonTest.xml",
+        "sha256": "1cf8f7c0d50475630d538bba85ed231988a4555e43abe12edd020026b4e09ee8",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.InterpreterTest.xml",
+        "sha256": "c82323c65c25f68eb1dbfcfdcdcf1723ffbe74e239b7f91e90a2118b738db996",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.LegacyInterpreterV1Test.xml",
+        "sha256": "fdb360a076a1562d99a544ba4e8de475b3c2c3bd9f59a94a47772e2a049dc1ec",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.LegacyInterpreterV2Test.xml",
+        "sha256": "a57022fca6cdd30fcfa4e7ebfef9a90180e2244956d861f9b5f26e028ab68bc6",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.LegacyReplayPropertyTest.xml",
+        "sha256": "f657776d94d5fc1a824be377a4921e98a1da1fe722085f7a06327834380b308b",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.LegacyTypedReplayV2PropertyTest.xml",
+        "sha256": "a0c78490048c58dc5bcac964ea7e67d573461a456d7831a3b61acb322248c155",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.LegacyTypedReplayV2Test.xml",
+        "sha256": "8e0d1c62eea0a33619ba00e2436b5b7151dbf0f238727b1d47df4682f3b70cf2",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.ReplayPropertyTest.xml",
+        "sha256": "1fed4a3139fb9c0cf5b79355fa7312df6aad017c2cea2e06ee7eb3de5d569ecd",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-engine/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.TypedReplayTest.xml",
+        "sha256": "24c0e6cf7ceafc5eec5570322a64849373c081569eb6a4736f293cee1b3594f3",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.DataTest.xml",
+        "sha256": "59fdcd3a4059c80bf1359b472f9ee887264c7e85652a36c5f7f4b35f52a596f0",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.DefinitionTest.xml",
+        "sha256": "66a874b407e3ba55453ce3d8c756664f48a7b83acfe120564532c111409fa099",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-model/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.LegacyDefinitionV1Test.xml",
+        "sha256": "c815fc80ba3a84ff96cf60d1a353248faca755b848d34c580caeeb59fa134067",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.ActivityFailureTest.xml",
+        "sha256": "cef111f9763753d9640b7b38b318c8a5cdc0325e6cef7e39f738902135a02492",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.HistoryPageTest.xml",
+        "sha256": "2c344ebf7514cb4c066fa69f634bfdbe7f64ee5d8c163c5e908d8ea6790c45d5",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.JdbcTransactionsTest.xml",
+        "sha256": "df252cba10be8267d49a2676fac3ae9282b66a9334989f8fa205d61014e8b244",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.PersistenceFailureTest.xml",
+        "sha256": "30df16595049b1d379f34979c66762f8a7cdb979fcae3c0806fd68284a1c610c",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.WorkflowReplayTest.xml",
+        "sha256": "a61a6cb2eaa704781206906e04815028f5297027a725995eda905c80cbdd0ff8",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-persistence/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.WorkflowSqlTest.xml",
+        "sha256": "f81e492b08a12313db092161aa305e921335e40c63a189333bd5f3e499c27965",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.ArchitectureTest.xml",
+        "sha256": "c27dc9b3f5b03df3e8c3aaf0d93ad6a74ad9c3897f0cf5489e89322d0b2931bb",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.ContractTest.xml",
+        "sha256": "e97705e1699b567d03367cd8163115afa4358373a579d6a42c3f5e2fb01e5ea0",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.PostgresTestDatabaseTest.xml",
+        "sha256": "f1096b9a8fc37f57cdd7ab5d9f541eb6b9c5337c06584d507e0f68661cd21225",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-verification/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.PreparedBuildTest.xml",
+        "sha256": "962a88e94688a8c037e5076e3b79b4389bc4603874eef301ca217d01070e656d",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-worker-sdk/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.FakeProviderTest.xml",
+        "sha256": "a26b52165b4dbddaa7fddfc931d38ac37727b1469d97145f4424dc5e25a90d50",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-worker-sdk/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.ProviderClientTest.xml",
+        "sha256": "4e22dfa6d2668c9080222877cab8a80c3a9007da2c03f351e6c2baf779a42ed7",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "integration": {
+    "report_count": 3,
+    "tests": 33,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reports": [
+      {
+        "path": "projects/02-handoff/workflow-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.PostgresWorkflowIT.xml",
+        "sha256": "603f35a67da1794db560cdd30494091c12ddc8f389098471e1503be329b9c9a3",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.RuntimeRecoveryIT.xml",
+        "sha256": "4f4a43f185c21b3d743f2ed6accd5db7bdd2e72016c5065261bedb19f288807a",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "path": "projects/02-handoff/workflow-verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.handoff.WorkflowInspectionIT.xml",
+        "sha256": "87cd38cb74d9cd57be712bd1e139ff2d350365b78535e84f08e594fcf26d9425",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "completeness": {
+    "command": "PORTFOLIO_TEST_RUN_STARTED=<recorded invocation start> python3 scripts/check-tests.py projects/02-handoff integration",
+    "counts": {
+      "tests": 156,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "failures": [],
+    "output_sha256": "fd610d0468fd9984b4b42428f82513e7d22c4da9ddb9e01659471ab18779f2c2",
+    "modules": [
+      {
+        "module": "workflow-model",
+        "counts": {
+          "surefire": {
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "workflow-engine",
+        "counts": {
+          "surefire": {
+            "tests": 51,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "workflow-persistence",
+        "counts": {
+          "surefire": {
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "workflow-worker-sdk",
+        "counts": {
+          "surefire": {
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "workflow-api",
+        "counts": {
+          "surefire": {
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "workflow-verification",
+        "counts": {
+          "surefire": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 33,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ]
+  },
+  "counterexamples": [
+    {
+      "scope": "Configured security before the CSRF correction",
+      "tests": 7,
+      "failures": 4,
+      "errors": 0,
+      "skipped": 0,
+      "log_sha256": "ca6b9a7cdf527f10ab445d21cfd9cea29f57626af6effd18271d1c6c012e8b2a",
+      "observed": [
+        "Protected bearer plus parsed cookies reached the application fixture with 204 instead of CSRF 403.",
+        "Raw Cookie headers were ignored when servlet Cookie objects were absent.",
+        "An invalid CSRF token on a bearer/cookie request was not checked.",
+        "Development Basic plus a raw Cookie header reached the application fixture."
+      ],
+      "correction": "Restore the ambient-credential matcher on the assembled CsrfFilter, include raw Cookie headers, and write a bounded direct 403 problem response. Seven configured-chain regressions pass in the final ordinary run."
+    },
+    {
+      "scope": "First full PostgreSQL integration after the CSRF fix",
+      "ordinary_tests": 123,
+      "integration_tests": 33,
+      "integration_failures": 1,
+      "integration_errors": 0,
+      "integration_skipped": 0,
+      "log_sha256": "939550eee07603588530aacbbd9db22320ecce2699aacfa1a97b068980901857",
+      "failing_report_sha256": "9b21342289450d53680c65ee087120a37bf55bb50db2f542796bebdc46f4b165",
+      "source_identity": {
+        "manifest": "failed-integration-source-manifest.sha256",
+        "sha256": "e325f2e5d27365ffa829fb564258f3f6e6f44bab7e725a88806c6276c4980467",
+        "file_count": 75
+      },
+      "failures": [
+        {
+          "test": "schedulerStorageOutageRecoversAndTerminalStorageErrorsPropagate",
+          "message": "expected: <COMPLETED> but was: <WAITING>",
+          "type": "org.opentest4j.AssertionFailedError"
+        }
+      ],
+      "cause": "The scheduler test counted a beforeCommit callback as a visible committed outcome. Read-only inspection correctly returned the prior committed WAITING state before connection.commit completed.",
+      "correction": "Hold the timer transaction at the pre-commit boundary; assert committed WAITING and zero TIMER_FIRED while held; release the barrier, await committed COMPLETED with scheduler-health checks, and require exactly one timer event. Production scheduler behavior is unchanged."
+    }
+  ],
+  "compatibility_change": {
+    "path": "projects/02-handoff/workflow-verification/src/test/java/io/github/cheshmakzanoon/portfolio/handoff/PostgresTestDatabase.java",
+    "sha256": "579f80b748d77689ab3e24c91aa4569dba5894ae9dbfede2c2009a68f0238dde",
+    "description": "Inline the identical immutable PostgreSQL image digest at DockerImageName.parse so the existing static image-inventory parser can verify it. No image version, digest, fallback or test requirement changed."
+  },
+  "cleanup": {
+    "owned_schemas_remaining": 0,
+    "cleanup_log_sha256": "d1401d49124270fcf0e28b39e502f05e6af8c92f01ee386c36e1a6d9e90b34be",
+    "postgresql_stopped": true,
+    "stop_log_sha256": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d"
+  },
+  "limits": [
+    "This is local native PostgreSQL verification, not Docker/Alpine image execution or vulnerability certification.",
+    "No new mutation analysis was run for this CSRF adapter and integration-test follow-up. Earlier mutation results retain their original source and target scopes.",
+    "No workload/performance budget, hosted CI, deployment or repository-wide release certification follows from this receipt.",
+    "Source and report hashes identify the inputs and outputs inspected; raw reports remain under ignored target directories.",
+    "The earlier inspection receipt and original failing outcomes remain unchanged."
+  ],
+  "interrupted_attempt": {
+    "outcome": "Agent execution was interrupted before the formatting goal completed; this attempt is not counted as successful verification.",
+    "log_sha256": "00f25203a741f9738945f28febc44af448e5aece8efefee70ba9d04621bebe21",
+    "started_at_utc": "2026-10-21T20:22:27.866471+00:00"
+  }
+}

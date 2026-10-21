@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "classification": "qualified-assertion-scope-no-source-or-measurement-change",
+  "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "prior19Fingerprint": "44bbb7ccb2615d9fb78a4c08c92902602c8de039499e4e80faf71e5b424dea15",
+  "exactPrior19BytesPreservedAt": ".work/A04/postprocess-prep-quiet12/scope-qualification-20261018T082529Z/prior19",
+  "rawWordingPreserved": {
+    "workloadAssertion": "complete committed-state recovery digest",
+    "resultAssertionBoundary": "exact admitted count, exact duplicates, independent source watermark, full recovered state digest, all published window fields/row count, independent result digest",
+    "boundary": "These original source/output labels are broader than the implemented assertion. Immutable raw/source/copied JSON remains unchanged; the following scope explains the actual checks."
+  },
+  "recoveryStateDigest": {
+    "qualifiedName": "durable semantic-projection digest",
+    "source": "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/Workload.java:261",
+    "included": [
+      "watermark",
+      "duplicate count",
+      "source next offsets",
+      "partition maximum timestamps",
+      "sorted seen-ID/fingerprint map",
+      "sorted panes",
+      "nonfinal result records",
+      "sorted pending windows",
+      "sorted admitted keys"
+    ],
+    "excluded": [
+      "partition lastActivity and idle state, intentionally rebased on restart",
+      "run identity",
+      "limits",
+      "late counters",
+      "quarantine",
+      "outbox",
+      "finalized results"
+    ],
+    "meaning": "Within each run, equality verifies this selected semantic projection after SQL restore/source seek. It is not byte-for-byte equality of serialized snapshots or every committed field. Final SQL results are checked separately by the output oracle."
+  },
+  "publishedSqlOracle": {
+    "source": "projects/04-latearrival/verification/src/main/java/io/github/cheshmakzanoon/portfolio/latearrival/WorkloadOracle.java:80",
+    "independentlyChecked": [
+      "row count",
+      "tenant/sensor/window key",
+      "window end",
+      "count",
+      "sum",
+      "minimum",
+      "maximum",
+      "finality"
+    ],
+    "revisionCheck": "revision >= 1 only",
+    "notEstablished": "The full workload oracle does not independently derive exact revision numbers or the revision sequence. Revision is not part of its aggregate result digest.",
+    "meaning": "The actual source assertions and all6reported checks passed with these limits; no weaker test or relabeled measurement has been substituted."
+  },
+  "unchanged": [
+    "all product Java/scripts",
+    "runtime and build/classpath/JAR artifacts",
+    "quiet runner and READY receipts",
+    "all original raw files",
+    "all existing copied JSON result/environment/JMH/analysis/envelope/index files",
+    "original19file handoff and separate4file JFR addendum seal"
+  ],
+  "review": "Scope qualifications requested by A03 independent numerical/lineage review; pending wording closure."
+}

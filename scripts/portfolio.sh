@@ -5,7 +5,7 @@ cd "$root"
 if [[ -d /workspace/.tools/jdk-25 && -f "$root/.work/settings.xml" ]]; then source "$root/scripts/cloud-env.sh"; fi
 command=${1:-help}
 slug=${2:-}
-slugs=(clearledger durableflow quorumkv pulsestream tenantshield matchcore indexforge threadlens byteguard routeweaver)
+slugs=(daybook handoff majority latearrival gatehouse thepit stacks backtrace faultline switchback)
 resolve() {
   local i
   for i in "${!slugs[@]}"; do
@@ -15,13 +15,13 @@ resolve() {
 }
 verify_prepared_project() {
   case "$1" in
-    indexforge) bash "$(resolve "$1")/scripts/verify.sh" ;;
-    routeweaver)
+    stacks) bash "$(resolve "$1")/scripts/verify.sh" ;;
+    switchback)
       (
         source "$(resolve "$1")/scripts/common.sh"
         before=$(fingerprint)
         "$root/mvnw" -f "$project/pom.xml" -Dmaven.repo.local="$root/.work/build/m2" -B -ntp verify
-        [[ "$before" == "$(fingerprint)" ]] || { echo 'RouteWeaver inputs changed during verification' >&2; exit 1; }
+        [[ "$before" == "$(fingerprint)" ]] || { echo 'Switchback inputs changed during verification' >&2; exit 1; }
         printf '%s\n' "$before" > "$runtime/build-stamp"
       )
       ;;
@@ -39,7 +39,7 @@ case "$command" in
       echo "JDK 25 is required (java.specification.version=$java_spec; $javac_version)" >&2
       exit 1
     fi
-    if [[ $slug == matchcore || $slug == threadlens || $slug == byteguard ]]; then
+    if [[ $slug == thepit || $slug == backtrace || $slug == faultline ]]; then
       echo "Docker not required for $slug's CLI demonstration"
     elif command -v docker >/dev/null; then
       docker info --format '{{.ServerVersion}}'
@@ -50,7 +50,7 @@ case "$command" in
     ;;
   list)
     for slug in "${slugs[@]}"; do printf '%-14s %s\n' "$slug" "$(resolve "$slug")"; done
-    echo 'MatchCore, ThreadLens and ByteGuard are CLI-first; up prepares local state rather than starting a web server.'
+    echo 'ThePit, Backtrace and Faultline are CLI-first; up prepares local state rather than starting a web server.'
     ;;
   verify|integration|mutation)
     export PORTFOLIO_TEST_RUN_STARTED=$(python3 -c 'import time; print(time.time())')
@@ -62,13 +62,13 @@ case "$command" in
       if [[ $command == verify ]]; then
         # These projects create source-bound runtime receipts only after their
         # supported verification entrypoints complete successfully.
-        verify_prepared_project indexforge
-        verify_prepared_project routeweaver
+        verify_prepared_project stacks
+        verify_prepared_project switchback
       fi
       for selected in "${slugs[@]}"; do python3 "$root/scripts/check-tests.py" "$(resolve "$selected")" "$command"; if [[ $command == mutation ]]; then python3 "$root/scripts/check-mutations.py" "$(resolve "$selected")"; fi; done
     else
       path=$(resolve "$slug")
-      if [[ $command == verify && ( $slug == indexforge || $slug == routeweaver ) ]]; then
+      if [[ $command == verify && ( $slug == stacks || $slug == switchback ) ]]; then
         verify_prepared_project "$slug"
       else
         "$root/mvnw" -f "$path/pom.xml" -Dmaven.repo.local="$root/.work/build/m2" -B -ntp "${args[@]}" verify

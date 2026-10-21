@@ -1,0 +1,193 @@
+{
+  "observedAtUtc": "2026-10-20T08:43:52.550848+00:00",
+  "status": "PASS",
+  "sourceFingerprint": "working-tree-sha256:abace985d203db532fd82ce3311a6d044162843aec1c9a19ca4fe69453583e74",
+  "workflow": "./mvnw -f projects/05-gatehouse/pom.xml -B -ntp -Pintegration,mutation verify",
+  "results": {
+    "tests": 56,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ordinaryTests": 41,
+  "postgresKeycloakIntegrationTests": 15,
+  "suites": [
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.CompiledPoliciesTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.CompiledPoliciesTest.xml",
+      "sha256": "36fbc765280347884810515ca34c9f962b0545e6f5e052163ca1b8395c1d9db4"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.JsonConfigurationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.JsonConfigurationTest.xml",
+      "sha256": "a1c06075a866d535ff6d54224b2dfee73b4a73189c31d42904e585aa3c068c37"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.JwtSecurityTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.JwtSecurityTest.xml",
+      "sha256": "fcf970948f6819f196bff0ebd514dbd6e9e084b911574b569ff4d6eeb13fe7d5"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.PublicationPreconditionsTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.PublicationPreconditionsTest.xml",
+      "sha256": "3e9db60cfe1073ff8cc5a9dd6c93ee89bd791a5365055a99abd3bc535a3f6c12"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.RequestBoundsTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.RequestBoundsTest.xml",
+      "sha256": "c2a21b8ed65bff92a882475d8cc46c9b8a9753bc5519c59d481e8e81bfbd27da"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.SnapshotAuthorizationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.SnapshotAuthorizationTest.xml",
+      "sha256": "332a6b9dbfc1fc27b7a87ce98ccf9c003c14642668deea92f2c9cf076118acd4"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.TenantAdmissionTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/decision-service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.TenantAdmissionTest.xml",
+      "sha256": "22cb5035a37e06a4f466884b694fc03f0814c71a20636abc7ec03e47c0ef3ef5"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.DocumentAuthorizationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.DocumentAuthorizationTest.xml",
+      "sha256": "faa607bed63507de0177c1921f1b49e0412b1cce850fbbbeac8042b6d87d8d65"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.ProtectedClaimsTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/demo-resource-server/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.ProtectedClaimsTest.xml",
+      "sha256": "f49ab3ea88fae3647969e9729caf4271a5c4f0d145aae35bc405ceefc4daff89"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.ArchitectureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.ArchitectureTest.xml",
+      "sha256": "72c55254960e7c17d17014e62772a18d9cfc3a16f383029c1d35f08db1a825c3"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/policy-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest.xml",
+      "sha256": "81c1e5a318670b9bda5dac457d0d74f3c7c50584b6aaea98c4bafe2380e64b32"
+    },
+    {
+      "name": "io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "projects/05-gatehouse/verification/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.gatehouse.AuthorizationIT.xml",
+      "sha256": "f44cbc885cf44be9817cb271dd446025fb27ddd332b6544b0cfef6a5c036da5f"
+    }
+  ],
+  "policyCoreCoverage": {
+    "BRANCH": {
+      "covered": 292,
+      "missed": 17,
+      "ratio": 0.9449838187702265
+    },
+    "LINE": {
+      "covered": 379,
+      "missed": 5,
+      "ratio": 0.9869791666666666
+    }
+  },
+  "mutation": {
+    "targets": [
+      "PolicyEngine*",
+      "PolicyLanguage*"
+    ],
+    "generated": 276,
+    "statuses": {
+      "KILLED": 271,
+      "SURVIVED": 5
+    },
+    "thresholdPercent": 70,
+    "reportSha256": "5f70939d1113b4c4f6c2a4357f5964009333dcbeab829eea775867a1f51b99b0",
+    "survivors": [
+      {
+        "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyLanguage$Parser",
+        "method": "<init>",
+        "description": "changed conditional boundary"
+      },
+      {
+        "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyLanguage$Parser",
+        "method": "atom",
+        "description": "changed conditional boundary"
+      },
+      {
+        "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyLanguage$Parser",
+        "method": "atom",
+        "description": "Replaced integer subtraction with addition"
+      },
+      {
+        "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyLanguage$Parser",
+        "method": "expression",
+        "description": "removed call to io/github/cheshmakzanoon/portfolio/gatehouse/PolicyLanguage$Parser::checkDepth"
+      },
+      {
+        "class": "io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngine$Compiled",
+        "method": "hashCode",
+        "description": "replaced int return with 0 for io/github/cheshmakzanoon/portfolio/gatehouse/PolicyEngine$Compiled::hashCode"
+      }
+    ]
+  },
+  "processLifecycle": {
+    "tests": 6,
+    "failures": 0,
+    "skipped": 0,
+    "command": "python3 projects/05-gatehouse/scripts/test_process_lifecycle.py -v",
+    "logSha256": "2934b0be84ca095c11e7f1ac5d9bc9278a288cf927842bb8fd76a9f08ab8ae81"
+  },
+  "images": {
+    "postgres": "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873",
+    "keycloak": "quay.io/keycloak/keycloak:26.8.1@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"
+  },
+  "limits": [
+    "Fresh disposable PostgreSQL clusters; no glibc-to-musl raw volume upgrade is certified.",
+    "Mutation survivors remain visible; no exclusions or lowered gates.",
+    "No performance measurements were repeated; historical measurements retain their original identities.",
+    "Process adapter tests cover control wiring and real descendants, not a Docker daemon outage."
+  ]
+}

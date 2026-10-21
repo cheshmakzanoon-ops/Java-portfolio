@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "project": "latearrival",
+  "classification": "completed-prescribed-study-pending-final-review",
+  "sourceRevision": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "quietReservation": "quiet-reference-12-latearrival",
+  "started": "2026-10-18T07:08:40.257253+00:00",
+  "ended": "2026-10-18T08:09:12.025440+00:00",
+  "terminalStatus": "MEASUREMENTS_PASSED",
+  "exitCode": 0,
+  "teardown": {
+    "attempted": true,
+    "composeStopExitCode": 0,
+    "fallbackContainerIds": [],
+    "errors": [],
+    "success": true
+  },
+  "originalSummary": ".work/A04/quiet-runs/20261018T070840Z-405639/summary.json",
+  "originalSummarySha256": "67c122e3fc22f6ad3d219dbe9fc46a8027fad9b6bbe7b175c24490b6341bc493",
+  "runnerSha256": "3be9d084510d2156cb8d2c8d1cba1fda0628b807b6d529604e2a5a1da3a3baa8",
+  "readyReceiptSha256": "a6f41eecfdb8d1e96764a7d0c152b29ace9874b06953e5202e524e46c6fee0b9",
+  "originalEngineManifestSha256": "0815eee01b6a35130d3bac586e071ca9cf27ed79ce59e35f5f205e8253baffbb",
+  "completedMeasurementDirectories": [
+    ".work/A04/runtime/engine-baseline-1792307321405706",
+    ".work/A04/runtime/engine-1792307343406155",
+    ".work/A04/runtime/durable-full-1792307383408675",
+    ".work/A04/runtime/durable-full-1792308696512444",
+    ".work/A04/runtime/durable-full-1792309976615382"
+  ],
+  "rawFilesVerified": 25,
+  "rawBytesVerified": 70859616,
+  "rawIndex": "raw-index.json",
+  "analysis": "analysis.json",
+  "fullRounds": 3,
+  "acceptedMeasurementsPerRound": 1000000,
+  "duplicateCountPerRound": 1000,
+  "assertionsPassedPerRound": 6,
+  "assertionsFailed": 0,
+  "ratesEventsPerSecond": [
+    777.7219529811101,
+    796.0468002575192,
+    1055.710360890415
+  ],
+  "acrossRoundThroughput": {
+    "n": 3,
+    "arithmeticMean": 876.4930380430147,
+    "sampleStandardDeviation": 155.4769648963083,
+    "sampleCVPercent": 17.738528219624957,
+    "minimum": 777.7219529811101,
+    "maximum": 1055.710360890415
+  },
+  "aggregateAcceptedEventsPerSecond": 859.7851917596427,
+  "engineCurrentToOriginalMeanThroughputRatio": 6.646014871777144,
+  "engineNormalizedAllocationReductionPercent": 61.761367095646,
+  "jfrStatus": {
+    "durableFullRecordingsRetained": 3,
+    "engineRecordingsRetained": 2,
+    "engineForksPerVariant": 3,
+    "allEngineForkNumericSamplesRetained": true,
+    "separateEngineForkRecordingsRetained": false,
+    "semanticParse": "PENDING_ROOT_JAVA_GRANT",
+    "boundary": "JMH reports the same profiler pathname for all3forks within each variant. Exactly1recording per variant remains; do not claim preserved per-fork recordings."
+  },
+  "postprocessingActivity": "CPU-light small JSON assembly and sequential SHA/GC text reads during root functional/Backtrace stress window; all measurement phases already ended. No Java/JFR parser/Maven/Docker/new benchmarks.",
+  "scope": "Quiet10 failure remains separate and untouched. No engine rows borrowed. No stable capacity, dominant bottleneck, end-to-end optimization speedup, or final release approval claimed.",
+  "smallCopiedInputs": {
+    "analysis.json": "09603cd0e5e0dee541e43dacf435638850ccbaf4b0256926505e0441482a8bf7",
+    "durable-full-1-environment.json": "99e305db174d0661cf9fede6a55266db4ed741784197ac99d2d7def1da919b84",
+    "durable-full-1-result.json": "1e3166eee20b0eae55bacb67820a4980799356afc00a7265719873d8b3673c5d",
+    "durable-full-2-environment.json": "498ec2e6d0739687b175d97ac36b867a78e7a37576d8443e68795861e0512e64",
+    "durable-full-2-result.json": "f6407192e827743f0e441f43de14ea31f036a6c6428c5bd9dd77ad57efc09cab",
+    "durable-full-3-environment.json": "817d91e0ca07dd87b9a116f03db4570b1604ef394c55292e196a03385f9896f6",
+    "durable-full-3-result.json": "307e638046fd95cb37e0f9164519928f8dbcbb732a31ee0b3362385b4f87bc3d",
+    "engine-current-environment.json": "9184889e0a46d8b0bf0c2c28f842a067fe381dab2931267d6fc4301e6f083520",
+    "engine-current-jmh.json": "20018f0cebf7e668f8633e2c21f792cdd07d4f80130c373181a5161bd3832c82",
+    "engine-original-baseline-engine-manifest.json": "0815eee01b6a35130d3bac586e071ca9cf27ed79ce59e35f5f205e8253baffbb",
+    "engine-original-environment.json": "a9b1ca3c7009aabb18f5ace0101e9ea85a8ed480c4eaf7402da4c43f052c83a4",
+    "engine-original-jmh.json": "c94b09b59818092d49fa4f0a615a16bc16fb0f1a1d3b809bd9c9ea4c4b049c91",
+    "raw-index.json": "7e27c91a97c1a18e1c8b9479a7eb8ec5f403511de2512d86342de862ccdc5e69"
+  }
+}

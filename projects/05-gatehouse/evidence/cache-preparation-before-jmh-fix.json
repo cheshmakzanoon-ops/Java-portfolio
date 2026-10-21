@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "project": "gatehouse",
+  "timestamp": "2026-10-18T02:34:15.155612+00:00",
+  "sourceRevision": "working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13",
+  "environment": "environment.json",
+  "command": "python3 .work/A05/cache-probes.py",
+  "rawArtifact": "../../../.work/A05/cache-probes.log",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 8,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "name": "valid exact prepared cache succeeds without Maven",
+      "exitCode": 0,
+      "expectedSuccess": true
+    },
+    {
+      "name": "stale manifest refuses no-Maven startup before Docker",
+      "exitCode": 1,
+      "expectedSuccess": false
+    },
+    {
+      "name": "changed executable source refuses no-Maven preparation",
+      "exitCode": 1,
+      "expectedSuccess": false
+    },
+    {
+      "name": "modified executable JAR refuses no-Maven preparation",
+      "exitCode": 1,
+      "expectedSuccess": false
+    },
+    {
+      "name": "modified extracted class refuses cache reuse",
+      "exitCode": 1,
+      "expectedSuccess": false
+    },
+    {
+      "name": "extra classpath dependency refuses cache reuse",
+      "exitCode": 1,
+      "expectedSuccess": false
+    },
+    {
+      "name": "symlinked runtime entry refuses cache reuse",
+      "exitCode": 1,
+      "expectedSuccess": false
+    },
+    {
+      "name": "restored exact cache succeeds without Maven",
+      "exitCode": 0,
+      "expectedSuccess": true
+    }
+  ],
+  "artifactManifest": {
+    "schemaVersion": 1,
+    "sourceRevision": "working-tree-sha256:6e348ba58afa9df692b5b74f0edd66c71798ea6a4c3fe6cb0b09db0457567d13",
+    "artifactsSha256": {
+      "decision-service/target/gatehouse-decision-service-1.0.0-SNAPSHOT-exec.jar": "f0e9a9cbc4b1be3a8872ccac6733fff77905cd7bb5b7c9ba7605f7dcc48bbedf",
+      "demo-resource-server/target/gatehouse-demo-resource-server-1.0.0-SNAPSHOT-exec.jar": "5e776d3eb55247eb63854daa46d67d0794b47bb7806b84c1c8b0c112693e58b3",
+      "verification/target/gatehouse-verification-1.0.0-SNAPSHOT-exec.jar": "a209716ad18dc6f0448930b8469dcfe45852f420252269d5c8ff350dff27f330"
+    }
+  },
+  "limitations": [
+    "Cache integrity checks bind bytes to an actual successful local verify; they are not remote signed supply-chain attestation.",
+    "No service or container was started; full workload measurements remain unrun."
+  ]
+}

@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "project": "switchback",
+  "sourceRevision": "working-tree-sha256:2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e",
+  "boundary": "real loopback HTTP/PostgreSQL/Chromium and actual service process SIGKILL; shared host functional checks",
+  "startedAtUtc": "2026-10-18T02:26:51Z",
+  "completedAtUtc": "2026-10-18T02:31:14Z",
+  "commandExits": {
+    "scripts/poll-diagnostic.sh": 0,
+    "scripts/up.sh": 0,
+    "scripts/demo.sh first": 0,
+    "actual Chromium render/solve/publish": 0,
+    "scripts/restart-check.sh": 0,
+    "scripts/reset-demo.sh": 0,
+    "scripts/demo.sh repeat": 0,
+    "scripts/down.sh": 0
+  },
+  "demoRuns": {
+    "first": {
+      "assertions": 118,
+      "originalJobs": 60,
+      "vehicles": 6,
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 227742,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 213881,
+        "disruption": 0
+      },
+      "replanned": {
+        "hard": 0,
+        "unassignedPriority": 32,
+        "operatingCost": 144532,
+        "disruption": 22000
+      },
+      "inputVersions": [
+        1,
+        2
+      ],
+      "inputHashes": [
+        "fd02fcaad049ee585009ec2276a2d5aaccc04088bb5a28e5be0dcec14a586741",
+        "ab493c08e1818e2b604a742f24df3c3b00b84bfccf38bacad1b5d45cbd1b3027"
+      ],
+      "testedSource": "2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e",
+      "stalePublicationStatus": 409,
+      "completedHistory": [
+        {
+          "jobId": "J060",
+          "vehicleId": "V0",
+          "completedAt": "2026-10-17T11:10:16Z"
+        },
+        {
+          "jobId": "J042",
+          "vehicleId": "V1",
+          "completedAt": "2026-10-17T11:05:52Z"
+        },
+        {
+          "jobId": "J011",
+          "vehicleId": "V3",
+          "completedAt": "2026-10-17T11:07:51Z"
+        }
+      ],
+      "revisionAudit": [
+        "SYNTHETIC_LOCATIONS_AND_TRAVEL",
+        "RELEASE_FAILED_COMMITMENTS vehicle=V0 jobs=J040 sourceVersion=1",
+        "OBSERVED_STOP_BOUNDARY version=1 completed=[J011, J042, J060] urgent=[URGENT]"
+      ],
+      "stranded": {
+        "J031": "STRANDED_CARGO",
+        "J026": "STRANDED_CARGO",
+        "J051": "STRANDED_CARGO",
+        "J016": "STRANDED_CARGO",
+        "J015": "STRANDED_CARGO",
+        "J012": "STRANDED_CARGO",
+        "J043": "STRANDED_CARGO",
+        "J040": "STRANDED_CARGO",
+        "J006": "STRANDED_CARGO",
+        "J037": "STRANDED_CARGO",
+        "J004": "STRANDED_CARGO",
+        "J034": "STRANDED_CARGO"
+      },
+      "replannedRoutes": [
+        {
+          "vehicleId": "V0",
+          "jobs": []
+        },
+        {
+          "vehicleId": "V1",
+          "jobs": [
+            "J058",
+            "J009",
+            "J008",
+            "J055",
+            "J050",
+            "J023",
+            "J013",
+            "J019",
+            "J047",
+            "J049",
+            "J001",
+            "J014",
+            "J029",
+            "J020",
+            "J044",
+            "J054",
+            "J024"
+          ]
+        },
+        {
+          "vehicleId": "V2",
+          "jobs": [
+            "J036",
+            "J053",
+            "J028",
+            "J030",
+            "J032",
+            "J056",
+            "J010",
+            "J025",
+            "J027",
+            "J002",
+            "J017",
+            "J005",
+            "J059",
+            "J041",
+            "J022"
+          ]
+        },
+        {
+          "vehicleId": "V3",
+          "jobs": [
+            "J046",
+            "J035",
+            "J033",
+            "J045",
+            "J007",
+            "J021",
+            "J039",
+            "J057",
+            "J038",
+            "J003",
+            "J048",
+            "J052",
+            "J018"
+          ]
+        },
+        {
+          "vehicleId": "V4",
+          "jobs": []
+        },
+        {
+          "vehicleId": "V5",
+          "jobs": [
+            "URGENT"
+          ]
+        }
+      ],
+      "queueLatencyNanos": 138744000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "rawArtifact": ".work/A10/demo-first.json",
+      "rawSha256": "849bac0a935419bded8744e818d567e65949862a80c1cebb4134b6eee87387f6",
+      "assertionCountIncludesHttpStatusAndPerJobChecks": true
+    },
+    "repeat": {
+      "assertions": 114,
+      "originalJobs": 60,
+      "vehicles": 6,
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 227742,
+        "disruption": 0
+      },
+      "optimized": {
+        "hard": 0,
+        "unassignedPriority": 0,
+        "operatingCost": 213456,
+        "disruption": 0
+      },
+      "replanned": {
+        "hard": 0,
+        "unassignedPriority": 47,
+        "operatingCost": 155623,
+        "disruption": 27000
+      },
+      "inputVersions": [
+        1,
+        2
+      ],
+      "inputHashes": [
+        "fd02fcaad049ee585009ec2276a2d5aaccc04088bb5a28e5be0dcec14a586741",
+        "4ffd247cace373196e76da8ea53f6de7c102504bb25813b77e41180ecffa2040"
+      ],
+      "testedSource": "2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e",
+      "stalePublicationStatus": 409,
+      "completedHistory": [
+        {
+          "jobId": "J042",
+          "vehicleId": "V0",
+          "completedAt": "2026-10-17T11:05:52Z"
+        }
+      ],
+      "revisionAudit": [
+        "SYNTHETIC_LOCATIONS_AND_TRAVEL",
+        "RELEASE_FAILED_COMMITMENTS vehicle=V0 jobs=J011 sourceVersion=1",
+        "OBSERVED_STOP_BOUNDARY version=1 completed=[J042] urgent=[URGENT]"
+      ],
+      "stranded": {
+        "J036": "STRANDED_CARGO",
+        "J034": "STRANDED_CARGO",
+        "J031": "STRANDED_CARGO",
+        "J026": "STRANDED_CARGO",
+        "J023": "STRANDED_CARGO",
+        "J008": "STRANDED_CARGO",
+        "J022": "STRANDED_CARGO",
+        "J015": "STRANDED_CARGO",
+        "J020": "STRANDED_CARGO",
+        "J004": "STRANDED_CARGO",
+        "J003": "STRANDED_CARGO",
+        "J011": "STRANDED_CARGO",
+        "J052": "STRANDED_CARGO",
+        "J044": "STRANDED_CARGO",
+        "J038": "STRANDED_CARGO"
+      },
+      "replannedRoutes": [
+        {
+          "vehicleId": "V0",
+          "jobs": []
+        },
+        {
+          "vehicleId": "V1",
+          "jobs": [
+            "J054",
+            "J013",
+            "J046",
+            "J019",
+            "J041",
+            "J059",
+            "J060",
+            "J049",
+            "J017",
+            "J014",
+            "J029",
+            "J016",
+            "J018",
+            "J012"
+          ]
+        },
+        {
+          "vehicleId": "V2",
+          "jobs": [
+            "J030",
+            "J053",
+            "J056",
+            "J010",
+            "J028",
+            "J048",
+            "J025",
+            "J051",
+            "J027",
+            "J021",
+            "J009",
+            "J058",
+            "J001",
+            "J002",
+            "J047",
+            "J040",
+            "J005",
+            "J043"
+          ]
+        },
+        {
+          "vehicleId": "V3",
+          "jobs": [
+            "J032",
+            "J006",
+            "J045",
+            "J033",
+            "J007",
+            "J035",
+            "J039",
+            "J057",
+            "J050",
+            "J055",
+            "J037",
+            "J024"
+          ]
+        },
+        {
+          "vehicleId": "V4",
+          "jobs": []
+        },
+        {
+          "vehicleId": "V5",
+          "jobs": [
+            "URGENT"
+          ]
+        }
+      ],
+      "queueLatencyNanos": 179217000,
+      "algorithmVersion": "nearest-directed-timefold-2.7.1-v1",
+      "objectiveVersion": "meters-seconds-disruption-v1",
+      "rawArtifact": ".work/A10/demo-repeat.json",
+      "rawSha256": "bc4300303a93d066dabc585926c572158f26a04babb323d2f503b1ff0f6cc57c",
+      "assertionCountIncludesHttpStatusAndPerJobChecks": true
+    }
+  },
+  "restart": {
+    "schemaVersion": 1,
+    "project": "switchback",
+    "scenario": "actual-service-SIGKILL-and-restart",
+    "jobId": "4172a7ac-cea6-41f4-981f-ffe00d35c6c5",
+    "state": "COMPLETED",
+    "oldFence": 1,
+    "newFence": 3,
+    "retainedValidatedIncumbent": true,
+    "automaticPublication": false,
+    "source": "2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e"
+  },
+  "browser": {
+    "schemaVersion": 1,
+    "browser": "154.0.8037.57",
+    "transport": "actual headless Chromium via installed Playwright",
+    "checks": [
+      "published input2 hard0/partial",
+      "six timeline rows",
+      "six directed polylines",
+      "STRANDED_CARGO visible",
+      "URGENT visible",
+      "same-input persisted baseline comparison",
+      "UI solve completes",
+      "UI publish CAS revision3",
+      "no page errors"
+    ],
+    "score": {
+      "feasibility": "PARTIAL_FEASIBLE",
+      "inputVersion": 2,
+      "matrixVersion": "synthetic-directed-v1",
+      "inputHash": "ab493c08e1818e2b604a742f24df3c3b00b84bfccf38bacad1b5d45cbd1b3027",
+      "objective": {
+        "version": "meters-seconds-disruption-v1",
+        "metersWeight": 1,
+        "secondsWeight": 1,
+        "disruptionWeight": 1000
+      },
+      "score": {
+        "hard": 0,
+        "unassignedPriority": 32,
+        "operatingCost": 144532,
+        "disruption": 22000
+      },
+      "baseline": {
+        "hard": 0,
+        "unassignedPriority": 32,
+        "operatingCost": 142610,
+        "disruption": 35000
+      }
+    },
+    "source": "2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e"
+  },
+  "pollingDiagnostic": {
+    "samplingIntervalMillis": 100,
+    "timestamp": "2026-10-18T02:26:41.644040554Z",
+    "schemaVersion": 1,
+    "runs": [
+      {
+        "run": 0,
+        "jdbcCancellationReads": 2743,
+        "elapsedNanos": 2870094899,
+        "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+        "score": {
+          "hard": 0,
+          "unassignedPriority": 153,
+          "operatingCost": 180781,
+          "disruption": 0
+        },
+        "sampled": false
+      },
+      {
+        "run": 0,
+        "jdbcCancellationReads": 4,
+        "elapsedNanos": 327237926,
+        "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+        "score": {
+          "hard": 0,
+          "unassignedPriority": 153,
+          "operatingCost": 180781,
+          "disruption": 0
+        },
+        "sampled": true
+      },
+      {
+        "run": 1,
+        "jdbcCancellationReads": 2743,
+        "elapsedNanos": 8661071568,
+        "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+        "score": {
+          "hard": 0,
+          "unassignedPriority": 153,
+          "operatingCost": 180781,
+          "disruption": 0
+        },
+        "sampled": false
+      },
+      {
+        "run": 1,
+        "jdbcCancellationReads": 11,
+        "elapsedNanos": 1243082367,
+        "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+        "score": {
+          "hard": 0,
+          "unassignedPriority": 153,
+          "operatingCost": 180781,
+          "disruption": 0
+        },
+        "sampled": true
+      },
+      {
+        "run": 2,
+        "jdbcCancellationReads": 2743,
+        "elapsedNanos": 5417731837,
+        "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+        "score": {
+          "hard": 0,
+          "unassignedPriority": 153,
+          "operatingCost": 180781,
+          "disruption": 0
+        },
+        "sampled": false
+      },
+      {
+        "run": 2,
+        "jdbcCancellationReads": 2,
+        "elapsedNanos": 197319947,
+        "inputHash": "5118b0c93782a674200108e5b4c85e79927b21f035b448b78a4f6616f6fd790e",
+        "score": {
+          "hard": 0,
+          "unassignedPriority": 153,
+          "operatingCost": 180781,
+          "disruption": 0
+        },
+        "sampled": true
+      }
+    ],
+    "project": "switchback",
+    "boundary": "pooled JDBC cancellation and deterministic 100-job baseline; shared host; diagnosis only",
+    "source": "2aa7d7da1832f81ee6f076d234003e7554fc8ded8745e97e91c80592aeffe16e",
+    "maximumPoolSize": 8
+  },
+  "cleanup": {
+    "servicePort19000Closed": true,
+    "ownedComposeContainerAndNetworkRemoved": true,
+    "namedVolumePreserved": true
+  },
+  "rawLogs": [
+    ".work/A10/live-poll-diagnostic.log",
+    ".work/A10/live-up.log",
+    ".work/A10/live-demo-first.log",
+    ".work/A10/live-browser.log",
+    ".work/A10/live-restart.log",
+    ".work/A10/live-reset.log",
+    ".work/A10/live-demo-repeat.log",
+    ".work/A10/live-down.log"
+  ],
+  "screenshot": ".runtime/live-ui.png at2aa7d7da; raw full-plan status usability issue repaired in later ui-status.json snapshot",
+  "limitations": [
+    "shared-host timing is diagnostic only",
+    "same-source restart was exercised; source-upgrade job provenance is under review",
+    "latest one-line UI compaction has ordinary/artifact validation but not a new live browser round yet",
+    "full quiet corpus/JMH and clean-checkout gates remain open"
+  ]
+}

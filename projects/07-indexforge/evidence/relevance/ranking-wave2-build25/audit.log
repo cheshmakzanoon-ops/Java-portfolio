@@ -1,2 +1,0 @@
-Oct 18, 2026 6:35:14 AM org.apache.lucene.internal.vectorization.VectorizationProvider lookup
-WARNING: Java vector incubator module is not readable. For optimal vector performance, pass '--add-modules jdk.incubator.vector' to enable Vector API.

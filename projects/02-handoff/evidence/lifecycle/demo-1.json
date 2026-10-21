@@ -1,0 +1,27 @@
+{
+  "compensationId" : "8cd25769-073a-44e7-a2fe-d125aa69c7a7",
+  "timestamp" : "2026-10-18T02:43:25.527845297Z",
+  "assertions" : {
+    "scenarios" : 5,
+    "failed" : 0
+  },
+  "unsafeId" : "1e1d72a3-7be4-40a5-a540-b334881fa50d",
+  "project" : "handoff",
+  "mediaId" : "582f0f4a-72c8-4b88-b58a-fb461f82ad7d",
+  "timeline" : [ {
+    "effectCount" : 1,
+    "recoveryDelaySeconds" : 36.635841556,
+    "event" : "killed-worker-and-restarted-scheduler-idempotent-recovery",
+    "elapsedSeconds" : 47.764163923
+  }, {
+    "event" : "unknown-outcome-paused-and-audited-resolution",
+    "elapsedSeconds" : 80.978177439,
+    "effectCount" : 1
+  }, {
+    "elapsedSeconds" : 83.953985026,
+    "event" : "compensation-failed-visibly"
+  } ],
+  "orderId" : "063adc89-e3ec-4639-bac3-2af617bd976c",
+  "schemaVersion" : 1,
+  "workload" : "asserted-fault-demo-v1"
+}

@@ -8,16 +8,16 @@ The [execution record](execution/engineering-review-20261020.json) identifies th
 
 | Project | Failure or ambiguity addressed | Resulting design |
 | --- | --- | --- |
-| [ClearLedger](../projects/01-clearledger/docs/REVIEW.md) | Retrying after an acknowledged commit can duplicate an operation; reconciliation can reuse consumed postings. | Phase-aware serializable transactions distinguish commit from cleanup, immutable CSV preparation precedes retries, posting validation precedes receipt lookup, and matching excludes consumed entries. |
-| [DurableFlow](../projects/02-durableflow/docs/REVIEW.md) | A poisoned workflow can stop unrelated scheduling; stale failure handling can overwrite newer state. | Replay, SQL, transactions, and scheduler batches have separate responsibilities. Deferrals compare observed versions, terminal storage failures propagate, and recoverable claims use bounded retries. External-effect uncertainty remains explicit. |
-| [QuorumKV](../projects/03-quorumkv/docs/REVIEW.md) | Delayed snapshot chunks can prevent progress; invalid WAL replacement or premature owner release can compromise recovery. | Snapshot correlation remains stable until acknowledgment, assembly is bounded and idempotent, persisted protocol invariants are checked, and shutdown retains journal ownership until the writer stops. |
-| [PulseStream](../projects/04-pulsestream/docs/REVIEW.md) | A dequeue-to-in-flight gap understates backlog; premature shutdown can release an owner while work still runs. | Admission tracks outstanding work atomically. Engine and poller termination precede publisher and owner release; SQL transactions preserve acknowledged outcomes, and snapshots validate ownership and bounds. |
-| [TenantShield](../projects/05-tenantshield/docs/REVIEW.md) | Mutable authorization inputs, invalid grants, or evicted live quota windows can change a decision's meaning. | Verified immutable plans and grants are constructed once, membership precedes callbacks, typed client responses are bounded, and quota windows retain ownership through admitted requests. RLS checks cover all protected tables and administrative role assumptions. |
-| [MatchCore](../projects/06-matchcore/docs/REVIEW.md) | Damaged journals must stop admission; caller cancellation must not control shared work; checkpoints must agree with history. | Journal I/O failure is terminal, futures are isolated per caller, callbacks run outside admission locks, and checkpoint ancestry includes independently reconstructed balances and positions. Durability tests observe real channel-force calls and independently encoded frames. |
-| [IndexForge](../projects/07-indexforge/docs/REVIEW.md) | Reader ownership can race publication; archives can allocate before limits; cached signed cursors can expire before cached content. | Generation admission closes before reader teardown, archive structure is bounded before expansion, and cached cursor content is signed afresh for each response. Compiler bindings, ranking, ingestion, and request identity are separate components. |
-| [ThreadLens](../projects/08-threadlens/docs/REVIEW.md) | Callback closure can deadlock, duplicate agents can disable an existing session, and partial report inputs can bypass quotas. | Event processing, instrumentation sessions, child JVM ownership, and report validation have explicit lifecycles. Closure is coordinated, duplicate installation preserves the first session, and quotas cover complete directory traversal. |
-| [ByteGuard](../projects/09-byteguard/docs/REVIEW.md) | Native calls, mutable returns, malformed frames, ambiguous identities, and corrupt archives can hide uncertainty or lose a flow. | Invocation effects, typed frames, control-flow validation, archive preflight, unfinished-method reporting, and owned report output enforce separate contracts. Analysis never executes the target program. |
-| [RouteWeaver](../projects/10-routeweaver/docs/REVIEW.md) | Durable job authority can drift from candidate input; publication and asynchronous responses can show conflicting state. | Separate repositories preserve locked job authority and fencing. The dispatch page places feasibility beside publication, filters map and timeline by vehicle, and rejects stale responses. |
+| [Daybook](../projects/01-daybook/docs/REVIEW.md) | Retrying after an acknowledged commit can duplicate an operation; reconciliation can reuse consumed postings. | Phase-aware serializable transactions distinguish commit from cleanup, immutable CSV preparation precedes retries, posting validation precedes receipt lookup, and matching excludes consumed entries. |
+| [Handoff](../projects/02-handoff/docs/REVIEW.md) | A poisoned workflow can stop unrelated scheduling; stale failure handling can overwrite newer state. | Replay, SQL, transactions, and scheduler batches have separate responsibilities. Deferrals compare observed versions, terminal storage failures propagate, and recoverable claims use bounded retries. External-effect uncertainty remains explicit. |
+| [Majority](../projects/03-majority/docs/REVIEW.md) | Delayed snapshot chunks can prevent progress; invalid WAL replacement or premature owner release can compromise recovery. | Snapshot correlation remains stable until acknowledgment, assembly is bounded and idempotent, persisted protocol invariants are checked, and shutdown retains journal ownership until the writer stops. |
+| [Late Arrival](../projects/04-latearrival/docs/REVIEW.md) | A dequeue-to-in-flight gap understates backlog; premature shutdown can release an owner while work still runs. | Admission tracks outstanding work atomically. Engine and poller termination precede publisher and owner release; SQL transactions preserve acknowledged outcomes, and snapshots validate ownership and bounds. |
+| [Gatehouse](../projects/05-gatehouse/docs/REVIEW.md) | Mutable authorization inputs, invalid grants, or evicted live quota windows can change a decision's meaning. | Verified immutable plans and grants are constructed once, membership precedes callbacks, typed client responses are bounded, and quota windows retain ownership through admitted requests. RLS checks cover all protected tables and administrative role assumptions. |
+| [The Pit](../projects/06-thepit/docs/REVIEW.md) | Damaged journals must stop admission; caller cancellation must not control shared work; checkpoints must agree with history. | Journal I/O failure is terminal, futures are isolated per caller, callbacks run outside admission locks, and checkpoint ancestry includes independently reconstructed balances and positions. Durability tests observe real channel-force calls and independently encoded frames. |
+| [Stacks](../projects/07-stacks/docs/REVIEW.md) | Reader ownership can race publication; archives can allocate before limits; cached signed cursors can expire before cached content. | Generation admission closes before reader teardown, archive structure is bounded before expansion, and cached cursor content is signed afresh for each response. Compiler bindings, ranking, ingestion, and request identity are separate components. |
+| [Backtrace](../projects/08-backtrace/docs/REVIEW.md) | Callback closure can deadlock, duplicate agents can disable an existing session, and partial report inputs can bypass quotas. | Event processing, instrumentation sessions, child JVM ownership, and report validation have explicit lifecycles. Closure is coordinated, duplicate installation preserves the first session, and quotas cover complete directory traversal. |
+| [Faultline](../projects/09-faultline/docs/REVIEW.md) | Native calls, mutable returns, malformed frames, ambiguous identities, and corrupt archives can hide uncertainty or lose a flow. | Invocation effects, typed frames, control-flow validation, archive preflight, unfinished-method reporting, and owned report output enforce separate contracts. Analysis never executes the target program. |
+| [Switchback](../projects/10-switchback/docs/REVIEW.md) | Durable job authority can drift from candidate input; publication and asynchronous responses can show conflicting state. | Separate repositories preserve locked job authority and fencing. The dispatch page places feasibility beside publication, filters map and timeline by vehicle, and rejects stale responses. |
 
 The [architecture guide](architecture.md) compares decision and acknowledgment boundaries. Project architecture, invariants, security, and operations documents explain lock ordering, failure outcomes, compatibility, and recovery beside the implementation.
 
@@ -27,20 +27,20 @@ The isolated clean clone passed **839 ordinary Java test cases** using an initia
 
 | Project | Ordinary cases | Integration cases | Strict mutation kills / viable mutants |
 | --- | ---: | ---: | ---: |
-| ClearLedger | 45 | 22 | 137 / 141 |
-| DurableFlow | 96 | 22 | 250 / 254 |
-| QuorumKV | 69 | 7 | 325 / 421 |
-| PulseStream | 37 | 11 | 209 / 219 |
-| TenantShield | 41 | 15 | 271 / 276 |
-| MatchCore | 43 | 2 | 458 / 514 |
-| IndexForge | 194 | 4 | 1,901 / 2,450 |
-| ThreadLens | 157 | 7 | 593 / 680 |
-| ByteGuard | 106 | 2 | 557 / 757 |
-| RouteWeaver | 51 | 22 | 82 / 82 |
+| Daybook | 45 | 22 | 137 / 141 |
+| Handoff | 96 | 22 | 250 / 254 |
+| Majority | 69 | 7 | 325 / 421 |
+| Late Arrival | 37 | 11 | 209 / 219 |
+| Gatehouse | 41 | 15 | 271 / 276 |
+| The Pit | 43 | 2 | 458 / 514 |
+| Stacks | 194 | 4 | 1,901 / 2,450 |
+| Backtrace | 157 | 7 | 593 / 680 |
+| Faultline | 106 | 2 | 557 / 757 |
+| Switchback | 51 | 22 | 82 / 82 |
 
-Mutation scopes differ by project; the table does not imply whole-codebase mutation coverage. Every selected module passed its own declared threshold. The packets preserve separate source-bound campaigns where unchanged modules were reused, as well as earlier failed attempts. The formerly heap-exhausting IndexForge scoring-loop mutation is killed in its complete replacement query campaign.
+Mutation scopes differ by project; the table does not imply whole-codebase mutation coverage. Every selected module passed its own declared threshold. The packets preserve separate source-bound campaigns where unchanged modules were reused, as well as earlier failed attempts. The formerly heap-exhausting Stacks scoring-loop mutation is killed in its complete replacement query campaign.
 
-The shared tools passed 48 Python cases. Another 64 launcher and cache cases passed and are included in project CI jobs; DurableFlow's 19 subprocess cases run through its ordinary Maven suite. Source and compiled architecture checks found no violations. After the cold build, one additional ByteGuard identity assertion and CI launcher wiring were verified separately; production code and Maven inputs remained unchanged. The [execution record](execution/engineering-review-20261020.json) identifies both tested revisions and report hashes.
+The shared tools passed 48 Python cases. Another 64 launcher and cache cases passed and are included in project CI jobs; Handoff's 19 subprocess cases run through its ordinary Maven suite. Source and compiled architecture checks found no violations. After the cold build, one additional Faultline identity assertion and CI launcher wiring were verified separately; production code and Maven inputs remained unchanged. The [execution record](execution/engineering-review-20261020.json) identifies both tested revisions and report hashes.
 
 Ordinary and integration checks require fresh, nonempty reports for every selected module. Test-case totals must agree with suite totals; failures, errors, and skipped tests fail the check. Database and broker integration uses actual pinned containers; process tests exercise actual JVMs and sockets.
 
@@ -50,7 +50,7 @@ Shared checks exercise the verification tools themselves, dependency inventories
 
 ## Interfaces and operation
 
-RouteWeaver's PostgreSQL-backed dispatch workflow was exercised in Chromium at desktop and 390px widths, including strict CSP, keyboard controls, partial plans, delayed responses, publication, and forced-restart recovery. ThreadLens's generated normal and differential reports were exercised at both widths through a temporary loopback server, including navigation, literal hostile identifiers, table scrolling, and privacy checks. Direct file navigation was blocked by managed browser policy; that failed attempt is retained separately.
+Switchback's PostgreSQL-backed dispatch workflow was exercised in Chromium at desktop and 390px widths, including strict CSP, keyboard controls, partial plans, delayed responses, publication, and forced-restart recovery. Backtrace's generated normal and differential reports were exercised at both widths through a temporary loopback server, including navigation, literal hostile identifiers, table scrolling, and privacy checks. Direct file navigation was blocked by managed browser policy; that failed attempt is retained separately.
 
 Lifecycle scripts prepare artifacts before acquiring services, bind reusable artifacts to their inputs, preserve preexisting containers on failed startup, and stop only processes for which they hold identity evidence. Project packets state the precise identity mechanism and platform limits. Fresh PostgreSQL clusters validate the selected Alpine baseline; they do not establish compatibility for transplanting existing volumes between libc implementations.
 

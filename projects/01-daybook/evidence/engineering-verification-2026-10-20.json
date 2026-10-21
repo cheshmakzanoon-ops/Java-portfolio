@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_CORRECTNESS_AND_TARGETED_MUTATION_PERFORMANCE_UNESTABLISHED",
+  "finishedUtc": "2026-10-20T09:25:56Z",
+  "runCutoffEpoch": 1792487966.3962429,
+  "runCutoffSource": "Fractional epoch captured before the final integration/mutation wrapper invocation",
+  "sourceFingerprint": "eaa2cdbd29070228233c69bfc0524913ef39f930183e63a7d927ab194f3fddbc",
+  "sourceHashScope": "root/project/module POMs and every module src file; sorted relative path NUL bytes NUL",
+  "sourceFiles": {
+    "pom.xml": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+    "projects/01-daybook/ledger-api/pom.xml": "fa648d574f0f4c3073fb76d28b98ac1a52c3c4a9b8ca98b7664d59413885d1f9",
+    "projects/01-daybook/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/DaybookApplication.java": "e6c21d3f67e2ab2578750279c8dbeef3bf62cc9d19e11b0f93166f3619a6d1c2",
+    "projects/01-daybook/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerController.java": "14f797a2e465aa802a8aa5da4e2f6032b8a3f07f5690621677ade2a0af356b8f",
+    "projects/01-daybook/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/RequestBoundsFilter.java": "6690ffe76e18974dd0b79bcdf2803393a738d63902426beb726cabbb9dacdeeb",
+    "projects/01-daybook/ledger-api/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/StrictIdentityDecoder.java": "1d9fccffa7c8bfc8df818c16160d2775c63b63f57c402d5feaef4efd280f4538",
+    "projects/01-daybook/ledger-api/src/main/resources/application.properties": "2d956335b1e72a9c001114547977da24a6eec4e8cffa48cbab9bd62cf0590d7e",
+    "projects/01-daybook/ledger-api/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/RequestJsonTest.java": "f34afabdb090fdfb42b52ea58e7512dc50548ca02cd2cb013a40e4645bbf8d4e",
+    "projects/01-daybook/ledger-benchmarks/pom.xml": "823ee6a96f57b6606c5c1ff640211874475b2820e078d473461aeb7d1e4d5a0d",
+    "projects/01-daybook/ledger-benchmarks/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/AccountingBenchmark.java": "dcd309ede17c900901f89e2303b56304589d8faf6cb39e8762ee85dc55f3b0c3",
+    "projects/01-daybook/ledger-domain/pom.xml": "1105c69d496e01c228276fef998df49958cb6dfd7642fca4a77a118af8741f2f",
+    "projects/01-daybook/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Journal.java": "c0480b66d235d6b570efd73e6bbff8c39da3c5596f45238159093fdc3735a5c6",
+    "projects/01-daybook/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerText.java": "79ce40944a618cdba74aaf5989de5e8bc5819d9b443b1b73d57018da5f29b0ea",
+    "projects/01-daybook/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Money.java": "490f00fc4236aba4eefbd554928a267718b432a6e7268eb9bf6f4344b80a899f",
+    "projects/01-daybook/ledger-domain/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/ReferenceLedger.java": "a628d518560a8b0d4fba44dcf134f89b76f7b5a8e610801bdd56b291c6679a12",
+    "projects/01-daybook/ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/AccountingProperties.java": "aaeefb11248647f02ab311340fb0f346085c5355381774deaa24a5ca780dcef5",
+    "projects/01-daybook/ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/AccountingTest.java": "d6938a32b5e114d304e108754a4d431a3936da2a976abfee9a35b64c11e4a8c6",
+    "projects/01-daybook/ledger-domain/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/DomainArchitectureTest.java": "e2c27c5ac05ecccc407cc9260d465b2913fbe4fe3526cd9047c6b58e70397b61",
+    "projects/01-daybook/ledger-persistence/pom.xml": "dfbe7d2f79a74998d92447eaeef0616a21fd0453fa91d006c6f9d9aa6c6f2ecf",
+    "projects/01-daybook/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerStore.java": "0279465bcd82111bf33834358f81b08d2ed62bc9485f5dc6345ded26dcf6d342",
+    "projects/01-daybook/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Projector.java": "6b0c1e3599ebb5dce14dd35342cc69a409a5452495ed6a3ca24fa8efb0205996",
+    "projects/01-daybook/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Reconciliation.java": "7b884239e242d53e75dcf056571e5fc4571d3d74e4be84921acc91a57a988c5e",
+    "projects/01-daybook/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/RetryBackoff.java": "28622240b80f812ced185f2523f2564def0bab3c6a487de24226bfb55093fc99",
+    "projects/01-daybook/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/SerializableTransactions.java": "02ea9d468d49f59b447300c02d7e22b16377b6be32dc90e5833a3f16c4ec73d4",
+    "projects/01-daybook/ledger-persistence/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/StatementCsv.java": "7f5a1b379a44b41ebe5d509ef01a46898fb790e5b7a022a9be4d8ac263fa4e13",
+    "projects/01-daybook/ledger-persistence/src/main/resources/db/migration/V1__ledger.sql": "598b9824337a111f9f728177496ebde5284a20a5a2a24fca3098797b99038bcb",
+    "projects/01-daybook/ledger-persistence/src/main/resources/db/migration/V2__null_safe_posting_and_deferred_audit.sql": "78048d1f2b897fe63cdf8789a2a2566c7ec0700e76107038a2b00f50d248eaa5",
+    "projects/01-daybook/ledger-persistence/src/main/resources/db/migration/V3__validated_posting_operation.sql": "09b5998647be332f3728b26b3a52badc092fdd005d9b23d5f602b3e8b52426f8",
+    "projects/01-daybook/ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/ReconciliationTest.java": "8eec2771af2dd2ebc3658c82e8b9d298bcdbb8c647507ca5e8a467465e90da7c",
+    "projects/01-daybook/ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/RetryBackoffTest.java": "55f2718f670d4a7dd95720c587a6c6fd114386e69933d572da9cc2a18c27719b",
+    "projects/01-daybook/ledger-persistence/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/TransactionRetryTest.java": "eeb0d7b8fc48e7f6371f0e2901da1fcddcde927494224640e212a618a0d4c80c",
+    "projects/01-daybook/ledger-verification/pom.xml": "b62b7f6729bc00ac7b3691a8bc1c8ffe9a86885f040ace3fbfb8f791072ba576",
+    "projects/01-daybook/ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/CrashWriter.java": "34912528fedae2532e68f340740c81f069a3712ffc0657d7fb51f411ab837fcb",
+    "projects/01-daybook/ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/SourceAudit.java": "12fa8537b4ac715209be94d3c1bee48cafb02ea452b3eab60f5022f0216b0872",
+    "projects/01-daybook/ledger-verification/src/main/java/io/github/cheshmakzanoon/portfolio/daybook/Workload.java": "06b0cbfe413e626301ba88a4373596cbb3140de2fd9f6cb4d518bcfbe1333677",
+    "projects/01-daybook/ledger-verification/src/main/resources/daybook/source-audit.sql": "20d06488aaf0f086eab922e90bb6cea65ebc4ab30af4314b7d8bc23cb78f6c74",
+    "projects/01-daybook/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerBoundaryIT.java": "00360ae5fbde2e960a832b6a5dc445e83d4bcaa0a8a6074b4691ab24948ff008",
+    "projects/01-daybook/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerPostgresFixture.java": "6c7f3926224a25be5445a2bf8f480f442561f1bd7fbd8a88595b56c7f64bad94",
+    "projects/01-daybook/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/LedgerPostgresIT.java": "484e227e29b50e886e29dafca595f9fdc992b4458ca63c848a099ebd303fecca",
+    "projects/01-daybook/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/LocalIssuer.java": "449f31d14431c0714864040d31e4a7c85d15a93fc1d4c9d6e609fd89ec8a2cff",
+    "projects/01-daybook/ledger-verification/src/test/java/io/github/cheshmakzanoon/portfolio/daybook/WorkloadClientRetryTest.java": "5bc4421b148371e83456f9c1cc926dd35535c294deb79ce9142bcb24e008bc81",
+    "projects/01-daybook/pom.xml": "73a7ad91aea2a2b802516c247e142c2cf434eb0622188f647ca8ef8b3518760c"
+  },
+  "rootPomSha256": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+  "verification": {
+    "command": "source scripts/cloud-env.sh; ./mvnw -f projects/01-daybook/pom.xml -Dmaven.repo.local=$PWD/.work/A01/m2 -B -ntp -Pintegration,mutation verify",
+    "exitCode": 0,
+    "ordinaryMethods": 45,
+    "postgresMethods": 22,
+    "generatedPropertyExamples": 500,
+    "reportChecks": {
+      "counts": {
+        "tests": 67,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "modules": [
+        {
+          "module": "ledger-domain",
+          "counts": {
+            "surefire": {
+              "tests": 10,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        },
+        {
+          "module": "ledger-persistence",
+          "counts": {
+            "surefire": {
+              "tests": 29,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        },
+        {
+          "module": "ledger-api",
+          "counts": {
+            "surefire": {
+              "tests": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        },
+        {
+          "module": "ledger-verification",
+          "counts": {
+            "surefire": {
+              "tests": 5,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "failsafe": {
+              "tests": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
+        }
+      ],
+      "failures": []
+    },
+    "localLog": ".work/release-check/daybook/verify.log",
+    "logSha256": "3b9ebeca12fcb7284a0017dba4c2c1503bae73f08749d8641328deefae739174",
+    "rawReports": {
+      ".work/release-check/daybook/reports/ledger-api/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.RequestJsonTest.xml": "424b8ef9e659fd0ed1fcd7f5ba66c9dadf98eb28321ed11d850ce3626204ee74",
+      ".work/release-check/daybook/reports/ledger-domain/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.AccountingProperties.xml": "b5d7a9915fd243eacd6dd3684426a6eb447618a69d7d01b37ea9791afbecdc09",
+      ".work/release-check/daybook/reports/ledger-domain/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.AccountingTest.xml": "989cdb94638db97ab5f29577a0568f2fa46a621a1f42e1a511c806c03bd37f62",
+      ".work/release-check/daybook/reports/ledger-domain/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.DomainArchitectureTest.xml": "e1b786590cb6d60b258712db843d47afe36063b0cc538546c570e468dbe8136e",
+      ".work/release-check/daybook/reports/ledger-persistence/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.ReconciliationTest.xml": "ac5af0336af3a32beb9509a76472ba9b4a350c62a1c68384280cc15b05236407",
+      ".work/release-check/daybook/reports/ledger-persistence/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.RetryBackoffTest.xml": "c5cf2080767a570ab29f56df702a4a6edb913f9c97cd2c0581c6560dd8ae3862",
+      ".work/release-check/daybook/reports/ledger-persistence/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.TransactionRetryTest.xml": "1121bd37e4704968992ebc3f40194c97c7f6247f883fa568d7908bbbac160287",
+      ".work/release-check/daybook/reports/ledger-verification/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.WorkloadClientRetryTest.xml": "7f7b9d0c420ed18c124801974b0091f3a6cbdd86b547e46fac8a0267996bda7f",
+      ".work/release-check/daybook/reports/ledger-verification/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.LedgerBoundaryIT.xml": "4639dabedf8bc0ed984c4e4e59170dceab7f2da0f3bcda29e90be0d38d465049",
+      ".work/release-check/daybook/reports/ledger-verification/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.daybook.LedgerPostgresIT.xml": "d1bc184413a323c7d0522f5ec2c0cec11e22f06aad7a963ae9e14e2d3fe4c305",
+      ".work/release-check/daybook/reports/ledger-verification/failsafe-reports/failsafe-summary.xml": "ce6cdd3cce6c88451290e41dd8c45e122959c0c859bc8ef79074dc1d012f86e1"
+    }
+  },
+  "mutation": {
+    "reportChecks": {
+      "modules": [
+        {
+          "module": "ledger-domain",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 35,
+            "SURVIVED": 1
+          },
+          "killedPercent": 97.22222222222223,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "ledger-persistence",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 102,
+            "TIMED_OUT": 1,
+            "SURVIVED": 2
+          },
+          "killedPercent": 97.14285714285714,
+          "requiredKilledPercent": 90
+        }
+      ],
+      "outcomes": {
+        "KILLED": 137,
+        "SURVIVED": 3,
+        "TIMED_OUT": 1
+      },
+      "failures": []
+    },
+    "nonKilled": [
+      {
+        "module": "ledger-domain",
+        "status": "SURVIVED",
+        "class": "io.github.cheshmakzanoon.portfolio.daybook.Money",
+        "method": "parse",
+        "line": 21,
+        "description": "changed conditional boundary"
+      },
+      {
+        "module": "ledger-persistence",
+        "status": "TIMED_OUT",
+        "class": "io.github.cheshmakzanoon.portfolio.daybook.StatementCsv",
+        "method": "parseLine",
+        "line": 112,
+        "description": "Changed increment from 1 to -1"
+      },
+      {
+        "module": "ledger-persistence",
+        "status": "SURVIVED",
+        "class": "io.github.cheshmakzanoon.portfolio.daybook.StatementCsv",
+        "method": "prepare",
+        "line": 60,
+        "description": "changed conditional boundary"
+      },
+      {
+        "module": "ledger-persistence",
+        "status": "SURVIVED",
+        "class": "io.github.cheshmakzanoon.portfolio.daybook.SerializableTransactions",
+        "method": "execute",
+        "line": 58,
+        "description": "removed call to java/lang/System$Logger::log"
+      }
+    ],
+    "rawXmlSha256": {
+      ".work/release-check/daybook/reports/ledger-domain/pit-reports/mutations.xml": "1b0e0a1152895a530b9843ddf0f39b4fe543c639b8724309090a41a5d991b569",
+      ".work/release-check/daybook/reports/ledger-persistence/pit-reports/mutations.xml": "721c9079e3df277a9f538f3b97490a265c30ba2c265f1f54cf2ef71a78bb54a0"
+    },
+    "denominator": "Every generated mutation, including survivors and timeout; no runner/memory errors or uncovered mutations"
+  },
+  "earlierExpandedMutationAttempt": {
+    "status": "FAIL_BELOW_90_PERCENT",
+    "outcomes": {
+      "KILLED": 89,
+      "SURVIVED": 15,
+      "TIMED_OUT": 1,
+      "NO_COVERAGE": 1
+    },
+    "localLog": ".work/A01/deep-review/attempt-2/build.log",
+    "changesBeforePass": "Boundary, SQL-state, and transaction-phase regressions; no lowered threshold or target exclusions"
+  },
+  "lifecycle": {
+    "upExitCode": 0,
+    "runtimeCacheRegressions": 6,
+    "ownershipRegressions": 16,
+    "ownershipEvidence": "lifecycle-ownership-2026-10-20.json",
+    "demoAssertions": {
+      "passed": 9,
+      "failed": 0
+    },
+    "demoEvidence": "engineering-demo-2026-10-20.json",
+    "downExitCode": 0,
+    "runningProjectServicesAfterShutdown": 0,
+    "postgresVersion": "PostgreSQL 18.6 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+    "composeProject": "java-portfolio-daybook-cert-20261020",
+    "freshCluster": true,
+    "retainedNamedVolume": true,
+    "priorDocumentedHttpValidation": {
+      "scope": "Earlier working-checkout PostgreSQL18.3 validation; HTTP examples unchanged",
+      "assertions": [
+        "documented POST command succeeds",
+        "repeated documented POST returns same journal ID",
+        "documented retained receipt returns same journal ID"
+      ]
+    },
+    "logSha256": {
+      ".work/release-check/daybook/up.log": "3033fd954de1e4b4af8c78d8f7db7330bf672a925490e97083946952b1dbee5d",
+      ".work/release-check/daybook/demo.log": "29937c05413723581706bb6891aff46c6b21193356572b6842579b3ecfb6ec76",
+      ".work/release-check/daybook/down.log": "3dcdc49bfd0bc709ed5b57a26703c140b5fec4652468cb0db349b5788715031b",
+      ".work/release-check/daybook/postgres-version.txt": "0f37c16b74ded4679bd176522cf6fa3071ff40a66eac0e1f6c2b03f8e4959350",
+      ".work/release-check/daybook/containers-after.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "limits": [
+    "Optional JMH module inspected but no benchmark executed",
+    "Mutation targets cover all domain classes plus RetryBackoff, SerializableTransactions, and StatementCsv; other production classes rely on ordinary and PostgreSQL integration tests",
+    "No new capacity study; historical failed measurements remain unchanged",
+    "Fresh-cluster PostgreSQL18.6 lifecycle; no claim about upgrading an existing PostgreSQL data volume or a glibc-to-musl transplant.",
+    "Clean-checkout ordinary verification and repository release criteria are recorded separately in the root engineering review."
+  ]
+}

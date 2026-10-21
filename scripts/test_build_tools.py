@@ -55,14 +55,14 @@ def write_test_report(path, tests=1, skipped=0):
 class ArchitectureGateTest(unittest.TestCase):
     def make_root(self, directory, source):
         root = Path(directory)
-        path = root / 'projects/01-clearledger/ledger-domain/src/main/java/example/Domain.java'
+        path = root / 'projects/01-daybook/ledger-domain/src/main/java/example/Domain.java'
         path.parent.mkdir(parents=True)
         path.write_text(source)
         return root
 
     def test_cross_project_import_fails(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = self.make_root(temp, 'import io.github.cheshmakzanoon.portfolio.quorumkv.Model;')
+            root = self.make_root(temp, 'import io.github.cheshmakzanoon.portfolio.majority.Model;')
             self.assertIn('cross-project import', architecture.inspect(root)[0])
 
     def test_domain_framework_import_fails(self):
@@ -75,24 +75,24 @@ class ArchitectureGateTest(unittest.TestCase):
             root = self.make_root(temp, 'import java.sql.Connection;')
             self.assertIn('domain framework', architecture.inspect(root)[0])
 
-    def test_byteguard_analysis_core_cannot_import_frameworks(self):
+    def test_faultline_analysis_core_cannot_import_frameworks(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            source = root / 'projects/09-byteguard/analysis-core/src/main/java/example/Analyzer.java'
+            source = root / 'projects/09-faultline/analysis-core/src/main/java/example/Analyzer.java'
             source.parent.mkdir(parents=True)
             source.write_text('import org.springframework.stereotype.Service;')
             self.assertIn('domain framework', architecture.inspect(root)[0])
 
     def test_own_project_and_jdk_are_allowed(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = self.make_root(temp, 'import java.math.BigInteger;\nimport io.github.cheshmakzanoon.portfolio.clearledger.Money;')
+            root = self.make_root(temp, 'import java.math.BigInteger;\nimport io.github.cheshmakzanoon.portfolio.daybook.Money;')
             self.assertEqual([], architecture.inspect(root))
 
     def test_dependency_cycle_fails(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'import java.time.Instant;')
             for name, dependency in [('one', 'two'), ('two', 'one')]:
-                pom = root / f'projects/01-clearledger/{name}/pom.xml'
+                pom = root / f'projects/01-daybook/{name}/pom.xml'
                 pom.parent.mkdir(parents=True)
                 pom.write_text(f'<project xmlns="http://maven.apache.org/POM/4.0.0"><artifactId>{name}</artifactId><dependencies><dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId><artifactId>{dependency}</artifactId></dependency></dependencies></project>')
             self.assertTrue(any('cycle' in item for item in architecture.inspect(root)))
@@ -101,8 +101,8 @@ class ArchitectureGateTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'import java.time.Instant;')
             for slug, artifact, dependency in [
-                    ('01-clearledger', 'ledger-api', 'quorumkv-raft'),
-                    ('03-quorumkv', 'quorumkv-raft', None)]:
+                    ('01-daybook', 'ledger-api', 'majority-raft'),
+                    ('03-majority', 'majority-raft', None)]:
                 pom = root / f'projects/{slug}/service/pom.xml'
                 pom.parent.mkdir(parents=True)
                 deps = (f'<dependencies><dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId>'
@@ -113,7 +113,7 @@ class ArchitectureGateTest(unittest.TestCase):
     def test_pure_module_rejects_declared_framework_dependency(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'import java.time.Instant;')
-            pom = root / 'projects/01-clearledger/ledger-domain/pom.xml'
+            pom = root / 'projects/01-daybook/ledger-domain/pom.xml'
             for scope, should_fail in [('compile', True), ('provided', True),
                                        ('runtime', True), ('test', False)]:
                 pom.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0">'
@@ -126,16 +126,16 @@ class ArchitectureGateTest(unittest.TestCase):
     def test_profile_dependencies_cannot_bypass_project_or_domain_boundaries(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'import java.time.Instant;')
-            target = root / 'projects/03-quorumkv/raft-core/pom.xml'
+            target = root / 'projects/03-majority/raft-core/pom.xml'
             target.parent.mkdir(parents=True)
             target.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0">'
-                              '<artifactId>quorumkv-raft</artifactId></project>')
-            pom = root / 'projects/01-clearledger/ledger-domain/pom.xml'
+                              '<artifactId>majority-raft</artifactId></project>')
+            pom = root / 'projects/01-daybook/ledger-domain/pom.xml'
             pom.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0">'
                            '<artifactId>ledger-domain</artifactId><profiles><profile><id>integration</id>'
                            '<activation><activeByDefault>true</activeByDefault></activation><dependencies>'
                            '<dependency><groupId>org.springframework</groupId><artifactId>spring-core</artifactId></dependency>'
-                           '<dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId><artifactId>quorumkv-raft</artifactId></dependency>'
+                           '<dependency><groupId>io.github.cheshmakzanoon.portfolio</groupId><artifactId>majority-raft</artifactId></dependency>'
                            '</dependencies></profile></profiles></project>')
             failures = architecture.inspect(root)
             self.assertTrue(any('domain framework dependency' in item for item in failures))
@@ -145,23 +145,23 @@ class ArchitectureGateTest(unittest.TestCase):
         compiler = shutil.which('javac') or str(Path(os.environ.get('JAVA_HOME', '/workspace/.tools/jdk-25')) / 'bin/javac')
         jdeps = str(Path(compiler).resolve().with_name('jdeps'))
         self.assertTrue(Path(compiler).is_file(), 'Tooling tests require the documented JDK')
-        for namespace in ('io.github.cheshmakzanoon.portfolio.clearledger', 'example'):
+        for namespace in ('io.github.cheshmakzanoon.portfolio.daybook', 'example'):
             with tempfile.TemporaryDirectory() as temp:
                 root = Path(temp)
-                project = root / 'projects/01-clearledger'
+                project = root / 'projects/01-daybook'
                 project.mkdir(parents=True)
                 make_reactor(project, ('ledger-domain',))
                 source = project / 'ledger-domain/src/main/java/example/Domain.java'
                 source.parent.mkdir(parents=True)
                 source.write_text('package ' + namespace + '; '
                                   'public class Domain { org.springframework.Context context; '
-                                  'io.github.cheshmakzanoon.portfolio.quorumkv.Other foreign; }')
+                                  'io.github.cheshmakzanoon.portfolio.majority.Other foreign; }')
                 support = root / 'fixture-support'
                 support.mkdir()
                 context = support / 'Context.java'
                 context.write_text('package org.springframework; public class Context {}')
                 other = support / 'Other.java'
-                other.write_text('package io.github.cheshmakzanoon.portfolio.quorumkv; public class Other {}')
+                other.write_text('package io.github.cheshmakzanoon.portfolio.majority; public class Other {}')
                 classes = project / 'ledger-domain/target/classes'
                 classes.mkdir(parents=True)
                 subprocess.run([compiler, '--release', '17', '-d', str(classes), str(source), str(context), str(other)],
@@ -173,7 +173,7 @@ class ArchitectureGateTest(unittest.TestCase):
 
     def test_compiled_architecture_requires_build_outputs(self):
         with tempfile.TemporaryDirectory() as temp:
-            project = Path(temp) / '01-clearledger'
+            project = Path(temp) / '01-daybook'
             project.mkdir()
             make_reactor(project, ('ledger-domain',))
             source = project / 'ledger-domain/src/main/java/Domain.java'
@@ -267,7 +267,7 @@ class ContainerInventoryGateTest(unittest.TestCase):
         inventory = root / 'docs/execution/container-images.json'
         inventory.parent.mkdir(parents=True)
         inventory.write_text(json.dumps({'images': [{'repoDigests': ['postgres@sha256:' + 'a' * 64]}]}))
-        compose = root / 'projects/01-clearledger/infra/compose.yaml'
+        compose = root / 'projects/01-daybook/infra/compose.yaml'
         compose.parent.mkdir(parents=True)
         compose.write_text('services:\n  postgres:\n    image: ' + image + '\n')
         return root
@@ -287,7 +287,7 @@ class ContainerInventoryGateTest(unittest.TestCase):
     def test_mutable_testcontainers_reference_fails(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'postgres:18.3@sha256:' + 'a' * 64)
-            source = root / 'projects/01-clearledger/verification/src/test/java/DatabaseIT.java'
+            source = root / 'projects/01-daybook/verification/src/test/java/DatabaseIT.java'
             source.parent.mkdir(parents=True)
             source.write_text('DockerImageName.parse(\n"postgres:18.3");')
             with self.assertRaises(ValueError):
@@ -296,12 +296,12 @@ class ContainerInventoryGateTest(unittest.TestCase):
     def test_flow_yaml_and_unresolved_container_arguments_fail_closed(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.make_root(temp, 'postgres:18.3@sha256:' + 'a' * 64)
-            extra = root / 'projects/01-clearledger/infra/extra.yaml'
+            extra = root / 'projects/01-daybook/infra/extra.yaml'
             extra.write_text('services: {extra: {image: "postgres:latest"}}\n')
             with self.assertRaises(ValueError):
                 container_images.inspect(root)
             extra.unlink()
-            source = root / 'projects/01-clearledger/verification/src/test/java/DatabaseIT.java'
+            source = root / 'projects/01-daybook/verification/src/test/java/DatabaseIT.java'
             source.parent.mkdir(parents=True)
             for text in ('new PostgreSQLContainer<>(IMAGE);', 'DockerImageName.parse(IMAGE);'):
                 source.write_text(text)

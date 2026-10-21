@@ -1,0 +1,639 @@
+{
+  "schemaVersion": 2,
+  "project": "backtrace",
+  "baseRevision": "2183d0a4c60d14732c5d03ca93a73caf82781acd",
+  "sourceFingerprint": "3d9062b72d0f23fea80975b08d6fcaf0dfbf91a2061d893129e11d0d86f6d849",
+  "sourceAndBuildSha256": {
+    ".mvn/wrapper/maven-wrapper.properties": "255ec440cb86971daf3c2b741a610f7142c58914b90fd935965e9d0265df2690",
+    "mvnw": "c30af25684ed209b0c75b889bef71706e5da7dae993cf2a924f8fc1990d9dc71",
+    "pom.xml": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+    "projects/08-backtrace/agent/pom.xml": "4b794502cb2acf99c5bce55b44900b0afd2dbfb3c438e126043d6d4d0cff2070",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/AgentConfig.java": "d4366761f73afda3fe1b75d33f0dc9e0052c94d110cc32b3d37857e6aecff667",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/InstrumentationPolicy.java": "503a42b109736b528b0e85c65a940d034fac245d5533c5040c1abf0b4f3e3463",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/SafeHierarchy.java": "8df24c0ba20b49c2e5208fb6505d6dd90c5e98d48b62c70e7b746417284a5355",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/BacktracePremain.java": "3057b4f2596b7bfecdbf39d23d8962e1cfa731596b3c1e56aaeed28e1cc553d3",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingSession.java": "c9d80de3cbc3cb3090b6df19d0a1b28c1bcb891b0e7c54e7b9b557e4f6288c0e",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingStatistics.java": "5221cbac71961a40fe134198778e44f0eea070134e783ddf471eb1857504918c",
+    "projects/08-backtrace/agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingTransformer.java": "ad1bf9358abe8ed1db24100aaceb186341fb2bfe5171e03230114cc7bb1deaee",
+    "projects/08-backtrace/agent/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/AgentConfigTest.java": "f90e0bcaf3e29ad27f5424678fa76c5fa5cd587d0c4286963cb99ea0f0e00672",
+    "projects/08-backtrace/agent/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/SafeHierarchyTest.java": "45f3225880a234440ed0dc117f617376fde7edea0edfbfd949d3d98217d112f5",
+    "projects/08-backtrace/agent/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingSessionTest.java": "f37f72d21aff16404644004ae7f314bcd06cddff268955b0cd8e051873639889",
+    "projects/08-backtrace/agent/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingStatisticsTest.java": "abecc1cb60b2f6f4c5d8a5f0dc664f7439a9782ca4b734fc6d1bc1aa5e73867f",
+    "projects/08-backtrace/agent/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/compatibility/TransformationTest.java": "5310f0c17ba3916bcf847ceb6ebed03ba987e83a98b652ea348b0b3140d42278",
+    "projects/08-backtrace/analysis/pom.xml": "67be726066055282cc147af2b104d236ce7b64db2de6493465ac927454a4ee74",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/AllocationSummary.java": "283e361e19019526b9b299f017cfc19babddbd96bcc55f5a36783f1f40c3240a",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/ContentionSummary.java": "2d10d76038731351fcb217879cf8731119baaa755dd0654c6f01c221444c0031",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/NormalizedEvent.java": "2ed327c08e211f594eb727582a0b68b0b4bdf318124d9fa1de881e627abb1c88",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/Profile.java": "7e18f131be0b899a299937ec3f61bc0b68a35c572eaec1a1c3de2ac24c3abccd",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/ProfileAccumulator.java": "3823ec36acf6999c319c9b438f8fb29cd44615077d5d9f7b3b35fe3128335a46",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/ProfileComparator.java": "5be891f0db5a5bc625903f6d5917cc1ec0866307a1f6da6c0e64b110035f0733",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/StackAggregator.java": "141f32d0f2c9f8243873c833aaf79b7d3757b53fe29f48db426d3e09df026236",
+    "projects/08-backtrace/analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/WindowAccumulator.java": "fd4042b8763e6771a3fa9f193d3156a743c7aef7c11d813bfb09f3ec2d73b275",
+    "projects/08-backtrace/analysis/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/AggregationTest.java": "54692b08213494e22ba72593590a1f1a3c37ee47d0ddcf025c322616c340024c",
+    "projects/08-backtrace/analysis/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/LimitsTest.java": "f63ec660b7fece76207bfb95d32f5a2e90514194ecdafcb1b649d3594a990c5b",
+    "projects/08-backtrace/analysis/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/StatisticalOracleTest.java": "01d4259ec73a420855d95a6be3a214e76fd09ad8cd45984138a52a3faf547004",
+    "projects/08-backtrace/cli/pom.xml": "344071ce2f7bb30c8078a1247fd018194a6e0c20e512e8892709fd5e5b9f133b",
+    "projects/08-backtrace/cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/BenchmarkRunner.java": "4e31a8d802eb8f123a1fa9eb28a52acd1671379aaee262e5f423b625f527fb54",
+    "projects/08-backtrace/cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/BoundedStress.java": "f38f9cbac4a2d43c9d3cf69fb18ed7b0c02af85ef62915a9d251a6a19304d16d",
+    "projects/08-backtrace/cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/ChildJvm.java": "0f96f46a04009cc2dee695bb3e81d60ae085b17914da53c9a07636317921aad8",
+    "projects/08-backtrace/cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/ObserverStress.java": "8d65b087a6686acd8a7f8793d99a1e88fa2fa84cf30c55667a1aaa34fd41eff5",
+    "projects/08-backtrace/cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/SettingsManifest.java": "1c573fee1e94c7bbe70ad0f240d3de9b478f33c3cbae82512abd19c9db9ad1cd",
+    "projects/08-backtrace/cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/BacktraceCli.java": "5acb5e578bd576b25e49a11520a7553d91f2423ba42a85fa556e0f8fa6273f1d",
+    "projects/08-backtrace/cli/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/ChildJvmTest.java": "7c4be692a91d1aaac5cd95e456595f5b186a45d57777343c9825763a2118e40c",
+    "projects/08-backtrace/cli/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/ObserverStressTest.java": "3ad46e184b9e9ddc2ee4e44f4dceaef1ba6b675dad0d3987c158aff46a41fd16",
+    "projects/08-backtrace/cli/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/SettingsManifestTest.java": "e8721811a736e3c7fd3259bcbc8db766e167ad0e76143849f1cc0f0f2c83faf6",
+    "projects/08-backtrace/compatibility/pom.xml": "e553b6c81adca841a67d6072cd2c54624af861827b0a31ae7e19ed6653e4f56b",
+    "projects/08-backtrace/compatibility/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/compatibility/CollectionSettingsTest.java": "b6e3f919ecdad9269831dbabf30fe1052913f01bab4d95899b951b23e9dae56e",
+    "projects/08-backtrace/compatibility/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/compatibility/StartupFaultIT.java": "3d40835020750ac3ce624ce591e8f4eb7e75c4206581339ce9d7e9155c7b72aa",
+    "projects/08-backtrace/compatibility/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/compatibility/WorkloadLifecycleTest.java": "ba37291ddadd8ccdf1fdbe2dd0b98a5511f12ed050e4fec079aaa4cf1a9d40be",
+    "projects/08-backtrace/contracts/report.schema.json": "87732144c8955cebebd667c5c94ecc16ca2c2de9137d6c3de997838609617449",
+    "projects/08-backtrace/infra/compose.yaml": "468c168778d6640fdf8b2c09088010e78f13ae05a533e771fc430e6ec3ced621",
+    "projects/08-backtrace/jfr/pom.xml": "42c6f9f6f2c41b5d2c84f700cb82671522988633937c2fae0c374f71ee37f0c6",
+    "projects/08-backtrace/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventCapabilities.java": "2f77a5aaf72db2fc96739c8992b8db5af5a202d541e7648becc917accb85f7a4",
+    "projects/08-backtrace/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventNormalizer.java": "63ca06180fd668852ad0ec685a0413de9b25127bbbd8d4ddf251d4c0a366c525",
+    "projects/08-backtrace/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventProcessor.java": "f354d811164058015458dd1fbb668adb03531609c9023ea11d1898ac067af8aa",
+    "projects/08-backtrace/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventQueue.java": "dca61ec3ec7686f473894791f67107b15c2c5fcfa1a213df719ef58965bbee08",
+    "projects/08-backtrace/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/RecordingController.java": "81eced326e5a9d3a8f39fff5e21657217e595e418a9481f4ac4d784c9335b956",
+    "projects/08-backtrace/jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/RecordingImporter.java": "84aa9b611876403c1c4b367f03568aeefbe82b1a44b2358304b4fa61277ed6be",
+    "projects/08-backtrace/jfr/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/CollectionTest.java": "6682d6cd9eae62b604e56679823ed7ba10711a1f1bfb125eed77bd97553da5ed",
+    "projects/08-backtrace/jfr/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventProcessorTest.java": "92919caf51992e353aef1191a1ed526c18fc573923fceedf206d16821e5c05a5",
+    "projects/08-backtrace/jfr/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/PrivacyTest.java": "ad7a6b8b412a5d87276e06f5bd1d2daed0fbc57d9684aa3ca7206c0dcdeb4400",
+    "projects/08-backtrace/pom.xml": "0bd4091267520c528af3b792f60b6f833bba11a636191d8adb735b85417593f5",
+    "projects/08-backtrace/probe/pom.xml": "ac648c53fbf049f59922e18f4ed96c2c9967208630ab02f960449093a999419a",
+    "projects/08-backtrace/probe/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/MethodRegistry.java": "448f88d7bd71a6e42f28ab509fd6a100cb8e852e2e0e98ee300b1662c9cce4e2",
+    "projects/08-backtrace/probe/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/TimingBuffer.java": "17bc2c034756fe4e5812326b5c76e5e774199c735be7eca72c5dc79d3bc77361",
+    "projects/08-backtrace/probe/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/TimingProbe.java": "5e3633560739ceb8e687afac33f6a39d7117c39df6b9734ffe23fa8105c442ed",
+    "projects/08-backtrace/probe/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/PrimitiveDrainTest.java": "67ba1a5de084fdd52d8af90abbe28354fa4c0511b1eed5aeeb9a8527ff3c02ee",
+    "projects/08-backtrace/probe/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/ProbeLimitsTest.java": "95f0aa0fb8a990b3e6f5bb9afb3a4edd6c1dcaa4b9908e2306c2d65a59600933",
+    "projects/08-backtrace/probe/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/ProbeTest.java": "88c0fff79f889692aab3a2ba277669a0b89121c3af279eb27825c4a0c110448a",
+    "projects/08-backtrace/report/pom.xml": "93dff5e8b11e03839d470ecda33f1f51afe09eb55e4281edc1cb81f978e3c9dd",
+    "projects/08-backtrace/report/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/report/ReportDocument.java": "dadbcd7494bcea645ae416e12cc753f15c344018318e3918203626a9c25af8ac",
+    "projects/08-backtrace/report/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/report/ReportValidator.java": "91e85acbe6383b72a5ad637e2d673aabcc32fac947f0fb9e7218e6ae02e6ac0f",
+    "projects/08-backtrace/report/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/report/ReportWriter.java": "df0559f3d333525d9b771a7cd749e9b473e3fe2fe9dc6984f0c571e89df74e27",
+    "projects/08-backtrace/report/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/report/TimingImporter.java": "a59acc1009a2e9ba64bbbf15782ba48012176dcc3c3bbba8adbf9d83317c2357",
+    "projects/08-backtrace/report/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/report/ReportTest.java": "dddecd5214fb68c2174079280cdd56eefd118a4cb6127cc1cffa6eb4884d4062",
+    "projects/08-backtrace/report/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/report/ReportValidationTest.java": "fe9544e8ae534f4f74b39e9c183cf2411bc374920e214d8ed1d91bab28526b8c",
+    "projects/08-backtrace/report/src/test/java/io/github/cheshmakzanoon/portfolio/backtrace/report/TimingImporterTest.java": "8009f81bcbe099e3f5be32a8c5f0f8311c49d068122c742b56b21b735e16ec5a",
+    "projects/08-backtrace/scripts/benchmark.sh": "b0a0fed747274051eeab16bcedf87741331e80ef06b3ff6aa57d791d0653b5f0",
+    "projects/08-backtrace/scripts/check-report-ui.py": "5b717342ba69a797f1894ca16473f3aadca2559234e556bc91d83742022be11d",
+    "projects/08-backtrace/scripts/common.sh": "d9715a95ebd4e6603dbc7f786b020dfecec9c6156b9f7b97e198ba3a1a396602",
+    "projects/08-backtrace/scripts/demo.sh": "9624d7000ea9d0eedb489c8d6fa954c3e9b627ef75cb08885cdecd7145a4f437",
+    "projects/08-backtrace/scripts/down.sh": "e44f7acd806a5d772c580f86803912e3942f7c18ef6338c5a250e4bef5cccc59",
+    "projects/08-backtrace/scripts/evidence.py": "f70abaab4c95de5c701567eeb3627c96845fa05771ac80a59f1929896acd03d6",
+    "projects/08-backtrace/scripts/regression-trials.sh": "93ac53cd48e0bc19c6586bcce16c1a3b4e84fffe144dd074c742e721f59ad485",
+    "projects/08-backtrace/scripts/reset-demo.sh": "4472bbf8a83a2ca77fcca14b15a2f7e21e6b72a2cb0275e075b674c9320cc19e",
+    "projects/08-backtrace/scripts/up.sh": "d09571dbaaec5b7a0ca14edc6ef4a0b11d7dc5733ebc7f176919e116ebc4e86b",
+    "projects/08-backtrace/workloads/pom.xml": "7ae2ee84e5b878d835b294b469b549cb6697c7664a71385e7e6977e093d8579f",
+    "projects/08-backtrace/workloads/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/workloads/ControlledWorkload.java": "b5f67079b92660bcaeb088bc8d672d665e16b565ec454df17febe6d2dc455764",
+    "projects/08-backtrace/workloads/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/workloads/WorkloadMain.java": "f2292df465a9e0b94e2e7081468d8565e72396fd9e7ad3d95f4f93950902d9b6",
+    "scripts/cloud-env.sh": "0f03a40d4b5cd374e7e8694909752d150a24f5beba88d991d34a8dac5f5101cc",
+    "scripts/with-build-slot.sh": "7605e1de66fd0f88cb5765ccec1f2169268f655b10fcb174c437d6388e0adf59"
+  },
+  "tests": {
+    "counts": {
+      "tests": 164,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": [
+      {
+        "module": "probe",
+        "counts": {
+          "surefire": {
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "analysis",
+        "counts": {
+          "surefire": {
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "jfr",
+        "counts": {
+          "surefire": {
+            "tests": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "agent",
+        "counts": {
+          "surefire": {
+            "tests": 66,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "report",
+        "counts": {
+          "surefire": {
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "cli",
+        "counts": {
+          "surefire": {
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "compatibility",
+        "counts": {
+          "surefire": {
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ],
+    "failures": []
+  },
+  "mutations": {
+    "modules": [
+      {
+        "module": "probe",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 81,
+          "SURVIVED": 10
+        },
+        "killedPercent": 89.01098901098901,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "analysis",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 173,
+          "SURVIVED": 6
+        },
+        "killedPercent": 96.64804469273743,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "jfr",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 125,
+          "SURVIVED": 14,
+          "TIMED_OUT": 3,
+          "NO_COVERAGE": 10
+        },
+        "killedPercent": 82.23684210526316,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "agent",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 115,
+          "SURVIVED": 18,
+          "NO_COVERAGE": 2
+        },
+        "killedPercent": 85.18518518518519,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "report",
+        "reports": 1,
+        "outcomes": {
+          "SURVIVED": 24,
+          "KILLED": 85
+        },
+        "killedPercent": 77.98165137614679,
+        "requiredKilledPercent": 70
+      },
+      {
+        "module": "cli",
+        "reports": 1,
+        "outcomes": {
+          "KILLED": 14
+        },
+        "killedPercent": 100.0,
+        "requiredKilledPercent": 70
+      }
+    ],
+    "outcomes": {
+      "KILLED": 593,
+      "SURVIVED": 72,
+      "TIMED_OUT": 3,
+      "NO_COVERAGE": 12
+    },
+    "failures": []
+  },
+  "notRun": [
+    "full overhead remeasurement",
+    "long observer stress",
+    "Windows/macOS validation",
+    "clean-checkout/hosted release validation"
+  ],
+  "status": "CORRECTNESS_MUTATION_BROWSER_PASS_PERFORMANCE_ACCEPTANCE_PENDING",
+  "recordedAt": "2026-10-20T09:31:31.859882+00:00",
+  "toolchain": {
+    "jdk": "Eclipse Temurin 25.0.4.1+1-LTS",
+    "maven": "Apache Maven 3.10.0",
+    "os": "Linux x86-64"
+  },
+  "scope": {
+    "productionClasses": 36,
+    "originalProductionClassesReviewed": 32,
+    "extractedComponents": [
+      "EventProcessor",
+      "TimingSession",
+      "ReportValidator",
+      "ChildJvm"
+    ],
+    "implementationModules": [
+      "probe",
+      "analysis",
+      "jfr",
+      "agent",
+      "report",
+      "cli",
+      "workloads"
+    ],
+    "compatibilityModule": "test fixtures only",
+    "mutationSourceFiles": 19,
+    "mutationModules": 6,
+    "mutationMinimumKilledPercentPerModule": 70,
+    "sourceFingerprintScope": "Sorted repository-relative project Java/XML/JSON/YAML/shell/Python inputs excluding target and evidence; root POM/wrapper/.mvn/cloud environment/build-slot inputs, with NUL-delimited path/content"
+  },
+  "commands": [
+    {
+      "command": "./mvnw -f projects/08-backtrace/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A08/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify",
+      "finishedAt": "2026-10-20T09:22:14Z",
+      "exitCode": 0,
+      "localLog": ".work/A08/deep-final-2.log",
+      "logSha256": "8ce554874ad8b48551ddf228b9227c813e00ee27af1fc691eaaedf802ef5a344"
+    },
+    {
+      "command": "./mvnw -f projects/08-backtrace/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A08/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+      "finishedAt": "2026-10-20T09:27:08Z",
+      "exitCode": 0,
+      "localLog": ".work/A08/deep-final-integration.log",
+      "logSha256": "33617c356815e264291a5508949b613c7218483b3698511f0943b132f3dfc58c"
+    }
+  ],
+  "suiteSplit": {
+    "surefire": 157,
+    "failsafe": 7
+  },
+  "suiteReports": [
+    {
+      "path": "projects/08-backtrace/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.agent.AgentConfigTest.xml",
+      "sha256": "86a3c7f3e698dbc16ada989dbc9b80536c67a664e9e3d6cf1eef36d8926d48f9",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.agent.AgentConfigTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.agent.SafeHierarchyTest.xml",
+      "sha256": "0a6378814096ebe040d59932e2da70f89a350be914c2c384742005d94fe9c71d",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.agent.SafeHierarchyTest",
+      "counts": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.agent.TimingSessionTest.xml",
+      "sha256": "b3d799dbc5c957baf4576a5162ebd1c84314c95a72414382a7a30ac29d51612e",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.agent.TimingSessionTest",
+      "counts": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.agent.TimingStatisticsTest.xml",
+      "sha256": "4ce4d953cecdbf44d1f1030b12bbcdf79941704ca53a8b323eca1dcf47264a8d",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.agent.TimingStatisticsTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/agent/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.compatibility.TransformationTest.xml",
+      "sha256": "9a228212c18d7cb5e8eb995dee9ae1a4f8d8b58d2767fb19f86e6aba322839cc",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.compatibility.TransformationTest",
+      "counts": {
+        "tests": 50,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.analysis.AggregationTest.xml",
+      "sha256": "77686c25a29aeba0b42c0a1b6a50ce8744e766c28a16055b03a0a4894222a034",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.analysis.AggregationTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.analysis.LimitsTest.xml",
+      "sha256": "1d4421ff9f1cb56a4572ba3a54e6fec181b8b0e5080cabf3f90d3a2fe479e2f1",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.analysis.LimitsTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/analysis/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.analysis.StatisticalOracleTest.xml",
+      "sha256": "470592c7732bc4c985483427c523fc7eebd6477af190238fa20636550f14fe06",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.analysis.StatisticalOracleTest",
+      "counts": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.cli.ChildJvmTest.xml",
+      "sha256": "3341f11c4e599ec64070ac2f1d8418c4ac1b9e989476b5427065a84fba57e7da",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.cli.ChildJvmTest",
+      "counts": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.cli.ObserverStressTest.xml",
+      "sha256": "dfadf01b06f2f3642969753fcea94386e9cf30ec003c603727e2cfd6b002f70f",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.cli.ObserverStressTest",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.cli.SettingsManifestTest.xml",
+      "sha256": "5b9008a45cc40678ce6a6022c4ec8d56eab741ecaf5ab9628eb5482c97e9d7dd",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.cli.SettingsManifestTest",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/compatibility/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.compatibility.CollectionSettingsTest.xml",
+      "sha256": "7bf3779e3ee94e184df755fcce91f282662819ea0d557a1fb68d079157cee398",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.compatibility.CollectionSettingsTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/compatibility/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.compatibility.WorkloadLifecycleTest.xml",
+      "sha256": "1652ef2383457ce152e6f581ba23c9930e55d71be56e671c1d56a18e6698c806",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.compatibility.WorkloadLifecycleTest",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.jfr.CollectionTest.xml",
+      "sha256": "36e0fc51c2789ce362e5a6ff84800374362a9a927d5ebb2dd01ad2c71287efca",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.jfr.CollectionTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.jfr.EventProcessorTest.xml",
+      "sha256": "db5a02beb7f355b7feae8f7a195992c160f5627d9823ff96a5736339e630ed8c",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.jfr.EventProcessorTest",
+      "counts": {
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/jfr/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.jfr.PrivacyTest.xml",
+      "sha256": "e4046603138da87a25e63b464bd2abbf32939a525f01244b086d00cb62a2cc2b",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.jfr.PrivacyTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.probe.PrimitiveDrainTest.xml",
+      "sha256": "4476c346c53de6039c8e575c3fe48a89808178bde8bb2ed9d5afe77daa14d104",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.probe.PrimitiveDrainTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.probe.ProbeLimitsTest.xml",
+      "sha256": "d0eee12252d7f88dcae238cb590dd0cec99a8ddf7396389f972c4c08086301ca",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.probe.ProbeLimitsTest",
+      "counts": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/probe/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.probe.ProbeTest.xml",
+      "sha256": "f86da3f70516a768c045ac45999b00f7511f9b13b2b3a8b13b8ab375c90537d9",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.probe.ProbeTest",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.report.ReportTest.xml",
+      "sha256": "9558b5c839de96a6b1db241d5aee1e26e3c5f8208f66133ec6cb01ab178f070d",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.report.ReportTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.report.ReportValidationTest.xml",
+      "sha256": "2d8136f7b764aa7c98b5975079b057612f8cea4079ba80e9f1d4f9da9dc5cd00",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.report.ReportValidationTest",
+      "counts": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/report/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.report.TimingImporterTest.xml",
+      "sha256": "1d50f22d70a31cda7c87c9748211db746a4e696eb6a2bca525aa2c1f2f6e963e",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.report.TimingImporterTest",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "projects/08-backtrace/compatibility/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.backtrace.compatibility.StartupFaultIT.xml",
+      "sha256": "2fa8b39e2c1be6589db4a926cad8ddba6d8745acfb63bd87b7c69757aad3f554",
+      "suite": "io.github.cheshmakzanoon.portfolio.backtrace.compatibility.StartupFaultIT",
+      "counts": {
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "packagedJvmIntegrationMethods": [
+    "configLimitsAndUnknownKeysAreStrict",
+    "duplicateAgentStartupCannotDisableOrReplaceTheFirstObserversSink",
+    "installedShadedAgentSaturatesQueueButPreservesHost",
+    "malformedConfigAndUnwritableOutputDoNotPreventHostStartup",
+    "methodCeilingIsExplicitInActualPackagedReport",
+    "priorObserverArtifactsDisableCollectionWithoutMixingRunsOrPreventingHostStartup",
+    "systemExitSealsAdmissionAndReportsPausedProducerAfterConsumerFinishes"
+  ],
+  "mutationSourceReceipt": {
+    "shared_parent_pom_sha256": "f6dc1273025967dfc4acaeb61993bf4c404c84484ab2a8f098244eb6af9ecec8",
+    "mutated_source_sha256": {
+      "agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/InstrumentationPolicy.java": "503a42b109736b528b0e85c65a940d034fac245d5533c5040c1abf0b4f3e3463",
+      "agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/SafeHierarchy.java": "8df24c0ba20b49c2e5208fb6505d6dd90c5e98d48b62c70e7b746417284a5355",
+      "agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingStatistics.java": "5221cbac71961a40fe134198778e44f0eea070134e783ddf471eb1857504918c",
+      "agent/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/agent/TimingTransformer.java": "ad1bf9358abe8ed1db24100aaceb186341fb2bfe5171e03230114cc7bb1deaee",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/ProfileComparator.java": "5be891f0db5a5bc625903f6d5917cc1ec0866307a1f6da6c0e64b110035f0733",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/StackAggregator.java": "141f32d0f2c9f8243873c833aaf79b7d3757b53fe29f48db426d3e09df026236",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/ProfileAccumulator.java": "3823ec36acf6999c319c9b438f8fb29cd44615077d5d9f7b3b35fe3128335a46",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/ContentionSummary.java": "2d10d76038731351fcb217879cf8731119baaa755dd0654c6f01c221444c0031",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/WindowAccumulator.java": "fd4042b8763e6771a3fa9f193d3156a743c7aef7c11d813bfb09f3ec2d73b275",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/AllocationSummary.java": "283e361e19019526b9b299f017cfc19babddbd96bcc55f5a36783f1f40c3240a",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/NormalizedEvent.java": "2ed327c08e211f594eb727582a0b68b0b4bdf318124d9fa1de881e627abb1c88",
+      "analysis/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/analysis/Profile.java": "7e18f131be0b899a299937ec3f61bc0b68a35c572eaec1a1c3de2ac24c3abccd",
+      "cli/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/cli/ChildJvm.java": "0f96f46a04009cc2dee695bb3e81d60ae085b17914da53c9a07636317921aad8",
+      "jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventProcessor.java": "f354d811164058015458dd1fbb668adb03531609c9023ea11d1898ac067af8aa",
+      "jfr/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/jfr/EventQueue.java": "dca61ec3ec7686f473894791f67107b15c2c5fcfa1a213df719ef58965bbee08",
+      "probe/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/TimingBuffer.java": "17bc2c034756fe4e5812326b5c76e5e774199c735be7eca72c5dc79d3bc77361",
+      "probe/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/TimingProbe.java": "5e3633560739ceb8e687afac33f6a39d7117c39df6b9734ffe23fa8105c442ed",
+      "probe/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/probe/MethodRegistry.java": "448f88d7bd71a6e42f28ab509fd6a100cb8e852e2e0e98ee300b1662c9cce4e2",
+      "report/src/main/java/io/github/cheshmakzanoon/portfolio/backtrace/report/ReportValidator.java": "91e85acbe6383b72a5ad637e2d673aabcc32fac947f0fb9e7218e6ae02e6ac0f"
+    },
+    "mutation_xml_sha256": {
+      "agent": "2264989a0ad8ffaa86f3867806ed2c5f0ad02eba3567fc3eea1ca35f8d842893",
+      "analysis": "6b5761cec0e195c1b87b864f845b9dd8ca360e7de0cd67f4d75200b18de58a8c",
+      "cli": "3485918033eaf6e3a9330edfda64bc858eb16ea261f5460e043941390dd380ba",
+      "jfr": "cf0b998e9372f9c3e148b381b8d11ce484cecbb9e09b33fd5e1968a2f81c1e9f",
+      "probe": "e04fc95128e9905fc7eae52dceaeefd60479ae9b1362dac6ced1f77248de5455",
+      "report": "918b46060cc24fbb31387bf710c4d659de475e01f31ee5f75a8d7bb0f00c43a3"
+    }
+  },
+  "mutationReceiptExplanation": "All 19 target source hashes, all six mutation XML hashes and the shared parent POM match the completed combined campaign. The later integration rebuild covers final ReportWriter/ReportDocument wording, layout and a nonsemantic CLI comment outside PIT targets.",
+  "mutationInventory": "deep-mutation-survivors.json",
+  "browserReceipt": "deep-browser.json",
+  "freshGateRunStartedEpoch": 1792487610,
+  "validation": [
+    "Fresh repository test gate: 164 tests, zero failures/errors/skips",
+    "Fresh strict repository mutation gate: all six module thresholds pass",
+    "Mutation source/XML/shared-POM identity rechecked after final integration rebuild",
+    "Shell syntax and Python source compile checks",
+    "Relative Markdown target/fragment checks",
+    "git diff --check",
+    "check-stopped.py backtrace: no project process/container/listener"
+  ],
+  "earlierFailedCampaign": {
+    "localLog": ".work/A08/deep-final-1.log",
+    "logSha256": "0ccc09391ea9da8da5a32b89ebf85962d276493b3b5ef5f3ff7589c8b0505024",
+    "failure": "CLI strict mutation score 9/14 (64.29%) below unchanged 70% threshold",
+    "correction": "Added process termination-confirmation and interrupted-cleanup schedules; final CLI result 14/14"
+  },
+  "limitations": [
+    "The first complete 84-JVM overhead study failed; no performance acceptance or speedup is claimed.",
+    "No fresh full overhead, long observer stress or planted-cause study was run.",
+    "72 surviving, 12 uncovered and three timed-out mutations remain; selected mutation coverage is not universal fault detection.",
+    "JFR decoder/native memory and external filesystem writers remain outside aggregate-only hard bounds.",
+    "Windows/macOS, other JVM implementations, native images and dynamic attachment were not validated.",
+    "Clean-checkout/hosted release verification remains a separate repository-level gate."
+  ]
+}

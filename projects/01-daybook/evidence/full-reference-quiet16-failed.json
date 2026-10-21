@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "project": "daybook",
+  "status": "FAIL_PARTIAL_REFERENCE_STUDY",
+  "originalAttempt": ".work/A01/full-reference/20261018T084821Z-d8958190",
+  "finishedAtUtc": "2026-10-18T09:13:34Z",
+  "elapsedSeconds": 1513.716,
+  "originalExitCode": 1,
+  "downExitCode": 0,
+  "sourceRevision": "working-tree:47936597eef8a1018263920d1d7b00a9b051fb2ecf293543d7e0e805c27f2bf5",
+  "runnerSha256": "04539a854e9feacebeb2a94e49c1cf4630a0bfcb5cfcc34c7bac6ed5b37dc239",
+  "passedFullTrials": ["r1-w1", "r1-w8"],
+  "failedTrial": {
+    "id": "r1-w32",
+    "completedInputGroups": 99998,
+    "failedInputGroups": 2,
+    "clientRetryExhaustions": 1,
+    "clientRetryAttempts": 2506,
+    "temporaryClientResults": 2508,
+    "capturedSqlState": "40001",
+    "capturedLocation": "idempotency_receipt insert in post_journal",
+    "interpretation": "Observed SSI pivot rejection; complete dependency cycle not established"
+  },
+  "laterTrialsNotRun": 6,
+  "secondaryFailure": "Final raw-output-copy disk reserve guard refused copying; originals retained",
+  "preservation": {
+    "status": "PASS_COPY_ONLY",
+    "path": "/tmp/daybook-quiet16-preservation-20261018T091617Z",
+    "fileCount": 339,
+    "bytes": 270557763,
+    "integrity": "Every copied file SHA-256 verified; original source compared with attempt baseline",
+    "databaseSnapshots": "Three retained databases dumped with PostgreSQL18 custom format and original ACLs, pg_restore --list exit0; roles omit password hashes",
+    "originals": "Workspace raw evidence and stopped database volume retained"
+  },
+  "currentRepairStatus": "Subsequent bounded jitter source passed39-method integration/ordinary verification, selected mutation checks and768+96 functional contention case; see retry-jitter-certification.json. This does not change quiet16 failure or establish full workload acceptance.",
+  "acceptance": "No nine-run performance PASS or successful full-study claim"
+}

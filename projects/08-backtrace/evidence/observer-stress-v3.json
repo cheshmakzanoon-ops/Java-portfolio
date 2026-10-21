@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "project": "backtrace",
+  "acceptanceGate": "P08-A6",
+  "status": "PASS",
+  "scope": "current-v3 full observer functional boundedness; not overhead acceptance",
+  "buildInputFingerprint": "9e98ad70e9ec2e5ad8bbdf0c54baf1f24d02f461975f7dea00c2d26fd90fc9d1",
+  "agentSha256": "094eb380612ecdd362fba1e3b986482de3cec361e3b8c36550a25b1b9af28055",
+  "collectionConfiguration": "v3-allocation50-park-class-only",
+  "declaredEventSettings": {
+    "executionPeriod": "20 ms",
+    "allocationThrottle": "50/s",
+    "monitorThreshold": "2 ms",
+    "parkThreshold": "2 ms",
+    "parkStackTrace": false,
+    "allocationStackTrace": true,
+    "monitorStackTrace": true,
+    "allSixCategoriesRetained": true
+  },
+  "runtimeArtifacts": [
+    {
+      "path": "/workspace/Java-portfolio/projects/08-backtrace/cli/target/backtrace-cli-1.0.0-SNAPSHOT.jar",
+      "sha256": "345d93b7e0674a00f929fb26dff6cb5792309689643ec62bff75ea41dd4e74f4"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-backtrace/jfr/target/backtrace-jfr-1.0.0-SNAPSHOT.jar",
+      "sha256": "21ee9651c15f5bb2e79268b7941c5ff9c5a6c25a0fa59faa0543f40fbe598ed0"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-backtrace/probe/target/backtrace-probe-1.0.0-SNAPSHOT.jar",
+      "sha256": "295bbd18c9e859886db71194228c7681b60581a5ba11668f974652624e29318a"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-backtrace/analysis/target/backtrace-analysis-1.0.0-SNAPSHOT.jar",
+      "sha256": "9a6c8b0311b7a1bc8dd5ec34e088c12690fb1d36be6454b584fc05c3f44aeeba"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-backtrace/report/target/backtrace-report-1.0.0-SNAPSHOT.jar",
+      "sha256": "4dfe9e834dd44e678eac33d675db204321ea04aaf269f53f4c771486dd3e5c3d"
+    },
+    {
+      "path": "/workspace/Java-portfolio/projects/08-backtrace/workloads/target/backtrace-workloads-1.0.0-SNAPSHOT.jar",
+      "sha256": "1076e80bfafa914c479198e9414d3d7b15b5c8e07c6d095b59bb4b8ecfc899e9"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/org/hdrhistogram/HdrHistogram/2.2.2/HdrHistogram-2.2.2.jar",
+      "sha256": "22d1d4316c4ec13a68b559e98c8256d69071593731da96136640f864fa14fad8"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-databind/2.21.5/jackson-databind-2.21.5.jar",
+      "sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+    },
+    {
+      "path": "/workspace/Java-portfolio/.work/A08/m2/com/fasterxml/jackson/core/jackson-core/2.21.5/jackson-core-2.21.5.jar",
+      "sha256": "b64b5874162b503a0e58a8f7758266e8dd9f91bf49e3a59ae0b5f47589a231b7"
+    }
+  ],
+  "context": {
+    "schemaVersion": 1,
+    "startedAtUtc": "2026-10-18T08:11:16.739441+00:00",
+    "sourceFingerprint": "9e98ad70e9ec2e5ad8bbdf0c54baf1f24d02f461975f7dea00c2d26fd90fc9d1",
+    "collectionConfiguration": "v3-allocation50-park-class-only",
+    "agentSha256": "094eb380612ecdd362fba1e3b986482de3cec361e3b8c36550a25b1b9af28055",
+    "reservation": "quiet-validation-13-backtrace-stress",
+    "scope": "functional settings/cause/boundedness validation; not overhead acceptance",
+    "completedAtUtc": "2026-10-18T08:31:25.651561+00:00",
+    "exitCode": 0
+  },
+  "observed": {
+    "stress": {
+      "allWindowsIncomplete": true,
+      "boundedMethods": 10000,
+      "boundedWindows": 900,
+      "contention": "functional stress on shared build host; not overhead evidence",
+      "elapsedSeconds": 1202.66918876,
+      "fixtureSecretAbsent": true,
+      "hostOperations": [
+        2690660,
+        5196684,
+        135751,
+        135645
+      ],
+      "hostWorkerFailed": false,
+      "observerDirectoryBytes": 34529357,
+      "overflowCounters": {
+        "allocationOverflow": 0,
+        "callbackFailures": 0,
+        "clippedStrings": 61,
+        "consumerFailures": 0,
+        "contentionOverflow": 0,
+        "durationClipped": 0,
+        "jfrDataLossBytes": 0,
+        "missingSampleStacks": 0,
+        "queueDrops": 58999215,
+        "stackOverflow": 340866,
+        "timingOverflow": 0,
+        "truncatedStacks": 0,
+        "unsupportedFields": 0,
+        "windowOverflow": 29552
+      },
+      "passed": true,
+      "peakConservativeQueuePayloadBytes": 27679440,
+      "peakObservedHeapBytes": 208660048,
+      "peakObserverDirectoryBytes": 34529357,
+      "profileEventCount": 182393,
+      "queueDrops": 58999215,
+      "queueRetainedBytesAfterDrain": 0,
+      "recordingBytes": 29677582,
+      "requestedSeconds": 1200,
+      "stopReason": "closed",
+      "syntheticIngressOffered": 58234000
+    },
+    "agentStatus": {
+      "statusVersion": "2",
+      "collectionHealthy": "true",
+      "queueDrops": "0",
+      "shutdownDiscarded": "0",
+      "incomplete": "false",
+      "probeFailures": "0",
+      "methodOverflow": "0",
+      "timingHistogramOverflow": "0",
+      "durationClipped": "0",
+      "observedTimingEvents": "271396",
+      "acceptedTimingReservations": "271396",
+      "producerQuiesced": "true",
+      "unfinishedProbeExits": "0",
+      "rawTimingRowsOmitted": "261396",
+      "activeMethodIdLimit": "1",
+      "activeQueueCapacity": "65536",
+      "skips": "{constructorOrInitializer=3, namedModule=1, outsideAllowlist=522, outsideMethodSelection=3, toolOrJdk=36, unsupportedLoader=900}",
+      "statusComplete": "true"
+    },
+    "monitorHostOperationsEqualAcceptedPlusDrops": true,
+    "scope": "shared-host functional boundedness only; not overhead performance"
+  },
+  "outerReservation": {
+    "path": ".work/coordinator/quiet-validation-13-backtrace-stress/reservation.json",
+    "sha256": "f28d90811fffab9de520af67204e470bc6220e9211a54b809cd622cc5d7d9fb8",
+    "observed": {
+      "requestedAtUtc": "2026-10-18T08:10:44.501460+00:00",
+      "command": [
+        "bash",
+        "-c",
+        "set -euo pipefail; source scripts/cloud-env.sh; python3 .work/A08/test_reference_helpers.py -v; python3 .work/A02/cleancheck-process-controls.py --execute-after-quiet-release; BACKTRACE_VALIDATION_GRANT=quiet-validation-13-backtrace-stress python3 .work/A08/run-repair-validation-v3.py stress /workspace/Java-portfolio/.work/A08/repair-observer-stress-v3"
+      ],
+      "sourceRevision": "c87ee5ed99c59983b83469ba04da7862c794bd63",
+      "lockPaths": [
+        "/workspace/Java-portfolio/.work/build-slots/0.lock",
+        "/workspace/Java-portfolio/.work/build-slots/1.lock",
+        "/workspace/Java-portfolio/.work/build-slots/2.lock"
+      ],
+      "startedAtUtc": "2026-10-18T08:10:44.505425+00:00",
+      "otherJavaProcessesAtReservation": [],
+      "otherApplicationContainersAtReservation": [],
+      "cpuQuota": "400000 100000",
+      "memoryLimit": "34359738368",
+      "filesystemType": "overlayfs",
+      "freeDiskBytes": 7336587264,
+      "exitCode": 0,
+      "completedAtUtc": "2026-10-18T08:31:25.680582+00:00",
+      "elapsedSeconds": 1241.175801575002,
+      "remainingJavaProcesses": [],
+      "remainingApplicationContainers": [],
+      "result": "PASS"
+    }
+  },
+  "sharedHostActivity": {
+    "path": ".work/coordinator/quiet-validation-13-backtrace-stress/background-activities.json",
+    "sha256": "d400f706d4b3719ad532659c24d112ed7ae2486a955fb7bc38d5c31a54496d45",
+    "observed": {
+      "schemaVersion": 1,
+      "reservation": "quiet-validation-13-backtrace-stress",
+      "scope": "Functional boundedness validation, not an overhead/reference performance measurement.",
+      "activities": [
+        {
+          "owner": "A04",
+          "description": "CPU-light Pulse report/hash postprocessing plus explicitly authorized sequential fixed-JDK official JFR semantic views.",
+          "activityPath": ".work/A04/postprocess-prep-quiet12/jfr-semantic-20261018T082007Z/activity.json",
+          "activitySha256": "da08c7063143a744b558034408e3e250753e67c8edf301e8275f509e03d90386",
+          "startedAtUtc": "2026-10-18T08:20:07.849916Z",
+          "completedAtUtc": "2026-10-18T08:20:23.386556Z",
+          "elapsedSeconds": 15.536649,
+          "commands": 16,
+          "allExitCodes": 0,
+          "maximumConcurrentAnalyzers": 1,
+          "perAnalyzerHeapMiB": 256,
+          "perAnalyzerActiveProcessorCount": 1,
+          "commandTimeoutSeconds": 45,
+          "totalBudgetSeconds": 180,
+          "maximumOutputBytesPerCommand": 1048576,
+          "actualCombinedOutputBytes": 113881,
+          "measurementBoundary": "All LateArrival reference measurements ended before this activity; Backtrace functional stress was active."
+        }
+      ]
+    }
+  },
+  "helperControls": {
+    "status": "PASS",
+    "methods": 13,
+    "elapsedSeconds": 7.661,
+    "command": "python3 .work/A08/test_reference_helpers.py -v",
+    "outerLog": ".work/coordinator/quiet-validation-13-backtrace-stress/command.log",
+    "outerLogSha256": "f62966124b7913fc04f207f37ac1d634c17973f0c0e4fc3a09d0a406b4589a0e",
+    "helpers": {
+      "prepare-reference-9.py": "e0c29aca2eb67cdd84370ea809b1ff3e63f23ec07e449ae2ec6fa6759d83476f",
+      "execute-prepared-reference-9.py": "20621fb941c36b443a8274b13c87233a1e6d459ef193d6b3080f86c432a0f8e7",
+      "reference_owned_process.py": "3a12303c3688d6cc454b1ce69dfe48e1e389f044eaa8ea2c8b7dce93bca42db3",
+      "test_reference_helpers.py": "9b680513a12173755ff62acc6267a17d35641c8d9e8e5f25721ed210ef71a4ca"
+    },
+    "review": "A01 independently closed three helper findings at source level; actual13 methods subsequently passed in this root reservation."
+  },
+  "assertions": {
+    "full1200Seconds": true,
+    "allFourHostWorkersProgressedAndStopped": true,
+    "acceptedTimingsEqualMonitorOperations": 271396,
+    "acceptedReservationsEqualObserved": true,
+    "noUnaccountedReplayEvents": true,
+    "producerQuiescedWithoutUnfinishedExits": true,
+    "timingLossAndFaultsZero": true,
+    "queuePayloadBytesBelow64MiB": true,
+    "directoryBytesBelow512MiB": true,
+    "retainedJfrBytesBelow256MiB": true,
+    "methodWindowCeilingsRespected": true,
+    "queueFullyDrained": true,
+    "trueQueueDropsPropagateIncompleteWindows": true,
+    "allFourJsonHtmlExportsExcludeFixtureSecret": true
+  },
+  "replayedTimingCounters": {
+    "observedTimingExits": 271396,
+    "timingAcceptedReservations": 271396,
+    "timingCollectionUnhealthy": 0,
+    "timingDurationClipped": 0,
+    "timingIncomplete": 0,
+    "timingMethodSelectionOverflow": 0,
+    "timingOverflow": 0,
+    "timingProducerCountUnknown": 0,
+    "timingProducerObservedEvents": 271396,
+    "timingProducerQuiesced": 1,
+    "timingQueueDrops": 0,
+    "timingSelectionCoverageKnown": 1,
+    "timingSelectionSkip.constructorOrInitializer": 3,
+    "timingSelectionSkip.namedModule": 1,
+    "timingSelectionSkip.outsideAllowlist": 522,
+    "timingSelectionSkip.outsideMethodSelection": 3,
+    "timingSelectionSkip.toolOrJdk": 36,
+    "timingSelectionSkip.unsupportedLoader": 900,
+    "timingShutdownDiscarded": 0,
+    "timingStatusComplete": 1,
+    "timingStatusMissing": 0,
+    "timingUnaccountedEvents": 0,
+    "timingUnfinishedProbeExits": 0,
+    "timingUnknownIds": 0
+  },
+  "rawEvidence": {
+    "rootLocator": ".work/A08/repair-observer-stress-v3",
+    "rawIndex": "projects/08-backtrace/evidence/observer-stress-v3-raw-index.json",
+    "rawIndexSha256": "0006725a14ae391566abb967bcbb1d071892ab67bd4488740e6ee50bcb3f2a64",
+    "files": 17,
+    "totalBytes": 35518647
+  },
+  "limitations": [
+    "Functional boundedness under the explicitly recorded shared-host postprocessing load; not overhead/performance acceptance.",
+    "58,999,215 EventQueue drops and all900 retained windows incomplete are real observation loss, not complete profiling coverage.",
+    "Synthetic cardinality ingress is explicit; its58,234,000 offers do not count native JFR offers and are not the denominator for total drops.",
+    "Stack/window overflow and string clipping counters remain visible in the raw completed result.",
+    "Retained JFR uses15-minute/256MiB limits and covers less history than the1200-second live aggregate; live/replay equality is not claimed across different retention histories.",
+    "261,396 omitted raw timing rows remain represented in bounded full histograms, separate from true loss.",
+    "Windows and macOS remain untested; the full84-JVM current-v3 overhead rerun is still pending."
+  ]
+}

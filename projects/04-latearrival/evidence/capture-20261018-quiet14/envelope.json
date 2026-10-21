@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "classification": "separate-per-fork-capture-verification-pending-independent-review",
+  "sourceRevision": "working-tree-sha256:bf8294af855673e08feb586894e30e1ed22f77ff065af8c2714c8ffd0e2e6ace",
+  "originalStudySource": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "quiet14GitCheckpoint": "78d9e35afaeea66a9c22c9254ac69f7c2b0416c3",
+  "reservation": "quiet-reference-14-latearrival-micro",
+  "terminalStatus": "CAPTURE_VERIFIED",
+  "exitCode": 0,
+  "started": "2026-10-18T08:41:51.678290+00:00",
+  "ended": "2026-10-18T08:42:36.997333+00:00",
+  "outerElapsedSeconds": 45.47713599700364,
+  "summary": ".work/A04/micro-capture-runs/20261018T084151Z-706053/summary.json",
+  "summarySha256": "624bffd3e6c15aca393e1e63a3b9f727dae1280928b5731c01f946d0e9aea10d",
+  "outerReservation": ".work/coordinator/quiet-reference-14-latearrival-micro/reservation.json",
+  "outerReservationSha256": "eb886b25dc2896a582a84cbd855cc65fd159fa3fa0e2eb9bd43e2286a8f4356d",
+  "allThreeLocks": [
+    "/workspace/Java-portfolio/.work/build-slots/0.lock",
+    "/workspace/Java-portfolio/.work/build-slots/1.lock",
+    "/workspace/Java-portfolio/.work/build-slots/2.lock"
+  ],
+  "initialAndRemainingForeignJavaAppsEmpty": true,
+  "dependencyStartup": false,
+  "cleanup": {
+    "attempted": false,
+    "reason": "No dependencies started/adopted"
+  },
+  "preflightInputHashesVerified": 175,
+  "preflightBytesVerified": 132633146,
+  "rawArtifactBytes": 4792650,
+  "rawArtifactCount": 14,
+  "officialCommandCount": 12,
+  "officialAnalyzerSeconds": 2.8755228349837125,
+  "uniqueForkPids": [
+    706203,
+    706274,
+    706336,
+    706710,
+    706794,
+    706872
+  ],
+  "verificationWallSeconds": 0.3324895460027619,
+  "analysisMethod": "Python-only postprocessing: bounded streamingSHA,smallJSON and retained official-summary/identity text; no new Java/Maven/Docker/benchmark.",
+  "scope": "Capture-specific sourcebf8,distinct from quiet12source2f7. Launch-enabled recording includes JMHwarmup/measurement/shutdown after recorder initialization; initial JVMbootstrap can precede recording. Different profiling boundary; no oldrowreplacement or comparable-profiler causal claim. Prior3million durable results notrerun orrelabeled.",
+  "preparationByteProof": "Actual15method supported preparation passed;44classfiles+4mainresources+6JARbytes and129runtimehashes exactly equal oldstudy, with originalbaseline manifest unchanged.",
+  "priorQualified20SealPreserved": "14e1e768560acb608300308c7e26d136e0ca0bc06aff82e4b303bcd9d443e97e",
+  "priorQualified20Archive": ".work/A04/capture-fix-20261018T083044Z/quiet14-review/prior-qualified20",
+  "verification": "verification.json",
+  "preparation": "preparation.json",
+  "captureBoundary": "Explicit launch-enabled JFR includes JMH warmup/measurement/shutdown after recorder initialization. Some early JVM bootstrap can precede recording. Boundary differs from quiet12 built-in profiler; old score rows and source2f7 remain intact.",
+  "mandatoryScope": "This separately validates the changed capture script. Retaining every fork JFR is not retroactively imposed as a missing mandatory gate on already accepted quiet12."
+}

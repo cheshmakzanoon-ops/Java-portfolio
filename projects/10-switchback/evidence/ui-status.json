@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "project": "switchback",
+  "sourceRevision": "working-tree-sha256:9edbd1a00473a71ad3b2259d1a414738ed13fcae9314389e231d9431e3cfad55",
+  "completedAtUtc": "2026-10-18T02:34:20Z",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/10-switchback/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A10/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pbenchmarks verify",
+  "exitCode": 0,
+  "testMethods": 40,
+  "testSuites": [
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ModelTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.PlanningTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.CancellationPollTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.HttpInputTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.OidcTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.SecurityTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.ArchitectureTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationPropertiesTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "io.github.cheshmakzanoon.portfolio.switchback.VerificationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "effectiveJUnit": "6.1.3",
+  "changesSinceFull53MethodIntegration": [
+    "switchback-service/src/main/resources/static/index.html"
+  ],
+  "backendJavaPomSqlUnchangedSinceFullIntegration": true,
+  "fullIntegrationEvidence": "integration.json at2aa7d7da",
+  "fix": "Publish status shows compact revision/input/status rather than dumping entire validated plan",
+  "artifactChecks": {
+    "packagedHtmlEqualsSource": true,
+    "javascriptSyntaxCommand": "node --check .work/A10/ui-script.js",
+    "javascriptSyntaxExitCode": 0,
+    "driverFixtureJobs": 60,
+    "driverFixtureVehicles": 6,
+    "jmhBenchmarks": [
+      "ValidationBenchmark.fullReferenceValidation",
+      "ValidationBenchmark.immutableProblemImportValidation"
+    ],
+    "serviceJarSha256": "e94f03aec873504bb59160f4194b6c26589f3ee057cf3ded61bd72bebe8ea49e",
+    "driverJarSha256": "3747d5cd94d5baa882dd6f3b5fe9fd442a019179e6898a3971044a4f35495a75",
+    "discoveryLog": ".work/A10/jmh-final-discovery.log"
+  },
+  "rawLog": ".work/A10/ui-status-verification.log",
+  "pending": [
+    "postfix-browser-runtime-preflight",
+    "fullquietcorpusandJMH",
+    "cleancheckoutcertification"
+  ]
+}

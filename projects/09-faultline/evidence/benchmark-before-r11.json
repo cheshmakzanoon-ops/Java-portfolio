@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "project": "faultline",
+  "sourceRevision": "working-tree-sha256:bbf647bbc4a128e1aea4b25a382cf94642bc6d7ca6cc690e33de3253526caca1",
+  "workload": "deterministic-10000-classes-v1",
+  "seed": 0,
+  "timestampUtc": "2026-10-18T02:37:01Z",
+  "environment": {
+    "os": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpuCount": 5,
+    "cpuQuota": "400000 100000",
+    "memoryMax": "34359738368",
+    "jdk": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+    "jvmFlags": [
+      "-Xmx2g"
+    ],
+    "warmup": "none; three independent JVM forks; input generation excluded",
+    "sharedLoad": "requires coordinator-approved exclusive performance window",
+    "boundary": "explicit local JAR read, full structural/taint scan and SARIF serialization",
+    "measurement": "Python os.wait4 per scanner child; monotonic elapsed; Linux maxRSS KiB; no cumulative RUSAGE_CHILDREN",
+    "dependencyVersions": {
+      "ASM": "9.9.1",
+      "Jackson": "2.21.5",
+      "picocli": "4.7.7"
+    },
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "command": "projects/09-faultline/scripts/benchmark.sh",
+  "exitCode": 0,
+  "assertions": {
+    "passed": 15,
+    "failed": 0
+  },
+  "measurements": {
+    "runs": [
+      {
+        "elapsedSeconds": 6.097214706000159,
+        "maxRssKiB": 841424,
+        "userSeconds": 14.250518,
+        "systemSeconds": 1.938278,
+        "exitCode": 1,
+        "terminationSignal": null,
+        "timedOut": false,
+        "cancelled": false,
+        "cancellationSignal": null,
+        "pid": 299418,
+        "measurement": "per-child os.wait4 rusage; monotonic wall time",
+        "partial": false,
+        "applicationClasses": 10000,
+        "findings": 10000,
+        "workUnits": 1390002
+      },
+      {
+        "elapsedSeconds": 5.270181122999929,
+        "maxRssKiB": 808896,
+        "userSeconds": 13.724988,
+        "systemSeconds": 1.453487,
+        "exitCode": 1,
+        "terminationSignal": null,
+        "timedOut": false,
+        "cancelled": false,
+        "cancellationSignal": null,
+        "pid": 299452,
+        "measurement": "per-child os.wait4 rusage; monotonic wall time",
+        "partial": false,
+        "applicationClasses": 10000,
+        "findings": 10000,
+        "workUnits": 1390002
+      },
+      {
+        "elapsedSeconds": 4.817291530000148,
+        "maxRssKiB": 925360,
+        "userSeconds": 13.300343,
+        "systemSeconds": 1.822258,
+        "exitCode": 1,
+        "terminationSignal": null,
+        "timedOut": false,
+        "cancelled": false,
+        "cancellationSignal": null,
+        "pid": 299476,
+        "measurement": "per-child os.wait4 rusage; monotonic wall time",
+        "partial": false,
+        "applicationClasses": 10000,
+        "findings": 10000,
+        "workUnits": 1390002
+      }
+    ],
+    "minSeconds": 4.817291530000148,
+    "maxSeconds": 6.097214706000159
+  },
+  "corpusSha256": "89140e8efea3561894773f3ce384f6c91b4e22e6145ef889e0b99e345b44df32",
+  "corpusBytes": 7978912,
+  "rawArtifact": ".runtime/benchmark/run-{0,1,2}.{sarif,time.json,terminal.log}",
+  "limitations": [
+    "Synthetic supported-bytecode corpus; not field accuracy or worst-case complexity guarantee.",
+    "No claims about unsupported Java features or implicit control-flow taint."
+  ]
+}

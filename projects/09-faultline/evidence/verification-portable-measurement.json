@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "project": "faultline",
+  "status": "PASS",
+  "scope": "Portable wait4 measurement/helper and source-cache preflight; no full benchmark scan yet",
+  "sourceRevision": "working-tree-sha256:bbf647bbc4a128e1aea4b25a382cf94642bc6d7ca6cc690e33de3253526caca1",
+  "packagedArtifactSha256": "a338bbe9f0a8b2e9e57d442044ab991ba204d72c16f2a1b8262245752764b891",
+  "timestampUtc": "2026-10-18T02:15:02.498404+00:00",
+  "command": "python3 -B scripts/test_measure_process.py -v; scripts/demo.sh (actual cache miss -> ordinary verify); scripts/demo.sh (cache reuse)",
+  "exitCode": 0,
+  "ordinaryVerification": {
+    "tests": 58,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.cheshmakzanoon.portfolio.faultline.EngineTest",
+        "tests": "19",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "io.github.cheshmakzanoon.portfolio.faultline.LatticePropertiesTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "io.github.cheshmakzanoon.portfolio.faultline.OpcodeTest",
+        "tests": "6",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "io.github.cheshmakzanoon.portfolio.faultline.evaluation.BoundaryTest",
+        "tests": "20",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "io.github.cheshmakzanoon.portfolio.faultline.evaluation.CorpusTest",
+        "tests": "9",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      }
+    ],
+    "rawArtifact": ".work/A09/portable-demo.log"
+  },
+  "measurementTests": {
+    "tests": 6,
+    "failures": 0,
+    "exitCode": 0,
+    "rawArtifact": ".work/A09/measurement-tests.log"
+  },
+  "cacheControl": {
+    "cases": 5,
+    "exitCode": 0,
+    "rawArtifact": ".work/A09/portable-cache-probe.log",
+    "buildBoundary": "unchanged common.sh; deterministic build stub, not Maven proof"
+  },
+  "operations": [
+    {
+      "scenario": "reset",
+      "command": "reset-demo.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/portable-operations-reset.log"
+    },
+    {
+      "scenario": "up",
+      "command": "up.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/portable-operations-up.log"
+    },
+    {
+      "scenario": "demo",
+      "command": "demo.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/portable-demo.log"
+    },
+    {
+      "scenario": "reuse",
+      "command": "demo.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/portable-demo-cache-reuse.log"
+    },
+    {
+      "scenario": "down",
+      "command": "down.sh",
+      "exitCode": 0,
+      "rawArtifact": ".work/A09/portable-operations-down.log"
+    }
+  ],
+  "coverageRatios": {
+    "INSTRUCTION": 0.9463787456023293,
+    "BRANCH": 0.8301698301698301,
+    "LINE": 0.9420386409060626,
+    "COMPLEXITY": 0.7619047619047619,
+    "METHOD": 0.8968609865470852,
+    "CLASS": 1.0
+  },
+  "corpus": {
+    "positiveDetected": 60,
+    "negativeCorrect": 60,
+    "rulesTpTnFpFn": {
+      "BG-PATH-ACCESS": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "BG-SHELL-COMMAND": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "BG-SQL-TEXT": [
+        20,
+        20,
+        0,
+        0
+      ]
+    }
+  },
+  "priorIntegrationMutationApplicability": "Analyzer Java, corpus and packaged artifact unchanged; exact same JAR SHA was used in prior source-aligned integration/PIT checkpoint. New changes only measurement/cache scripts and documentation. Prior combined outer-session1 remains preserved separately.",
+  "remaining": [
+    "genuine three10k-class full quiet scans",
+    "final independent A08 all-evidence review",
+    "preserved prior combined outer-exit discrepancy"
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "acceptanceEligible": false,
+  "classification": "diagnostic-shared-host",
+  "reason": "10000-command capture/generator functional validation; concurrent activity and short count exclude baseline claims. Captured JVM counts include defunct zombie entries in this historical capture.",
+  "generatorVersion": "v2-live-identity-shuffled-block",
+  "runs": [
+    {
+      "mode": "core",
+      "commands": 10000,
+      "sourceFingerprint": "8761ff93446315d8d06a156e7007d1f6512cf5ff5d882acb85605962953fe5ec",
+      "rawDirectory": "projects/06-thepit/.runtime/benchmark.core.y8NHtK",
+      "exitCode": 0,
+      "activeTargetSelections": 3880,
+      "emptyTargetSelections": 120,
+      "peakOpenOrders": 18,
+      "finalOpenOrders": 5,
+      "businessResultCounts": {
+        "CANCELED": 2430,
+        "FILLED": 1658,
+        "NOT_FOUND": 120,
+        "REDUCED": 2,
+        "RESTING": 5731,
+        "SELF_TRADE_CANCELED": 59
+      },
+      "finalDigest": "21b0b76668c462bbe04d5db6feabc4e8d73ce084f4e24358c1c8939b2e029411",
+      "jfrSampleCounts": {
+        "jdk.ObjectAllocationSample": 146,
+        "jdk.ExecutionSample": 24,
+        "jdk.GarbageCollection": 1
+      },
+      "captureSummarySha256": "e335dfebf3db80c394b553394e78f3ef2a981857920f477b2eec71d0a0b147e9"
+    },
+    {
+      "mode": "durable",
+      "commands": 10000,
+      "sourceFingerprint": "8761ff93446315d8d06a156e7007d1f6512cf5ff5d882acb85605962953fe5ec",
+      "rawDirectory": "projects/06-thepit/.runtime/benchmark.durable.6uwwTV",
+      "exitCode": 0,
+      "activeTargetSelections": 3880,
+      "emptyTargetSelections": 120,
+      "peakOpenOrders": 18,
+      "finalOpenOrders": 5,
+      "businessResultCounts": {
+        "CANCELED": 2430,
+        "FILLED": 1658,
+        "NOT_FOUND": 120,
+        "REDUCED": 2,
+        "RESTING": 5731,
+        "SELF_TRADE_CANCELED": 59
+      },
+      "finalDigest": "21b0b76668c462bbe04d5db6feabc4e8d73ce084f4e24358c1c8939b2e029411",
+      "jfrSampleCounts": {
+        "jdk.ObjectAllocationSample": 400,
+        "jdk.ExecutionSample": 146,
+        "jdk.GarbageCollection": 2
+      },
+      "captureSummarySha256": "e380331155bcd21929420668a594274e15f7fba30231f3e50dfe28f54fc54581"
+    }
+  ],
+  "equalCoreAndRecoveredDurableDigest": true,
+  "failedPreparationCaptures": [
+    {
+      "rawDirectory": "projects/06-thepit/.runtime/benchmark.core.4mrujc",
+      "exitCode": 127,
+      "cause": "Missing /usr/bin/time; JVM was not launched; replaced with Python POSIX resource wrapper."
+    },
+    {
+      "rawDirectory": "projects/06-thepit/.runtime/benchmark.durable.diForP",
+      "exitCode": 127,
+      "cause": "Missing /usr/bin/time; JVM was not launched; replaced with Python POSIX resource wrapper."
+    }
+  ],
+  "nextSourceChange": "Cache constant identifier Pattern after observing repeated Pattern.compile sampling; no measured speedup claimed."
+}

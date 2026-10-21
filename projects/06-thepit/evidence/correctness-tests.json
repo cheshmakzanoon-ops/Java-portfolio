@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "project": "thepit",
+  "capturedUtc": "2026-10-18T00:24:32.807391+00:00",
+  "sourceRevision": "working-tree-sha256:498aebe5e2a3c49c961a8c8b0a873b747556fc3510c0d39258d2e612f804bd22",
+  "workload": "correctness-contract-v1",
+  "seed": 42006006,
+  "environment": "environment.json",
+  "command": "source scripts/cloud-env.sh; ./mvnw -f projects/06-thepit/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A06/m2 -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+  "exitCode": 1,
+  "testCases": 18,
+  "testFailures": 0,
+  "skipped": 0,
+  "suites": [
+    {
+      "module": "gateway",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.HttpApiTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "gateway/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.HttpApiTest.xml"
+    },
+    {
+      "module": "gateway",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.GatewayTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "gateway/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.GatewayTest.xml"
+    },
+    {
+      "module": "simulator",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.AgreementTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "simulator/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.AgreementTest.xml"
+    },
+    {
+      "module": "matching-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.InvariantsTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.InvariantsTest.xml"
+    },
+    {
+      "module": "matching-core",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.BookTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "matching-core/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.BookTest.xml"
+    },
+    {
+      "module": "journal",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.JournalTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "journal/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.JournalTest.xml"
+    },
+    {
+      "module": "simulator",
+      "suite": "io.github.cheshmakzanoon.portfolio.thepit.CrashIT",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "simulator/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.thepit.CrashIT.xml"
+    }
+  ],
+  "propertyHistories": 120,
+  "oracleTransitions": 42000,
+  "coreInvariantTransitions": 12000,
+  "sigkillBoundaries": [
+    "BEFORE_APPEND",
+    "DURING_FRAME",
+    "AFTER_FORCE",
+    "AFTER_APPLY"
+  ],
+  "coreCoverage": {
+    "line": {
+      "covered": 252,
+      "missed": 8,
+      "ratio": 0.9692307692307692
+    },
+    "branch": {
+      "covered": 175,
+      "missed": 13,
+      "ratio": 0.9308510638297872
+    }
+  },
+  "demo": {
+    "executions": 4,
+    "tradedLots": 8,
+    "aliceCash": 19200,
+    "aliceInventory": 8,
+    "openOrders": 0,
+    "commandResults": 12,
+    "replayReferenceDigest": "4e226aa11dbed09f79d746c5df50ac857e30804a2e43d3ccf39893d656f959e3"
+  },
+  "rawArtifact": "../../../.work/A06/final-verify.log",
+  "limitations": [
+    "All listed correctness cases passed, but this overall reactor run failed at benchmark compilation: missing two zero constructor arguments in JMH fixture.",
+    "A later audience-null guard, missing-audience regression and JMH constructor fix require queued revalidation.",
+    "Mutation and prescribed performance/JMH/JFR runs have not executed.",
+    "No final independent review approval yet."
+  ],
+  "xmlReportedTestCases": 16,
+  "additionalLoggedSuites": [
+    {
+      "suite": "AgreementTest",
+      "engine": "Jupiter",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "note": "The final jqwik XML file with the same suite name contains only its one property case; the two Jupiter cases are separately confirmed by the captured reactor log."
+    }
+  ]
+}

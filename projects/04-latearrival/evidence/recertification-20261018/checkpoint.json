@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "project": "latearrival",
+  "timestamp": "2026-10-18T06:54:36.409735+00:00",
+  "frozenProductSource": "working-tree-sha256:2f7d000815cce016675463dcac431f93332bf2f4049a0b19a1330391fda940fc",
+  "runnerSha256": "83b5a1572d19cedb901472480b9e49f284a430c419f2c9d1031b2c32a0dc6ca6",
+  "readyReceiptSha256": "dca81d0f4b203059812d43f48106fd706caebe8605764b5debaa0886e2da5dd7",
+  "command": "python3 .work/A04/test-quiet-runner.py",
+  "exitCode": 0,
+  "pythonControlFlowMethodsPassed": 14,
+  "realQuietOrchestrationExecuted": false,
+  "fullMeasurementsStarted": false,
+  "runtimeRecertificationDidStartJavaMavenDocker": true,
+  "recertificationArchive": "/workspace/Java-portfolio/.work/A04/recert-20261018T064318Z",
+  "coldFullMethodsPassed": 23,
+  "subsequentCoreMethodsPassed": 10,
+  "strictMutations": {
+    "KILLED": 131,
+    "SURVIVED": 1,
+    "TIMED_OUT": 1
+  },
+  "subsequentSupportedPreparationMethodsPassed": 15,
+  "actualJmhListDiscoveryPassed": true,
+  "all44MainClassesResourcesAnd6JarsByteIdentical": true,
+  "preparedRuntimeInputs": 129,
+  "originalEngineManifestSha256": "0815eee01b6a35130d3bac586e071ca9cf27ed79ce59e35f5f205e8253baffbb",
+  "ownLiveJavaPids": [],
+  "allObservedLiveJavaToolPids": [],
+  "observedRunningContainers": [],
+  "files": {
+    "run-quiet.py": "83b5a1572d19cedb901472480b9e49f284a430c419f2c9d1031b2c32a0dc6ca6",
+    "run-engine-baseline.sh": "e7cf4298a2488e4c6c7ab54e229f41236cbff3082fa2f09754b7591108a65ff2",
+    "test-quiet-runner.py": "b58c3b27ad320086320269440ff4988e2679b2cc90e3770815345fa701f6e18a",
+    "PERFORMANCE_HANDOFF.md": "ba99ae8512b7eca4a349d1ea506aa3cd344378f7e8b551717fa6679e99bdb802",
+    "QUIET_READY.json": "dca81d0f4b203059812d43f48106fd706caebe8605764b5debaa0886e2da5dd7",
+    "quiet-runner-python-tests.log": "640bface97624a623de455b800b3434cf09ca8fa32a8d1dc9a3741c76df47084"
+  }
+}

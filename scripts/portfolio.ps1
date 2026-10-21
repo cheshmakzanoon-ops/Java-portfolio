@@ -1,11 +1,11 @@
 param([Parameter(Mandatory=$true)][ValidateSet('doctor','list','verify','integration','mutation','up','demo','down','reset-demo')][string]$Action,[string]$Project)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
-$slugs = @('clearledger','durableflow','quorumkv','pulsestream','tenantshield','matchcore','indexforge','threadlens','byteguard','routeweaver')
+$slugs = @('daybook','handoff','majority','latearrival','gatehouse','thepit','stacks','backtrace','faultline','switchback')
 Set-Location $root
-# The MatchCore CLI showcase is native PowerShell and does not require Git Bash or Docker.
-if ($Action -eq 'demo' -and $Project -eq 'matchcore') {
-  & (Join-Path $PSScriptRoot 'matchcore-demo.ps1')
+# The ThePit CLI showcase is native PowerShell and does not require Git Bash or Docker.
+if ($Action -eq 'demo' -and $Project -eq 'thepit') {
+  & (Join-Path $PSScriptRoot 'thepit-demo.ps1')
   exit $LASTEXITCODE
 }
 switch ($Action) {
@@ -13,7 +13,7 @@ switch ($Action) {
   'list' { $slugs | ForEach-Object { Write-Output $_ }; exit 0 }
   { $_ -in 'verify','integration','mutation' } {
     $env:PORTFOLIO_TEST_RUN_STARTED = ([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() / 1000.0).ToString('F3', [Globalization.CultureInfo]::InvariantCulture)
-    if ($Action -eq 'verify' -and $Project -in @('indexforge','routeweaver')) {
+    if ($Action -eq 'verify' -and $Project -in @('stacks','switchback')) {
       # Reuse the supported, nonmutating receipt preparation and report gates.
       if (!(Get-Command bash -ErrorAction SilentlyContinue)) { throw 'Git Bash is required to prepare this project for its lifecycle commands' }
       & bash (Join-Path $PSScriptRoot 'portfolio.sh') verify $Project
@@ -31,8 +31,8 @@ switch ($Action) {
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
     $selectedProjects = if ($Project -eq 'all') { $slugs } else { @($Project) }
     if ($Action -eq 'verify' -and $Project -eq 'all') {
-      if (!(Get-Command bash -ErrorAction SilentlyContinue)) { throw 'Git Bash is required to prepare IndexForge and RouteWeaver for their lifecycle commands' }
-      foreach ($prepared in @('indexforge','routeweaver')) {
+      if (!(Get-Command bash -ErrorAction SilentlyContinue)) { throw 'Git Bash is required to prepare Stacks and Switchback for their lifecycle commands' }
+      foreach ($prepared in @('stacks','switchback')) {
         & bash (Join-Path $PSScriptRoot 'portfolio.sh') verify $prepared
         if ($LASTEXITCODE) { exit $LASTEXITCODE }
       }

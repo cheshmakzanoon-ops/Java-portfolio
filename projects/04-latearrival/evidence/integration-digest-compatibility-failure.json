@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "project": "latearrival",
+  "sourceRevision": "working-tree-sha256:3a13736ed338b23a6538f6234b27a809701666a2e8321122156fa1018505846d",
+  "command": "./mvnw -f projects/04-latearrival/pom.xml -Dmaven.repo.local=/workspace/Java-portfolio/.work/A04/m2 -B -ntp -Pintegration verify",
+  "exitCode": 1,
+  "unitMethodsPassed": 15,
+  "integrationMethodsExecuted": 0,
+  "setupErrors": 1,
+  "rawArtifact": ".work/A04/current-eight-integration.log",
+  "report": ".work/A04/failures/digest-image-compatibility/report.xml",
+  "cause": "Testcontainers2.0.5 DockerImageName compatibility matching rejects tag@digest without explicit same-image compatibility declaration. Failed before container startup.",
+  "correction": "Explicit parse(...).asCompatibleSubstituteFor(postgres/apache/kafka), retaining exact observed immutable digests; full rerun required."
+}

@@ -1,3 +1,0 @@
-Benchmarks: 
-io.github.cheshmakzanoon.portfolio.tenantshield.PolicyBenchmark.coldCompilation
-io.github.cheshmakzanoon.portfolio.tenantshield.PolicyBenchmark.warmIndexedEvaluation
