@@ -30,8 +30,16 @@ verify_prepared_project() {
 }
 case "$command" in
   doctor)
+    if [[ -n $slug ]]; then resolve "$slug" >/dev/null; fi
     java -version; javac -version; "$root/mvnw" -version
-    if command -v docker >/dev/null; then docker info --format '{{.ServerVersion}}'; else echo 'Docker missing: integration workflow unavailable' >&2; exit 1; fi
+    if [[ $slug == matchcore || $slug == threadlens || $slug == byteguard ]]; then
+      echo "Docker not required for $slug's CLI demonstration"
+    elif command -v docker >/dev/null; then
+      docker info --format '{{.ServerVersion}}'
+    else
+      echo 'Docker missing: service/integration workflows unavailable' >&2
+      exit 1
+    fi
     ;;
   list)
     for slug in "${slugs[@]}"; do printf '%-14s %s\n' "$slug" "$(resolve "$slug")"; done

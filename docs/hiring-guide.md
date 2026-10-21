@@ -11,6 +11,7 @@ matching engine. The demo requires JDK 25, Bash, Python 3, and the Maven wrapper
 it requires no account, network service, database, or container.
 
 ```bash
+./scripts/portfolio.sh doctor matchcore
 ./scripts/portfolio.sh verify matchcore
 ./scripts/portfolio.sh demo matchcore
 ```
