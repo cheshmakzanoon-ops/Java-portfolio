@@ -25,3 +25,15 @@ The repair candidate declares configuration **v3-allocation50-park-class-only**:
 Independent repair review additionally found a late-producer shutdown race. Correctness now requires atomic in-flight exit accounting, a second enabled check, bounded quiescence and sealed reservation admission before drain; timed-out exits remain explicit incomplete metadata. These operations have real probe cost. Their addition is not presented as an optimization or assumed to pass an overhead threshold. Only the fresh prescribed application study can establish the net result.
 
 Historical functional evidence: seven-pair planted-cause study identified CPU7/7, allocation7/7 and contention7/7; full observer stress ran1204.969seconds with bounded heap/queue/disk and explicit incomplete windows. See `../evidence/planted-cause-trials.json` and `../evidence/observer-stress.json`; these certify the archived first-study observer, not untested repair code/settings. The original per-exit TSV exceeded256MiB during42seconds; bounded histogram output subsequently retained7,779,166timings with0loss in approximately275KB (`timing-output-after.json`). These are shared-host diagnosis/boundedness results.
+
+
+### Acceptance fail-closed changes
+
+The full BenchmarkRunner now raises a failure after retaining all raw trials when any
+throughput or p99 regression exceeds its published limit. Every instrumented
+trial requires an exact, complete terminal observer status: no drops, overflow,
+probe failures, shutdown loss, premature termination, missing quiescence or
+mismatched accepted/observed timings. A smoke study is always explicitly
+non-certifying and does not claim the P08-A5 threshold. This change itself
+requires current-source Java 25 tests and a fresh 84-JVM quiet-host run;
+it does not turn the historical failed study into a pass.

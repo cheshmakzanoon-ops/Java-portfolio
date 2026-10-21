@@ -78,6 +78,7 @@ public final class BenchmarkRunner {
     List<Map<String, Object>> order = new ArrayList<>();
     Random random = new Random(seed);
     Map<String, Object> results = new TreeMap<>();
+    boolean withinAllGates = true;
     for (String workload : List.of("cpu", "allocation", "contention", "virtual")) {
       Map<String, List<JsonNode>> observations = new TreeMap<>();
       for (String mode : List.of("baseline", "jfr", "instrumented"))
@@ -158,7 +159,7 @@ public final class BenchmarkRunner {
                   "workload allocation setting differs from declared configuration");
           }
           if (mode.equals("instrumented")) {
-            String status = Files.readString(run.resolve("agent/observer-status.txt"));
+            ObserverTrialStatus.requireComplete(run.resolve("agent/observer-status.txt"));
             Path summary = run.resolve("agent/timing-summary.tsv");
             if (!Files.isRegularFile(summary)
                 || !Files.isRegularFile(run.resolve("agent/timing-histograms.hlog"))
@@ -170,10 +171,7 @@ public final class BenchmarkRunner {
                     == 0)
               throw new IllegalStateException(
                   "instrumented trial lacks actual transformed-method timing evidence");
-            if (!status.contains("probeFailures=0")
-                || !status.contains("collectionHealthy=true")
-                || !Files.exists(run.resolve("agent/methods.tsv")))
-              throw new IllegalStateException("instrumentation not healthy");
+
           }
           JSON.writerWithDefaultPrettyPrinter()
               .writeValue(directory.resolve("run-order.json").toFile(), order);
@@ -201,6 +199,9 @@ public final class BenchmarkRunner {
         var throughput = ProfileComparator.paired(baselineThroughput, observedThroughput);
         var p99 = ProfileComparator.paired(baselineP99, observedP99);
         double tLimit = mode.equals("jfr") ? 5 : 10, lLimit = mode.equals("jfr") ? 10 : 15;
+        boolean throughputPass = throughput.medianPercent() >= -tLimit;
+        boolean latencyPass = p99.medianPercent() <= lLimit;
+        withinAllGates &= throughputPass && latencyPass;
         comparisons.put(
             mode,
             Map.of(
@@ -209,9 +210,9 @@ public final class BenchmarkRunner {
                 "p99PercentChange",
                 p99,
                 "throughputGatePass",
-                throughput.medianPercent() >= -tLimit,
+                throughputPass,
                 "p99GatePass",
-                p99.medianPercent() <= lLimit));
+                latencyPass));
       }
       results.put(workload, comparisons);
       JSON.writerWithDefaultPrettyPrinter()
@@ -220,6 +221,10 @@ public final class BenchmarkRunner {
     environment.put("ended", Instant.now().toString());
     JSON.writerWithDefaultPrettyPrinter()
         .writeValue(directory.resolve("environment.json").toFile(), environment);
+    // Publish all raw trials and summary before declaring a failed acceptance gate.
+    if (!smoke && !withinAllGates)
+      throw new IllegalStateException(
+          "P08-A5 overhead acceptance failed; inspect summary.json and preserved raw trials");
   }
 
   private static String sha256(Path path) throws java.io.IOException {
