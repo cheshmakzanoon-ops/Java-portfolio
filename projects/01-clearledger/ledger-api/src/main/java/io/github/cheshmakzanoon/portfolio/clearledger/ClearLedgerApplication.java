@@ -133,9 +133,25 @@ public class ClearLedgerApplication {
         });
   }
 
+
+  /**
+   * Bearer tokens are supplied explicitly, so they are not ambient browser credentials. Preserve
+   * CSRF checks for cookies and browser-sent Basic credentials without changing CLI/Bearer APIs.
+   */
+  static boolean csrfForAmbientCredentials(jakarta.servlet.http.HttpServletRequest request) {
+    if (java.util.Set.of("GET", "HEAD", "OPTIONS", "TRACE").contains(request.getMethod()))
+      return false;
+    if (request.getCookies() != null && request.getCookies().length > 0) return true;
+    String authorization = request.getHeader("Authorization");
+    return authorization != null
+        && authorization.regionMatches(true, 0, "Basic ", 0, 6)
+        && (request.getHeader("Origin") != null
+            || request.getHeader("Sec-Fetch-Site") != null);
+  }
+
   @Bean
   SecurityFilterChain security(HttpSecurity h) throws Exception {
-    return h.csrf(c -> c.disable())
+    return h.csrf(csrf -> csrf.requireCsrfProtectionMatcher(ClearLedgerApplication::csrfForAmbientCredentials))
         .authorizeHttpRequests(
             a ->
                 a.requestMatchers("/health")
@@ -153,6 +169,10 @@ public class ClearLedgerApplication {
                     .anyRequest()
                     .denyAll())
         .oauth2ResourceServer(o -> o.jwt(j -> {}))
+        .sessionManagement(
+            session ->
+                session.sessionCreationPolicy(
+                    org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
         .build();
   }
 }
