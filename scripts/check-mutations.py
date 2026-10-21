@@ -6,7 +6,7 @@ import json
 import sys
 import xml.etree.ElementTree as ET
 
-from maven_evidence import EvidenceError, fresh_reports, reactor_modules, run_started
+from maven_evidence import EvidenceError, fresh_reports, reactor_modules, report_xml, run_started
 
 KNOWN = {'KILLED', 'SURVIVED', 'NO_COVERAGE', 'TIMED_OUT', 'NON_VIABLE', 'RUN_ERROR', 'MEMORY_ERROR'}
 
@@ -21,7 +21,7 @@ def inspect(root, started):
         outcomes = Counter()
         for report in reports:
             try:
-                document = ET.parse(report).getroot()
+                document = report_xml(report)
                 if document.tag != 'mutations':
                     raise ValueError('expected mutations')
                 outcomes.update(mutation.get('status', 'UNKNOWN') for mutation in document.iter('mutation'))

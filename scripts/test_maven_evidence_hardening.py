@@ -6,6 +6,7 @@ import unittest
 
 from maven_evidence import EvidenceError, fresh_reports, reactor_modules, test_counts
 from test_build_tools import make_reactor, write_test_report
+from unittest.mock import patch
 
 
 class FreshReportBoundaryTest(unittest.TestCase):
@@ -151,6 +152,67 @@ class SuiteSemanticValidationTest(unittest.TestCase):
             with self.subTest(xml=xml):
                 with self.assertRaises(EvidenceError):
                     test_counts(self.write(xml))
+
+    def test_utf16_declarations_cannot_bypass_entity_preflight(self):
+        xml = ('<?xml version="1.0" encoding="UTF-16"?>'
+               '<!DOCTYPE testsuite [<!ENTITY x "expanded">]>'
+               '<testsuite tests="1" failures="0" errors="0" skipped="0">'
+               '<testcase name="&x;"/></testsuite>')
+        for encoding in ('utf-16', 'utf-16-le', 'utf-16-be', 'utf-32'):
+            with self.subTest(encoding=encoding):
+                self.path.write_bytes(xml.encode(encoding))
+                with self.assertRaises(EvidenceError):
+                    test_counts(self.path)
+
+    def test_utf8_bom_and_international_names_remain_supported(self):
+        xml = ('<?xml version="1.0" encoding="UTF-8"?>'
+               '<testsuite tests="1" failures="0" errors="0" skipped="0">'
+               '<testcase name="日本語 آزمون"/></testsuite>')
+        self.path.write_bytes(xml.encode('utf-8-sig'))
+        self.assertEqual(1, test_counts(self.path)['tests'])
+
+    def test_actual_read_is_bounded_even_when_metadata_understates_length(self):
+        import maven_evidence
+        xml = ('<testsuite tests="1" failures="0" errors="0" skipped="0">'
+               '<testcase/></testsuite>')
+        self.write(xml)
+        real_stat = os.fstat
+
+        def small_stat(fd):
+            values = list(real_stat(fd))
+            values[6] = 1
+            return os.stat_result(values)
+
+        with patch.object(maven_evidence, 'MAX_REPORT_BYTES', 16), \
+                patch.object(maven_evidence.os, 'fstat', side_effect=small_stat):
+            with self.assertRaisesRegex(EvidenceError, 'budget'):
+                test_counts(self.path)
+
+    @unittest.skipUnless(hasattr(os, 'mkfifo'), 'FIFO is a POSIX filesystem feature')
+    def test_named_pipe_is_refused_without_waiting_for_writer(self):
+        import subprocess
+        import sys
+        os.mkfifo(self.path)
+        script = ('from pathlib import Path; from maven_evidence import test_counts; '
+                  'test_counts(Path(' + repr(str(self.path)) + '))')
+        result = subprocess.run([sys.executable, '-c', script],
+                                cwd=Path(__file__).parent, capture_output=True,
+                                text=True, timeout=3)
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn('ordinary file', result.stderr)
+
+    def test_mutation_reports_share_the_same_xml_boundary(self):
+        from test_verification import mutations
+        import maven_evidence
+        make_reactor(self.path.parent, ('core',), mutation=True)
+        report = self.path.parent / 'core/target/pit-reports/mutations.xml'
+        report.parent.mkdir(parents=True)
+        report.write_text('<!DOCTYPE mutations><mutations><mutation status="KILLED"/></mutations>')
+        self.assertTrue(mutations.inspect(self.path.parent, 1)['failures'])
+        report.write_text('<mutations><mutation status="KILLED"/></mutations>')
+        self.assertEqual([], mutations.inspect(self.path.parent, 1)['failures'])
+        with patch.object(maven_evidence, 'MAX_REPORT_BYTES', 16):
+            self.assertTrue(mutations.inspect(self.path.parent, 1)['failures'])
 
 
 if __name__ == '__main__':

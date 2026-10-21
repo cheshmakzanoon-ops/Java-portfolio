@@ -124,30 +124,7 @@ class ImageCoverageTest(unittest.TestCase):
         self.assertEqual({PG}, self.inspect())
 
     def test_ci_dynamic_images_and_inline_maps_fail_closed(self):
-        image_variable = '
-        for path in ('projects/01-clearledger/target/Dockerfile',
-                     'projects/01-clearledger/.runtime/service.dockerfile',
-                     'projects/01-clearledger/node_modules/Dockerfile'):
-            self.write(path, 'FROM ubuntu:latest\n')
-        self.assertEqual({PG}, self.inspect())
-
-    def test_unpinned_testcontainers_does_not_evade_gate(self):
-        path = self.write('projects/01-clearledger/check/src/test/java/ImageIT.java',
-                          'DockerImageName.parse("ubuntu:latest");')
-        with self.assertRaises(ValueError):
-            self.inspect()
-        path.write_text('DockerImageName.parse("postgres@sha256:' + 'a' * 64 + '");')
-        self.assertEqual({PG}, self.inspect())
-
-    def test_unused_declaration_is_still_failure(self):
-        self.declare(PG, KAFKA)
-        with self.assertRaisesRegex(ValueError, 'unused'):
-            self.inspect()
-
-
-if __name__ == '__main__':
-    unittest.main()
- + '{{ matrix.image }}'
+        image_variable = '$' + '{{ matrix.image }}'
         for setting in ('container: ' + image_variable,
                         'uses: docker://' + image_variable,
                         'container: {image: "ubuntu:latest"}'):
@@ -177,6 +154,42 @@ if __name__ == '__main__':
         self.declare(PG, KAFKA)
         with self.assertRaisesRegex(ValueError, 'unused'):
             self.inspect()
+
+    def test_quoted_docker_steps_retain_registry_ports_and_digests(self):
+        image = 'registry.example:5443/team/service:release@sha256:' + 'b' * 64
+        target = 'registry.example:5443/team/service@sha256:' + 'b' * 64
+        for key in ('uses', '"uses"', "'uses'"):
+            for quote in ('', '"', "'"):
+                with self.subTest(key=key, quote=quote):
+                    self.write('.github/workflows/actions.yml',
+                               'jobs:\n  test:\n    steps:\n      - ' + key + ': ' +
+                               quote + 'docker://' + image + quote + ' # pinned\n')
+                    self.declare(PG, target)
+                    self.assertEqual({PG, target}, self.inspect())
+
+    def test_flow_docker_action_cannot_escape_inventory(self):
+        for value in ('- {uses: docker://ubuntu:latest}',
+                      '- {"uses": "docker://ubuntu:latest"}'):
+            with self.subTest(value=value):
+                self.write('.github/workflows/actions.yml',
+                           'jobs:\n  test:\n    steps:\n      ' + value + '\n')
+                with self.assertRaisesRegex(ValueError, 'block-style'):
+                    self.inspect()
+
+    def test_exact_undeclared_docker_action_must_be_in_inventory(self):
+        self.write('.github/workflows/actions.yml',
+                   'jobs:\n  test:\n    steps:\n      - uses: docker://' + KAFKA + '\n')
+        with self.assertRaisesRegex(ValueError, 'undeclared'):
+            self.inspect()
+        self.declare(PG, KAFKA)
+        self.assertEqual({PG, KAFKA}, self.inspect())
+
+    def test_empty_and_non_container_workflow_lines_do_not_create_images(self):
+        self.write('.github/workflows/actions.yml',
+                   'name: test\njobs:\n  test:\n    container:\n      image: ' + PG + '\n'
+                   '    steps:\n      - uses: actions/checkout@abcdef\n'
+                   '      - run: python3 scripts/container-images.py\n')
+        self.assertEqual({PG}, self.inspect())
 
 
 if __name__ == '__main__':

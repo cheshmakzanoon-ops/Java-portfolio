@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import math
 import os
+import stat
 import xml.etree.ElementTree as ET
 
 NS = {'m': 'http://maven.apache.org/POM/4.0.0'}
@@ -117,7 +118,7 @@ def fresh_reports(module, kind, started):
     if directory.exists():
         for entry in directory.rglob('*'):
             if entry.is_symlink():
-                raise EvidenceError(str(entry) + ': report directories cannot be linked')
+                raise EvidenceError(str(entry) + ': report must be an ordinary file in unlinked report directories')
     pattern = '**/mutations.xml' if kind == 'pit' else 'TEST-*.xml'
     result = []
     for report in sorted(directory.glob(pattern)):
@@ -134,18 +135,41 @@ def fresh_reports(module, kind, started):
     return result
 
 
+def report_xml(report):
+    """Read bounded ordinary UTF-8 XML without following a final symbolic link.
+
+    Maven emits UTF-8 reports. Reject DTD/entity declarations after decoding so
+    alternate byte encodings cannot hide declarations from the preflight.
+    Check the opened descriptor, and bound the actual read as well as its stat.
+    """
+    report = Path(report)
+    try:
+        if report.is_symlink():
+            raise EvidenceError(str(report) + ': test report must be an ordinary file')
+        flags = os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_NONBLOCK', 0)
+        descriptor = os.open(report, flags)
+        with os.fdopen(descriptor, 'rb') as stream:
+            metadata = os.fstat(stream.fileno())
+            if not stat.S_ISREG(metadata.st_mode):
+                raise EvidenceError(str(report) + ': test report must be an ordinary file')
+            if metadata.st_size > MAX_REPORT_BYTES:
+                raise EvidenceError(str(report) + ': test report exceeds the 64 MiB budget')
+            raw = stream.read(MAX_REPORT_BYTES + 1)
+        if len(raw) > MAX_REPORT_BYTES:
+            raise EvidenceError(str(report) + ': test report exceeds the 64 MiB budget')
+        text = raw.decode('utf-8-sig')
+        if '\x00' in text or '<!DOCTYPE' in text.upper() or '<!ENTITY' in text.upper():
+            raise EvidenceError(str(report) + ': DTD, entity or non-UTF-8 XML is not allowed')
+        return ET.fromstring(text)
+    except EvidenceError:
+        raise
+    except (OSError, UnicodeError, ET.ParseError, ValueError) as error:
+        raise EvidenceError(str(report) + ': invalid UTF-8 XML report') from error
+
+
 def test_counts(report):
     try:
-        if report.is_symlink() or not report.is_file():
-            raise ValueError('test report must be an ordinary file')
-        if report.stat().st_size > MAX_REPORT_BYTES:
-            raise ValueError('test report exceeds the 64 MiB budget')
-        # JUnit/Surefire reports have no DTD or external entity declarations.
-        # Check the XML declaration rather than trusting a parser to ignore DTDs.
-        raw = report.read_bytes()
-        if b'<!DOCTYPE' in raw.upper() or b'<!ENTITY' in raw.upper():
-            raise ValueError('DTD or entity declaration is not allowed')
-        suite = ET.fromstring(raw)
+        suite = report_xml(report)
         if suite.tag != 'testsuite':
             raise ValueError('expected testsuite')
         counts = {key: int(suite.attrib[key]) for key in COUNT_KEYS}
@@ -161,5 +185,7 @@ def test_counts(report):
             if sum(case.find(tag) is not None for tag in ('failure', 'error', 'skipped')) > 1:
                 raise ValueError('test case has contradictory outcome markers')
         return counts
+    except EvidenceError:
+        raise
     except (OSError, ET.ParseError, KeyError, ValueError) as error:
         raise EvidenceError(str(report) + ': invalid or inconsistent test report') from error
