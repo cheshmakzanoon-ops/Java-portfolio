@@ -46,11 +46,12 @@ class TimingProbeQuiescenceTest {
       assertEquals(0, TimingProbe.inFlightExits());
       long reserved = buffer.seal();
       long[] drained = {0};
-      while (buffer.pollTo((method, started, elapsed, failed) -> {
-        assertTrue(method >= 0 && method < 8);
-        assertTrue(elapsed >= 0);
-        drained[0]++;
-      })) {}
+      while (buffer.pollTo(
+          (method, started, elapsed, failed) -> {
+            assertTrue(method >= 0 && method < 8);
+            assertTrue(elapsed >= 0);
+            drained[0]++;
+          })) {}
       assertEquals(reserved, drained[0], "every reservation must be published before seal");
       assertEquals(0, buffer.pending());
       assertTrue(drained[0] <= 8 * 1500);
@@ -64,15 +65,16 @@ class TimingProbeQuiescenceTest {
     TimingProbe.configure(buffer);
     CountDownLatch admitted = new CountDownLatch(1);
     CountDownLatch release = new CountDownLatch(1);
-    TimingProbe.injectFaultAction(() -> {
-      admitted.countDown();
-      try {
-        release.await();
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        throw new IllegalStateException(e);
-      }
-    });
+    TimingProbe.injectFaultAction(
+        () -> {
+          admitted.countDown();
+          try {
+            release.await();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+          }
+        });
     Thread worker =
         Thread.ofPlatform().start(() -> TimingProbe.exit(7, TimingProbe.enter(), false));
     try {
@@ -129,7 +131,10 @@ class TimingProbeQuiescenceTest {
     TimingBuffer buffer = new TimingBuffer(16);
     TimingProbe.configure(buffer);
     long initial = TimingProbe.failures();
-    TimingProbe.injectFaultAction(() -> { throw new IllegalStateException("injected"); });
+    TimingProbe.injectFaultAction(
+        () -> {
+          throw new IllegalStateException("injected");
+        });
     TimingProbe.exit(8, TimingProbe.enter(), true);
     assertEquals(initial + 1, TimingProbe.failures());
     assertFalse(TimingProbe.enabled());

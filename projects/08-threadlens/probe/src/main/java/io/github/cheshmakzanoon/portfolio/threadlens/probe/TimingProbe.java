@@ -31,15 +31,15 @@ public final class TimingProbe {
   }
 
   private static Guard registerGuard() {
-    int previous =
-        trackedCount.getAndUpdate(n -> n < MAX_TRACKED_GUARDS ? n + 1 : n);
+    int previous = trackedCount.getAndUpdate(n -> n < MAX_TRACKED_GUARDS ? n + 1 : n);
     Guard guard = new Guard(previous < MAX_TRACKED_GUARDS);
     if (guard.tracked) TRACKED.add(guard);
     return guard;
   }
 
   // One state per participating thread; no per-invocation allocation or unbounded registry.
-  private static final ThreadLocal<Guard> ACTIVE = ThreadLocal.withInitial(TimingProbe::registerGuard);
+  private static final ThreadLocal<Guard> ACTIVE =
+      ThreadLocal.withInitial(TimingProbe::registerGuard);
   private static volatile boolean injectFault;
   private static final AtomicLong failures = new AtomicLong();
   private static volatile Runnable faultAction;
@@ -111,7 +111,9 @@ public final class TimingProbe {
 
   public static int inFlightExits() {
     int count = fallbackInFlight.get();
-    for (Guard guard : TRACKED) if (guard.publishing) count++;
+    for (Guard guard : TRACKED) {
+      if (guard.publishing) count++;
+    }
     return count;
   }
 
