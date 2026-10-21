@@ -351,11 +351,16 @@ class MarkdownLinkGateTest(unittest.TestCase):
 class SourceSarifGateTest(unittest.TestCase):
     def document(self, severity='8.0', results=None):
         rule = {'id': 'java/example', 'properties': {'security-severity': severity}}
-        return {'version': '2.1.0', 'runs': [{'tool': {'driver': {'rules': [rule]}},
+        return {'version': '2.1.0', 'runs': [{'tool': {'driver': {'name': 'CodeQL', 'rules': [rule]}},
                                            'results': [] if results is None else results}]}
 
     def test_completed_scan_without_findings_passes(self):
         self.assertEqual([], source_sarif.inspect([('scan.sarif', self.document())])['failures'])
+
+    def test_non_codeql_scan_cannot_claim_security_certification(self):
+        document = self.document()
+        document['runs'][0]['tool']['driver']['name'] = 'Custom'
+        self.assertTrue(source_sarif.inspect([('scan.sarif', document)])['failures'])
 
     def test_high_findings_are_not_hidden_by_success_or_suppression(self):
         document = self.document(results=[{'ruleId': 'java/example', 'level': 'warning',

@@ -121,6 +121,11 @@ def inspect(documents):
                 properties = _object(rule.get('properties'))
                 if 'level' in result and _level(result['level']) is None:
                     failures.append(name + ': invalid finding level for ' + rule_id)
+                if 'properties' in rule and not isinstance(rule['properties'], dict):
+                    failures.append(name + ': malformed rule properties for ' + rule_id)
+                if 'defaultConfiguration' in rule and not isinstance(
+                        rule['defaultConfiguration'], dict):
+                    failures.append(name + ': malformed default configuration for ' + rule_id)
                 severity_present = 'security-severity' in properties
                 score = _score(rule, name, rule_id, failures)
                 if score is not None and score >= 7:

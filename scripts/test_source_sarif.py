@@ -77,6 +77,14 @@ class SarifGateTest(unittest.TestCase):
                 document['runs'][0]['tool']['driver']['rules'] = rules
                 self.assertTrue(evaluate(document)['failures'])
 
+    def test_malformed_rule_properties_and_defaults_fail_closed(self):
+        for field, value in (('properties', []), ('properties', 'invalid'),
+                             ('defaultConfiguration', [])):
+            with self.subTest(field=field):
+                document = sample()
+                document['runs'][0]['tool']['driver']['rules'][0][field] = value
+                self.assertTrue(evaluate(document)['failures'])
+
     def test_duplicate_rule_ids_fail(self):
         document = sample()
         rule = document['runs'][0]['tool']['driver']['rules'][0]
