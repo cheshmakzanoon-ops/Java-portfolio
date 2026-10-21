@@ -174,6 +174,19 @@ class HttpSecurityIT {
           "{\"repository\":\"public\",\"revision\":\"v1\",\"idempotencyKey\":\"http1\",\"path\":\"project\",\"complete\":true}";
       var ingestion = request(client, base, "/v1/ingestions", token, body);
       assertEquals(202, ingestion.statusCode(), ingestion.body());
+
+      // A browser-ambient cookie must not bypass CSRF checks, even with a valid bearer token.
+      // Normal explicit bearer requests remain functional (as asserted above).
+      var cookieRequest =
+          HttpRequest.newBuilder(URI.create(base + "/v1/ingestions"))
+              .timeout(Duration.ofSeconds(20))
+              .header("Authorization", "Bearer " + token)
+              .header("Cookie", "JSESSIONID=ambient")
+              .header("Content-Type", "application/json")
+              .POST(HttpRequest.BodyPublishers.ofString(body))
+              .build();
+      assertEquals(
+          403, client.send(cookieRequest, HttpResponse.BodyHandlers.ofString()).statusCode());
       Files.createDirectories(dir.resolve("sources/demo/denied"));
       Files.writeString(
           dir.resolve("sources/demo/denied/Private.java"), "unreadableOtherRepositorySecret");
