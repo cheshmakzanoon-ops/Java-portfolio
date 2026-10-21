@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "observedAtUtc": "2026-10-21T03:33:21.524595+00:00",
+  "baseCommit": "61f0d698ae133de519a2bf2634b06936a66821e5",
+  "status": "LOCAL_TOOLCHAIN_AND_WORKFLOW_VALIDATION_PASS_HOSTED_UNVERIFIED",
+  "changes": [
+    "Replace unsupported setup-java four-component SemVer with shared exact checksum-pinned bootstrap",
+    "Allow bootstrap tools directory override for clean GitHub runner paths",
+    "Regression checks reject corrupt cached archives and unexpected installed JDK without replacement"
+  ],
+  "inputSha256": {
+    "scripts/bootstrap-cloud.sh": "914b2bee44326dc902273b6c451dd1144e640704aca9b42ae233142a6553897a",
+    "scripts/test_toolchain.py": "97fbcd392bb6f5ff7e57ac0da965335a7e1d4d3e075f719c3a69705b2fd5819b",
+    ".github/actions/setup-toolchain/action.yml": "a45bb7b253a286a9aa2cd2215c2bde54024de2b51ad4c4b59961401c0ed089e2",
+    ".github/workflows/benchmark.yml": "835c779acaa73388ea766dc90eb4f37cc4e50a745f45f3811abadb8acd80ab7b",
+    ".github/workflows/ci.yml": "fdf7ee5d03ca5a4b3fdc564ea484cdde8224ad0dcc3caedb1841c32c5ce14d73",
+    ".github/workflows/integration.yml": "0a80e334eeaedda098f9c05139aa6d45990fa67b085a9730327e49a937d75f45",
+    ".github/workflows/mutation.yml": "01360c69715d5409f745ce848ad43b83bbec1aad8b3fd34a7da8990ef3fccc09",
+    ".github/workflows/release-check.yml": "9c72fa65de2a233bd159ab210ef8692e66c9e2f091de91aa211996b3ed3963fb",
+    ".github/workflows/security.yml": "02d070c1b44f262e7df5765e97e5c4036ebddcf5dc725cb20967e829868e47d6"
+  },
+  "checks": {
+    "freshDirectoryBootstrap": {
+      "exitCode": 0,
+      "jdk": "Temurin 25.0.4.1+1",
+      "archiveSha256": "dbb698396d478e7fa2b1e50f4103324b2a99b90569ee27c33f2261f9215cf41e",
+      "directory": "/tmp/portfolio-ci-tools"
+    },
+    "toolingTests": {
+      "exitCode": 0,
+      "tests": 50
+    },
+    "workflowLint": {
+      "exitCode": 0,
+      "actionlintVersion": "1.7.7",
+      "archiveSha256": "023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757"
+    },
+    "links": {
+      "exitCode": 0,
+      "documents": 200,
+      "unresolved": 0
+    },
+    "architecture": {
+      "exitCode": 0,
+      "violations": 0
+    },
+    "baselineReleaseAudit": {
+      "exitCode": 1,
+      "criteria": 63,
+      "outstandingHistoricalRows": 20
+    }
+  },
+  "logSha256": {
+    "production-ci-bootstrap.log": "99da83072b6dac32dff1249b8892bd51032b8548f155da64385aea1bbf20e2e2",
+    "production-tooling.log": "8834dc9093b021f88e7562419fe586960d442456ab773014cdc7de6d5fd9ac75",
+    "production-actionlint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "release-audit-baseline.log": "8037263edf8c073a51c1be1a94f67a4674cec77a4073a784360fcd5cca27ffae"
+  },
+  "limits": [
+    "Local action commands executed; GitHub runner execution is not implied",
+    "Exact JDK release metadata does not fit setup-java SemVer; the existing checksum pin defines its identity",
+    "Native Windows/macOS unsupported by Linux bootstrap and not executed"
+  ]
+}

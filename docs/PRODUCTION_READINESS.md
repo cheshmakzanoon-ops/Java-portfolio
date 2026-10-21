@@ -45,3 +45,9 @@ All 63 criteria in [release.md](release.md) and [acceptance-matrix.md](acceptanc
 Store current machine-readable command outcomes with source/input hashes, timestamps, report counts and log hashes. Keep generated classes, dependency caches, recordings and large raw output in ignored paths; commit compact source-bound evidence and reproducible commands. Zero-test runs, skipped integration, partial studies, source changes after measurement and historical PASS entries cannot certify a current gate.
 
 The ongoing task remains incomplete until required checks finish or concrete external blockers exhaust useful independent work. See the latest sections below for milestones and exact resumption commands as they are completed.
+
+## Milestone: reproducible workflow toolchain
+
+Replaced every invalid `setup-java` version request with a shared local action that invokes the existing exact checksum-pinned Temurin bootstrap. The bootstrap now accepts a tools-directory override so it works on GitHub runners without writing `/workspace`. Existing cloud activation remains supported.
+
+Current local evidence: [toolchain receipt](execution/production-toolchain-20261021.json). A fresh temporary installation verified the pinned archive and ran Java/javac 25.0.4.1; Maven 3.10.0 runs with the existing wrapper checksum. All six workflows pass actionlint 1.7.7. Fifty tooling tests pass, including rejection of corrupted JDK archives and mismatched installed runtimes; documentation links and source architecture pass. The baseline release audit correctly exits 1 with 20 unresolved historical rows. Hosted execution remains unverified.

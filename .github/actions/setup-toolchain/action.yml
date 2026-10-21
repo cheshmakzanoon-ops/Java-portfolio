@@ -1,0 +1,17 @@
+name: Checksum-pinned Java toolchain
+description: Install the exact Temurin build without setup-java semver coercion
+runs:
+  using: composite
+  steps:
+    - name: Install and verify Temurin 25.0.4.1+1
+      shell: bash
+      env:
+        PORTFOLIO_TOOLS_DIR: ${{ runner.temp }}/portfolio-tools
+      run: |
+        set -euo pipefail
+        bash scripts/bootstrap-cloud.sh
+        printf 'JAVA_HOME=%s/jdk-25\n' "$PORTFOLIO_TOOLS_DIR" >> "$GITHUB_ENV"
+        printf '%s/jdk-25/bin\n' "$PORTFOLIO_TOOLS_DIR" >> "$GITHUB_PATH"
+    - name: Verify wrapper and active runtime
+      shell: bash
+      run: ./mvnw -version

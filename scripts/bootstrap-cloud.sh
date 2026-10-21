@@ -5,7 +5,7 @@ if [[ $(uname -s) != Linux || $(uname -m) != x86_64 ]]; then
   echo 'This bootstrap supports Linux x86_64. Install Eclipse Temurin JDK25 on other platforms.' >&2
   exit 2
 fi
-portfolio_tools=/workspace/.tools
+portfolio_tools=${PORTFOLIO_TOOLS_DIR:-/workspace/.tools}
 portfolio_archive=OpenJDK25U-jdk_x64_linux_hotspot_25.0.4.1_1.tar.gz
 portfolio_sha=dbb698396d478e7fa2b1e50f4103324b2a99b90569ee27c33f2261f9215cf41e
 if [[ ! -x $portfolio_tools/jdk-25/bin/javac ]]; then
