@@ -13,6 +13,10 @@ architecture, transaction semantics, and authorization. Source code, tests, oper
 limits, and failure evidence are linked directly; historical checks do not certify
 later changes.
 
+The [21 October engineering pass](docs/job-readiness-20261021.md) records the latest
+authorization, recovery, diagnostics, and configuration fixes, with current local test
+counts and the acceptance work that remains open.
+
 ## Choose a project
 
 | Project | Engineering focus | Start here |

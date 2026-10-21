@@ -77,6 +77,13 @@ identity services. Check each project's security and operations guide before exp
 
 ## What the portfolio proves — and what it does not
 
+The [21 October continuation](job-readiness-20261021.md) records **1,030 ordinary Java
+methods and 54 selected integration methods**, plus **114 shared tooling tests**, on
+its stated source inputs. It also links the actual MatchCore recovery demo, new
+authorization regressions, and remaining release limits. Integration scopes not rerun
+in that continuation are explicitly marked; earlier integration results are not
+counted as current executions.
+
 The [engineering review](quality-review.md) records 839 ordinary Java cases and 114
 integration cases on its **2026-10-20** tested source, plus scoped mutation campaigns.
 Those are historical, source-bound observations; later commits require fresh checks.

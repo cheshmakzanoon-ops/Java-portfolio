@@ -1,0 +1,1369 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_SCOPED_VERIFICATION_PASSED_RELEASE_BLOCKED",
+  "recorded_at_utc": "2026-10-21T20:43:55.056774+00:00",
+  "session_started_at_utc": "2026-10-21T19:46:11Z",
+  "source_base_commit": "cd3d25972d81dcfbd174d92fc6b64a9dd88acd75",
+  "verified_code_commit": "39cf31b23993b069cb22ad32ab4b09fac009a333",
+  "sourceFingerprint": "b8ebc8ac6aaaa947068f74c9b96bcb1fd367722207d69a9602170d44620f3661",
+  "sourceFingerprintDefinition": "scripts/release_evidence.py source_fingerprint over current working-tree source, tests, configuration and docs; evidence directories, docs/execution and docs/PRODUCTION_READINESS.md are excluded. Final documentation is included; this is not the mandatory release-current.json certificate.",
+  "runtime": {
+    "java": "Temurin 25.0.4.1+1",
+    "maven": "Checksum-pinned Maven 3.10.0 wrapper",
+    "platform": "Linux x86-64",
+    "activation": "PORTFOLIO_TOOLS_DIR=/workspace/scratch/26b6424aae4f/portfolio-tools; source scripts/cloud-env.sh",
+    "scope": "Scoped project invocations in the current workspace; not a single clean-checkout all-project release execution"
+  },
+  "totals": {
+    "ordinary_java_methods": 1030,
+    "selected_integration_methods": 54,
+    "shared_python_tests": 114,
+    "final_selected_failures": 0,
+    "final_selected_errors": 0,
+    "final_selected_skips": 0,
+    "counting": "Test methods, not property trials, generated mutations or simulated actions"
+  },
+  "projects": [
+    {
+      "project": "01-clearledger",
+      "status": "PASS",
+      "ordinary_methods": 52,
+      "integration_methods": null,
+      "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
+      "command": "./mvnw -f projects/01-clearledger/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "finished_at": "2026-10-22T05:13:15+09:00",
+      "exit_code": 0,
+      "log_sha256": "df0d7ca6359336e08013a9ed5c507848c345529343de77ec43c6f3a160e27b6d",
+      "freshness_basis": "Exact pre-invocation timestamp in detailed CSRF receipt; every selected current ordinary report is rechecked",
+      "verification": {
+        "counts": {
+          "tests": 52,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "ledger-domain",
+            "counts": {
+              "surefire": {
+                "tests": 10,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "ledger-persistence",
+            "counts": {
+              "surefire": {
+                "tests": 29,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "ledger-api",
+            "counts": {
+              "surefire": {
+                "tests": 8,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "ledger-verification",
+            "counts": {
+              "surefire": {
+                "tests": 5,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 46,
+        "sha256": "87609bdc0f6cf9a1c8b93ce984886cd9c9f6993d55962d480c1428f54099db06"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 10,
+        "sha256": "72b1842f4a5779189e29e17990c4ff58a5a82d529164b2387af97831621dc043"
+      },
+      "started_epoch": 1792613559.155897,
+      "detailed_receipt": "docs/execution/csrf-enforcement-20261021.json"
+    },
+    {
+      "project": "02-durableflow",
+      "status": "PASS",
+      "ordinary_methods": 123,
+      "integration_methods": 33,
+      "integration_scope": "Complete selected integration profile",
+      "command": "./mvnw -f projects/02-durableflow/pom.xml -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+      "finished_at": "2026-10-21T20:28:21Z",
+      "exit_code": 0,
+      "log_sha256": "b9a97b6a564d600011154b5af0ac6b48b35832e45d7df0c2b627c913cdd39755",
+      "freshness_basis": "Detailed receipt records the invocation freshness cutoff; complete selected reports are rechecked against that cutoff",
+      "verification": {
+        "counts": {
+          "tests": 156,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "workflow-model",
+            "counts": {
+              "surefire": {
+                "tests": 21,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "workflow-engine",
+            "counts": {
+              "surefire": {
+                "tests": 51,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "workflow-persistence",
+            "counts": {
+              "surefire": {
+                "tests": 27,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "workflow-worker-sdk",
+            "counts": {
+              "surefire": {
+                "tests": 8,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "workflow-api",
+            "counts": {
+              "surefire": {
+                "tests": 9,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "workflow-verification",
+            "counts": {
+              "surefire": {
+                "tests": 7,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              },
+              "failsafe": {
+                "tests": 33,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 74,
+        "sha256": "64d113c440a1d05761ca0f6bc0067a832c96eb3993d46a5d6fd433e97f2cf8a9"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 29,
+        "sha256": "157c00b967865623634282306d93a31adbf6b12f6a2d9bd36983482db7d798a3"
+      },
+      "started_epoch": 1792614440.528004,
+      "detailed_receipt": "projects/02-durableflow/evidence/csrf-recovery-20261021/validation.json"
+    },
+    {
+      "project": "03-quorumkv",
+      "status": "PASS",
+      "ordinary_methods": 69,
+      "integration_methods": null,
+      "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
+      "command": "bash scripts/portfolio.sh verify quorumkv",
+      "finished_at": "2026-10-22T05:12:54+09:00",
+      "exit_code": 0,
+      "log_sha256": "da1dacc4c851475830282b1635732252f9aed80b40986d827717cf7131acd818",
+      "freshness_basis": "Successful portfolio.sh invocation exports PORTFOLIO_TEST_RUN_STARTED before Maven and appends its strict completeness JSON; that observed JSON matches the current report summary. The raw start epoch was not retained separately.",
+      "verification": {
+        "counts": {
+          "tests": 69,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "raft-core",
+            "counts": {
+              "surefire": {
+                "tests": 31,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "raft-storage",
+            "counts": {
+              "surefire": {
+                "tests": 12,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "raft-transport",
+            "counts": {
+              "surefire": {
+                "tests": 4,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "kv-server",
+            "counts": {
+              "surefire": {
+                "tests": 13,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "kv-client",
+            "counts": {
+              "surefire": {
+                "tests": 1,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "raft-verification",
+            "counts": {
+              "surefire": {
+                "tests": 8,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 43,
+        "sha256": "83ddb351ee49a4018b1de55b19ea0371fde550d8cc2ac9e240c4151c911f1ee4"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 14,
+        "sha256": "1e8c7e17ffb2ddcb24d9ad33a0bf55f982d9f100f703a0beec9e585a3ccf19f1"
+      }
+    },
+    {
+      "project": "04-pulsestream",
+      "status": "PASS",
+      "ordinary_methods": 37,
+      "integration_methods": null,
+      "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
+      "command": "bash scripts/portfolio.sh verify pulsestream",
+      "finished_at": "2026-10-22T05:12:54+09:00",
+      "exit_code": 0,
+      "log_sha256": "7d68675199d950ca3a2cd08aa9a0f1b837f5c36a0835e14aa9105eca6b13ec68",
+      "freshness_basis": "Successful portfolio.sh invocation exports PORTFOLIO_TEST_RUN_STARTED before Maven and appends its strict completeness JSON; that observed JSON matches the current report summary. The raw start epoch was not retained separately.",
+      "verification": {
+        "counts": {
+          "tests": 37,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "engine",
+            "counts": {
+              "surefire": {
+                "tests": 10,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "kafka-adapter",
+            "counts": {
+              "surefire": {
+                "tests": 12,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "postgres-store",
+            "counts": {
+              "surefire": {
+                "tests": 12,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "service",
+            "counts": {
+              "surefire": {
+                "tests": 1,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "verification",
+            "counts": {
+              "surefire": {
+                "tests": 2,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 43,
+        "sha256": "92da8e3b5a6a0e94380ad2bbad20adad8fb48207ec150b5847e45ee60529a43c"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 11,
+        "sha256": "bc30b51a97ed93fa2e2790a406c97ee08f3ebfe71ba223c6e772eb5d826857e2"
+      }
+    },
+    {
+      "project": "05-tenantshield",
+      "status": "PASS",
+      "ordinary_methods": 49,
+      "integration_methods": null,
+      "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
+      "command": "./mvnw -f projects/05-tenantshield/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "finished_at": "2026-10-22T05:13:25+09:00",
+      "exit_code": 0,
+      "log_sha256": "c7d82c88122244ad39bf041f85e07c73de4908c111c94bfcb27fdce90eda221d",
+      "freshness_basis": "Exact pre-invocation timestamp in detailed CSRF receipt; every selected current ordinary report is rechecked",
+      "verification": {
+        "counts": {
+          "tests": 49,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "policy-core",
+            "counts": {
+              "surefire": {
+                "tests": 19,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "decision-service",
+            "counts": {
+              "surefire": {
+                "tests": 26,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "demo-resource-server",
+            "counts": {
+              "surefire": {
+                "tests": 4,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 43,
+        "sha256": "5ee3b02eec4bf01ca8758feaa3aa47c01b9357f6811d1a4e793b3bb55ad10ed5"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 13,
+        "sha256": "c79e9aa1c9cb5198728a71b22651130e1b1b63fad723ee656249512171d2de95"
+      },
+      "started_epoch": 1792613564.189826,
+      "detailed_receipt": "docs/execution/csrf-enforcement-20261021.json"
+    },
+    {
+      "project": "06-matchcore",
+      "status": "PASS",
+      "ordinary_methods": 48,
+      "integration_methods": null,
+      "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
+      "command": "bash scripts/portfolio.sh verify matchcore",
+      "finished_at": "2026-10-22T05:17:40+09:00",
+      "exit_code": 0,
+      "log_sha256": "ba80b14c76f4923b5e88482df2e2b0f0c8737dd1bc6c9029a77059e8b546a2ef",
+      "freshness_basis": "Successful portfolio.sh invocation exports PORTFOLIO_TEST_RUN_STARTED before Maven and appends its strict completeness JSON; that observed JSON matches the current report summary. The raw start epoch was not retained separately.",
+      "verification": {
+        "counts": {
+          "tests": 48,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "matching-core",
+            "counts": {
+              "surefire": {
+                "tests": 17,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "journal",
+            "counts": {
+              "surefire": {
+                "tests": 11,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "gateway",
+            "counts": {
+              "surefire": {
+                "tests": 13,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "simulator",
+            "counts": {
+              "surefire": {
+                "tests": 6,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "benchmarks",
+            "counts": {
+              "surefire": {
+                "tests": 1,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 35,
+        "sha256": "a2e2f468dc41e177e2de127ec89acb9889b1f81bef7e2aee39751d8574fb986c"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 9,
+        "sha256": "bd887cce62db8879d1cad21e48011277bfa276567eacbd95b040afa821639589"
+      }
+    },
+    {
+      "project": "07-indexforge",
+      "status": "PASS",
+      "ordinary_methods": 248,
+      "integration_methods": 11,
+      "integration_scope": "Complete selected integration profile",
+      "command": "./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=\"$PWD/.work/A07/m2\" -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+      "finished_at": "2026-10-21T20:15:09+00:00",
+      "exit_code": 0,
+      "log_sha256": "f5d1a8f616a9bf55ec81989359b04bb65f080a25adb1f6054d90e83b43dc6fc7",
+      "freshness_basis": "Detailed receipt records the invocation freshness cutoff; complete selected reports are rechecked against that cutoff",
+      "verification": {
+        "counts": {
+          "tests": 259,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "ingest",
+            "counts": {
+              "surefire": {
+                "tests": 21,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "index",
+            "counts": {
+              "surefire": {
+                "tests": 73,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              },
+              "failsafe": {
+                "tests": 1,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "query",
+            "counts": {
+              "surefire": {
+                "tests": 80,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "service",
+            "counts": {
+              "surefire": {
+                "tests": 36,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              },
+              "failsafe": {
+                "tests": 9,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "evaluation",
+            "counts": {
+              "surefire": {
+                "tests": 37,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "cli",
+            "counts": {
+              "surefire": {
+                "tests": 1,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              },
+              "failsafe": {
+                "tests": 1,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 150,
+        "sha256": "7bdaa1a7a56268164b8acc01a4d15fe87fa96ca8d34a8bef5676ffef727a2468"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 51,
+        "sha256": "205abd0c3813f4a99e93e19217b0e0a38e0e6810761f1cc51f0d2699848814ca"
+      },
+      "started_epoch": 1792613615.2757704,
+      "detailed_receipt": "projects/07-indexforge/evidence/tenant-binding-20261021/validation.json"
+    },
+    {
+      "project": "08-threadlens",
+      "status": "PASS",
+      "ordinary_methods": 208,
+      "integration_methods": 7,
+      "integration_scope": "Complete selected integration profile",
+      "command": "./mvnw -o -B -ntp -f projects/08-threadlens/pom.xml -Dmaven.repo.local=\"$PWD/.work/threadlens/m2\" -Pintegration,mutation verify",
+      "finished_at": "2026-10-21T20:39:17Z",
+      "exit_code": 0,
+      "log_sha256": "cf370c552dc1c289da3afa375b7863f64a4c66381529fc1c4ed943bcbdc1e56e",
+      "freshness_basis": "Detailed receipt records the invocation freshness cutoff; complete selected reports are rechecked against that cutoff",
+      "verification": {
+        "counts": {
+          "tests": 215,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "probe",
+            "counts": {
+              "surefire": {
+                "tests": 19,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "analysis",
+            "counts": {
+              "surefire": {
+                "tests": 21,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "jfr",
+            "counts": {
+              "surefire": {
+                "tests": 22,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "agent",
+            "counts": {
+              "surefire": {
+                "tests": 66,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "report",
+            "counts": {
+              "surefire": {
+                "tests": 46,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "cli",
+            "counts": {
+              "surefire": {
+                "tests": 31,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "compatibility",
+            "counts": {
+              "surefire": {
+                "tests": 3,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              },
+              "failsafe": {
+                "tests": 7,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 80,
+        "sha256": "89ea533a5e4f31460bc829e685a8164e9b6a17151ff9824d2b92b5c39d79a34d"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 29,
+        "sha256": "54b8a94b36ca6db91fd6d0e030a1fbb44561b44380b06192cfc025c11c9059fe"
+      },
+      "started_epoch": 1792614962.2989519,
+      "detailed_receipt": "projects/08-threadlens/evidence/job-readiness-final-20261021.json"
+    },
+    {
+      "project": "09-byteguard",
+      "status": "PASS",
+      "ordinary_methods": 143,
+      "integration_methods": 3,
+      "integration_scope": "Complete selected integration profile",
+      "command": "./mvnw -B -ntp -f projects/09-byteguard/pom.xml com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration,mutation verify",
+      "finished_at": "2026-10-21T20:15:49Z",
+      "exit_code": 0,
+      "log_sha256": "7777be524f92ef83a813fdca89d11c36fad61e45a07f5ebce064d254f39d00f8",
+      "freshness_basis": "Detailed receipt records the invocation freshness cutoff; complete selected reports are rechecked against that cutoff",
+      "verification": {
+        "counts": {
+          "tests": 146,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "analysis-core",
+            "counts": {
+              "surefire": {
+                "tests": 70,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "report",
+            "counts": {
+              "surefire": {
+                "tests": 20,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "cli",
+            "counts": {
+              "surefire": {
+                "tests": 16,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "evaluation",
+            "counts": {
+              "surefire": {
+                "tests": 37,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              },
+              "failsafe": {
+                "tests": 3,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 318,
+        "sha256": "6a904485f380ba74ffde79f1848f9c9d1f278d6ed0d96b64e346b0b6b3934cc3"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 21,
+        "sha256": "ecdd8b8134406ab14532685f51e183c27a088766d6b9341ae57171424c7cb0a0"
+      },
+      "started_epoch": 1792613570,
+      "detailed_receipt": "projects/09-byteguard/evidence/configuration-hardening-20261021/validation.json"
+    },
+    {
+      "project": "10-routeweaver",
+      "status": "PASS",
+      "ordinary_methods": 53,
+      "integration_methods": null,
+      "integration_scope": "Not rerun in this continuation; old integration XML is excluded",
+      "command": "./mvnw -f projects/10-routeweaver/pom.xml -Dmaven.repo.local=$PWD/.work/A07/m2 -B -ntp verify",
+      "finished_at": "2026-10-22T05:16:19+09:00",
+      "exit_code": 0,
+      "log_sha256": "e34c4705067207e7d836947ed56b57706eb7b6c105478abe0458ab176bb04974",
+      "freshness_basis": "Exact pre-invocation timestamp in detailed CSRF receipt; every selected current ordinary report is rechecked",
+      "verification": {
+        "counts": {
+          "tests": 53,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "modules": [
+          {
+            "module": "routeweaver-domain",
+            "counts": {
+              "surefire": {
+                "tests": 10,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "routeweaver-planning",
+            "counts": {
+              "surefire": {
+                "tests": 16,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "routeweaver-service",
+            "counts": {
+              "surefire": {
+                "tests": 14,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          },
+          {
+            "module": "routeweaver-verification",
+            "counts": {
+              "surefire": {
+                "tests": 13,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0
+              }
+            }
+          }
+        ],
+        "failures": []
+      },
+      "current_input_fingerprint": {
+        "definition": "All project src files and POMs outside target, plus root pom.xml, mvnw and wrapper properties; SHA-256 of sorted compact JSON mapping repository-relative names to file SHA-256",
+        "files": 53,
+        "sha256": "679f82dc4a71314d3b2b48b71673f50a33f93a460fdbb1e75f0683273f99532b"
+      },
+      "report_fingerprint": {
+        "definition": "SHA-256 of sorted compact JSON mapping every selected report path to file SHA-256",
+        "reports": 14,
+        "sha256": "d21f0b750bda4723e4584e50a10d1ff6c2d4080fb8589ebf499d81062657d6b0"
+      },
+      "started_epoch": 1792613619.472684,
+      "detailed_receipt": "docs/execution/csrf-enforcement-20261021.json"
+    }
+  ],
+  "mutation": {
+    "durableflow": {
+      "receipt": "projects/02-durableflow/evidence/inspection-hardening-20261021/validation.json",
+      "scope": "Inspection changes in workflow-model, workflow-engine and workflow-persistence; precedes later CSRF adapter and integration-test-only follow-up",
+      "modules": [
+        {
+          "module": "workflow-model",
+          "total": 41,
+          "statuses": {
+            "KILLED": 41
+          },
+          "sha256": "7079a1ee8cc7cb44415e8a551247aabaeb9d357900e5385a00c6c03a84beb9e7"
+        },
+        {
+          "module": "workflow-engine",
+          "total": 162,
+          "statuses": {
+            "KILLED": 158,
+            "SURVIVED": 4
+          },
+          "sha256": "4eda1f2b8e09a69eb4ae66e225930f2bfc94c2048d23d6b650b6afb8d4361c28"
+        },
+        {
+          "module": "workflow-persistence",
+          "total": 61,
+          "statuses": {
+            "KILLED": 60,
+            "SURVIVED": 1
+          },
+          "sha256": "25de6a5536cf2392588ec04817b799e70d8d2a0398c0f7ad5f757facf1691285"
+        }
+      ],
+      "killed": 259,
+      "generated": 264,
+      "survived": 5
+    },
+    "threadlens": {
+      "receipt": "projects/08-threadlens/evidence/job-readiness-final-20261021.json",
+      "modules": [
+        {
+          "module": "probe",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 97,
+            "SURVIVED": 5,
+            "TIMED_OUT": 1
+          },
+          "killedPercent": 94.1747572815534,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "analysis",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 173,
+            "SURVIVED": 6
+          },
+          "killedPercent": 96.64804469273743,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "jfr",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 125,
+            "SURVIVED": 14,
+            "TIMED_OUT": 3,
+            "NO_COVERAGE": 10
+          },
+          "killedPercent": 82.23684210526316,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "agent",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 115,
+            "SURVIVED": 18,
+            "NO_COVERAGE": 2
+          },
+          "killedPercent": 85.18518518518519,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "report",
+          "reports": 1,
+          "outcomes": {
+            "SURVIVED": 31,
+            "KILLED": 168,
+            "NO_COVERAGE": 3
+          },
+          "killedPercent": 83.16831683168317,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "cli",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 40
+          },
+          "killedPercent": 100.0,
+          "requiredKilledPercent": 70
+        }
+      ],
+      "outcomes": {
+        "KILLED": 718,
+        "SURVIVED": 74,
+        "TIMED_OUT": 4,
+        "NO_COVERAGE": 15
+      },
+      "thresholds_unchanged": true
+    },
+    "byteguard": {
+      "receipt": "projects/09-byteguard/evidence/configuration-hardening-20261021/validation.json",
+      "modules": [
+        {
+          "module": "analysis-core",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 527,
+            "SURVIVED": 106,
+            "NO_COVERAGE": 94
+          },
+          "killedPercent": 72.48968363136176,
+          "requiredKilledPercent": 70
+        },
+        {
+          "module": "report",
+          "reports": 1,
+          "outcomes": {
+            "KILLED": 30
+          },
+          "killedPercent": 100.0,
+          "requiredKilledPercent": 70
+        }
+      ],
+      "outcomes": {
+        "KILLED": 557,
+        "SURVIVED": 106,
+        "NO_COVERAGE": 94
+      },
+      "thresholds_unchanged": true,
+      "limit": "Existing selected targets only; new configuration parser classes are not represented as newly mutation-tested classes"
+    }
+  },
+  "shared_checks": {
+    "python_tooling": {
+      "command": "python3 -m unittest discover -s scripts -p 'test_*.py'",
+      "tests": 114,
+      "exit_code": 0,
+      "log_sha256": "20cfa311f98e0f9024668bbdf68d9d4a1b1c57fea1af5261e7eae3f32ef830ba"
+    },
+    "source_and_compiled_architecture": {
+      "scope": "All ten projects; source and compiled bytecode dependency checks",
+      "violations": 0,
+      "exit_code": 0,
+      "log_sha256": "c7caa6c54a4ca1ceece7cb733d5e31427a87f6218ed0dd2065153bce935d0555"
+    },
+    "image_inventory": {
+      "command": "python3 scripts/container-images.py",
+      "immutable_entries": 4,
+      "exit_code": 0,
+      "inventory": {
+        "include": [
+          {
+            "id": "image-01",
+            "image": "apache/kafka@sha256:1213eb3943d551e5ed1fca7a4e109001cee35770b66a02a0c37a8964efe09b69"
+          },
+          {
+            "id": "image-02",
+            "image": "postgres@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873"
+          },
+          {
+            "id": "image-03",
+            "image": "quay.io/keycloak/keycloak@sha256:79c623a22abacf3fe6c00a5fb30f5b7843d717b234033b80995891c06116d244"
+          },
+          {
+            "id": "image-04",
+            "image": "testcontainers/ryuk@sha256:7c1a8a9a47c780ed0f983770a662f80deb115d95cce3e2daa3d12115b8cd28f0"
+          }
+        ]
+      },
+      "log_sha256": "62f115f349f595e6acef16d119b87cb0a3eb318d845122b0370d28157492f84b",
+      "limit": "Inventory identity does not establish vulnerability acceptance"
+    },
+    "documentation_links": {
+      "command": "python3 scripts/check-links.py",
+      "output": "Markdown links: 202 working-tree documents; 0 unresolved local targets/anchors",
+      "exit_code": 0,
+      "log_sha256": "5063ba2a1635acdd93b04a1c8a321035a5d7feae66a88dd6cf402c1ee403448e"
+    },
+    "strict_release_audit": {
+      "exit_code": 1,
+      "mandatory_gates": 63,
+      "outstanding_errors": 21,
+      "output": [
+        "P01-A5: IN_PROGRESS",
+        "P02-A5: IN_PROGRESS",
+        "P03-A5: IN_PROGRESS",
+        "P07-A1: IN_PROGRESS",
+        "P07-A2: IN_PROGRESS",
+        "P07-A3: IN_PROGRESS",
+        "P07-A4: FAIL",
+        "P07-A5: IN_PROGRESS",
+        "P07-A6: IN_PROGRESS",
+        "P08-A5: FAIL",
+        "R-A01: IN_PROGRESS",
+        "R-A02: IN_PROGRESS",
+        "R-A03: IN_PROGRESS",
+        "R-A04: IN_PROGRESS",
+        "R-A05: IN_PROGRESS",
+        "R-A06: IN_PROGRESS",
+        "R-A07: IN_PROGRESS",
+        "R-A08: IN_PROGRESS",
+        "R-A09: IN_PROGRESS",
+        "R-A10: IN_PROGRESS",
+        "Current release evidence unavailable or stale: [Errno 2] No such file or directory: '/workspace/scratch/26b6424aae4f/Java-portfolio/docs/execution/release-current.json'",
+        "Release audit: 63 mandatory gates; 21 outstanding errors"
+      ],
+      "log_sha256": "87c6133e91f810c417afd336606e8c422e998bd25a3de85c7c4837f2651f4ec3",
+      "interpretation": "Expected FAIL: twenty incomplete historical rows and missing complete current release certificate; no suppression or threshold change"
+    }
+  },
+  "matchcore_walkthrough": {
+    "command": "bash scripts/portfolio.sh demo matchcore",
+    "exit_code": 0,
+    "output": "PASS executions=4 lots=8 aliceCash=19200 aliceLots=8 openOrders=0 results=12 digest=4e226aa11dbed09f79d746c5df50ac857e30804a2e43d3ccf39893d656f959e3",
+    "log_sha256": "7bfd1c4d9590ea8c3b74df489786a9f3ca1a230dff039bc39e4d2df834acab59",
+    "behavior": "Restarts after the durable cancellation boundary and verifies exact executions, lots, cash, open orders and result count",
+    "limit": "Deterministic synthetic correctness demonstration; no fresh throughput claim"
+  },
+  "change_volume": {
+    "comparison": "cd3d25972d81dcfbd174d92fc6b64a9dd88acd75..39cf31b23993b069cb22ad32ab4b09fac009a333",
+    "categories": {
+      "production": {
+        "files": 34,
+        "added": 1586,
+        "deleted": 263
+      },
+      "project_tests": {
+        "files": 37,
+        "added": 4998,
+        "deleted": 68
+      },
+      "shared_scripts_and_tests": {
+        "files": 8,
+        "added": 277,
+        "deleted": 120
+      },
+      "build_configuration": {
+        "files": 2,
+        "added": 2,
+        "deleted": 0
+      },
+      "documentation": {
+        "files": 30,
+        "added": 460,
+        "deleted": 39
+      },
+      "evidence": {
+        "files": 12,
+        "added": 2702,
+        "deleted": 0
+      },
+      "other": {
+        "files": 1,
+        "added": 118,
+        "deleted": 2
+      }
+    },
+    "implementation_tests_tools_added": 6861,
+    "implementation_tests_tools_deleted": 451,
+    "implementation_tests_tools_net": 6410,
+    "excluded": "Documentation, evidence, and two build POM additions are excluded from the 6,861/451 implementation totals. Final documentation assembly is not included in these code-commit category totals."
+  },
+  "evidence_packets": {
+    "csrf": {
+      "path": "docs/execution/csrf-enforcement-20261021.json",
+      "sha256": "471b47c2d58c5c1aac48c913c1e223c60f4e675f62210de5ce087c0fd935392a"
+    },
+    "durableflow": {
+      "path": "projects/02-durableflow/evidence/csrf-recovery-20261021/validation.json",
+      "sha256": "902977bdedf136a17d074d9e45aff4064f52ecf066762f2030136ffb5bc81e4d"
+    },
+    "durableflow_inspection": {
+      "path": "projects/02-durableflow/evidence/inspection-hardening-20261021/validation.json",
+      "sha256": "ad2d055f74316743d7ced0ed8620c69f459a52b8fc4827a660599dff0656c2c4"
+    },
+    "indexforge": {
+      "path": "projects/07-indexforge/evidence/tenant-binding-20261021/validation.json",
+      "sha256": "96916aa8a3a7bb2a59149abb0d81c600d56a6e204915575f0c429564dc22eba4"
+    },
+    "indexforge_lifecycle": {
+      "path": "projects/07-indexforge/evidence/ingestion-lifecycle-20261021.json",
+      "sha256": "b252caa3aef8f4e250b10c3bf8f1b26acb24acb4b0f628b35aa6c18d5392b71b"
+    },
+    "threadlens": {
+      "path": "projects/08-threadlens/evidence/job-readiness-final-20261021.json",
+      "sha256": "176d26b10ac27746dedde771671ed2dea6b63e21f931bd567bfc5884cf991d3a"
+    },
+    "threadlens_comparison": {
+      "path": "projects/08-threadlens/evidence/job-readiness-diagnostics-20261021.json",
+      "sha256": "9ed906913a69ad8722c66b537105d9f939e8f5daef7afb5b8275e0500c0de6f9"
+    },
+    "byteguard": {
+      "path": "projects/09-byteguard/evidence/configuration-hardening-20261021/validation.json",
+      "sha256": "2154228be49640b7140f671919700b09d769371443795ecebc5332f23cd80f08"
+    }
+  },
+  "evidence_readers": {
+    "scripts/check-tests.py": "e41519a8209c957214c0224639c7f76b0bbbfadedcf2ddb65418303f95602f7c",
+    "scripts/check-mutations.py": "5159b3ada48f1c29622a97cd812f314775bdf19aa4d84f1dee4d05e4e7129736",
+    "scripts/maven_evidence.py": "079845b79e60bd69024b1a5947393ddaf95010510089f21aaf9bde6831f2ea5e",
+    "scripts/release_evidence.py": "b1605057c51dcf569f11e16eaa78a9f12856ded688b9e7ef07ee4fc055cd0511"
+  },
+  "publication": {
+    "method": "Each published Git tree was checked against its local verified commit tree. Commit metadata differs; these mappings preserve traceability for receipts that name a local base commit.",
+    "commits": [
+      {
+        "published_sha": "60717d7a9ee8bdee3920af7b0a275d972441d18d",
+        "local_sha": "c077ff630cd1d7fa3fe9e4919a90be522fb49993",
+        "identical_tree_sha": "ce2b6ac61890e815eab962a07aee1d6210d7f4a6"
+      },
+      {
+        "published_sha": "fc5ebca5a627b78f6106398093d834a8ab778470",
+        "local_sha": "97f853e043c0c3e0ac90ca56880dbfbc505f304f",
+        "identical_tree_sha": "804bced73ab8d54c04dbb17e8e2227a708c1d4f7"
+      },
+      {
+        "published_sha": "5f1d8e899d855e69aa30386e2b44ddb2398a462a",
+        "local_sha": "8b4cc1935cd47606cb3f0253be5b2303e071bb5f",
+        "identical_tree_sha": "456f720284799c9fab10c74d9040d9392b8e7563"
+      },
+      {
+        "published_sha": "56f47a8f5230e3abb4c48a6844b68c5bd04cc695",
+        "local_sha": "edf02bf55812f9a5c595ef05b52036f3ed71b17c",
+        "identical_tree_sha": "765fc4cbeb640a210ab835db643c9924f73a020b"
+      },
+      {
+        "published_sha": "f182f23796a6b274fd5ca50f4f53f0b70675c458",
+        "local_sha": "e0fd6971da429d4b549d69190570cab5baba2386",
+        "identical_tree_sha": "b3c0fda37fe7fce95dd9fb3a0291043d03f6013e"
+      },
+      {
+        "published_sha": "994b5c37edcc2a3a7482891638cdec4e19e6eb0f",
+        "local_sha": "2bdb7c3b08fe43c558188ae49d3c658e7306ff6c",
+        "identical_tree_sha": "a4d4bb5e635543dffa7a67c8ab92074886fbf5dd"
+      },
+      {
+        "published_sha": "874042ed3e271b94485e8958d68304be9154ece8",
+        "local_sha": "32aa0014b7c03881b715791d0c2988ef4ff80f12",
+        "identical_tree_sha": "16aa51b1d50aa8f54aa92ca0ed2aaf20dcf53dde"
+      },
+      {
+        "published_sha": "7a1203349d639ccc64b0504464e01c24958cc415",
+        "local_sha": "a5d05237c00c338befec2df7c4b394056e96876a",
+        "identical_tree_sha": "93cb69b34bda296d17473ae3fe97e5bb98cfe398"
+      },
+      {
+        "published_sha": "f5cd64bd427d390918c91cc344995ca046bf946a",
+        "local_sha": "7b6cec4c72e843211e36f165ff6156328f8fe2c0",
+        "identical_tree_sha": "6c0719376fa0cae25311941137148569b3e7630d"
+      },
+      {
+        "published_sha": "39cf31b23993b069cb22ad32ab4b09fac009a333",
+        "local_sha": "1c22f62b5ec223278f78cb42688c9dbfbd69c559",
+        "identical_tree_sha": "d00cc257cf50848106bef13ccb60c1aac6c16e14"
+      }
+    ]
+  },
+  "unsuccessful_attempts": [
+    "Pre-fix CSRF counterexamples are preserved in the cross-service and DurableFlow receipts",
+    "DurableFlow first integration failure exposed a pre-commit test synchronization race; the failed source/log/report identities and corrected controlled-boundary test are preserved",
+    "ThreadLens supplementary transport interruption and restricted-socket retry are preserved separately from its successful final full invocation",
+    "ByteGuard independent review exposed rejected analyzer-produced long-identity SARIF; the packaged roundtrip regression and corrected boundary are documented in its receipt"
+  ],
+  "remaining_acceptance_work": [
+    {
+      "area": "IndexForge relevance",
+      "criterion": "P07-A4",
+      "status": "FAIL",
+      "detail": "Exposed held-out results remain below 0.75 nDCG and 0.90 identifier-MRR targets; correctness does not establish ranking quality. An independent corpus/protocol and frozen model are required."
+    },
+    {
+      "area": "ThreadLens overhead",
+      "criterion": "P08-A5",
+      "status": "FAIL",
+      "detail": "Historical full 84-JVM study failed six of eight comparisons. Prescribed current-source remeasurement needs a quiet host and at least 126 minutes of observation; not rerun here."
+    },
+    {
+      "area": "Security release evidence",
+      "status": "INCOMPLETE",
+      "detail": "Upstream PostgreSQL/Kafka image findings and a current NVD-backed dependency scan remain unresolved; existing hosted scan policy requires an administrator-configured NVD_API_KEY."
+    },
+    {
+      "area": "Hosted CI and deployment",
+      "status": "NOT_CERTIFIED",
+      "detail": "Pushed commits trigger workflows, but queued/pending jobs are not success. Full current-source clean checkout, all container integrations, simultaneous service demos and native platform checks are not newly certified."
+    },
+    {
+      "area": "Interactive browser",
+      "status": "NOT_RERUN",
+      "detail": "ThreadLens comparison structure/escaping is tested; current interactive layout/keyboard checks were not completed. Current ClearLedger/TenantShield CSRF checks use assembled filters with mock requests; RouteWeaver also exercises actual HTTP."
+    }
+  ],
+  "limits": [
+    "This receipt is a scoped engineering review, not a production release or security certificate",
+    "Earlier project receipts retain their recorded source and target scopes; historical evidence was not rewritten as current evidence",
+    "No failed acceptance gate, mutant outcome, dependency finding or required integration was suppressed",
+    "Hash-identified raw logs and XML reports remain transient local build outputs; selected detailed receipts are committed"
+  ]
+}

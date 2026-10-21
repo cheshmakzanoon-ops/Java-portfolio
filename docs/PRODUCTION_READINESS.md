@@ -3,6 +3,12 @@
 Started 2026-10-21 from `d8741ff567357e716ac2f6b9f4c5e4acc1914e37` on `main`.
 This register distinguishes current execution from historical evidence. It is not a release certificate.
 
+## Latest continuation — 21 October, from `cd3d259`
+
+The [job-readiness engineering pass](job-readiness-20261021.md) and its [execution receipt](execution/job-readiness-20261021.json) supersede the in-progress ownership snapshot below for this continuation. Current local checks cover 1,030 ordinary Java methods across all ten projects, 54 selected integration methods, and 114 shared tooling tests. Verified milestones are committed directly to `main` and pushed. The receipt identifies current source and explicitly distinguishes real loopback PostgreSQL integration from Docker execution, which was unavailable in this environment.
+
+Concrete fixes include read-only workflow inspection and stable history pagination, ingestion task retirement, authenticated tenant continuity, assembled-filter CSRF enforcement, richer JFR comparison evidence, strict ByteGuard rule/baseline parsing, and repaired build/evidence tools. The [release contract](release.md) remains unchanged: relevance, observer-overhead, security-feed/image findings, hosted CI and full deployment evidence still require their own successful results. Historical failures are preserved.
+
 ## Release contract
 
 All 63 criteria in [release.md](release.md) and [acceptance-matrix.md](acceptance-matrix.md) remain mandatory. No threshold, finding, failure, or required test may be suppressed to obtain a pass. Preserve APIs, persistence compatibility, independent project boundaries, and historical measurements. Commit verified milestones directly to `main` and push them. The existing cloud checkout is used; no worktrees or feature branches are needed.

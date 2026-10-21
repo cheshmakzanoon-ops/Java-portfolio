@@ -21,7 +21,25 @@ and strict mutation evidence for the current probe. The **full 84-JVM overhead s
 and long live stress remeasurement remain unexecuted. P08-A5 remains FAIL until
 the documented gate is met.
 
-## Current development validation: structured comparisons
+## Current source revalidation after toolchain activation repair
+
+The complete Java 25 integration and mutation reactor passed again on
+**2026-10-21 at 20:39:17 UTC**, using the corrected `PORTFOLIO_TOOLS_DIR`
+activation path. The [final source receipt](../evidence/job-readiness-final-20261021.json)
+binds all 93 source/build inputs and fresh reports to this invocation: **208 ordinary
+methods, seven packaged-JVM integration methods, and 718/811 killed mutations**,
+with zero failed, errored or skipped tests. Every selected mutation module meets
+its unchanged 70% threshold. All 74 survivors, 15 uncovered mutations and four
+timeouts remain counted. An interrupted execution-service attempt and a retry
+blocked by the restricted environment's socket permissions are recorded separately;
+neither is counted as successful verification.
+
+The earlier comparison receipt below remains unchanged and identifies its own
+source snapshot. The only source/build input changed between those two receipts
+is the shared activation script. This revalidation does not rerun overhead,
+long stress, interactive-browser or native-platform protocols.
+
+## Earlier development validation: structured comparisons
 
 The Java 25 build completed on **2026-10-21 at 20:00:36 UTC** with **215 test methods:
 208 ordinary methods and seven packaged-JVM integration methods; zero failures,
