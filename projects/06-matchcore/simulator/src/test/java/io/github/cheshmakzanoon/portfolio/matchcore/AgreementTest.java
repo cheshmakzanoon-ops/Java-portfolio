@@ -25,8 +25,8 @@ class AgreementTest {
             Demo.init("seller", 1000, 10),
             Demo.init("buyer", 1000, 0),
             Demo.order("ask", "seller", "ask", Side.SELL, 100, 2, Tif.GTC),
+            Demo.order("noncross", "buyer", "noncross", Side.BUY, 99, 3, Tif.GTC),
             Demo.order("partial", "buyer", "partial", Side.BUY, 100, 3, Tif.GTC),
-            Demo.order("fill", "buyer", "fill", Side.BUY, 100, 2, Tif.GTC),
             Demo.order("ask2", "seller", "ask2", Side.SELL, 100, 2, Tif.GTC),
             Demo.order("self", "seller", "self", Side.BUY, 100, 1, Tif.GTC));
     List<String> outcomes = new ArrayList<>();
@@ -39,7 +39,7 @@ class AgreementTest {
     assertEquals(
         List.of(
             "INITIALIZED", "INITIALIZED", "RESTING", "OPEN_ORDER_CAP",
-            "FILLED", "RESTING", "SELF_TRADE_CANCELED"),
+            "RESTING", "RESTING", "SELF_TRADE_CANCELED"),
         outcomes);
   }
 

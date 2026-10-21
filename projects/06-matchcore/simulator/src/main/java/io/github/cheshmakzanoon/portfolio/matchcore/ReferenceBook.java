@@ -113,7 +113,7 @@ public final class ReferenceBook {
     if (old == null
         && open.size() >= cap
         && c.timeInForce() == Tif.GTC
-        && wouldRest(c, candidates)) return "OPEN_ORDER_CAP";
+        && wouldExceedCapacity(c, candidates)) return "OPEN_ORDER_CAP";
     if (old != null && old.priceTicks() == c.priceTicks() && c.quantityLots() <= old.remaining()) {
       open.set(
           open.indexOf(old),
@@ -187,16 +187,19 @@ public final class ReferenceBook {
         : remaining == 0 ? "FILLED" : c.timeInForce() == Tif.GTC ? "RESTING" : "IOC_CANCELED";
   }
 
-  // Intentionally independent flat-list preflight used to cross-check Book's indexed scan.
-  private boolean wouldRest(Command c, List<Order> candidates) {
+  // Independent flat-list oracle: count fully matched resting orders before adding a
+  // possible new remainder. Do not rely on the production engine's indexed price levels.
+  private boolean wouldExceedCapacity(Command c, List<Order> candidates) {
     long needed = c.quantityLots();
+    int removed = 0;
     for (Order maker : candidates) {
       if (!crosses(c, maker)) break;
       if (maker.accountId().equals(c.accountId())) return false;
+      if (maker.remaining() <= needed) removed++;
       needed -= Math.min(needed, maker.remaining());
       if (needed == 0) return false;
     }
-    return true;
+    return open.size() - removed >= cap;
   }
 
   private boolean crosses(Command c, Order o) {
