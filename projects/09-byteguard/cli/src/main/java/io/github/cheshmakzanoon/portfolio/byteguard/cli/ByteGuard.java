@@ -91,7 +91,7 @@ public final class ByteGuard implements Runnable {
         outputSafe = true;
         if (!Set.of("sarif", "json").contains(format))
           throw new IllegalArgumentException("format must be sarif or json");
-        RuleModels models = rules == null ? new RuleModels() : validateRules(rules);
+        RuleModels models = rules == null ? new RuleModels() : RuleModelLoader.read(rules);
         SarifExporter exporter = new SarifExporter();
         Set<String> previous = baseline == null ? Set.of() : exporter.baseline(baseline);
         Analyzer.Result analysis =
@@ -178,43 +178,6 @@ public final class ByteGuard implements Runnable {
         }
         return code;
       }
-    }
-
-    private RuleModels validateRules(Path path) throws IOException {
-      if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
-        throw new IOException("rule model must be a regular file");
-      if (Files.size(path) > 1024 * 1024) throw new IOException("rule model exceeds 1 MiB");
-      byte[] bytes;
-      try (InputStream input = Files.newInputStream(path)) {
-        bytes = input.readNBytes(1024 * 1024 + 1);
-      }
-      if (bytes.length > 1024 * 1024) throw new IOException("rule model exceeds 1 MiB");
-      JsonNode node = new ObjectMapper().readTree(bytes);
-      if (!RuleModels.VERSION.equals(node.path("version").asText())
-          || !node.path("model").asText().equals("byteguard-core"))
-        throw new IOException("unsupported versioned rule model");
-      Set<String> ids = new TreeSet<>();
-      for (JsonNode r : node.path("rules")) ids.add(r.path("id").asText());
-      if (!ids.equals(new RuleModels().rules()))
-        throw new IOException("model must declare exactly supported rule IDs");
-      Set<String> sources = new TreeSet<>();
-      for (JsonNode source : node.path("sources")) sources.add(source.asText());
-      Map<String, RuleModels.Sink> sinks = new TreeMap<>();
-      for (JsonNode sink : node.path("sinks")) {
-        String descriptor = sink.path("descriptor").asText();
-        if (!descriptor.contains("(")) throw new IOException("exact sink descriptor required");
-        sinks.put(
-            descriptor,
-            new RuleModels.Sink(
-                sink.path("rule").asText(),
-                sink.path("mask").asInt(),
-                sink.path("argument").asInt()));
-      }
-      Map<String, Integer> sanitizers = new TreeMap<>();
-      for (JsonNode sanitizer : node.path("sanitizers"))
-        sanitizers.put(
-            sanitizer.path("descriptor").asText(), sanitizer.path("contextMask").asInt());
-      return new RuleModels(sources, sinks, sanitizers);
     }
   }
 }

@@ -21,6 +21,8 @@ java -Xmx2g -jar projects/09-byteguard/cli/target/byteguard-cli-1.0.0-SNAPSHOT.j
 
 Keep reports and explanation files outside scanned directories. Output validation refuses aliases of inputs, classpath files, rules, and baselines. ZIP/ZIP64 indexes and actual entry bytes are bounded and verified before analysis; explicit special files are rejected. SARIF, JSON and every DOT explanation replace owned output entries without truncating hard-linked input bytes. An unsafe destination produces exit 2 without writing a failure report over the protected file.
 
+Rule models and SARIF baselines have a [strict, bounded configuration contract](contracts/CLI.md): duplicate keys, trailing documents, numeric coercion, impossible method contracts, and malformed baseline identities fail before analysis. Legal long JVM names remain compatible with ByteGuard's own reports within the document byte budget.
+
 ## Interpret a scan
 
 | Exit | Meaning |

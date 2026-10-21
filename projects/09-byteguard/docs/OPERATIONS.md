@@ -38,6 +38,8 @@ Use `--explain-dir ir-output` and optionally `--explain-method 'owner.method(des
 
 ## Interpret results
 
+Repair malformed rule or baseline files before increasing analysis limits. Rule files require explicit arrays and exact integer fields; strings such as `"1"`, fractional arguments, duplicate declarations, and unknown keys are errors. The rule model is capped at 1 MiB and the baseline at 8 MiB. Both reject duplicate JSON keys and trailing content. The [CLI contract](../contracts/CLI.md) lists the complete structural limits and baseline identity requirements. A SARIF report from another tool or model version cannot silently supply ByteGuard suppression identities.
+
 | Exit | Meaning | Action |
 | --- | --- | --- |
 |0|Complete within the model; no new findings|Read limitations/uncertainty before interpreting the result.|

@@ -137,26 +137,6 @@ public final class SarifExporter {
   }
 
   public Set<String> baseline(Path path) throws IOException {
-    if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
-      throw new IOException("baseline must be a regular file");
-    if (Files.size(path) > 8 * 1024 * 1024) throw new IOException("baseline exceeds 8 MiB");
-    byte[] bytes;
-    try (InputStream input = Files.newInputStream(path)) {
-      bytes = input.readNBytes(8 * 1024 * 1024 + 1);
-    }
-    if (bytes.length > 8 * 1024 * 1024) throw new IOException("baseline exceeds 8 MiB");
-    JsonNode root = mapper.readTree(bytes);
-    TreeSet<String> fingerprints = new TreeSet<>();
-    JsonNode runs = root.path("runs");
-    if (!runs.isArray())
-      throw new IOException("baseline must be SARIF with exact byteguard/v1 fingerprints");
-    for (JsonNode run : runs)
-      for (JsonNode result : run.path("results")) {
-        String fp = result.path("partialFingerprints").path("byteguard/v1").asText();
-        if (!fp.matches("[0-9a-f]{64}"))
-          throw new IOException("invalid exact baseline fingerprint");
-        fingerprints.add(fp);
-      }
-    return Set.copyOf(fingerprints);
+    return SarifBaseline.read(path);
   }
 }

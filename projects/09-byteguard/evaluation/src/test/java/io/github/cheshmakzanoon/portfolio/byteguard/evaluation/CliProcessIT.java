@@ -13,6 +13,75 @@ import org.objectweb.asm.Opcodes;
 
 class CliProcessIT {
   @Test
+  void longLegalFindingRoundTripsThroughExactBaselineInPackagedCli() throws Exception {
+    Path project = Path.of("..").toAbsolutePath().normalize();
+    Path jar = project.resolve("cli/target/byteguard-cli-1.0.0-SNAPSHOT.jar");
+    Path input = Path.of("target/long-baseline.class");
+    ClassWriter writer = new ClassWriter(0);
+    writer.visit(Opcodes.V25, Opcodes.ACC_PUBLIC, "LongBaseline", null, "java/lang/Object", null);
+    var method =
+        writer.visitMethod(
+            Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
+            "m".repeat(60000),
+            "(Ljava/sql/Statement;L" + "A".repeat(60000) + ";)V",
+            null,
+            null);
+    method.visitCode();
+    method.visitVarInsn(Opcodes.ALOAD, 0);
+    method.visitLdcInsn("USER_INPUT");
+    method.visitMethodInsn(
+        Opcodes.INVOKESTATIC,
+        "java/lang/System",
+        "getenv",
+        "(Ljava/lang/String;)Ljava/lang/String;",
+        false);
+    method.visitMethodInsn(
+        Opcodes.INVOKEINTERFACE, "java/sql/Statement", "execute", "(Ljava/lang/String;)Z", true);
+    method.visitInsn(Opcodes.POP);
+    method.visitInsn(Opcodes.RETURN);
+    method.visitMaxs(2, 2);
+    method.visitEnd();
+    writer.visitEnd();
+    Files.write(input, writer.toByteArray());
+    Path baseline = Path.of("target/long-baseline-first.sarif");
+    for (int attempt = 0; attempt < 2; attempt++) {
+      Path report = attempt == 0 ? baseline : Path.of("target/long-baseline-second.sarif");
+      Path log = Path.of("target/long-baseline-" + attempt + ".log");
+      List<String> command =
+          new ArrayList<>(
+              List.of(
+                  Path.of(System.getProperty("java.home"), "bin/java").toString(),
+                  "-Xmx128m",
+                  "-jar",
+                  jar.toString(),
+                  "scan",
+                  "--input",
+                  input.toString(),
+                  "--out",
+                  report.toString()));
+      if (attempt == 1) command.addAll(List.of("--baseline", baseline.toString()));
+      Process process =
+          new ProcessBuilder(command)
+              .redirectErrorStream(true)
+              .redirectOutput(log.toFile())
+              .start();
+      if (!process.waitFor(30, TimeUnit.SECONDS)) {
+        process.destroyForcibly();
+        process.waitFor(5, TimeUnit.SECONDS);
+        fail("Long identity baseline scan exceeded deadline");
+      }
+      assertEquals(attempt == 0 ? 1 : 0, process.exitValue(), Files.readString(log));
+      JsonNode run = new ObjectMapper().readTree(report.toFile()).path("runs").get(0);
+      assertTrue(run.path("invocations").get(0).path("executionSuccessful").booleanValue());
+      assertEquals(1, run.path("results").size());
+      assertEquals(
+          attempt == 0 ? "new" : "unchanged",
+          run.path("results").get(0).path("baselineState").textValue());
+      assertTrue(Files.size(report) < 8 * 1024 * 1024);
+    }
+  }
+
+  @Test
   void descriptorLimitsAndLongIdentitiesRemainBoundedInPackagedCli() throws Exception {
     String legalDescriptor = "(L" + "A".repeat(60000) + ";" + "[I".repeat(254) + ")V";
     checkDescriptorProcess("invalid-slots", "(" + "[I".repeat(256) + ")V", "run", 256, 2);

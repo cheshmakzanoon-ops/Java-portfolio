@@ -4,6 +4,16 @@ ByteGuard's current correctness and packaged-CLI checks pass. Performance, mutat
 
 ## Current verification
 
+The configuration-boundary pass completed on **2026-10-21 at 20:15:49 UTC** with **143 ordinary tests and 3 packaged-CLI integration tests**, zero failures, errors, or skips. The full `-Pintegration,mutation verify` reactor and independent freshness/completeness readers passed. Core aggregate coverage was **1,735 / 1,822 lines (95.23%)** and **1,111 / 1,303 branches (85.26%)**, above unchanged 85% / 75% gates. The frozen 120-case corpus and its labels remain unchanged.
+
+New controls cover exact model fields and integer types, required arrays, duplicate keys/declarations, trailing documents, file/byte/depth/token limits, descriptor validity, constructor semantics, and redacted pre-scan configuration failures. Baselines now require explicit ByteGuard/model identity, supported rules, and exact fingerprints without rejecting normal SARIF extension fields. An independent review found that a blanket string cap rejected the analyzer's own legal long-identity report; the document byte budget now bounds those strings. A real packaged JVM regression generates a report over 700 KiB, then successfully reads it as an unchanged baseline.
+
+The existing mutation scope was rerun without weakening targets or thresholds: **527 / 727 core mutants killed (72.49%)** and **30 / 30 report identity/publication mutants killed**. The **106 survivors and 94 uncovered core mutants remain in the denominator**. The new configuration parser classes are covered by direct boundary and packaged-process tests; they are not claimed as part of the existing PIT target set. No fresh performance benchmark or demo lifecycle was run for this change.
+
+The [configuration-hardening receipt](../evidence/configuration-hardening-20261021/validation.json) records commands, artifact/source hashes, test and mutation outcomes, coverage, and limitations. Its source manifest identifies this verification separately from the earlier evidence below.
+
+## Prior runtime-hardening verification
+
 The deeper runtime verification completed on **2026-10-20 at 09:56:55 UTC**: **106 ordinary test methods and 2 packaged-CLI integration methods**, with zero failures, errors, or skips. The frozen 120-case corpus remains unchanged: **60 true positives and 60 true negatives**. Core aggregate coverage is **1,701 / 1,793 lines (94.87%)** and **1,073 / 1,273 branches (84.29%)**, above unchanged 85% / 75% gates.
 
 ```bash

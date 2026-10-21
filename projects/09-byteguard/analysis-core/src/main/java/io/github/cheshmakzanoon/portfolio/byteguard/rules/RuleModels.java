@@ -1,5 +1,6 @@
 package io.github.cheshmakzanoon.portfolio.byteguard.rules;
 
+import io.github.cheshmakzanoon.portfolio.byteguard.bytecode.MethodDescriptor;
 import java.util.*;
 
 /** Exact descriptors. The model is versioned; names alone never establish sanitization. */
@@ -18,8 +19,8 @@ public final class RuleModels {
     configuredSources = Set.copyOf(sources);
     configuredSinks = Map.copyOf(sinks);
     configuredSanitizers = Map.copyOf(sanitizers);
-    sources.forEach(RuleModels::descriptor);
-    sanitizers.keySet().forEach(RuleModels::descriptor);
+    sources.forEach(RuleModels::valueDescriptor);
+    sanitizers.keySet().forEach(RuleModels::valueDescriptor);
     for (var entry : sinks.entrySet()) {
       String descriptor = descriptor(entry.getKey());
       Sink sink = entry.getValue();
@@ -47,14 +48,24 @@ public final class RuleModels {
       throw new IllegalArgumentException("exact owner.name descriptor required");
     try {
       String descriptor = id.substring(start);
+      boolean constructor = id.substring(0, start).endsWith(".<init>");
+      MethodDescriptor.parameterSlots(descriptor, !constructor);
       var args = org.objectweb.asm.Type.getArgumentTypes(descriptor);
       var returns = org.objectweb.asm.Type.getReturnType(descriptor);
+      if (constructor && returns.getSort() != org.objectweb.asm.Type.VOID)
+        throw new IllegalArgumentException("constructor descriptor must return void");
       if (!org.objectweb.asm.Type.getMethodDescriptor(returns, args).equals(descriptor))
         throw new IllegalArgumentException("invalid descriptor");
       return descriptor;
     } catch (RuntimeException e) {
       throw new IllegalArgumentException("invalid method descriptor: " + id);
     }
+  }
+
+  private static void valueDescriptor(String id) {
+    String method = descriptor(id);
+    if (org.objectweb.asm.Type.getReturnType(method).getSort() == org.objectweb.asm.Type.VOID)
+      throw new IllegalArgumentException("source and sanitizer contracts require a returned value");
   }
 
   public static final String VERSION = "1.0.0";

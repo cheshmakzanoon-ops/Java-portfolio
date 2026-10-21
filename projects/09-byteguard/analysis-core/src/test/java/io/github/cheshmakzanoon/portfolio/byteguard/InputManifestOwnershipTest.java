@@ -35,25 +35,23 @@ class InputManifestOwnershipTest {
     InputManifest manifest = new InputManifest(outside, List.of("diagnostic"), 4);
     outside.clear();
     bytes[0] = 42;
-    assertArrayEquals(new byte[] {9, 8, 7, 6}, manifest.classes().get("example/Type.class").bytes());
+    assertArrayEquals(
+        new byte[] {9, 8, 7, 6}, manifest.classes().get("example/Type.class").bytes());
     assertThrows(UnsupportedOperationException.class, () -> manifest.classes().clear());
     assertThrows(UnsupportedOperationException.class, () -> manifest.diagnostics().clear());
     manifest.classes().get("example/Type.class").bytes()[0] = 0;
-    assertArrayEquals(new byte[] {9, 8, 7, 6}, manifest.classes().get("example/Type.class").bytes());
+    assertArrayEquals(
+        new byte[] {9, 8, 7, 6}, manifest.classes().get("example/Type.class").bytes());
   }
 
   @Test
   void byteArrayContentIsPartOfValueEqualityAndHashCode() {
     var first = new InputManifest.Entry("A.class", new byte[] {1, 2, 3}, "digest", true);
     var equal = new InputManifest.Entry("A.class", new byte[] {1, 2, 3}, "digest", true);
-    var changedBytes =
-        new InputManifest.Entry("A.class", new byte[] {1, 2, 4}, "digest", true);
-    var changedSource =
-        new InputManifest.Entry("B.class", new byte[] {1, 2, 3}, "digest", true);
-    var changedOrigin =
-        new InputManifest.Entry("A.class", new byte[] {1, 2, 3}, "digest", false);
-    var changedDigest =
-        new InputManifest.Entry("A.class", new byte[] {1, 2, 3}, "other", true);
+    var changedBytes = new InputManifest.Entry("A.class", new byte[] {1, 2, 4}, "digest", true);
+    var changedSource = new InputManifest.Entry("B.class", new byte[] {1, 2, 3}, "digest", true);
+    var changedOrigin = new InputManifest.Entry("A.class", new byte[] {1, 2, 3}, "digest", false);
+    var changedDigest = new InputManifest.Entry("A.class", new byte[] {1, 2, 3}, "other", true);
     assertEquals(first, equal);
     assertEquals(first.hashCode(), equal.hashCode());
     for (var distinct : List.of(changedBytes, changedSource, changedOrigin, changedDigest)) {
