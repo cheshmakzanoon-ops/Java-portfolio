@@ -16,7 +16,7 @@ The protected HTTP profile verifies RS256 signatures against JWKS, issuer, audie
 
 Protected startup requires explicit issuer, JWKS, and users configuration. The disposable development issuer is loopback-only and refuses an external bind. Never use development credentials or real confidential data for a public deployment.
 
-Authorization precedes candidate selection, hit counts, facets, snippets, suggestions, explanations, and cache reads. A final permission-version check discards stale responses. Tenant index directories are physically separate. Cursors authenticate tenant, principal, permission version, query, generation, and expiration; transferred, modified, or expired cursors fail. A retired generation returns `410`. Tenant administration does not grant process-wide observability: search/failure counters and queue gauges are scoped to that tenant.
+Authorization precedes candidate selection, hit counts, facets, snippets, suggestions, explanations, and cache reads. Admission rejects missing repository sets, invalid scope identifiers, more than 64 repositories, and principal identities over 1,024 UTF-16 units. Stored repository grants are copied before publication. A final permission-version check discards stale responses. Tenant index directories are physically separate. Cursors authenticate tenant, principal, permission version, query, generation, and expiration; transferred, modified, or expired cursors fail. A retired generation returns `410`. Tenant administration does not grant process-wide observability: search/failure counters and queue gauges are scoped to that tenant.
 
 ## Confidentiality limits
 

@@ -16,13 +16,15 @@ public final class AuthorizationFilter {
     public Access {
       if (principal == null
           || principal.isBlank()
+          || principal.length() > 1024
           || tenant == null
           || !tenant.matches("[a-zA-Z0-9_-]{1,64}")
+          || repositories == null
           || repositories.size() > 64) throw new IllegalArgumentException("access context");
-      repositories = Set.copyOf(repositories);
       for (String repository : repositories)
-        if (!repository.matches("[a-zA-Z0-9_-]{1,64}"))
+        if (repository == null || !repository.matches("[a-zA-Z0-9_-]{1,64}"))
           throw new IllegalArgumentException("repository context");
+      repositories = Set.copyOf(repositories);
     }
   }
 
