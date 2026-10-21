@@ -115,9 +115,12 @@ public final class Book {
     if (reserve > Math.addExact(available, freed)) return "RISK";
     if (c.postOnly() && crosses(c, best(opposite(c.side())))) return "POST_ONLY";
     if (c.timeInForce() == Tif.FOK && !fillable(c)) return "FOK_UNFILLED";
-    // Reserve capacity conservatively before mutation; an aggressor cannot grow beyond the cap.
-    if (old == null && index.size() >= maxOpen && c.timeInForce() == Tif.GTC)
-      return "OPEN_ORDER_CAP";
+    // Rejection must happen before any fill or reservation change. A full book still admits
+    // a GTC aggressor that fills completely or stops at a self-trade without resting.
+    if (old == null
+        && index.size() >= maxOpen
+        && c.timeInForce() == Tif.GTC
+        && wouldRest(c)) return "OPEN_ORDER_CAP";
     if (old != null && old.price == c.priceTicks() && c.quantityLots() <= old.qty) {
       long revision = Math.incrementExact(old.revision);
       release(old, Math.subtractExact(old.qty, c.quantityLots()));
@@ -183,6 +186,23 @@ public final class Book {
     return self
         ? "SELF_TRADE_CANCELED"
         : remaining == 0 ? "FILLED" : c.timeInForce() == Tif.GTC ? "RESTING" : "IOC_CANCELED";
+  }
+
+  /**
+   * Determine whether a new GTC order would need an additional open-order slot. Walk the same
+   * price/FIFO order as execution, but do not touch balances, reservations or journal state.
+   */
+  private boolean wouldRest(Command c) {
+    long left = c.quantityLots();
+    for (var level : opposite(c.side()).entrySet()) {
+      for (Node maker = level.getValue().first; maker != null; maker = maker.next) {
+        if (!crosses(c, maker)) return true;
+        if (maker.account.equals(c.accountId())) return false;
+        left -= Math.min(left, maker.qty);
+        if (left == 0) return false;
+      }
+    }
+    return true;
   }
 
   private boolean fillable(Command c) {

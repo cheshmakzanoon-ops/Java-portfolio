@@ -156,6 +156,50 @@ class BookTest {
   }
 
   @Test
+  void fullBookAllowsExactFillButRejectsPartialFillAtomically() {
+    Book full = new Book(1);
+    full.apply(1, init("seller", 0, 10));
+    full.apply(2, init("buyer", 1000, 0));
+    assertEquals(
+        "RESTING",
+        full.apply(3, order("ask", "seller", Side.SELL, 100, 2, Tif.GTC, false)).code());
+    var resting = full.view().orders();
+    var balances = full.view().accounts();
+
+    // One maker will be fully consumed, but a remainder would need a second open slot.
+    assertEquals(
+        "OPEN_ORDER_CAP",
+        full.apply(4, order("partial", "buyer", Side.BUY, 100, 3, Tif.GTC, false)).code());
+    assertEquals(resting, full.view().orders());
+    assertEquals(balances, full.view().accounts());
+    assertTrue(full.view().executions().isEmpty());
+
+    // An exact cross produces no resting order and must be accepted at the cap.
+    Result completed =
+        full.apply(5, order("exact", "buyer", Side.BUY, 100, 2, Tif.GTC, false));
+    assertEquals("FILLED", completed.code());
+    assertEquals(2, completed.executions().getFirst().lots());
+    assertTrue(full.view().orders().isEmpty());
+    assertEquals(800, full.view().accounts().get("buyer").cash());
+    assertEquals(2, full.view().accounts().get("buyer").lots());
+  }
+
+  @Test
+  void fullBookAllowsIncomingSelfTradeCancellationWithoutNewSlot() {
+    Book full = new Book(1);
+    full.apply(1, init("owner", 1000, 10));
+    full.apply(2, order("ask", "owner", Side.SELL, 100, 2, Tif.GTC, false));
+    var orders = full.view().orders();
+    var balances = full.view().accounts();
+    assertEquals(
+        "SELF_TRADE_CANCELED",
+        full.apply(3, order("self", "owner", Side.BUY, 100, 1, Tif.GTC, false)).code());
+    assertEquals(orders, full.view().orders());
+    assertEquals(balances, full.view().accounts());
+    assertTrue(full.view().executions().isEmpty());
+  }
+
+  @Test
   void numericAndIdentityValidation() {
     assertEquals(10100, Model.decimalPrice("101.00"));
     assertThrows(ArithmeticException.class, () -> Model.decimalPrice("1.001"));

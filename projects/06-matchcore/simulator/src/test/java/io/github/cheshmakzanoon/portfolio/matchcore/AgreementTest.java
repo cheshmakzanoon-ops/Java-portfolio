@@ -17,6 +17,33 @@ class AgreementTest {
   }
 
   @Test
+  void fullBookAdmissionAgreesWithIndependentReference() {
+    Book production = new Book(1);
+    ReferenceBook reference = new ReferenceBook(1);
+    List<Command> steps =
+        List.of(
+            Demo.init("seller", 1000, 10),
+            Demo.init("buyer", 1000, 0),
+            Demo.order("ask", "seller", "ask", Side.SELL, 100, 2, Tif.GTC),
+            Demo.order("partial", "buyer", "partial", Side.BUY, 100, 3, Tif.GTC),
+            Demo.order("fill", "buyer", "fill", Side.BUY, 100, 2, Tif.GTC),
+            Demo.order("ask2", "seller", "ask2", Side.SELL, 100, 2, Tif.GTC),
+            Demo.order("self", "seller", "self", Side.BUY, 100, 1, Tif.GTC));
+    List<String> outcomes = new ArrayList<>();
+    for (int i = 0; i < steps.size(); i++) {
+      Result actual = production.apply(i + 1L, steps.get(i));
+      assertEquals(reference.apply(steps.get(i)), actual, "step=" + (i + 1));
+      assertEquals(reference.view(), production.view(), "step=" + (i + 1));
+      outcomes.add(actual.code());
+    }
+    assertEquals(
+        List.of(
+            "INITIALIZED", "INITIALIZED", "RESTING", "OPEN_ORDER_CAP",
+            "FILLED", "RESTING", "SELF_TRADE_CANCELED"),
+        outcomes);
+  }
+
+  @Test
   void replacementRulesAndFifo() {
     Book b = new Book();
     ReferenceBook r = new ReferenceBook();

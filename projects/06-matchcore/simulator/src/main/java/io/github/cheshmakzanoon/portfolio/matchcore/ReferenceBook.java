@@ -110,7 +110,8 @@ public final class ReferenceBook {
       }
       if (fill.compareTo(BigInteger.valueOf(c.quantityLots())) < 0) return "FOK_UNFILLED";
     }
-    if (old == null && open.size() >= cap && c.timeInForce() == Tif.GTC) return "OPEN_ORDER_CAP";
+    if (old == null && open.size() >= cap && c.timeInForce() == Tif.GTC
+        && wouldRest(c, candidates)) return "OPEN_ORDER_CAP";
     if (old != null && old.priceTicks() == c.priceTicks() && c.quantityLots() <= old.remaining()) {
       open.set(
           open.indexOf(old),
@@ -182,6 +183,18 @@ public final class ReferenceBook {
     return self
         ? "SELF_TRADE_CANCELED"
         : remaining == 0 ? "FILLED" : c.timeInForce() == Tif.GTC ? "RESTING" : "IOC_CANCELED";
+  }
+
+  // Intentionally independent flat-list preflight used to cross-check Book's indexed scan.
+  private boolean wouldRest(Command c, List<Order> candidates) {
+    long needed = c.quantityLots();
+    for (Order maker : candidates) {
+      if (!crosses(c, maker)) break;
+      if (maker.accountId().equals(c.accountId())) return false;
+      needed -= Math.min(needed, maker.remaining());
+      if (needed == 0) return false;
+    }
+    return true;
   }
 
   private boolean crosses(Command c, Order o) {
