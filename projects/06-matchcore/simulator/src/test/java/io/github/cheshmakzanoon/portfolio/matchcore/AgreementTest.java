@@ -44,6 +44,31 @@ class AgreementTest {
   }
 
   @Test
+  void fullBookAllowsARealFillBeforeAStoppingSelfTrade() {
+    Book production = new Book(2);
+    ReferenceBook reference = new ReferenceBook(2);
+    List<Command> steps =
+        List.of(
+            Demo.init("first", 0, 1),
+            Demo.init("second", 1000, 2),
+            Demo.order("ask1", "first", "ask1", Side.SELL, 100, 1, Tif.GTC),
+            Demo.order("ask2", "second", "ask2", Side.SELL, 101, 1, Tif.GTC),
+            Demo.order("take", "second", "take", Side.BUY, 101, 3, Tif.GTC));
+    for (int i = 0; i < steps.size(); i++) {
+      Result result = production.apply(i + 1L, steps.get(i));
+      assertEquals(reference.apply(steps.get(i)), result);
+      assertEquals(reference.view(), production.view());
+      if (i == steps.size() - 1) {
+        assertEquals("SELF_TRADE_CANCELED", result.code());
+        assertEquals(1, result.executions().size());
+        assertEquals(1, result.executions().getFirst().lots());
+        assertEquals(1, production.view().orders().size());
+        assertEquals("second", production.view().orders().getFirst().accountId());
+      }
+    }
+  }
+
+  @Test
   void replacementRulesAndFifo() {
     Book b = new Book();
     ReferenceBook r = new ReferenceBook();
