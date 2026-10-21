@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "338afdc693bb673fc1a9c7825dd5c1c293998e36",
+  "observedAtUtc": "2026-10-21T03:37:12.489121+00:00",
+  "status": "RELEASE_CONTROL_REGRESSIONS_PASS_RELEASE_STILL_BLOCKED",
+  "toolingTests": 56,
+  "toolingExitCode": 0,
+  "inputSha256": {
+    "scripts/release_evidence.py": "b1605057c51dcf569f11e16eaa78a9f12856ded688b9e7ef07ee4fc055cd0511",
+    "scripts/release-audit.py": "25d87343f9c714fc9271fde43d38c0253466e1821a9d06eae85ddab2aaa5565f",
+    "scripts/test_release_evidence.py": "37619b52d6fd0b27ee96bda701b1609c4a8c7a24933c615bbe06a7ae35221bb1"
+  },
+  "logSha256": {
+    "production-tooling-release.log": "203ed1ae243a945a83952df820fbb7a71adb80df65f9a8a835f2c56fcb2dc6f0",
+    "production-release-current.log": "c05008362680ca692383a2eb4f95532a0aa47a35c2d55859a14e90812de9b598"
+  },
+  "negativeCases": [
+    "missing/malformed current evidence",
+    "changed,added,removed source",
+    "changed/deleted raw report",
+    "non-PASS criterion",
+    "empty/missing criteria",
+    "escaping evidence path"
+  ],
+  "releaseAudit": {
+    "exitCode": 1,
+    "historicalUnresolvedRows": 20,
+    "missingCurrentEvidence": true
+  },
+  "receiptContract": "docs/execution/release-current.json requires schemaVersion1, sourceFingerprint computed by scripts/release_evidence.py, exact mandatory criteria map; every current PASS includes nonempty repository-relative evidence path->SHA256 map. This binds evidence identity, not its scientific validity; reviewers must still inspect criterion-specific results."
+}

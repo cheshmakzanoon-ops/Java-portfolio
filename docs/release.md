@@ -4,6 +4,8 @@ These criteria define the project contracts and repository release gate. Histori
 
 A release requires all mandatory criteria, current test results, verified demos, and explicit limitations. The release audit reads the identifiers below and fails on missing or incomplete acceptance rows.
 
+Historical register entries alone cannot authorize a current release. `scripts/release-audit.py` also requires `docs/execution/release-current.json`: schema version 1, a current `sourceFingerprint` from `scripts/release_evidence.py`, and a `criteria` object containing exactly these mandatory identifiers. Each criterion must be `PASS` with a nonempty `evidence` mapping of repository-relative file paths to SHA-256 hashes. Changed source/tests/configuration or altered/missing evidence invalidates the receipt. Generate a receipt only after reviewing actual current results; filling its fields is not a substitute for executing a gate. Keep unresolved criteria visible and retain failed runs.
+
 
 ## ClearLedger
 

@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 import re
 import sys
+from release_evidence import inspect as inspect_current_evidence
 
 root = Path(__file__).resolve().parents[1]
 catalog = json.loads((root / 'catalog/projects.yaml').read_text())
@@ -38,6 +39,8 @@ rows = {}
 for line in (root / 'docs/acceptance-matrix.md').read_text().splitlines():
     parts = [p.strip() for p in line.split('|')]
     if len(parts) >= 5 and parts[1] in required:
+        if parts[1] in rows:
+            errors.append(f'{parts[1]}: duplicate acceptance row')
         rows[parts[1]] = parts[3]
         if parts[3] == 'PASS':
             references = re.findall(r'(?:projects|docs|scripts|integration)/[A-Za-z0-9_./-]+', parts[4])
@@ -49,6 +52,7 @@ for line in (root / 'docs/acceptance-matrix.md').read_text().splitlines():
 for key in sorted(required):
     if rows.get(key) != 'PASS':
         errors.append(f'{key}: {rows.get(key, "MISSING")}')
+errors.extend(inspect_current_evidence(root, required))
 for error in errors:
     print(error, file=sys.stderr)
 print(f'Release audit: {len(required)} mandatory gates; {len(errors)} outstanding errors')
