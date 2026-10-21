@@ -97,8 +97,12 @@ public class ProtectedDocuments {
 
   @Bean
   SecurityFilterChain security(HttpSecurity h) throws Exception {
-    return h.csrf(c -> c.disable())
-        .authorizeHttpRequests(a -> a.anyRequest().authenticated())
+    // This resource server only exposes GET; Spring's default CSRF protection stays on.
+    return h.authorizeHttpRequests(a -> a.anyRequest().authenticated())
+        .sessionManagement(
+            session ->
+                session.sessionCreationPolicy(
+                    org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
         .exceptionHandling(e -> e.authenticationEntryPoint(ProtectedDocuments::unauthorized))
         .oauth2ResourceServer(
             o -> o.authenticationEntryPoint(ProtectedDocuments::unauthorized).jwt(j -> {}))

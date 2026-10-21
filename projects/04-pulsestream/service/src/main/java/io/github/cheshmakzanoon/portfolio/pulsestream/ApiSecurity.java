@@ -12,7 +12,12 @@ public class ApiSecurity {
   @Bean
   SecurityFilterChain security(HttpSecurity http, Environment env) throws Exception {
     String mode = env.getProperty("pulse.security", "local");
-    http.csrf(c -> c.disable());
+    // GET-only telemetry API: retain Spring's CSRF defaults rather than disabling protection.
+    // Never create a web session for the bearer-authenticated production resource server.
+    http.sessionManagement(
+        session ->
+            session.sessionCreationPolicy(
+                org.springframework.security.config.http.SessionCreationPolicy.STATELESS));
     if (mode.equals("local")) {
       String address = env.getProperty("server.address", "127.0.0.1");
       if (!address.equals("127.0.0.1") && !address.equals("::1"))
