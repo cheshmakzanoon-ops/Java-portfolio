@@ -10,14 +10,12 @@ class AuthorizationAdmissionTest {
   void missingOrInvalidRepositorySetIsAClientInputError() {
     var store = new AuthorizationFilter();
     assertThrows(
-        IllegalArgumentException.class,
-        () -> store.update("alice", "tenant", null, false));
+        IllegalArgumentException.class, () -> store.update("alice", "tenant", null, false));
     Set<String> withNull = new HashSet<>();
     withNull.add("repository");
     withNull.add(null);
     assertThrows(
-        IllegalArgumentException.class,
-        () -> store.update("alice", "tenant", withNull, false));
+        IllegalArgumentException.class, () -> store.update("alice", "tenant", withNull, false));
     assertThrows(
         IllegalArgumentException.class,
         () -> store.update("alice", "tenant", Set.of("../cross-tenant"), false));
@@ -34,11 +32,9 @@ class AuthorizationAdmissionTest {
         IllegalArgumentException.class,
         () -> store.update("a".repeat(1025), "tenant", Set.of("r"), false));
     assertThrows(
-        IllegalArgumentException.class,
-        () -> store.update(" \t ", "tenant", Set.of("r"), false));
+        IllegalArgumentException.class, () -> store.update(" \t ", "tenant", Set.of("r"), false));
     assertThrows(
-        IllegalArgumentException.class,
-        () -> store.update(null, "tenant", Set.of("r"), false));
+        IllegalArgumentException.class, () -> store.update(null, "tenant", Set.of("r"), false));
     String maximal = "a".repeat(1024);
     var accepted = store.update(maximal, "tenant", Set.of("r"), false);
     assertEquals(maximal, accepted.principal());
@@ -73,8 +69,7 @@ class AuthorizationAdmissionTest {
     assertEquals(64, accepted.repositories().size());
     sixtyFour.add("repository64");
     assertThrows(
-        IllegalArgumentException.class,
-        () -> store.update("bob", "tenant", sixtyFour, false));
+        IllegalArgumentException.class, () -> store.update("bob", "tenant", sixtyFour, false));
     assertEquals(Set.copyOf(accepted.repositories()), store.current("alice").repositories());
     assertThrows(SecurityException.class, () -> store.current("bob"));
   }
@@ -86,9 +81,7 @@ class AuthorizationAdmissionTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> store.update("alice", "bad tenant", Set.of("private"), true));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> store.update("alice", "tenant", null, true));
+    assertThrows(IllegalArgumentException.class, () -> store.update("alice", "tenant", null, true));
     assertTrue(store.current(previous));
     assertEquals(Set.of("public"), store.current("alice").repositories());
     var latest = store.update("alice", "tenant", Set.of("public"), false);

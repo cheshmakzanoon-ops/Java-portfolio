@@ -15,6 +15,8 @@ Every `/v1` route requires an RS256 bearer token with the configured issuer, aud
 | Page size / candidate window / suggestions | 1–100 / 500 / 20 |
 | Typed filters / value length | 8 / 256 UTF-16 units |
 
+JSON request objects reject duplicate keys at any depth, trailing JSON values, unknown fields, and scalar coercion. Integer fields require integers; strings and Boolean flags require their declared JSON types. The documented nullable defaults below remain supported. Invalid JSON is rejected before source acquisition or durable registration.
+
 Source acquisition happens before background queue admission and has separate file, archive and aggregate-byte quotas. See the [security model](../docs/SECURITY.md) for those boundaries and the administrator-controlled source-root assumption.
 
 ## Routes
@@ -25,7 +27,7 @@ Source acquisition happens before background queue admission and has separate fi
 | `POST /v1/ingestions` | Body shown below. Returns `202` with `{"id":"…","state":"…"}` after immutable registration and queue admission. |
 | `GET /v1/ingestions/{id}` | Returns the authorized job's `id` and `state`. Durable completion takes precedence over local queue state. |
 | `POST /v1/ingestions/{id}/resume` | No body. Returns `202` through the same bounded queue; uses the immutable manifest and CAS without requiring the original source files. |
-| `DELETE /v1/ingestions/{id}` | Requests authorized cooperative cancellation and returns `id` and local `state`. It cannot reverse a committed generation. |
+| `DELETE /v1/ingestions/{id}` | Requests authorized cooperative cancellation and returns `id` and `state`; a durable completion receipt takes precedence. It cannot reverse a committed generation. |
 | `POST /v1/search` | Body and response described below. |
 | `POST /v1/suggest` | `{"prefix":"atom"}` returns an array of authorized identifier completions. |
 | `POST /v1/reindexes` | No body. Requires tenant administration and returns `202`. Rebuilds the tenant through the same publication path, preserving source revisions. |
@@ -41,7 +43,11 @@ The repository identifier is 1–64 ASCII letters, digits, underscores or hyphen
 
 The server resolves `path` beneath `indexforge.sources/TENANT/REPOSITORY`, authorizes the binding before opening source and rejects binding symlinks. A client cannot select a different tenant or configured repository root. A reused key with different immutable input returns `409`.
 
-Poll the job until `COMPLETE`, `FAILED` or `CANCELLED`. `QUEUED` and `RUNNING` describe this process's work; after restart or local status eviction an incomplete durable registration can appear as `REGISTERED` and be resumed. Queue rejection returns `429` while retaining the registered job. A successful commit remains complete even if a cancellation races its publication.
+Poll the job until `COMPLETE`, `FAILED` or `CANCELLED`. `QUEUED` and `RUNNING` describe this process's work. `CANCELLING` means an interrupt has been requested and the running attempt still owns its slot: repeated resume requests return that same state and cannot start a second attempt. A queued cancellation removes the runnable immediately and returns queue capacity. A running cancellation becomes terminal only when its worker exits; work that acknowledges successful publication remains `COMPLETE` even if cancellation raced it.
+
+After restart or eviction from the 512-entry terminal-outcome cache, an incomplete durable registration can appear as `REGISTERED` and be resumed. Active attempts are never evicted. Queue rejection returns `429` while retaining the registered job and any prior terminal outcome; retrying a previously cancelled or failed registration may therefore still report that outcome until admission succeeds. Durable `COMPLETE` always takes precedence, including in cancellation responses. Resumes use the persisted manifest and CAS, without reopening the original source path. `jobFailures` counts failed executions once; cooperative cancellations do not count as failures.
+
+Shutdown closes admission atomically with cancellation. Later submission returns `503 SERVICE_STOPPING`; it cannot enqueue work behind shutdown. A failed 10-second termination deadline remains an operational failure, and a later close may join the still-owned workers.
 
 ### Search and pagination
 
@@ -67,5 +73,6 @@ Pass the returned cursor with identical text, filters and page size. A cursor bi
 | `413` | Raw body exceeds its quota: `BODY_TOO_LARGE` |
 | `422` | Source acquisition or storage failure: `SOURCE_OR_STORAGE_FAILURE` |
 | `429` | Request admission exhausted: `REQUEST_CAPACITY`; background queue exhausted: `QUEUE_FULL` |
+| `503` | Background ingestion admission closed for shutdown: `SERVICE_STOPPING` |
 
 Application error bodies use `{"error":"CODE"}` and omit source names and exception messages. Authentication errors follow the resource-server response. There is no browser UI.

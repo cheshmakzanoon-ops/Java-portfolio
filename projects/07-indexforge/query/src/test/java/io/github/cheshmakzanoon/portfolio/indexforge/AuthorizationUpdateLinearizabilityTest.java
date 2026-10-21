@@ -47,8 +47,7 @@ class AuthorizationUpdateLinearizabilityTest {
   }
 
   @Test
-  void competingWritersNeverPublishARevisionOlderThanTheHighestIssuedRevision()
-      throws Exception {
+  void competingWritersNeverPublishARevisionOlderThanTheHighestIssuedRevision() throws Exception {
     AuthorizationFilter filter = new AuthorizationFilter();
     int writers = 12;
     int iterations = 350;
@@ -137,8 +136,7 @@ class AuthorizationUpdateLinearizabilityTest {
                     long next = filter.current("target").version();
                     if (next < last) {
                       failure.compareAndSet(
-                          null,
-                          new AssertionError("scope rollback from " + last + " to " + next));
+                          null, new AssertionError("scope rollback from " + last + " to " + next));
                       return;
                     }
                     last = next;

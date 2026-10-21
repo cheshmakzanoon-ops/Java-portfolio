@@ -37,6 +37,11 @@ public class SearchController implements AutoCloseable {
         throw new IllegalArgumentException("ingestion field bounds");
       archive = Boolean.TRUE.equals(archive);
       complete = Boolean.TRUE.equals(complete);
+      if (deletions == null) deletions = Set.of();
+      else {
+        for (String deletion : deletions) SnapshotManifest.normalize(deletion);
+        deletions = Set.copyOf(deletions);
+      }
     }
   }
 
@@ -45,32 +50,9 @@ public class SearchController implements AutoCloseable {
   private final SearchEngine engine;
   private final AuthorizationFilter auth;
   private final Path sources;
-  private final ThreadPoolExecutor workers =
-      new ThreadPoolExecutor(
-          2,
-          2,
-          0,
-          TimeUnit.SECONDS,
-          new ArrayBlockingQueue<>(8),
-          Thread.ofPlatform().name("indexforge-ingest-", 0).factory(),
-          new ThreadPoolExecutor.AbortPolicy());
+  private final IngestionTasks tasks = new IngestionTasks();
 
-  private record Pending(String tenant, Future<?> task) {}
-
-  private static final class Metrics {
-    final AtomicLong searches = new AtomicLong(), failures = new AtomicLong();
-  }
-
-  private final ConcurrentMap<String, Pending> futures = new ConcurrentHashMap<>();
-  private final ConcurrentMap<String, Metrics> tenantMetrics = new ConcurrentHashMap<>();
-  private final Map<String, String> states =
-      Collections.synchronizedMap(
-          new LinkedHashMap<>() {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
-              return size() > 512;
-            }
-          });
+  private final ConcurrentMap<String, AtomicLong> tenantSearches = new ConcurrentHashMap<>();
 
   public SearchController(SearchEngine engine, AuthorizationFilter auth, Environment env)
       throws IOException {
@@ -99,7 +81,7 @@ public class SearchController implements AutoCloseable {
       @AuthenticationPrincipal Jwt jwt, @RequestBody SearchEngine.Request request)
       throws IOException {
     var a = context(jwt, false);
-    counters(a.tenant()).searches.incrementAndGet();
+    tenantSearches.computeIfAbsent(a.tenant(), ignored -> new AtomicLong()).incrementAndGet();
     return engine.search(a.principal(), request);
   }
 
@@ -137,7 +119,7 @@ public class SearchController implements AutoCloseable {
                 request.revision(),
                 Path.of(request.path()),
                 request.complete(),
-                request.deletions() == null ? Set.of() : request.deletions(),
+                request.deletions(),
                 () -> false);
     var job = engine.register(a, request.idempotencyKey(), manifest);
     return enqueue(a, job);
@@ -145,42 +127,15 @@ public class SearchController implements AutoCloseable {
 
   private ResponseEntity<Map<String, String>> enqueue(
       AuthorizationFilter.Access access, IngestionJob.Registered job) {
-    synchronized (futures) {
-      futures.entrySet().removeIf(entry -> entry.getValue().task().isDone());
-      if (!futures.containsKey(job.id()) && !engine.completed(job.id())) {
-        FutureTask<Void> task =
-            new FutureTask<>(
-                () -> {
-                  states.put(job.id(), "RUNNING");
-                  try {
-                    engine.resume(access, job.id());
-                    states.put(job.id(), "COMPLETE");
-                  } catch (Exception failed) {
-                    states.put(
-                        job.id(), Thread.currentThread().isInterrupted() ? "CANCELLED" : "FAILED");
-                    counters(access.tenant()).failures.incrementAndGet();
-                  }
-                  return null;
-                });
-        states.put(job.id(), "QUEUED");
-        try {
-          workers.execute(task);
-        } catch (RejectedExecutionException full) {
-          states.put(job.id(), "REGISTERED");
-          throw full;
-        }
-        futures.put(job.id(), new Pending(access.tenant(), task));
-      }
-    }
-    return ResponseEntity.accepted()
-        .body(
-            Map.of(
-                "id",
-                job.id(),
-                "state",
-                engine.completed(job.id())
-                    ? "COMPLETE"
-                    : states.getOrDefault(job.id(), "REGISTERED")));
+    if (!engine.completed(job.id()))
+      tasks.submit(access.tenant(), job.id(), () -> engine.resume(access, job.id()));
+    return ResponseEntity.accepted().body(Map.of("id", job.id(), "state", state(job.id())));
+  }
+
+  private String state(String id) {
+    // A completion receipt is authoritative even if cancellation raced with publication,
+    // an in-memory outcome was evicted, or the service restarted.
+    return engine.completed(id) ? "COMPLETE" : tasks.state(id).name();
   }
 
   @PostMapping("/v1/ingestions/{id}/resume")
@@ -194,20 +149,15 @@ public class SearchController implements AutoCloseable {
   Map<String, String> job(@AuthenticationPrincipal Jwt jwt, @PathVariable String id)
       throws IOException {
     engine.job(context(jwt, false), id);
-    return Map.of(
-        "id",
-        id,
-        "state",
-        engine.completed(id) ? "COMPLETE" : states.getOrDefault(id, "REGISTERED"));
+    return Map.of("id", id, "state", state(id));
   }
 
   @DeleteMapping("/v1/ingestions/{id}")
   Map<String, String> cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable String id)
       throws IOException {
     engine.job(context(jwt, true), id);
-    Pending pending = futures.get(id);
-    if (pending != null && pending.task().cancel(true)) states.put(id, "CANCELLED");
-    return Map.of("id", id, "state", states.getOrDefault(id, "REGISTERED"));
+    tasks.cancel(id);
+    return Map.of("id", id, "state", state(id));
   }
 
   @PostMapping("/v1/reindexes")
@@ -220,37 +170,19 @@ public class SearchController implements AutoCloseable {
   Map<String, Long> metrics(@AuthenticationPrincipal Jwt jwt) {
     var access = context(jwt, false);
     if (!access.administrator()) throw new SecurityException("access denied");
-    Metrics counters = counters(access.tenant());
-    long queued =
-        futures.entrySet().stream()
-            .filter(entry -> entry.getValue().tenant().equals(access.tenant()))
-            .filter(entry -> !entry.getValue().task().isDone())
-            .filter(entry -> "QUEUED".equals(states.get(entry.getKey())))
-            .count();
+    var counts = tasks.counts(access.tenant());
+    var searches = tenantSearches.get(access.tenant());
     return Map.of(
         "searches",
-        counters.searches.get(),
+        searches == null ? 0L : searches.get(),
         "jobFailures",
-        counters.failures.get(),
+        counts.failures(),
         "queuedJobs",
-        queued);
-  }
-
-  private Metrics counters(String tenant) {
-    return tenantMetrics.computeIfAbsent(tenant, ignored -> new Metrics());
+        (long) counts.queued());
   }
 
   @Override
   public void close() throws IOException {
-    for (Pending pending : futures.values()) pending.task().cancel(true);
-    for (Runnable queued : workers.shutdownNow())
-      if (queued instanceof Future<?> future) future.cancel(false);
-    try {
-      if (!workers.awaitTermination(10, TimeUnit.SECONDS))
-        throw new IOException("ingestion shutdown deadline exceeded");
-    } catch (InterruptedException interrupted) {
-      Thread.currentThread().interrupt();
-      throw new IOException("ingestion shutdown interrupted", interrupted);
-    }
+    tasks.close();
   }
 }

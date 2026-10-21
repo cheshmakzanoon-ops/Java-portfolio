@@ -32,9 +32,9 @@ public final class AuthorizationFilter {
   private final AtomicLong sequence = new AtomicLong();
 
   /**
-   * Serialize updates to one principal through the map's per-key computation. Advancing the
-   * version outside this computation allowed an older writer to publish after a newer writer,
-   * silently restoring superseded grants.
+   * Serialize updates to one principal through the map's per-key computation. Advancing the version
+   * outside this computation allowed an older writer to publish after a newer writer, silently
+   * restoring superseded grants.
    */
   public Access update(String principal, String tenant, Set<String> repositories, boolean admin) {
     // Fail validation before entering the map's critical section or consuming a revision.

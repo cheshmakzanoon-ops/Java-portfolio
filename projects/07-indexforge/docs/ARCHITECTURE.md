@@ -26,7 +26,7 @@ flowchart LR
 | Durable ingestion | [IngestionCoordinator][coordinator] owns the OS data-directory lock, per-tenant writers, job reconciliation, staging disposal, and shutdown admission. [GenerationBuilder][builder] owns one staging tree. [GenerationPublisher][publisher] owns pointers and reader lifetimes. |
 | Serving policy | [SearchEngine][engine] coordinates request authorization, one reader lease, counts, facets, snippets, cache and cursor context. [SearchRequestIdentity][identity] encodes the versioned binary request identity. [SearchRankingPipeline][pipeline] applies the same retrieval, feature, ablation and usage policy to serving and label-blind exports. |
 | Source observations | [SourceJavaParser][parser] records declarations and bounded executable syntax. [SourceSyntax][syntax] projects expressions; [SourceCompilerBoundary][compiler] denies compiler file resolution. [SourceSymbolGraph][graph] owns repository inventory and graph aggregation; [SourceBindingResolver][binding] owns nominal receiver and overload resolution. [SourceRelations][relations] derives observed interactions. |
-| Adapters and studies | [SearchController][controller] owns HTTP queue/task lifetime and tenant-scoped metrics. [IndexForgeCli][cli] validates commands before opening data. [EvaluationJudgments][judgments] filters splits before interpreting query text or grades; [EvaluationSeal][seal] binds the final model before held-out execution. |
+| Adapters and studies | [SearchController][controller] owns typed HTTP routes and tenant-scoped metrics; [IngestionTasks][tasks] owns bounded attempts, cancellation, and shutdown admission. [IndexForgeCli][cli] validates commands before opening data. [EvaluationJudgments][judgments] filters splits before interpreting query text or grades; [EvaluationSeal][seal] binds the final model before held-out execution. |
 
 Wave2 and wave3 share bounded, non-overwriting phase identity/path records; duplicate keys and escape coercion are rejected consistently. Offline phase identity binds complete inference origins and the complete evaluation origin, including extracted and future helpers; a human-readable phase name cannot replace executable provenance.
 
@@ -103,7 +103,7 @@ sequenceDiagram
   C-->>A: registered job identity
 ```
 
-The lifecycle write lock waits for admitted writers during shutdown. Before closing any publisher, the coordinator freezes new lease admission on every publisher. A publisher with a live lease rejects shutdown; earlier freezes are rolled back and the data-directory lock stays owned. Once admission is frozen everywhere, all readers are closed and the OS lock is released. The HTTP adapter cancels and joins its build tasks before the engine is destroyed.
+The lifecycle write lock waits for admitted writers during shutdown. Before closing any publisher, the coordinator freezes new lease admission on every publisher. A publisher with a live lease rejects shutdown; earlier freezes are rolled back and the data-directory lock stays owned. Once admission is frozen everywhere, all readers are closed and the OS lock is released. The HTTP adapter delegates admitted work to `IngestionTasks`, which serializes submission, cancellation and shutdown under one monitor. Queued cancellation removes the runnable immediately; running cancellation retains attempt ownership until the worker leaves its `finally` block. A cancelled Future's early `isDone` flag is not used as proof of termination. Duplicate resume calls cannot replace a still-running attempt. Terminal outcomes occupy a separate bounded cache and never evict active work. The adapter joins these tasks before the engine is destroyed; durable completion receipts override local cancellation/status cache results.
 
 This protocol requires same-filesystem atomic rename and directory-force support on local storage. Exception injection and `/dev/full` tests cover reported filesystem failures; they do not establish hardware power-loss behavior or distributed-filesystem durability.
 
@@ -185,3 +185,5 @@ Relations describe observed bounded syntax/value interactions, not control-flow 
 [cli]: ../cli/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/IndexForgeCli.java
 [judgments]: ../evaluation/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/EvaluationJudgments.java
 [seal]: ../evaluation/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/EvaluationSeal.java
+
+[tasks]: ../service/src/main/java/io/github/cheshmakzanoon/portfolio/indexforge/IngestionTasks.java

@@ -20,9 +20,12 @@ source scripts/cloud-env.sh
 | Generations | Explicit deletions, idempotent retries, old leases during publication, corrupt-pointer fallback, ambiguous publication reconciliation, interrupted-build cleanup, failed-first-publication cleanup, fallback repair failure, writer shutdown and atomic multi-publisher close rejection. |
 | Authorization | Denied repositories and foreign tenants across results, counts, facets, suggestions, explanations, cursors, warmed caches, virtual-clock cursor renewal/expiry, revocation and tenant-scoped administrator metrics. |
 | Feature extraction | Sparse scorers across three committed Lucene leaves, reversed candidate order, missing vectors, original candidate/score ownership and bounded ordinal storage. |
-| HTTP | RSA/JWKS validation, issuer/audience/time claims, original claim types, write scope, request-size limits, and source-root binding. |
+| HTTP | RSA/JWKS validation, issuer/audience/time claims, original claim types, write scope, request-size limits, source-root binding, typed JSON/duplicate/trailing-value rejection, and actual cookie-plus-bearer CSRF enforcement. |
+| Background ingestion | Duplicate submission, running cancellation/resume ownership, immediate queued cancellation capacity, old-runnable pickup races, tenant metrics, retention bounds, interrupted/deadline shutdown, missing-CAS repair, persisted-input retry after source deletion, revoked queued grants, and `503` after shutdown admission closes. |
 | Source analysis | Parser process limits, exact framing, watchdog cleanup, uncertain bindings, enum overrides, supplementary identifiers, and wire quotas. |
 | Evaluation | Independent metric calculations, cutoff denominators, grouped development folds, finite selection, complete class-origin identity with isolated helper-byte changes, split-before-parse poison-heldout fixtures and UTF-8 packet bounds. |
+
+`IngestionTasksTest` uses latch-controlled workers to observe cancellation before actual termination; it does not infer termination from a Future's cancellation flag. It also races worker pickup and cancellation, and verifies that no two attempts for one registration execute simultaneously. `HttpIngestionLifecycleIT` holds the real tenant writer while filling the HTTP queue, then cancels and resumes work through signed requests. These checks exercise the service boundary and durable registration rather than only a mock executor.
 
 The executable [HTTP example](../demo/http_workflow.py) additionally exercises actual ingestion/job polling, signed pagination, suggestions, resume, reindex and tenant metrics without displaying credentials. CLI malformed-command regressions verify that failures precede data creation.
 

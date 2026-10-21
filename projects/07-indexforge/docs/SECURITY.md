@@ -14,6 +14,8 @@ Structural source analysis uses a bounded child JVM with no annotation processin
 
 The protected HTTP profile verifies RS256 signatures against JWKS, issuer, audience `indexforge`, expiry, subject, typed tenant, and search scope. Writes also require ingest scope. Original signed JSON claim types are checked after cryptographic decoding because libraries can coerce a numeric subject to a string. Server-side mappings determine tenant, repositories, and administrator status; a token cannot grant itself repository access.
 
+Unsafe requests carrying parsed cookies or a nonblank raw Cookie header require CSRF protection even when an explicit bearer header is present. Browser-marked Basic credentials also require it. The matcher is installed on the completed Spring CSRF filter because the resource-server configurer otherwise adds a bearer-token ignore rule. Safe methods and ordinary explicit bearer CLI calls keep their existing behavior; real HTTP regressions exercise the complete configured chain.
+
 Protected startup requires explicit issuer, JWKS, and users configuration. The disposable development issuer is loopback-only and refuses an external bind. Never use development credentials or real confidential data for a public deployment.
 
 Authorization precedes candidate selection, hit counts, facets, snippets, suggestions, explanations, and cache reads. Admission rejects missing repository sets, invalid scope identifiers, more than 64 repositories, and principal identities over 1,024 UTF-16 units. Stored repository grants are copied before publication. A final permission-version check discards stale responses. Tenant index directories are physically separate. Cursors authenticate tenant, principal, permission version, query, generation, and expiration; transferred, modified, or expired cursors fail. A retired generation returns `410`. Tenant administration does not grant process-wide observability: search/failure counters and queue gauges are scoped to that tenant.
@@ -26,9 +28,11 @@ BM25 still uses tenant-wide collection statistics internally. Scores and orderin
 
 ## Resource and failure boundaries
 
-Bodies are bounded before JSON conversion; request admission and ingestion queues are bounded. Query parsing bounds Boolean depth and clause count and rejects wildcard, fuzzy and range operators; it supplies no regular-expression execution path. Client errors use stable generic codes rather than inaccessible document names.
+Bodies are bounded before JSON conversion. The converter rejects duplicate object keys, trailing documents, unknown fields, fractional or string integer values, and non-Boolean snapshot flags. Nullable documented defaults remain accepted. Deletion paths are normalized and copied before source acquisition, so a mutable caller collection cannot change an admitted request. Request admission and ingestion queues are bounded. Query parsing bounds Boolean depth and clause count and rejects wildcard, fuzzy and range operators; it supplies no regular-expression execution path. Client errors use stable generic codes rather than inaccessible document names.
 
 Publication receipts bind schema, job, manifest, and generation identity with checksums. Malformed, truncated, or oversized receipts fail explicitly. When pointer replacement succeeds but directory synchronization reports failure, the actual pointer is reconciled before another publication. An unreadable ambiguous pointer blocks writes until recovery.
+
+The task scheduler retains a running ingestion after cancellation until its worker actually exits, preventing overlapping retries and stale completion updates. Queued cancellation frees capacity immediately; completed-generation receipts remain authoritative. Task submission and shutdown admission are serialized. Cooperative cancellation is not counted as a failed job.
 
 Shutdown freezes new lease admission before closing any tenant reader. A rejected close preserves all publishers and the OS ownership lock; admitted writers finish or cancel before the engine releases its resources. Failed development-issuer startup releases its bound port.
 

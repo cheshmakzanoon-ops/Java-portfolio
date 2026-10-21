@@ -90,7 +90,6 @@ public class SecurityConfiguration {
         new OAuth2Error("invalid_token", "required claims invalid", null));
   }
 
-
   /**
    * Bearer tokens are supplied explicitly, so they are not ambient browser credentials. Preserve
    * CSRF checks for cookies and browser-sent Basic credentials without changing CLI/Bearer APIs.
@@ -99,16 +98,41 @@ public class SecurityConfiguration {
     if (java.util.Set.of("GET", "HEAD", "OPTIONS", "TRACE").contains(request.getMethod()))
       return false;
     if (request.getCookies() != null && request.getCookies().length > 0) return true;
+    String cookie = request.getHeader("Cookie");
+    if (cookie != null && !cookie.isBlank()) return true;
     String authorization = request.getHeader("Authorization");
     return authorization != null
         && authorization.regionMatches(true, 0, "Basic ", 0, 6)
-        && (request.getHeader("Origin") != null
-            || request.getHeader("Sec-Fetch-Site") != null);
+        && (request.getHeader("Origin") != null || request.getHeader("Sec-Fetch-Site") != null);
   }
 
   @Bean
   SecurityFilterChain security(HttpSecurity http) throws Exception {
-    return http.csrf(csrf -> csrf.requireCsrfProtectionMatcher(SecurityConfiguration::csrfForAmbientCredentials))
+    return http.csrf(
+            csrf ->
+                csrf.requireCsrfProtectionMatcher(SecurityConfiguration::csrfForAmbientCredentials)
+                    .withObjectPostProcessor(
+                        new org.springframework.security.config.ObjectPostProcessor<
+                            org.springframework.security.web.csrf.CsrfFilter>() {
+                          @Override
+                          public <O extends org.springframework.security.web.csrf.CsrfFilter>
+                              O postProcess(O filter) {
+                            // Resource-server initialization adds a bearer-token CSRF ignore rule.
+                            // Restore the intended matcher on the finished filter so adding an
+                            // explicit bearer header cannot bypass the ambient-cookie policy.
+                            filter.setRequireCsrfProtectionMatcher(
+                                SecurityConfiguration::csrfForAmbientCredentials);
+                            // Write the denial directly. sendError would redispatch to the
+                            // authenticated /error route before bearer authentication runs.
+                            filter.setAccessDeniedHandler(
+                                (request, response, denied) -> {
+                                  response.setStatus(403);
+                                  response.setContentType("application/json");
+                                  response.getWriter().write("{\"error\":\"ACCESS_DENIED\"}");
+                                });
+                            return filter;
+                          }
+                        }))
         .authorizeHttpRequests(
             requests ->
                 requests.requestMatchers("/health").permitAll().anyRequest().authenticated())

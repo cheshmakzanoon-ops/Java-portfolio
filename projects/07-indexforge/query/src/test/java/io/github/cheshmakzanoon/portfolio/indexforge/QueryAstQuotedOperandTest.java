@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 class QueryAstQuotedOperandTest {
   private static final List<String> FIELDS =
-      List.of("content", "symbol", "path", "repository", "language", "kind", "coordinates", "version");
+      List.of(
+          "content", "symbol", "path", "repository", "language", "kind", "coordinates", "version");
   private static final List<String> RESERVED = List.of("AND", "OR", "NOT", "(", ")", ":");
 
   @Test
@@ -38,8 +39,7 @@ class QueryAstQuotedOperandTest {
         new QueryAst.BooleanNode(false, left, new QueryAst.Negation(right)),
         QueryAst.parse("content:\"AND\" AND NOT path:\"OR\""));
     assertEquals(
-        new QueryAst.Term("symbol", "AND OR NOT", true),
-        QueryAst.parse("symbol:\"AND OR NOT\""));
+        new QueryAst.Term("symbol", "AND OR NOT", true), QueryAst.parse("symbol:\"AND OR NOT\""));
     assertEquals(new QueryAst.Term("all", "AND", true), QueryAst.parse("\"AND\""));
   }
 
@@ -54,8 +54,15 @@ class QueryAstQuotedOperandTest {
             () -> "bare operator was accepted: " + input);
       }
     }
-    for (String malformed : List.of("content:", "path:AND", "content:NOT", "content:OR",
-                                    "content:)", "content::", "path:\"\"")) {
+    for (String malformed :
+        List.of(
+            "content:",
+            "path:AND",
+            "content:NOT",
+            "content:OR",
+            "content:)",
+            "content::",
+            "path:\"\"")) {
       assertThrows(IllegalArgumentException.class, () -> QueryAst.parse(malformed));
     }
   }
@@ -82,10 +89,8 @@ class QueryAstQuotedOperandTest {
   void inputAndLexicalQuotasStillRejectAbusiveQueries() {
     String longInput = "content:\"" + "a".repeat(505) + "\"";
     assertThrows(IllegalArgumentException.class, () -> QueryAst.parse(longInput));
-    assertThrows(
-        IllegalArgumentException.class, () -> QueryAst.parse("\"unterminated"));
-    assertThrows(
-        IllegalArgumentException.class, () -> QueryAst.parse("content:\"\""));
+    assertThrows(IllegalArgumentException.class, () -> QueryAst.parse("\"unterminated"));
+    assertThrows(IllegalArgumentException.class, () -> QueryAst.parse("content:\"\""));
     assertThrows(
         IllegalArgumentException.class,
         () -> QueryAst.parse("content:\"AND\"" + " OR x".repeat(65)));

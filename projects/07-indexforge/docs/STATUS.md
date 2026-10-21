@@ -1,6 +1,16 @@
 # Validation status
 
-## Current source verification — 2026-10-20
+## Current HTTP lifecycle verification — 2026-10-21
+
+The seven-entry Java 25 reactor passed **248 cases: 239 ordinary cases and 9 integration cases, with zero failures, errors or skips**. The command ran formatting, the unchanged core coverage gates, packaged-runtime tests, real Linux `/dev/full` handling, and real HTTP/OIDC/JWKS flows. The current-report completeness checker also passed for every selected module. [The execution receipt](../evidence/ingestion-lifecycle-20261021.json) records source and report hashes, module totals, the exact command and the earlier failed attempts.
+
+The HTTP ingestion scheduler now owns running cancellation until actual worker exit, removes cancelled queued tasks immediately, keeps active work separate from a bounded terminal-status cache, serializes shutdown against admission, and allows retries from immutable input after the original checkout disappears. `CANCELLING` is an additive in-progress state; durable `COMPLETE` remains authoritative. Cooperative cancellation does not inflate failure metrics. Seventeen task-lifecycle tests cover bounded admission, duplicate/race schedules, failure recovery, tenant metrics and shutdown boundaries; five new actual HTTP cases verify queue capacity, input recovery, grant revocation and stopping behavior.
+
+Typed request conversion rejects duplicate keys, trailing values, unknown fields and scalar coercion before source acquisition or job registration. Deletion paths are validated and copied at admission. Nine JSON regressions include empty-string Boolean conversion, a defect caught by the first run. The full integration run also exposed a prior CSRF configuration gap: Spring's resource-server bearer exemption bypassed the intended cookie matcher. Installing the matcher on the finished filter and writing a direct redacted 403 denial now passes the existing real cookie-plus-bearer assertion; four additional credential-boundary tests cover raw Cookie headers, safe methods and browser-marked Basic credentials.
+
+This is current functional evidence for the measured source. No fresh mutation campaign, relevance study, performance study, hosted-CI success or repository release certificate is claimed. The existing relevance failures, exposed-heldout limitation, and historical benchmark records below remain unchanged.
+
+## Previous source verification — 2026-10-20
 
 The complete seven-entry reactor passed **198 cases: 194 unit/property cases and 4 integration cases, with zero failures, errors or skips**. The invocation checked formatting, passed the unchanged coverage gates and installed the current CLI and Boot artifacts. The source review covered all 87 production classes in ingest, index, query, service, evaluation and CLI.
 

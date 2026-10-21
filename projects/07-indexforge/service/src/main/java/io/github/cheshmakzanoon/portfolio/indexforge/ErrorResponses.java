@@ -33,6 +33,11 @@ public class ErrorResponses {
     return error(400, "INVALID_REQUEST");
   }
 
+  @ExceptionHandler(IngestionTasks.Stopping.class)
+  ResponseEntity<Map<String, String>> stopping() {
+    return error(503, "SERVICE_STOPPING");
+  }
+
   @ExceptionHandler(RejectedExecutionException.class)
   ResponseEntity<Map<String, String>> overload() {
     return error(429, "QUEUE_FULL");
