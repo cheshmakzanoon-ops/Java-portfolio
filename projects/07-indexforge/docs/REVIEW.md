@@ -4,6 +4,7 @@ This record summarizes defects and their regression boundaries. Historical certi
 
 | Finding | Correction and regression |
 | --- | --- |
+| Concurrent permission updates could assign increasing versions before publication, letting a delayed older writer overwrite a newer scope. | Per-principal `ConcurrentHashMap.compute` now performs revision allocation and publication in one atomic operation; a new real-thread test verifies version monotonicity, revocation and isolation. Requires current Java 25 reactor/CI revalidation. |
 | Payload-bearing ZIP directories bypassed expanded-byte accounting when the next entry implicitly drained them. | Bound every streamed member; reject directory payloads and mismatched local/central name, method, CRC and sizes. ArchiveDirectoryTest uses adversarial binary fixtures. |
 | A failed first publication could leave an orphan committed directory that blocked all later startup. | Remove only the owned uninstalled destination; preserve uncertain outcomes. GenerationLifecycleTest checks restart and successful later publication. |
 | A failed fallback-pointer repair could quarantine valid PREVIOUS and expose a reader without repaired CURRENT. | Separate validation from repair; operational repair failure closes readers, fails startup and preserves the fallback. |

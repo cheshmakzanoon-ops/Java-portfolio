@@ -29,10 +29,23 @@ public final class AuthorizationFilter {
   private final Map<String, Access> principals = new ConcurrentHashMap<>();
   private final AtomicLong sequence = new AtomicLong();
 
+  /**
+   * Serialize updates to one principal through the map's per-key computation. Advancing the
+   * version outside this computation allowed an older writer to publish after a newer writer,
+   * silently restoring superseded grants.
+   */
   public Access update(String principal, String tenant, Set<String> repositories, boolean admin) {
-    Access a = new Access(principal, tenant, repositories, sequence.incrementAndGet(), admin);
-    principals.put(principal, a);
-    return a;
+    // Fail validation before entering the map's critical section or consuming a revision.
+    Access validated = new Access(principal, tenant, repositories, 0, admin);
+    return principals.compute(
+        principal,
+        (key, previous) ->
+            new Access(
+                key,
+                validated.tenant(),
+                validated.repositories(),
+                sequence.incrementAndGet(),
+                validated.administrator()));
   }
 
   public Access current(String principal) {
