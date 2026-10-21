@@ -32,6 +32,13 @@ case "$command" in
   doctor)
     if [[ -n $slug ]]; then resolve "$slug" >/dev/null; fi
     java -version; javac -version; "$root/mvnw" -version
+    java_spec=$(java -XshowSettings:properties -version 2>&1 |
+      awk '/java.specification.version =/ { print $3; exit }')
+    javac_version=$(javac -version 2>&1)
+    if [[ $java_spec != 25 || ! $javac_version =~ ^javac[[:space:]]25([.]|$) ]]; then
+      echo "JDK 25 is required (java.specification.version=$java_spec; $javac_version)" >&2
+      exit 1
+    fi
     if [[ $slug == matchcore || $slug == threadlens || $slug == byteguard ]]; then
       echo "Docker not required for $slug's CLI demonstration"
     elif command -v docker >/dev/null; then

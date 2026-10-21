@@ -69,6 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .work/showcase
+          ./scripts/portfolio.sh doctor matchcore
           ./scripts/portfolio.sh demo matchcore 2>&1 | tee .work/showcase/matchcore-demo.log
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         if: always()
