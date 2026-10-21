@@ -102,15 +102,44 @@ def reactor_modules(root, profiles=()):
     return modules
 
 
+MAX_REPORT_BYTES = 64 * 1024 * 1024
+
+
 def fresh_reports(module, kind, started):
+    """Only accept regular reports rooted in the selected module's own build output."""
+    if kind not in ('surefire', 'failsafe', 'pit'):
+        raise EvidenceError('Unknown Maven report kind: ' + str(kind))
     directory = module.directory / 'target' / (kind + '-reports')
+    if directory.is_symlink() or directory.parent.is_symlink():
+        raise EvidenceError(str(directory) + ': reports must not use redirected output paths')
     pattern = '**/mutations.xml' if kind == 'pit' else 'TEST-*.xml'
-    return sorted(path for path in directory.glob(pattern) if path.stat().st_mtime >= started)
+    result = []
+    for report in sorted(directory.glob(pattern)):
+        if report.is_symlink() or not report.is_file():
+            raise EvidenceError(str(report) + ': report must be an ordinary file')
+        relative = report.relative_to(module.directory)
+        if any((module.directory / Path(*relative.parts[:i])).is_symlink()
+               for i in range(1, len(relative.parts))):
+            raise EvidenceError(str(report) + ': report directory is symbolic-linked')
+        if not report.resolve().is_relative_to(module.directory.resolve()):
+            raise EvidenceError(str(report) + ': report escaped its reactor module')
+        if report.stat().st_mtime >= started:
+            result.append(report)
+    return result
 
 
 def test_counts(report):
     try:
-        suite = ET.parse(report).getroot()
+        if report.is_symlink() or not report.is_file():
+            raise ValueError('test report must be an ordinary file')
+        if report.stat().st_size > MAX_REPORT_BYTES:
+            raise ValueError('test report exceeds the 64 MiB budget')
+        # JUnit/Surefire reports have no DTD or external entity declarations.
+        # Check the XML declaration rather than trusting a parser to ignore DTDs.
+        raw = report.read_bytes()
+        if b'<!DOCTYPE' in raw.upper() or b'<!ENTITY' in raw.upper():
+            raise ValueError('DTD or entity declaration is not allowed')
+        suite = ET.fromstring(raw)
         if suite.tag != 'testsuite':
             raise ValueError('expected testsuite')
         counts = {key: int(suite.attrib[key]) for key in COUNT_KEYS}
@@ -122,6 +151,9 @@ def test_counts(report):
             raise ValueError('suite counters disagree with test cases')
         if sum(counts[key] for key in COUNT_KEYS[1:]) > counts['tests']:
             raise ValueError('inconsistent test outcomes')
+        for case in cases:
+            if sum(case.find(tag) is not None for tag in ('failure', 'error', 'skipped')) > 1:
+                raise ValueError('test case has contradictory outcome markers')
         return counts
     except (OSError, ET.ParseError, KeyError, ValueError) as error:
         raise EvidenceError(str(report) + ': invalid or inconsistent test report') from error
