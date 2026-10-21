@@ -96,6 +96,16 @@ class HttpInputTest {
                     socket.getInputStream(), java.nio.charset.StandardCharsets.US_ASCII));
         assertTrue(reader.readLine().contains("403"));
       }
+      // Cookie-authenticated browser writes cannot inherit the trusted-local identity
+      // without a CSRF token, even when no Origin header is provided.
+      var cookiePost =
+          client.send(
+              HttpRequest.newBuilder(URI.create(base + "/v1/demo/reset"))
+                  .header("Cookie", "JSESSIONID=ambient-state")
+                  .POST(HttpRequest.BodyPublishers.noBody())
+                  .build(),
+              HttpResponse.BodyHandlers.ofString());
+      assertEquals(403, cookiePost.statusCode());
       assertFalse(DATABASE_TOUCHED.get());
     }
   }
@@ -203,6 +213,9 @@ class HttpInputTest {
       invalidBodies.add(original.replace("\"version\":1,", "\"version\":1.5,"));
       invalidBodies.add(original.replace("\"failed\":false", "\"failed\":null"));
       invalidBodies.add(original.replace("\"id\":\"p\"", "\"id\":42"));
+      String privateCanary = "private-tenant-cargo-identifiers";
+      invalidBodies.add(
+          original.replace("\"id\":\"p\"", "\"id\":\"" + privateCanary + "/blocked\""));
       for (String body : invalidBodies) {
         assertNotEquals(original, body);
         var request =
@@ -213,6 +226,8 @@ class HttpInputTest {
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(400, response.statusCode(), response.body());
+        assertFalse(response.body().contains("private-tenant-cargo-identifiers"),
+            "validation must not echo client-supplied sensitive paths");
       }
       for (var requestBody :
           java.util.List.of(
