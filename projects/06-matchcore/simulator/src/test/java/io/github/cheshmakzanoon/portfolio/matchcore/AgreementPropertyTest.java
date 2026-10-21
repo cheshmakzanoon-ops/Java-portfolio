@@ -7,6 +7,9 @@ import java.util.*;
 import net.jqwik.api.*;
 
 class AgreementPropertyTest {
+  private static final List<String> TEST_ACCOUNTS =
+      java.util.stream.IntStream.range(0, 8).mapToObj(i -> "a" + i).toList();
+
   @Property(tries = 120, seed = "42006006")
   void generatedAgreement(@ForAll long seed) {
     Random random = new Random(seed);
@@ -18,7 +21,8 @@ class AgreementPropertyTest {
       assertEquals(reference.apply(c), production.apply(++sequence, c));
     }
     for (int i = 0; i < 350; i++) {
-      String account = "a" + random.nextInt(8), id = "o" + random.nextInt(120);
+      String account = TEST_ACCOUNTS.get(random.nextInt(TEST_ACCOUNTS.size())),
+          id = "o" + random.nextInt(120);
       Side side = random.nextBoolean() ? Side.BUY : Side.SELL;
       long price = 95 + random.nextInt(11), qty = random.nextInt(15);
       int action = random.nextInt(100);

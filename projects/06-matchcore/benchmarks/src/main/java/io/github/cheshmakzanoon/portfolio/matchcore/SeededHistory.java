@@ -12,6 +12,11 @@ final class SeededHistory {
     }
   }
 
+  // Test identities are public fixtures, not random credentials. Seeded randomness chooses
+  // among known accounts so history replay and its exact random draw sequence remain stable.
+  private static final List<String> ACCOUNTS =
+      java.util.stream.IntStream.range(0, 64).mapToObj(i -> "a" + i).toList();
+
   private final Random random;
   private final Type[] block = new Type[100];
   private final ArrayList<Live> live = new ArrayList<>();
@@ -44,7 +49,7 @@ final class SeededHistory {
       side = target.side();
       activeTargets++;
     } else {
-      account = "a" + random.nextInt(64);
+      account = ACCOUNTS.get(random.nextInt(ACCOUNTS.size()));
       order = (type == Type.NEW ? "o" : "empty-") + number;
       side = random.nextBoolean() ? Side.BUY : Side.SELL;
       if (type != Type.NEW) emptyTargets++;

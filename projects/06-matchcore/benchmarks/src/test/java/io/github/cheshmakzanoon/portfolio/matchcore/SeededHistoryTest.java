@@ -31,6 +31,10 @@ class SeededHistoryTest {
                 100_000_000));
       for (int i = 0; i < 1000; i++) {
         Command command = history.next(i);
+        // Synthetic tenant/account IDs must come only from the 64 initialized fixture accounts.
+        assertTrue(
+            java.util.stream.IntStream.range(0, 64)
+                .anyMatch(account -> command.accountId().equals("a" + account)));
         mix.merge(command.type(), 1, Integer::sum);
         View before = book.view();
         if (command.type() != Type.NEW && !before.orders().isEmpty())
