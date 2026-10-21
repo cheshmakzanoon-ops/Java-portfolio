@@ -77,12 +77,41 @@ jobs:
           name: matchcore-showcase
           path: .work/showcase/matchcore-demo.log
 
+  windows-showcase:
+    # Separate Windows portability gate; Linux retains its checksum-pinned JDK baseline.
+    timeout-minutes: 35
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Install Java 25
+        uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5.5.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Windows JDK and wrapper preflight
+        run: |
+          .\scripts\portfolio.ps1 doctor matchcore
+          if ($LASTEXITCODE -ne 0) { throw "Windows toolchain validation failed" }
+      - name: MatchCore native Windows verification
+        run: |
+          .\scripts\portfolio.ps1 verify matchcore
+          if ($LASTEXITCODE -ne 0) { throw "Windows unit tests failed" }
+      - name: MatchCore native Windows accounting/recovery demo
+        run: |
+          .\scripts\portfolio.ps1 demo matchcore
+          if ($LASTEXITCODE -ne 0) { throw "Windows demo failed" }
+
   required:
     if: always()
-    needs: [projects, tooling, showcase]
+    needs: [projects, tooling, showcase, windows-showcase]
     runs-on: ubuntu-24.04
     steps:
       - run: |
           test '${{ needs.projects.result }}' = success
           test '${{ needs.tooling.result }}' = success
           test '${{ needs.showcase.result }}' = success
+          test "${{ needs['windows-showcase'].result }}" = success

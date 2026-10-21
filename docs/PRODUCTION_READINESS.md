@@ -111,3 +111,14 @@ IndexForge P07-A4's 0.75 nDCG / 0.90 identifier MRR blind relevance target; Thre
 P08-A5's full observer-overhead study; and HIGH/CRITICAL findings in pinned upstream
 Kafka/PostgreSQL images. Historical FAIL/IN_PROGRESS entries retain their status.
 This milestone is **not** a production readiness certificate.
+
+
+## Native Windows Java 25 verification required
+
+A Windows Server 2025 CI job now installs Temurin Java 25 through the immutable
+setup-java v5.5.0 action, then executes the native PowerShell preflight, MatchCore
+verification and recovery/accounting demo. The aggregate required CI gate now
+fails if this job fails or does not execute. Windows resolves a Java 25 feature
+version rather than the Linux checksum-pinned JDK archive; identical runtime
+binaries are not claimed. This workflow has been committed but its hosted
+results remain outstanding, so native Windows support is not yet certified.
