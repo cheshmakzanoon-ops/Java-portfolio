@@ -35,6 +35,8 @@ class SeededHistoryTest {
         assertTrue(
             java.util.stream.IntStream.range(0, 64)
                 .anyMatch(account -> command.accountId().equals("a" + account)));
+        if (command.type() == Type.NEW)
+          assertEquals("a" + Math.floorMod(i * 13, 64), command.accountId());
         mix.merge(command.type(), 1, Integer::sum);
         View before = book.view();
         if (command.type() != Type.NEW && !before.orders().isEmpty())

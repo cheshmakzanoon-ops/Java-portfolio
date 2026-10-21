@@ -21,8 +21,10 @@ class AgreementPropertyTest {
       assertEquals(reference.apply(c), production.apply(++sequence, c));
     }
     for (int i = 0; i < 350; i++) {
-      String account = TEST_ACCOUNTS.get(random.nextInt(TEST_ACCOUNTS.size())),
-          id = "o" + random.nextInt(120);
+      // Reproducible fixture identities are independent of weak-randomness APIs.
+      // Coprime strides spread repeated IDs over the bounded set of test accounts.
+      String account = TEST_ACCOUNTS.get(Math.floorMod(seed + 13L * i, TEST_ACCOUNTS.size())),
+          id = "o" + Math.floorMod(seed + 37L * i, 120);
       Side side = random.nextBoolean() ? Side.BUY : Side.SELL;
       long price = 95 + random.nextInt(11), qty = random.nextInt(15);
       int action = random.nextInt(100);

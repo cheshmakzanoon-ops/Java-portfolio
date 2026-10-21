@@ -12,8 +12,8 @@ final class SeededHistory {
     }
   }
 
-  // Test identities are public fixtures, not random credentials. Seeded randomness chooses
-  // among known accounts so history replay and its exact random draw sequence remain stable.
+  // Synthetic identities are derived from command positions, never from a randomness source.
+  // The seeded generator still varies order type, price, quantity, and trade side.
   private static final List<String> ACCOUNTS =
       java.util.stream.IntStream.range(0, 64).mapToObj(i -> "a" + i).toList();
 
@@ -49,7 +49,8 @@ final class SeededHistory {
       side = target.side();
       activeTargets++;
     } else {
-      account = ACCOUNTS.get(random.nextInt(ACCOUNTS.size()));
+      // 13 is coprime to 64, distributing new orders over all fixture accounts.
+      account = ACCOUNTS.get(Math.floorMod(number * 13, ACCOUNTS.size()));
       order = (type == Type.NEW ? "o" : "empty-") + number;
       side = random.nextBoolean() ? Side.BUY : Side.SELL;
       if (type != Type.NEW) emptyTargets++;
