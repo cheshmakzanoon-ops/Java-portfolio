@@ -1,0 +1,2 @@
+Claim[worker=a, batch=4, leaseSeconds=10]
+Claim[worker=a, batch=1, leaseSeconds=10]

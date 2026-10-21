@@ -63,3 +63,9 @@ The original release audit accepted historical PASS rows solely when their refer
 ClearLedger `/health` now performs a query through the bounded application database transaction path and returns 503 when storage is unavailable. Reconciliation materializes at most two candidate postings, sufficient to distinguish unique from ambiguous matches, rather than reading all matching postings for every CSV row. No SQL schema, posting API or durable receipt format changed.
 
 [Current validation](../projects/01-clearledger/evidence/production-hardening-20261021/validation.json): 45 ordinary and 23 real-PostgreSQL tests passed with no failures/errors/skips; strict mutation gates passed (domain 35/36, persistence 102/105). Two survivors and one timeout remain nonkills. Six cache and sixteen lifecycle regressions also passed. Deployment, concurrent-service demo and capacity certification remain separate pending checks.
+
+## Milestone: DurableFlow transaction outcomes and input boundaries
+
+An acknowledged JDBC commit now remains successful if returning/closing its connection subsequently fails; a failed commit acknowledgement still propagates uncertainty. Connection cleanup emits a bounded warning. The HTTP JSON mapper now rejects duplicate fields, multiple JSON documents, fractional integer inputs, null primitives, numeric enum ordinals and scalar coercion, with valid wire fields retained.
+
+[Current validation](../projects/02-durableflow/evidence/production-hardening-20261021/validation.json): 98 ordinary and 22 real-PostgreSQL tests passed with no failures/errors/skips. Strict per-module mutation gates passed: data 41/41, interpreter 158/162, persistence 54/55; all five survivors remain in the denominator. Nine preparation and ten lifecycle helper tests passed. Historical workload measurements are not current certification; simultaneous demos and recovery checks follow separately.

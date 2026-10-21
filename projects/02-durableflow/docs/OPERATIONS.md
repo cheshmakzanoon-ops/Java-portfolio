@@ -88,3 +88,9 @@ Send SIGTERM to the owned runtime process, then allow its cleanup window to fini
 A forced kill bypasses this path. Idempotent calls retain their stable provider key across reassignment. A dispatched non-idempotent call without a definitive result becomes UNKNOWN_OUTCOME when its database lease expires. Treat the provider's independent record as reconciliation evidence; process termination itself is not evidence that an effect did or did not occur.
 
 [Migration V3](../workflow-persistence/src/main/resources/db/migration/V3__scheduler_failure_isolation.sql) is additive and must run before the updated scheduler or worker starts. It adds scheduling retry metadata; it does not rewrite historical inputs, event results, definition hashes, or interpreter semantics. Old semantics 1/2 fixtures and current semantics 3 histories remain covered by integration tests.
+
+## Committed outcomes and pool cleanup
+
+An acknowledged database commit remains successful if returning its connection to the pool later fails. The transaction boundary emits a cleanup warning and preserves the committed result; it does not report a retryable activity failure. A commit that loses its acknowledgement still fails as an unknown storage outcome and follows the existing lease/idempotency recovery contract. Domain, commit, and rollback failures retain their original cause and suppressed cleanup failures.
+
+The public JSON adapter rejects duplicate keys, trailing JSON values, floating-point truncation into integer fields, null primitive fields, numeric enum ordinals, and number/boolean coercion into strings. Valid named enums and typed request fields retain their existing wire shape.

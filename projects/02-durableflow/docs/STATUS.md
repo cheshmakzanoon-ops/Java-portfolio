@@ -53,3 +53,11 @@ The [gzip capture repair](../evidence/gzip-capture-repair.json) records post-mea
 - Verify clean-checkout restoration and the hosted release/security pipelines independently of local build success.
 
 Earlier failures remain recorded in the evidence. Review scopes are described in [the review record](REVIEW.md); successful tests do not close unrelated operational or performance requirements.
+
+## 2026-10-21 production hardening validation
+
+The transaction boundary now preserves acknowledged committed results when connection cleanup fails, while lost commit acknowledgements and domain/rollback failures remain visible. Public JSON requests reject duplicate fields, fractional integer truncation, null primitive fields, numeric enum ordinals, trailing values, and number/boolean coercion into strings. A direct default-mapper reproduction accepted batch 4.9 as 4 and duplicate batch 4/batch 1 as 1; the new configured-mapper regression rejects both.
+
+A current-source combined integration/mutation build passed **98 ordinary Java methods and 22 PostgreSQL integration methods**, with zero failures, errors or skips. Strict mutation results were 41/41 Data mutants, 158/162 current-interpreter mutants and 54/55 selected persistence-policy mutants, against the unchanged 70% per-module threshold. The five survivors remain un-killed; there were no timeouts or runner/memory errors. Nine preparation and ten lifecycle helper tests also passed with JDK 25 activated.
+
+[Raw reports and source manifest](../evidence/production-hardening-20261021/validation.json) identify the tested source. This does not replace the incomplete three-round 10,000-execution performance baseline, certify a stable capacity budget, or establish hosted CI/security results.

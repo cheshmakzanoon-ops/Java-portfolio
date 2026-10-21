@@ -44,6 +44,27 @@ public class Application {
   }
 
   @Bean
+  org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer strictRequestJson() {
+    return builder ->
+        builder
+            .withCoercionConfig(
+                tools.jackson.databind.type.LogicalType.Textual,
+                config -> {
+                  for (var shape :
+                      List.of(
+                          tools.jackson.databind.cfg.CoercionInputShape.Integer,
+                          tools.jackson.databind.cfg.CoercionInputShape.Float,
+                          tools.jackson.databind.cfg.CoercionInputShape.Boolean))
+                    config.setCoercion(shape, tools.jackson.databind.cfg.CoercionAction.Fail);
+                })
+            .disable(tools.jackson.databind.DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+            .enable(tools.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .enable(tools.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+            .enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            .enable(tools.jackson.databind.cfg.EnumFeature.FAIL_ON_NUMBERS_FOR_ENUMS);
+  }
+
+  @Bean
   static WorkflowStore store(Environment e) {
     WorkflowStore s =
         new WorkflowStore(

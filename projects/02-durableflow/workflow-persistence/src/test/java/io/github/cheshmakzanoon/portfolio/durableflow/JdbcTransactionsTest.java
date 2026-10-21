@@ -43,6 +43,14 @@ class JdbcTransactionsTest {
   }
 
   @Test
+  void acknowledgedCommitRemainsSuccessfulWhenConnectionCleanupFails() {
+    List<String> calls = new ArrayList<>();
+    int result = transactions(calls, false, true, null).execute(connection -> 42);
+    assertEquals(42, result);
+    assertEquals(List.of("autoCommit:false", "isolation:2", "commit", "close"), calls);
+  }
+
+  @Test
   void fatalFailureRollsBackAndSuccessCommitsExactlyOnce() {
     List<String> success = new ArrayList<>();
     int result = transactions(success, false, false, null).execute(connection -> 42);
