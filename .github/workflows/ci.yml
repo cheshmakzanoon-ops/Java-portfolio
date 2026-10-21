@@ -58,11 +58,30 @@ jobs:
           path: |
             projects/**/target/surefire-reports/
             projects/**/target/site/jacoco/
+  showcase:
+    # A fresh checkout must run at least one real project demo, not just compile tests.
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: ./.github/actions/setup-toolchain
+      - name: Execute MatchCore's exact recovery and accounting assertions
+        run: |
+          set -euo pipefail
+          mkdir -p .work/showcase
+          ./scripts/portfolio.sh demo matchcore 2>&1 | tee .work/showcase/matchcore-demo.log
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        if: always()
+        with:
+          name: matchcore-showcase
+          path: .work/showcase/matchcore-demo.log
+
   required:
     if: always()
-    needs: [projects, tooling]
+    needs: [projects, tooling, showcase]
     runs-on: ubuntu-24.04
     steps:
       - run: |
           test '${{ needs.projects.result }}' = success
           test '${{ needs.tooling.result }}' = success
+          test '${{ needs.showcase.result }}' = success
