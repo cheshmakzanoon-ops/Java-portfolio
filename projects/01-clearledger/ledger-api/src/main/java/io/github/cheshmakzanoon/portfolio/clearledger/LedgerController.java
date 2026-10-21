@@ -63,8 +63,14 @@ public class LedgerController {
   public record Decision(UUID journal, int line, String reason, String evidence) {}
 
   @GetMapping("/health")
-  Map<String, String> health() {
-    return Map.of("status", "UP");
+  ResponseEntity<Map<String, String>> health() {
+    try {
+      // Use the same bounded connection/transaction path as business requests.
+      store.tx(c -> LedgerStore.query(c, "SELECT 1"));
+      return ResponseEntity.ok(Map.of("status", "UP"));
+    } catch (LedgerStore.LedgerException | IllegalStateException unavailable) {
+      return ResponseEntity.status(503).body(Map.of("status", "DOWN"));
+    }
   }
 
   @PostMapping("/v1/accounts")

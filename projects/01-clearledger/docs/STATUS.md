@@ -68,3 +68,11 @@ The subsequent retry policy samples independent exponential windows of 4, 8, 16,
 Run the complete 100,000-journal workload at 1, 8, and 32 writers for three independent rounds on an idle reference host, followed by its validators. Preserve the prescribed seed, 20 tenants, 10,000 accounts, currency mix, duplicates, reversals, latency boundary, and failed outcomes. JMH requires three forks, three one-second warmups, and five one-second measurements per case with GC profiling. Prepared runtime receipts prevent Maven work from entering the measured interval.
 
 Clean-checkout lifecycle reproduction and repository-wide release checks remain separate obligations. Cached artifacts do not authorize skipping correctness tests. See [operations](OPERATIONS.md), [performance](PERFORMANCE.md), and [review](REVIEW.md) for the commands and boundaries.
+
+## 2026-10-21 production hardening validation
+
+The storage readiness endpoint now performs a real bounded database transaction and returns HTTP 503 after its runtime pool closes, then returns 200 with a new working pool. Reconciliation materializes at most two candidate postings because only zero/one/many affect the decision. The three-candidate real-PostgreSQL regression remains ambiguous until an authorized manual decision.
+
+The combined current-source integration/mutation build passed: **45 ordinary methods and 23 PostgreSQL integration methods**, with zero failures, errors or skips. Domain mutations killed 35/36; selected persistence-policy mutations killed 102/105, with two survivors and one timeout. The timeout is included as un-killed; the unchanged 70%/90% thresholds passed. Domain coverage was 80/83 lines and 72/76 branches. These are selected-module results, not aggregate application coverage or a new performance certificate.
+
+[Raw reports and source manifest](../evidence/production-hardening-20261021/validation.json) bind the run to actual source files. Standalone deployment and failure/restart observations are recorded separately when executed; historical benchmarks do not certify changed source.

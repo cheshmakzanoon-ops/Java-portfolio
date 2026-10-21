@@ -107,7 +107,7 @@ projects/01-clearledger/scripts/projector.sh
 
 Set `LEDGER_URL` and `LEDGER_PASSWORD` through secure runtime configuration for another database. The projector may stop/restart; its applied-event membership and deltas are atomic. It rereads pending membership rather than relying on a maximum event ID.
 
-Passing `replay` builds a separate generation and promotes only after source comparison. HTTP replay requires platform `ledger.system`; tenant reporting requires `ledger.admin`. `GET /v1/reports/freshness` returns tenant-scoped pending events. Reporting responses identify their generation, snapshot, and `authoritative=false`; a healthy HTTP adapter does not prove PostgreSQL availability or projection freshness.
+Passing `replay` builds a separate generation and promotes only after source comparison. HTTP replay requires platform `ledger.system`; tenant reporting requires `ledger.admin`. `GET /v1/reports/freshness` returns tenant-scoped pending events. Reporting responses identify their generation, snapshot, and `authoritative=false`; `GET /health` runs a bounded PostgreSQL transaction and returns `200 {"status":"UP"}` only when storage is reachable; storage or closed-pool failures return `503 {"status":"DOWN"}`. This checks storage availability, not projection freshness. The check uses the 15-second connection/statement budgets and is not a low-latency liveness probe.
 
 ## Schema upgrade, backup, and restore
 

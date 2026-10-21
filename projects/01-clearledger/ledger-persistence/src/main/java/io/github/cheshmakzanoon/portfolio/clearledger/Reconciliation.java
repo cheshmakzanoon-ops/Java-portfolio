@@ -44,10 +44,11 @@ public final class Reconciliation {
                 row.reason());
             if (row.status() != StatementCsv.Status.UNMATCHED || row.reference().isBlank())
               continue;
+            // Only zero, one, or multiple matches matter; never materialize an unbounded set.
             var candidates =
                 LedgerStore.query(
                     c,
-                    "SELECT p.journal_id,p.line_no FROM ledger.posting p JOIN ledger.journal j ON j.tenant_id=p.tenant_id AND j.id=p.journal_id WHERE p.tenant_id=? AND j.reference=? AND j.currency=? AND CASE p.side WHEN 'DEBIT' THEN p.amount ELSE -p.amount END=? AND NOT EXISTS(SELECT FROM ledger.reconciliation_match m WHERE m.tenant_id=p.tenant_id AND m.journal_id=p.journal_id AND m.line_no=p.line_no)",
+                    "SELECT p.journal_id,p.line_no FROM ledger.posting p JOIN ledger.journal j ON j.tenant_id=p.tenant_id AND j.id=p.journal_id WHERE p.tenant_id=? AND j.reference=? AND j.currency=? AND CASE p.side WHEN 'DEBIT' THEN p.amount ELSE -p.amount END=? AND NOT EXISTS(SELECT FROM ledger.reconciliation_match m WHERE m.tenant_id=p.tenant_id AND m.journal_id=p.journal_id AND m.line_no=p.line_no) LIMIT 2",
                     tenant,
                     row.reference(),
                     row.currency(),

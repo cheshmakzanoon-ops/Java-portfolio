@@ -378,6 +378,7 @@ class LedgerPostgresIT extends LedgerPostgresFixture {
     store.post(tenant, "match", journal(100, "unique"));
     store.post(tenant, "amb1", journal(200, "ambiguous"));
     store.post(tenant, "amb2", journal(200, "ambiguous"));
+    store.post(tenant, "amb3", journal(200, "ambiguous"));
     var csv =
         ("source_id,reference,currency,amount\n1,unique,CAD,1.00\n2,ambiguous,CAD,2.00\n3,missing,CAD,9.00\n1,unique,CAD,1.00\n4,bad,CAD,1.001\n5,=SUM(A1),CAD,4.00\n")
             .getBytes(java.nio.charset.StandardCharsets.UTF_8);

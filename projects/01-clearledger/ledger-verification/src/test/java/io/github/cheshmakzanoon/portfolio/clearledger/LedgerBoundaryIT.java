@@ -11,6 +11,24 @@ import org.junit.jupiter.api.*;
 /** Database contract upgrades and forced projection/reconciliation interleavings. */
 class LedgerBoundaryIT extends LedgerPostgresFixture {
   @Test
+  void readinessChecksStorageAndRejectsClosedRuntimeBeforeRecoveringWithANewPool() {
+    var runtime = new LedgerStore(pg.getJdbcUrl(), "clearledger_runtime", "local-only-clearledger");
+    var controller = new LedgerController(runtime);
+    try {
+      assertEquals(200, controller.health().getStatusCode().value());
+      assertEquals(Map.of("status", "UP"), controller.health().getBody());
+    } finally {
+      runtime.close();
+    }
+    assertEquals(503, controller.health().getStatusCode().value());
+    assertEquals(Map.of("status", "DOWN"), controller.health().getBody());
+    try (var restarted =
+        new LedgerStore(pg.getJdbcUrl(), "clearledger_runtime", "local-only-clearledger")) {
+      assertEquals(200, new LedgerController(restarted).health().getStatusCode().value());
+    }
+  }
+
+  @Test
   void privilegedEntryPointRejectsNullDigestAndInvalidOperationBeforeReceiptLookup() {
     var intent = journal(10, "contract");
     var existing = store.post(tenant, "retained", intent);
