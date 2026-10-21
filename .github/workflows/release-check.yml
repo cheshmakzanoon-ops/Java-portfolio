@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/mutation.yml
   security:
     uses: ./.github/workflows/security.yml
+    secrets: inherit
     permissions:
       contents: read
       security-events: write
