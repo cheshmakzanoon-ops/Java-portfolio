@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "scope": "Authenticated tenant continuity across IndexForge search/suggestion admission, cached/fresh response checks and permission-refresh retries",
+  "observed_utc": "2026-10-21T20:16:05.846475+00:00",
+  "source_base_commit": "5f1d8e8",
+  "result": "PASS",
+  "exit_code": 0,
+  "command": "./mvnw -f projects/07-indexforge/pom.xml -Dmaven.repo.local=\"$PWD/.work/A07/m2\" -B -ntp com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify",
+  "environment": {
+    "preparation": "source scripts/cloud-env.sh; JAVA_HOME set to the scratch Temurin JDK and its bin prepended to PATH",
+    "jdk": "Temurin 25.0.4.1+1",
+    "maven": "checksum-pinned Maven 3.10.0 wrapper",
+    "integration_dependencies": "Real loopback Spring Boot HTTP/OIDC/JWKS, Lucene files and kernel /dev/full; no Docker or external database"
+  },
+  "started_utc": "2026-10-21T20:13:35.275770+00:00",
+  "started_epoch": 1792613615.2757704,
+  "start_identity": "time.time() written immediately before this Maven invocation; used as the freshness cutoff for every selected module",
+  "finished_utc": "2026-10-21T20:15:09+00:00",
+  "source_inputs": {
+    "files": 151,
+    "manifest": "projects/07-indexforge/evidence/tenant-binding-20261021/source-manifest.sha256",
+    "manifest_sha256": "8c5cb6f5d5f9fe92bce991110d5de40826644c1eb8f61c3ecff9343512e940f4",
+    "definition": "All project Java/POM files outside target plus root pom.xml, mvnw and wrapper properties; manifest paths are repository-relative",
+    "sorted_compact_json_sha256": "67d76fccdb0e2597522f6d2f24a3c432bfd61bd376cb18e7173eba91a76df4e9"
+  },
+  "verification": {
+    "counts": {
+      "tests": 259,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": [
+      {
+        "module": "ingest",
+        "counts": {
+          "surefire": {
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "index",
+        "counts": {
+          "surefire": {
+            "tests": 73,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "query",
+        "counts": {
+          "surefire": {
+            "tests": 80,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "service",
+        "counts": {
+          "surefire": {
+            "tests": 36,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "evaluation",
+        "counts": {
+          "surefire": {
+            "tests": 37,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      },
+      {
+        "module": "cli",
+        "counts": {
+          "surefire": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "failsafe": {
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
+      }
+    ],
+    "failures": []
+  },
+  "regressions": {
+    "TenantBoundSearchTest": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "TenantReassignmentHttpIT": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ControllerTenantAdmissionTest": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "completeness_check": {
+    "command": "PORTFOLIO_TEST_RUN_STARTED=<started_epoch above> python3 scripts/check-tests.py projects/07-indexforge integration",
+    "exit_code": 0
+  },
+  "coverage": {
+    "gates": "Unchanged 85% line and 75% branch core gates passed; no thresholds or targets reduced"
+  },
+  "log_sha256": "f5d1a8f616a9bf55ec81989359b04bb65f080a25adb1f6054d90e83b43dc6fc7",
+  "report_sha256": {
+    "projects/07-indexforge/cli/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourcePackagedIT.xml": "be4915693be9e8af7f2930f38f27d5d5e62d2398c0b102f1aab80076003db9b6",
+    "projects/07-indexforge/cli/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CliArgumentsTest.xml": "6fe2a44bad0e7811d5bef3def5753d4dc174863931ebada4f260059e23e7101c",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationFingerprintTest.xml": "99d74d5187408d1b14daeae4013ec0e28f48423eb41e376e17ad6b93a5ff949a",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationJudgmentsTest.xml": "e53d3845bd6f902e08a20de20af2d52f65fed4bf4dca1a96703476a242dce51a",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EvaluationSealTest.xml": "039dc60202c350d1eb68c4963e06f7c8a5b9802facc4b353ae498e1e5ba1e8d5",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.PairwiseTrainingTest.xml": "8002c440a5eede72e30737b83f0c532c1f2bbe95a5434e78377267f733eef52f",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RelevanceMetricsTest.xml": "7e0d33a08c0262632b6455f27621173dcd76c074a74a50b35fcbbe8683a99abf",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceFeaturePacketTest.xml": "2e902f3aa4e8e380528cb961bb16dc884035103b5afe7e4bf7fdddace245ff30",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourcePairwiseSelectionTest.xml": "365ee1221caef8e72fb35a80024b50bc38e8df9aaf19841dea44114bc33a3a48",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceStudyBoundaryTest.xml": "808ba1a23c418762b9fabaf5163cae63d283ae5b2978a63206149187f74cabe9",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceWave3StudyTest.xml": "0a3293a9846934f4f3b4f12c34f30b97ec5ad9571912350c13b0b696797ea6f7",
+    "projects/07-indexforge/evaluation/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.Wave2ProtocolTest.xml": "a42416f44754c0edb26eea095f1150bfefae5f1db39899f82b7973c37e5e9b11",
+    "projects/07-indexforge/index/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.KernelDiskFullIT.xml": "e7fde628e8a98fb2f8a58376b9c77752ad94574d02c6b00d6db83320a841b5fe",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CodeFeaturesTest.xml": "7c7770ddbaca1ed049e8886be15d0cf44c7f6452822fd88c10bccf58ae297c58",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.DeclarationScannerTest.xml": "33b4f97019fddcdc95a593fa551ddc9b48493026251a3aa787673b112471fa56",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.GenerationLifecycleTest.xml": "cab564ff1397fbd3f77ee34c119388b4eb977b62480df3d31fa83ac188702442",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IdentifierTermBoundaryTest.xml": "aebfe5684242c8a2c5c5dd45be52bb38d78775ca54cbc1ac96c9b468b05379a4",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceCatalogTest.xml": "758d36f04adef810b3a2531cab26226eca565a9770efa92bb6eaf6135ec13d0a",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceGenerationTest.xml": "e325f4b59b04ad072a7ca208d673c53bf448f6b8084eac3254b4fddd47febc81",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceKernelBoundaryTest.xml": "7c9667d3ecd1a8f3bc5eb59cc64d9639393b08dd6597f9d5b316bc1b17226bcf",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceParserTest.xml": "be5da872ae18b2b3f8a5478a5dcbdeea942b77442bead0cd1006dfda2dcee285",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceRelationsTest.xml": "a67c6326a0f035d1464b2151970ed70b1c7b3a8f75cf76bed1d7aa6d07d6f9db",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceRepositoryFactsTest.xml": "685cb91b5ca6088d93a8db1c18d454f9143d0b58c2c071ee2143987e48d7a3ca",
+    "projects/07-indexforge/index/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceSymbolGraphTest.xml": "186c24774ed0338ba288d2643c5e76f4081a3dc61d7abaa26550680fe06e3afe",
+    "projects/07-indexforge/ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.ArchiveDirectoryTest.xml": "cf29366b53d4dabc85e75fbc3ae41d1eb322da40696a1e521685b5d18d84443a",
+    "projects/07-indexforge/ingest/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IngestionSafetyTest.xml": "b056d420c8954e466c939a1adfe7ef58e6a826c9d5298409aeb3d49d08443a69",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.AuthorizationAdmissionTest.xml": "e034f1409ecc7532a8eff01ca5dc231d96c841bb8afcc0d399857bf5f09f9a9a",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.AuthorizationUpdateLinearizabilityTest.xml": "fd230fe153a1dabc46a1676aa5cd0dfb23a7e7b2b578fdc9764ecbd70f2e9574",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.CursorCacheLifetimeTest.xml": "da3011e8ce912c9bed626ed9b8df7a376c2e51ad8989b5e46a1b41a143538714",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.EngineLifecycleTest.xml": "8ec35172a203902e9ce64be29573cb2f3ed39c3fdfd91419ed34aa0dc0f92e9a",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.QueryAstQuotedOperandTest.xml": "cf0dd6c4f56467c335a2644ca4648378bc719504761c68f6526406feec9da163",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingCodeIdentityTest.xml": "794fccaf5ddcd60000f6cc4b7692f625803805c6f5a63ce1a8804dbfc778a8cc",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingIdentityRestartTest.xml": "a5044476937731a52fcb1a4d85bc93f9f1b0877797fda90f87592e4f66211617",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingWave2Test.xml": "9449ff6e82b54f9beda0c8a07a2a07c718a581b2e0e6993772d60ccef03372ca",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SearchRequestIdentityTest.xml": "217b38b8f5c4e952a9947f41175dbe9c0a40ebfb25833d10a24760c4ded54192",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SearchSecurityTest.xml": "6be8865f3434d8c763e74c12a6abfbd2fd3c89dd5fcd3ad40dbbfb8bbe9d26a8",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SnippetBuilderTest.xml": "c8bb6a81a98e42f74d96685a8c81f87d787de7ca844ab9d939bc8bde70af531d",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceServingTest.xml": "9c061de5b1c3b802b089e594b9341997c16e0e7abebfb2b526e31411f9fbc82c",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.SourceUsageRankerTest.xml": "5fdd7ced95b6b7ee0dcb821c147387b0194ecf2633af1d105955627b23d943ec",
+    "projects/07-indexforge/query/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TenantBoundSearchTest.xml": "ccd9d1adf87ad253f2f8adfebfa466bc2cbf8759be92f1f256e35fd2f502fc79",
+    "projects/07-indexforge/service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.HttpIngestionLifecycleIT.xml": "623fb8aa4ef2bd99063a2f39c85c3ea665d8c0a0eccd0ade51e6b1c20e1d1866",
+    "projects/07-indexforge/service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.HttpSecurityIT.xml": "c68c1e58db6c73809fff98e61664af2389ec37b5762e4c160fa55c780ff48cf2",
+    "projects/07-indexforge/service/target/failsafe-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TenantReassignmentHttpIT.xml": "bd4eca986bbba15dd4bc35a6568039e73a06e92fdaa20cf3e76affc34624c4f7",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.BrowserCredentialBoundaryTest.xml": "c08429d6081955c230ec7ae7460dd6beff012c8d0c00f3cc26221dd0c7ffed05",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.ControllerTenantAdmissionTest.xml": "dd6de4e11ae0211aeda713224b5dc1b8b5ff14839a635bb406b3292432ac1f49",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IngestionTasksTest.xml": "6bcb35a4d45730cdbd9fa96d5a0eae2e59e68efd10c8906b7de68f36c80db515",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.IssuerLifecycleTest.xml": "dd313c4c3eae02c9c054a2985d44e05d3088d905c3349b844d537eda7b0adb2f",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RankingConfigurationTest.xml": "cd43ed504077dd3790e479817e1f7b44f30fd85c6ab9d69bb51c61d8977dd7c6",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.RequestJsonTest.xml": "7c06c66b8548ae7793a45ee8c232d7662f91d4733269481328dbfd29a518cdf6",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TenantMetricsTest.xml": "f0ec05becc406fb4f8a0a24c2fbdd0da09a4ff17c344a576d9e430c3ca34aa77",
+    "projects/07-indexforge/service/target/surefire-reports/TEST-io.github.cheshmakzanoon.portfolio.indexforge.TokenValidationTest.xml": "ff7e54f289cebe6ac2162547a70e59cf4abce21bf62185342be639b41d5f6eea"
+  },
+  "prior_receipt": {
+    "path": "projects/07-indexforge/evidence/ingestion-lifecycle-20261021.json",
+    "sha256": "b252caa3aef8f4e250b10c3bf8f1b26acb24acb4b0f628b35aa6c18d5392b71b",
+    "status": "Preserved unchanged; certifies its own earlier source inputs, not the new tenant-binding artifact"
+  },
+  "limitations": [
+    "No fresh mutation campaign, performance benchmark, relevance experiment or demonstration-script rerun was performed for this change",
+    "No hosted CI success, production deployment or repository-wide release certificate is inferred",
+    "In-process mapping changes are exercised; the service has no permission-management HTTP endpoint",
+    "A permission update after the final access-version check remains a later policy event"
+  ]
+}

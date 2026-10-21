@@ -82,13 +82,13 @@ public class SearchController implements AutoCloseable {
       throws IOException {
     var a = context(jwt, false);
     tenantSearches.computeIfAbsent(a.tenant(), ignored -> new AtomicLong()).incrementAndGet();
-    return engine.search(a.principal(), request);
+    return engine.search(a, request);
   }
 
   @PostMapping("/v1/suggest")
   List<String> suggest(@AuthenticationPrincipal Jwt jwt, @RequestBody SuggestRequest request)
       throws IOException {
-    return engine.suggest(context(jwt, false).principal(), request.prefix());
+    return engine.suggest(context(jwt, false), request.prefix());
   }
 
   @PostMapping("/v1/ingestions")

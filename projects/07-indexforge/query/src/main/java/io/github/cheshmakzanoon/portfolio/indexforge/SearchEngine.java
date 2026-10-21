@@ -238,11 +238,29 @@ public final class SearchEngine implements AutoCloseable {
 
   public Response search(String principal, Request request, QueryPlanner.Mode mode)
       throws IOException {
+    return search(authorization.current(principal), request, mode);
+  }
+
+  /**
+   * Preserve the authenticated principal and tenant across admission and permission-refresh
+   * retries. Repository grants and their version still come from the current server-side mapping; a
+   * caller's captured grants never authorize retrieval. HTTP adapters must use this entry point
+   * instead of discarding the verified tenant and passing only a principal.
+   */
+  public Response search(AuthorizationFilter.Access authenticated, Request request)
+      throws IOException {
+    return search(authenticated, request, defaultMode);
+  }
+
+  public Response search(
+      AuthorizationFilter.Access authenticated, Request request, QueryPlanner.Mode mode)
+      throws IOException {
+    Objects.requireNonNull(authenticated);
     QueryAst ast = QueryAst.parse(request.text());
     String scoringVersion = scoringVersion(mode);
     String digest = SearchRequestIdentity.digest(request, mode, scoringVersion);
     for (int retry = 0; retry < 3; retry++) {
-      AuthorizationFilter.Access a = authorization.current(principal);
+      AuthorizationFilter.Access a = currentInTenant(authenticated);
       SearchCursor.Position position =
           request.cursor() == null ? null : cursors.decode(request.cursor(), a, digest);
       try (GenerationLease lease =
@@ -312,6 +330,15 @@ public final class SearchEngine implements AutoCloseable {
       }
     }
     throw new SecurityException("authorization changed; retry");
+  }
+
+  private AuthorizationFilter.Access currentInTenant(AuthorizationFilter.Access authenticated) {
+    var current = authorization.current(authenticated.principal());
+    if (!authenticated.tenant().equals(current.tenant()))
+      throw new SecurityException("access denied");
+    // The final current(access) check includes tenant and version. A failed recheck retries
+    // through this boundary, so neither a fresh response nor a cache hit can switch tenants.
+    return current;
   }
 
   public String rankingIdentity() {
@@ -422,10 +449,17 @@ public final class SearchEngine implements AutoCloseable {
   }
 
   public List<String> suggest(String principal, String prefix) throws IOException {
+    return suggest(authorization.current(principal), prefix);
+  }
+
+  /** Refresh permissions within the authenticated tenant, retaining the same boundary as search. */
+  public List<String> suggest(AuthorizationFilter.Access authenticated, String prefix)
+      throws IOException {
+    Objects.requireNonNull(authenticated);
     if (prefix == null || !prefix.matches("[\\p{L}\\p{N}_$]{1,64}"))
       throw new IllegalArgumentException("prefix");
     for (int retry = 0; retry < 3; retry++) {
-      var a = authorization.current(principal);
+      var a = currentInTenant(authenticated);
       try (var lease = generations(a.tenant()).acquire()) {
         Query q =
             authorization.apply(

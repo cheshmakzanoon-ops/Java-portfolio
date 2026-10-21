@@ -6,6 +6,8 @@ The Boot service binds `127.0.0.1:18700` by default and accepts JSON. The [opera
 
 Every `/v1` route requires an RS256 bearer token with the configured issuer, audience `indexforge`, expiry, string subject, typed tenant and `search` scope. The subject must also have a server-side principal mapping. Mutating routes require `ingest` scope; reindex and metrics additionally require server-side tenant administration. Tenant and repository permissions come from the authenticated server context.
 
+Search and suggestions retain the verified token's tenant for the entire request. Permission changes can refresh repository grants within that tenant, but reassigning a subject to another tenant cannot redirect an in-flight request or cached response. A tenant mismatch returns `403 ACCESS_DENIED`; access to the reassigned tenant requires a token whose tenant matches the current server mapping.
+
 | Boundary | Limit |
 | --- | ---: |
 | Raw request body, before JSON conversion | 65,536 bytes |

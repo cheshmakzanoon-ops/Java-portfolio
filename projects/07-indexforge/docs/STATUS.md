@@ -1,6 +1,23 @@
 # Validation status
 
-## Current HTTP lifecycle verification — 2026-10-21
+## Current authenticated tenant verification — 2026-10-21
+
+The full Java 25 reactor passed **259 cases: 248 ordinary cases and 11 integration cases, with zero failures, errors or skips**. Formatting, the unchanged core coverage gates, real HTTP/OIDC/JWKS requests, Linux `/dev/full` handling and packaged CLI integration all passed. The current-report completeness checker independently confirmed every selected module's fresh reports. [The tenant-binding receipt](../evidence/tenant-binding-20261021/validation.json) records the exact command, report hashes and a complete source manifest.
+
+Search and suggestions now carry their admitted principal and tenant through every permission-refresh attempt. Current repository grants still come from the server directory. Moving a subject to another tenant rejects the in-flight request with `403`; the old token cannot read that tenant through a fresh result, cache hit or suggestion retry. The existing principal-based Java APIs remain available and capture their tenant at the start of each call.
+
+Eleven new cases cover the controller admission gap, reassignment before engine admission, current versus captured grants, final checks for fresh and cached responses, same-tenant permission refresh, and both signed HTTP routes during a controlled reader-acquisition race. The HTTP regressions populate both tenant indexes and verify that a fresh matching token can still read the reassigned tenant. They require no new production test hooks.
+
+```bash
+source scripts/cloud-env.sh
+./mvnw -f projects/07-indexforge/pom.xml \
+  -Dmaven.repo.local="$PWD/.work/A07/m2" -B -ntp \
+  com.diffplug.spotless:spotless-maven-plugin:3.0.0:apply -Pintegration verify
+```
+
+The earlier ingestion-lifecycle receipt below is preserved unchanged as evidence for its recorded source. This tenant-binding run did not repeat mutation campaigns, demonstration scripts, relevance studies or performance measurements; those earlier outcomes do not certify the changed artifact. Hosted CI and repository release certification remain separate checks.
+
+## Earlier HTTP lifecycle verification — 2026-10-21
 
 The seven-entry Java 25 reactor passed **248 cases: 239 ordinary cases and 9 integration cases, with zero failures, errors or skips**. The command ran formatting, the unchanged core coverage gates, packaged-runtime tests, real Linux `/dev/full` handling, and real HTTP/OIDC/JWKS flows. The current-report completeness checker also passed for every selected module. [The execution receipt](../evidence/ingestion-lifecycle-20261021.json) records source and report hashes, module totals, the exact command and the earlier failed attempts.
 
@@ -8,7 +25,7 @@ The HTTP ingestion scheduler now owns running cancellation until actual worker e
 
 Typed request conversion rejects duplicate keys, trailing values, unknown fields and scalar coercion before source acquisition or job registration. Deletion paths are validated and copied at admission. Nine JSON regressions include empty-string Boolean conversion, a defect caught by the first run. The full integration run also exposed a prior CSRF configuration gap: Spring's resource-server bearer exemption bypassed the intended cookie matcher. Installing the matcher on the finished filter and writing a direct redacted 403 denial now passes the existing real cookie-plus-bearer assertion; four additional credential-boundary tests cover raw Cookie headers, safe methods and browser-marked Basic credentials.
 
-This is current functional evidence for the measured source. No fresh mutation campaign, relevance study, performance study, hosted-CI success or repository release certificate is claimed. The existing relevance failures, exposed-heldout limitation, and historical benchmark records below remain unchanged.
+This receipt remains functional evidence for its measured source; the newer tenant-binding source is covered by the receipt above. No fresh mutation campaign, relevance study, performance study, hosted-CI success or repository release certificate is claimed. The existing relevance failures, exposed-heldout limitation, and historical benchmark records below remain unchanged.
 
 ## Previous source verification — 2026-10-20
 
@@ -47,7 +64,7 @@ The original combined reactor is recorded as failed; no successful combined muta
 
 ## Packaged workflows and compatibility
 
-The current `up → demo → down` scripts passed with 2,000 documents, 439,546 UTF-8 source bytes, three tenants and all transactional/restart/isolation assertions satisfied. The [HTTP example](../demo/http_workflow.py) passed actual ingestion, bounded polling, two signed one-hit pages, suggestions, completed-job resume, reindex and tenant metrics. Its service was stopped afterward. These are functional checks, not performance measurements.
+The previously recorded `up → demo → down` scripts passed with 2,000 documents, 439,546 UTF-8 source bytes, three tenants and all transactional/restart/isolation assertions satisfied. The [HTTP example](../demo/http_workflow.py) passed actual ingestion, bounded polling, two signed one-hit pages, suggestions, completed-job resume, reindex and tenant metrics. Its service was stopped afterward. These are functional checks of that earlier source, not performance measurements.
 
 Existing manifest, job, generation and cursor request-frame formats remain compatible. Extracting parser responsibilities changes the parser-bundle identity: structural strategies require a newly prepared matching API catalog and explicit reindexing. Configuring new metadata over existing structural facts is rejected.
 

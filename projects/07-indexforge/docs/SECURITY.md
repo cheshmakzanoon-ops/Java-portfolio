@@ -20,6 +20,8 @@ Protected startup requires explicit issuer, JWKS, and users configuration. The d
 
 Authorization precedes candidate selection, hit counts, facets, snippets, suggestions, explanations, and cache reads. Admission rejects missing repository sets, invalid scope identifiers, more than 64 repositories, and principal identities over 1,024 UTF-16 units. Stored repository grants are copied before publication. A final permission-version check discards stale responses. Tenant index directories are physically separate. Cursors authenticate tenant, principal, permission version, query, generation, and expiration; transferred, modified, or expired cursors fail. A retired generation returns `410`. Tenant administration does not grant process-wide observability: search/failure counters and queue gauges are scoped to that tenant.
 
+The HTTP adapter passes its admitted principal and JWT tenant into the engine. Every search and suggestion retry reloads server-side repository grants within that fixed identity. A reassignment to another tenant fails with a generic access denial before that tenant's reader or cache can be used. Captured grants, administrator flags and versions never override the current directory. Final version checks cover both freshly computed and cached responses. The trusted principal-based Java APIs remain available and capture their current tenant once at call entry; an embedded authenticated adapter must pass its already admitted access context.
+
 ## Confidentiality limits
 
 Public explanations contain matching features of an authorized document and its score, rather than raw Lucene explanations. Raw explanations include collection statistics from other repositories in the tenant.
