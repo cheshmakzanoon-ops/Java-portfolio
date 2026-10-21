@@ -50,18 +50,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .work/release
-          for project in clearledger durableflow quorumkv pulsestream tenantshield matchcore indexforge threadlens byteguard routeweaver; do
+          for project in daybook handoff majority latearrival gatehouse thepit stacks backtrace faultline switchback; do
             printf '%s\n' "$project" >> .work/release/attempted-projects
             trap './scripts/portfolio.sh down "$project"' EXIT
             ./scripts/portfolio.sh up "$project"
-            # QuorumKV's demo starts its own three processes on the catalog ports.
-            if [[ "$project" == quorumkv ]]; then
+            # Majority's demo starts its own three processes on the catalog ports.
+            if [[ "$project" == majority ]]; then
               ./scripts/portfolio.sh down "$project"
             fi
             ./scripts/portfolio.sh demo "$project"
             ./scripts/portfolio.sh reset-demo "$project"
             ./scripts/portfolio.sh up "$project"
-            if [[ "$project" == quorumkv ]]; then
+            if [[ "$project" == majority ]]; then
               ./scripts/portfolio.sh down "$project"
             fi
             ./scripts/portfolio.sh demo "$project"

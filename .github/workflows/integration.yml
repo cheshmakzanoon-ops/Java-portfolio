@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        project: [clearledger, durableflow, quorumkv, pulsestream, tenantshield, matchcore, indexforge, threadlens, byteguard, routeweaver]
+        project: [daybook, handoff, majority, latearrival, gatehouse, thepit, stacks, backtrace, faultline, switchback]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: ./.github/actions/setup-toolchain

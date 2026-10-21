@@ -27,27 +27,27 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        project: [clearledger, durableflow, quorumkv, pulsestream, tenantshield, matchcore, indexforge, threadlens, byteguard, routeweaver]
+        project: [daybook, handoff, majority, latearrival, gatehouse, thepit, stacks, backtrace, faultline, switchback]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: ./.github/actions/setup-toolchain
-      - name: Verify ClearLedger runtime ownership
-        if: matrix.project == 'clearledger'
+      - name: Verify Daybook runtime ownership
+        if: matrix.project == 'daybook'
         run: |
-          python3 projects/01-clearledger/scripts/test-runtime-cache.py
-          python3 projects/01-clearledger/scripts/test-lifecycle.py
-      - name: Verify PulseStream runtime ownership
-        if: matrix.project == 'pulsestream'
-        run: python3 projects/04-pulsestream/scripts/test-lifecycle.py
-      - name: Verify TenantShield runtime ownership
-        if: matrix.project == 'tenantshield'
-        run: python3 projects/05-tenantshield/scripts/test_process_lifecycle.py
-      - name: Verify RouteWeaver runtime ownership
-        if: matrix.project == 'routeweaver'
-        run: python3 projects/10-routeweaver/scripts/test-runtime.py
-      - name: Verify ByteGuard preparation receipts
-        if: matrix.project == 'byteguard'
-        run: python3 projects/09-byteguard/scripts/test-build-cache.py
+          python3 projects/01-daybook/scripts/test-runtime-cache.py
+          python3 projects/01-daybook/scripts/test-lifecycle.py
+      - name: Verify Late Arrival runtime ownership
+        if: matrix.project == 'latearrival'
+        run: python3 projects/04-latearrival/scripts/test-lifecycle.py
+      - name: Verify Gatehouse runtime ownership
+        if: matrix.project == 'gatehouse'
+        run: python3 projects/05-gatehouse/scripts/test_process_lifecycle.py
+      - name: Verify Switchback runtime ownership
+        if: matrix.project == 'switchback'
+        run: python3 projects/10-switchback/scripts/test-runtime.py
+      - name: Verify Faultline preparation receipts
+        if: matrix.project == 'faultline'
+        run: python3 projects/09-faultline/scripts/test-build-cache.py
       - run: ./scripts/portfolio.sh verify "${{ matrix.project }}"
       - run: python3 scripts/check-architecture.py
       - run: python3 scripts/check-architecture.py --bytecode "${{ matrix.project }}"
@@ -65,17 +65,17 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: ./.github/actions/setup-toolchain
-      - name: Execute MatchCore's exact recovery and accounting assertions
+      - name: Execute The Pit's exact recovery and accounting assertions
         run: |
           set -euo pipefail
           mkdir -p .work/showcase
-          ./scripts/portfolio.sh doctor matchcore
-          ./scripts/portfolio.sh demo matchcore 2>&1 | tee .work/showcase/matchcore-demo.log
+          ./scripts/portfolio.sh doctor thepit
+          ./scripts/portfolio.sh demo thepit 2>&1 | tee .work/showcase/thepit-demo.log
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         if: always()
         with:
-          name: matchcore-showcase
-          path: .work/showcase/matchcore-demo.log
+          name: thepit-showcase
+          path: .work/showcase/thepit-demo.log
 
   windows-showcase:
     # Separate Windows portability gate; Linux retains its checksum-pinned JDK baseline.
@@ -94,15 +94,15 @@ jobs:
           cache: maven
       - name: Windows JDK and wrapper preflight
         run: |
-          .\scripts\portfolio.ps1 doctor matchcore
+          .\scripts\portfolio.ps1 doctor thepit
           if ($LASTEXITCODE -ne 0) { throw "Windows toolchain validation failed" }
-      - name: MatchCore native Windows verification
+      - name: The Pit native Windows verification
         run: |
-          .\scripts\portfolio.ps1 verify matchcore
+          .\scripts\portfolio.ps1 verify thepit
           if ($LASTEXITCODE -ne 0) { throw "Windows unit tests failed" }
-      - name: MatchCore native Windows accounting/recovery demo
+      - name: The Pit native Windows accounting/recovery demo
         run: |
-          .\scripts\portfolio.ps1 demo matchcore
+          .\scripts\portfolio.ps1 demo thepit
           if ($LASTEXITCODE -ne 0) { throw "Windows demo failed" }
 
   required:
