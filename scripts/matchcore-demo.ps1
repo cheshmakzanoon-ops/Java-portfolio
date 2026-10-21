@@ -5,6 +5,11 @@ $repo = Split-Path $PSScriptRoot -Parent
 $project = Join-Path $repo 'projects/06-matchcore'
 Set-Location $repo
 
+$compilerVersion = (& javac -version 2>&1 | Out-String).Trim()
+if ($LASTEXITCODE -ne 0 -or $compilerVersion -notmatch '^javac\s+25(?:\.|$)') {
+  throw "MatchCore requires a JDK 25 installation on PATH; detected: $compilerVersion"
+}
+
 & (Join-Path $repo 'mvnw.cmd') -B -ntp -f 'projects/06-matchcore/pom.xml' verify
 if ($LASTEXITCODE -ne 0) {
   throw "MatchCore verification failed (exit code $LASTEXITCODE)"

@@ -81,3 +81,33 @@ The secret is not passed on the Maven command line. A repository administrator m
 configure the key before the independent OWASP gate can pass. Trivy and CodeQL still run
 under their independent policies. This is a **wiring change**, not evidence of a passed
 security scan or a completed release.
+
+## Milestone: portfolio demonstration and source-quality follow-up
+
+The security-source SARIF artifact from the earlier hosted run identifies seven explicit CSRF
+disable calls and four non-cryptographic-randomness flows into **synthetic** MatchCore command
+identities. Subsequent commits removed these CSRF disable calls, added cookie/Basic browser
+credential regressions, and generated test/benchmark account and order fixture IDs from
+reproducible command positions rather than random API output. No scanner exclusions, exception
+allowlists, or relaxed security thresholds were introduced. These changes still require a
+fresh **current-source CodeQL run** before any finding can be marked resolved.
+
+MatchCore's bounded book now preflights the **actual number of resting slots after fully
+consumed makers** before rejecting a GTC remainder. The indexed engine and independent
+flat-list reference were updated together; direct and capacity-sweep regression cases compare
+all executions, balances, orders, and outcomes. A separate deterministic Python state-model
+check exercised 25,000 generated book/crossing scenarios without a mismatch; this check is
+algorithmic corroboration only, **not** a JVM build or a replacement for JUnit execution.
+
+The [hiring guide](hiring-guide.md) presents runnable flagship projects and a native
+Windows PowerShell MatchCore demo. The Windows path still needs independent Windows/JDK 25
+execution to be called supported. GitHub Actions has been delayed during the public
+[21 October Actions incident](https://www.githubstatus.com/). A pushed SHA or queued
+run is not a successful test or security result.
+
+**Remaining hard blockers are unchanged:** current-source hosted CI/integration/mutation/
+security/release evidence; an administrator-provided `NVD_API_KEY` secret for OWASP;
+IndexForge P07-A4's 0.75 nDCG / 0.90 identifier MRR blind relevance target; ThreadLens
+P08-A5's full observer-overhead study; and HIGH/CRITICAL findings in pinned upstream
+Kafka/PostgreSQL images. Historical FAIL/IN_PROGRESS entries retain their status.
+This milestone is **not** a production readiness certificate.
