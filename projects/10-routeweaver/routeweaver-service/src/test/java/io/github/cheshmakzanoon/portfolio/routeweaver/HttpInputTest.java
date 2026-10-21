@@ -226,7 +226,8 @@ class HttpInputTest {
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(400, response.statusCode(), response.body());
-        assertFalse(response.body().contains("private-tenant-cargo-identifiers"),
+        assertFalse(
+            response.body().contains("private-tenant-cargo-identifiers"),
             "validation must not echo client-supplied sensitive paths");
       }
       for (var requestBody :

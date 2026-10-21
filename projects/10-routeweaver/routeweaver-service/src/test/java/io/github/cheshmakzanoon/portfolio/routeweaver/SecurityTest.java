@@ -59,7 +59,8 @@ class SecurityTest {
     assertEquals("Invalid request", payload.get("message"));
     assertTrue(invalid.getBody().length() < 128);
     assertEquals(
-        invalid.getBody(), handler.invalid(new ArithmeticException("server path /private")).getBody());
+        invalid.getBody(),
+        handler.invalid(new ArithmeticException("server path /private")).getBody());
   }
 
   @Test

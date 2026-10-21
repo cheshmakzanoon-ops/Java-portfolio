@@ -110,7 +110,9 @@ public final class ReferenceBook {
       }
       if (fill.compareTo(BigInteger.valueOf(c.quantityLots())) < 0) return "FOK_UNFILLED";
     }
-    if (old == null && open.size() >= cap && c.timeInForce() == Tif.GTC
+    if (old == null
+        && open.size() >= cap
+        && c.timeInForce() == Tif.GTC
         && wouldRest(c, candidates)) return "OPEN_ORDER_CAP";
     if (old != null && old.priceTicks() == c.priceTicks() && c.quantityLots() <= old.remaining()) {
       open.set(
