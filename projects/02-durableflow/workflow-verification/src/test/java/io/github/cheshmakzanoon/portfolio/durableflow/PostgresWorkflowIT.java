@@ -12,22 +12,16 @@ import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 import org.junit.jupiter.api.*;
-import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PostgresWorkflowIT {
-  PostgreSQLContainer pg;
+  PostgresTestDatabase pg;
   WorkflowStore store;
   String tenant;
 
   @BeforeAll
   void start() {
-    pg =
-        new PostgreSQLContainer(
-            DockerImageName.parse(
-                    "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
-                .asCompatibleSubstituteFor("postgres"));
+    pg = new PostgresTestDatabase();
     pg.start();
     store = new WorkflowStore(pg.getJdbcUrl(), pg.getUsername(), pg.getPassword());
     store.migrate();

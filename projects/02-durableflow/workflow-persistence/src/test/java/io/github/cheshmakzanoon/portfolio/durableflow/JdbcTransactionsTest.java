@@ -10,6 +10,55 @@ import org.junit.jupiter.api.Test;
 
 class JdbcTransactionsTest {
   @Test
+  void inspectionUsesReadOnlyRepeatableSnapshotAndDoesNotInvokeMutationHook() {
+    List<String> calls = new ArrayList<>();
+    JdbcTransactions transactions =
+        transactions(
+            calls, false, false, null, () -> fail("mutation hook in a viewer transaction"));
+    assertEquals("view", transactions.inspect(connection -> "view"));
+    assertEquals(
+        List.of("readOnly:true", "autoCommit:false", "isolation:4", "commit", "close"), calls);
+  }
+
+  @Test
+  void failedInspectionRollsBackAndPreservesItsPrimaryError() {
+    List<String> calls = new ArrayList<>();
+    var failure = new IllegalArgumentException("bad snapshot");
+    assertSame(
+        failure,
+        assertThrows(
+            IllegalArgumentException.class,
+            () ->
+                transactions(calls, true, true, null)
+                    .inspect(
+                        connection -> {
+                          throw failure;
+                        })));
+    assertEquals(
+        List.of("rollback", "close"),
+        Arrays.stream(failure.getSuppressed()).map(Throwable::getMessage).toList());
+    assertEquals(
+        List.of("readOnly:true", "autoCommit:false", "isolation:4", "rollback", "close"), calls);
+  }
+
+  @Test
+  void inspectionDoesNotHideFailedCommitButRetainsAcknowledgedResultsOnCloseFailure() {
+    SQLException failedCommit = new SQLException("read transaction lost", "08006");
+    var failed = new ArrayList<String>();
+    assertSame(
+        failedCommit,
+        assertThrows(
+                PersistenceFailure.class,
+                () -> transactions(failed, false, false, failedCommit).inspect(connection -> 7))
+            .getCause());
+    var succeeded = new ArrayList<String>();
+    int value = transactions(succeeded, false, true, null).inspect(connection -> 7);
+    assertEquals(7, value);
+    assertEquals(
+        List.of("readOnly:true", "autoCommit:false", "isolation:4", "commit", "close"), succeeded);
+  }
+
+  @Test
   void domainFailureRemainsPrimaryWhenRollbackAndCloseBothFail() {
     RuntimeException primary = new IllegalArgumentException("rejected transition");
     List<String> calls = new ArrayList<>();
@@ -110,6 +159,7 @@ class JdbcTransactionsTest {
                 new Class<?>[] {Connection.class},
                 (proxy, method, arguments) -> {
                   switch (method.getName()) {
+                    case "setReadOnly" -> calls.add("readOnly:" + arguments[0]);
                     case "setAutoCommit" -> calls.add("autoCommit:" + arguments[0]);
                     case "setTransactionIsolation" -> calls.add("isolation:" + arguments[0]);
                     case "commit" -> {

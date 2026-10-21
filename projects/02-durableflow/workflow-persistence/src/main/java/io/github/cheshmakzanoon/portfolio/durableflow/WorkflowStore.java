@@ -20,6 +20,7 @@ public final class WorkflowStore implements AutoCloseable {
   private final WorkflowReplay replay = new WorkflowReplay(json);
   private final WorkflowHistory history = new WorkflowHistory(json);
   private final JdbcTransactions transactions;
+  private final WorkflowInspection inspection;
 
   public record Claim(
       UUID instance,
@@ -63,6 +64,7 @@ public final class WorkflowStore implements AutoCloseable {
     configuration.setPoolName("durableflow-db");
     pool = new com.zaxxer.hikari.HikariDataSource(configuration);
     transactions = new JdbcTransactions(pool, beforeCommit);
+    inspection = new WorkflowInspection(transactions, history, replay);
   }
 
   public void migrate() {
@@ -272,11 +274,12 @@ public final class WorkflowStore implements AutoCloseable {
   }
 
   public List<Event> history(String tenant, UUID id) {
-    return tx(
-        c -> {
-          lock(c, tenant, id);
-          return history(c, id);
-        });
+    return inspection.history(tenant, id);
+  }
+
+  public HistoryPage historyPage(
+      String tenant, UUID id, long after, Long snapshotVersion, int limit) {
+    return inspection.page(tenant, id, after, snapshotVersion, limit);
   }
 
   private Result schedule(Connection c, UUID id) throws Exception {
@@ -381,19 +384,7 @@ public final class WorkflowStore implements AutoCloseable {
   }
 
   public View get(String tenant, UUID id) {
-    return tx(
-        c -> {
-          View v = lock(c, tenant, id);
-          Result result = schedule(c, id);
-          return new View(
-              id,
-              tenant,
-              v.definitionHash(),
-              v.semantics(),
-              result.state(),
-              v.version(),
-              result.values());
-        });
+    return inspection.get(tenant, id);
   }
 
   public List<Claim> claim(String tenant, String worker, int batch, int leaseSeconds) {

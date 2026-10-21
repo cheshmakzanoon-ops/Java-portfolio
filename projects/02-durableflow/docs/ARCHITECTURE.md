@@ -112,3 +112,41 @@ stateDiagram-v2
 ```
 
 The diagram shows the principal paths. Immediate cancellation/failure without obligations can terminate directly; a resolved final result can complete the graph. Scheduling deferral is runtime admission metadata, not another domain state or a rewrite of recorded business history.
+
+## Read-only inspection and bounded history pages
+
+`WorkflowInspection` owns viewer operations. `JdbcTransactions.inspect` starts a
+PostgreSQL **read-only, repeatable-read transaction** before selecting the
+tenant-scoped instance header. Definition, version, committed state, and history
+therefore belong to one database snapshot even when a worker commits between
+queries. Ordinary mutation transactions retain their existing read-committed
+isolation and instance-lock discipline.
+
+The execution view runs only the pure replay adapter to derive values. It returns
+the committed runtime state, which includes outstanding-lease cancellation
+barriers absent from the pure interpreter's inputs. It does not call `schedule`,
+create tasks, update runtime state, or execute the mutation commit hook. A viewer
+does not repair administrator-corrupted scheduling rows. Writers and schedulers
+remain the only paths that apply workflow decisions.
+
+The existing full-history operation retains its array response. Both history
+operations read with indexed `(instance_id, sequence)` bounds and no `FOR UPDATE`
+lock. The page operation selects at most 200 events; its first request captures
+the current instance version. Later requests use that version as an immutable
+upper bound and use the final returned sequence as their exclusive lower bound.
+No server-side cursor or long-lived transaction survives between HTTP requests.
+
+An explicitly requested historical version is valid only within the retained
+positive prefix of the authenticated execution. The cursor carries no authority;
+every page rechecks tenant ownership. A missing execution and an execution owned
+by another tenant both fail lookup. Events must be contiguous and match the
+expected count within the selected range. Missing persisted rows are an integrity
+failure, rather than a successful empty final page. The page record copies its
+event list and validates that its cursor and `hasMore` agree with its contents.
+
+These changes require no schema or interpreter-semantic migration. Existing
+semantics 1/2 replay adapters and semantics 3 history formats are unchanged. The
+read-only transaction prevents accidental SQL writes even if a future inspection
+implementation incorrectly tries to issue one; integration tests exercise that
+database enforcement and hold a real writer lock while all viewer operations
+finish.

@@ -4,6 +4,8 @@ package io.github.cheshmakzanoon.portfolio.durableflow;
 public final class WorkflowLimits {
   public static final int EXECUTION_INPUT_BYTES = 4096;
   public static final int RESULT_BYTES = 4096;
+  public static final int HISTORY_EVENTS = 10000;
+  public static final int HISTORY_PAGE_EVENTS = 200;
   public static final int TASK_INPUT_BYTES = 256 * 1024;
   // The raw provider body prefixes task JSON with one compiled ASCII activity and ':'.
   public static final int PROVIDER_REQUEST_BYTES =

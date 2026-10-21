@@ -16,7 +16,7 @@ Requirements: JDK 25, the repository Maven wrapper, Docker with Compose, Bash, P
 ./scripts/portfolio.sh down durableflow
 ```
 
-Ordinary verification runs model, replay, provider, build-artifact, and contract tests. The integration profile additionally starts PostgreSQL containers and exercises durable transactions, real process termination, JWT validation, and HTTP boundaries. The demo exits nonzero when an asserted recovery result fails and writes `projects/02-durableflow/target/demo-result.json`.
+Ordinary verification runs model, replay, provider, build-artifact, and contract tests. The integration profile additionally starts PostgreSQL containers and exercises durable transactions, real process termination, JWT validation, and HTTP boundaries. An explicitly configured disposable native PostgreSQL 18 instance can run the same integration methods in isolated schemas; see [operations](docs/OPERATIONS.md#export-a-stable-history-without-blocking-workflow-writers). Missing Docker never silently selects another backend. The demo exits nonzero when an asserted recovery result fails and writes `projects/02-durableflow/target/demo-result.json`.
 
 The disposable runtime starts an API, two schedulers, three workers, PostgreSQL, and the provider simulator. Loopback ports are 18200 (API), 18201 (provider), and 18202 (PostgreSQL). `down` retains state; `./scripts/portfolio.sh reset-demo durableflow` deletes this project's disposable database volume and provider log. Never reset data that is still needed to reconcile an unknown effect.
 
@@ -58,5 +58,12 @@ Start inputs contain actual typed JSON scalars. For example:
 ```
 
 `INTEGER` requires a JSON integer and `BOOLEAN` requires a JSON boolean. Strings are not coerced. Activities consume recorded predecessor values; responses distinguish `VALUE`, `SKIPPED`, and `TIMED_OUT` outcomes.
+
+Viewer reads use PostgreSQL read-only repeatable snapshots. Reading an execution does
+not schedule activities, repair durable state, or wait on an instance write lock.
+For larger histories, use `/v1/executions/{id}/history/page?limit=100`; follow
+`nextAfter` with the returned `snapshotVersion` until `hasMore` is false. The
+snapshot excludes later appends and every request checks the authenticated tenant.
+The existing `/history` array response remains available for compatible clients.
 
 Read [architecture](docs/ARCHITECTURE.md) for state and transaction boundaries, [invariants](docs/INVARIANTS.md) for guarantees, [operations](docs/OPERATIONS.md) for recovery procedures, and [security](docs/SECURITY.md) for the trust model. [Verification status](docs/STATUS.md) separates current checks from historical evidence. [Performance](docs/PERFORMANCE.md) describes the workload and its incomplete reference baseline; smoke measurements are not capacity claims.

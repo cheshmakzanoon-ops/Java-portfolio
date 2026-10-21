@@ -2,7 +2,34 @@
 
 DurableFlow has executable replay, persistence, security, process-crash, and standalone recovery checks. The prescribed three-run performance baseline is incomplete, so no stable capacity budget or production-readiness claim is made.
 
-## Current verification
+## Current CSRF and recovery verification, 2026-10-21
+
+The complete current-source reactor passed **123 ordinary tests and 33 native
+PostgreSQL integration tests**, with zero failures, errors or skips. The final
+run completed at **20:28:21 UTC**. Fresh-report completeness checks passed; all
+owned integration schemas were removed and the disposable PostgreSQL 18.6
+server stopped successfully. The [current verification receipt](../evidence/csrf-recovery-20261021/validation.json)
+records the source identity, test/report hashes, and preserved earlier failures.
+
+Seven new configured-chain tests exercise the protected RSA/OIDC and development
+Basic security configurations. The assembled CSRF filter now retains the
+ambient-cookie boundary despite the resource-server's default bearer ignore
+matcher. Raw Cookie headers remain protected when servlet parsing omits cookies;
+valid CSRF tokens and explicit bearer requests continue to work. Direct bounded
+403 responses avoid authentication during error redispatch.
+
+The first full integration run exposed a test visibility race: a latch in the
+scheduler's `beforeCommit` hook released before the timer transaction was
+committed, so read-only inspection correctly still returned `WAITING`. The
+corrected test deliberately holds that boundary, verifies committed `WAITING`
+with no timer event, then requires committed `COMPLETED`, exactly one timer
+event, and a healthy scheduler. The final run also retains the exact pinned
+container literal required by the image-inventory parser. No scheduler behavior,
+acceptance threshold or failure assertion was weakened. Mutation analysis was
+not rerun for this adapter and integration-test follow-up; earlier results below
+remain tied to their recorded source.
+
+## Historical verification, 2026-10-20
 
 The full PostgreSQL **18.6** integration build passed on **2026-10-20 at 09:18:01 UTC**: **96 ordinary Java test methods and 22 PostgreSQL integration methods**, with zero failures, errors, or skips. Ordinary verification also executes **ten real-JVM/fake-Compose lifecycle cases** and nine preparation/refusal cases. The lifecycle cases require no Docker. The final ordinary preparation build passed at 09:34:56 UTC and produced a source/artifact-bound runtime receipt.
 
@@ -54,10 +81,53 @@ The [gzip capture repair](../evidence/gzip-capture-repair.json) records post-mea
 
 Earlier failures remain recorded in the evidence. Review scopes are described in [the review record](REVIEW.md); successful tests do not close unrelated operational or performance requirements.
 
-## 2026-10-21 production hardening validation
+## Historical production hardening, 2026-10-21
 
 The transaction boundary now preserves acknowledged committed results when connection cleanup fails, while lost commit acknowledgements and domain/rollback failures remain visible. Public JSON requests reject duplicate fields, fractional integer truncation, null primitive fields, numeric enum ordinals, trailing values, and number/boolean coercion into strings. A direct default-mapper reproduction accepted batch 4.9 as 4 and duplicate batch 4/batch 1 as 1; the new configured-mapper regression rejects both.
 
-A current-source combined integration/mutation build passed **98 ordinary Java methods and 22 PostgreSQL integration methods**, with zero failures, errors or skips. Strict mutation results were 41/41 Data mutants, 158/162 current-interpreter mutants and 54/55 selected persistence-policy mutants, against the unchanged 70% per-module threshold. The five survivors remain un-killed; there were no timeouts or runner/memory errors. Nine preparation and ten lifecycle helper tests also passed with JDK 25 activated.
+An earlier combined integration/mutation build passed **98 ordinary Java methods and 22 PostgreSQL integration methods**, with zero failures, errors or skips. Strict mutation results were 41/41 Data mutants, 158/162 current-interpreter mutants and 54/55 selected persistence-policy mutants, against the unchanged 70% per-module threshold. The five survivors remain un-killed; there were no timeouts or runner/memory errors. Nine preparation and ten lifecycle helper tests also passed with JDK 25 activated.
 
 [Raw reports and source manifest](../evidence/production-hardening-20261021/validation.json) identify the tested source. This does not replace the incomplete three-round 10,000-execution performance baseline, certify a stable capacity budget, or establish hosted CI/security results.
+
+## Historical inspection verification, 2026-10-21
+
+The execution viewer previously invoked the scheduling path and acquired an
+instance write lock. Viewer reads now use database-enforced read-only,
+repeatable-read snapshots. They derive values through the pinned interpreter and
+return the state/version committed with that history, preserving outstanding
+lease barriers without issuing scheduling mutations. The compatible additional
+history page endpoint returns at most 200 contiguous events with a stable version
+boundary, repeats tenant authorization, and rejects missing rows and invalid
+cursors. The original history array response remains available.
+
+JDBC statement preparation also closes a prepared statement when timeout setup or
+parameter binding fails; it preserves the original cause and suppressed cleanup
+failures. A test-only PostgreSQL adapter retains the pinned container as default
+and permits an explicitly configured loopback PostgreSQL 18 server in disposable
+per-class schemas. Partial or invalid configuration never skips tests.
+
+The earlier Java 25 verification passed **116 ordinary tests and all 33 PostgreSQL
+integration tests**, with zero failures, errors, or skips. The integration run
+included all 14 existing workflow/HTTP/crash scenarios, all eight existing runtime
+recovery scenarios, and 11 new inspection scenarios. Those scenarios held a real
+writer lock while viewer reads completed, verified PostgreSQL's read-only and
+snapshot isolation, exercised concurrent append/pagination and tenant checks,
+detected missing persisted rows, paged a 10,000-event history, and checked actual
+HTTP response shapes, bounds, and roles.
+
+The unchanged mutation profile passed **41/41** model, **158/162** current
+interpreter, and **60/61** selected persistence-policy mutants. All five surviving
+mutants remain in the denominator; there were no timeouts or runner errors.
+This target set still does not mutation-certify all JDBC SQL or the new inspection
+class; real database tests exercise those paths.
+
+The database was native PostgreSQL **18.6**, launched as an unprivileged process
+on loopback from a Maven Central binary archive checked against its published
+SHA-256. Each integration class created and removed its own schema. After the
+complete run, zero owned schemas remained and the server stopped successfully.
+[Validation and source identity](../evidence/inspection-hardening-20261021/validation.json)
+record exact commands, report hashes, runtime provenance, mutation denominators,
+and a manifest of all 74 source/build inputs. Docker/Alpine image execution and
+image vulnerability status were not exercised. The full capacity study, hosted
+CI/security, and repository release requirements remain separate outstanding
+checks.

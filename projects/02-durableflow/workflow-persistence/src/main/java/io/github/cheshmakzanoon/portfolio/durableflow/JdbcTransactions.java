@@ -20,14 +20,27 @@ final class JdbcTransactions {
   }
 
   <T> T execute(Work<T> work) {
+    return execute(work, false);
+  }
+
+  /** A consistent, database-enforced read-only snapshot without instance row locks. */
+  <T> T inspect(Work<T> work) {
+    return execute(work, true);
+  }
+
+  private <T> T execute(Work<T> work, boolean readOnly) {
     boolean committed = false;
     T result = null;
     try (Connection connection = source.getConnection()) {
+      if (readOnly) connection.setReadOnly(true);
       connection.setAutoCommit(false);
-      connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+      connection.setTransactionIsolation(
+          readOnly
+              ? Connection.TRANSACTION_REPEATABLE_READ
+              : Connection.TRANSACTION_READ_COMMITTED);
       try {
         result = work.run(connection);
-        beforeCommit.run();
+        if (!readOnly) beforeCommit.run();
         connection.commit();
         committed = true;
         return result;

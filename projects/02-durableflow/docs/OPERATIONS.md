@@ -94,3 +94,51 @@ A forced kill bypasses this path. Idempotent calls retain their stable provider 
 An acknowledged database commit remains successful if returning its connection to the pool later fails. The transaction boundary emits a cleanup warning and preserves the committed result; it does not report a retryable activity failure. A commit that loses its acknowledgement still fails as an unknown storage outcome and follows the existing lease/idempotency recovery contract. Domain, commit, and rollback failures retain their original cause and suppressed cleanup failures.
 
 The public JSON adapter rejects duplicate keys, trailing JSON values, floating-point truncation into integer fields, null primitive fields, numeric enum ordinals, and number/boolean coercion into strings. Valid named enums and typed request fields retain their existing wire shape.
+
+## Export a stable history without blocking workflow writers
+
+Use the viewer-authenticated page endpoint for dashboards and diagnostic exports:
+
+```text
+GET /v1/executions/{id}/history/page?limit=100
+GET /v1/executions/{id}/history/page?limit=100&after={nextAfter}&snapshotVersion={snapshotVersion}
+```
+
+Keep the first response's `snapshotVersion` for the entire export and use each
+response's `nextAfter` in the next request. Stop when `hasMore` is false. Each page
+contains at most 200 ordered events and checks the authenticated tenant again.
+The first page defaults to 100 events; `after` defaults to zero. New events can
+continue to commit while the export runs, but they cannot enter its frozen
+prefix. Start a new export without `snapshotVersion` to include newer events.
+
+If `after` equals the snapshot version, the endpoint returns an empty page with
+`hasMore: false`. Negative offsets, out-of-range page sizes, future snapshots,
+and cursors beyond the snapshot are rejected. Existing clients may continue to
+use `/history`, which returns the original array shape up to the unchanged
+10,000-event limit. This full-history compatibility route has a larger memory and
+response cost than a page. An execution view also replays the complete bounded
+history to derive values.
+
+Viewer inspection does not advance timers, reschedule work, or repair missing
+tasks. Use the scheduler and normal command paths for progress; repeatedly
+refreshing the execution endpoint is not a recovery action. A history integrity
+failure requires investigation of retained database rows and backups. Do not
+reset the sequence/version to make a corrupt export appear complete.
+
+All three integration classes normally use the pinned PostgreSQL container. To
+run the complete integration suite against a disposable native PostgreSQL 18
+database, set all three variables `DURABLEFLOW_TEST_JDBC_URL`,
+`DURABLEFLOW_TEST_DB_USER`, and `DURABLEFLOW_TEST_DB_PASSWORD`, then run the same
+`./mvnw -f projects/02-durableflow/pom.xml -B -ntp -Pintegration verify` command.
+The JDBC URL must include an explicit loopback host, port, and database name; URL
+parameters and caller-selected schemas are rejected. Each test class creates its
+own randomly named schema, applies migrations there, and drops only that owned
+schema on completion. The configured role requires schema-creation permission.
+Never configure a valuable database for destructive integration tests.
+
+Absent settings select the original pinned container. Partial settings, unsupported
+servers, invalid endpoints, and failed connections fail setup rather than skipping
+tests or substituting another backend. Native execution covers the same SQL,
+process-crash, authenticated HTTP, and concurrency test methods. It does not test
+container startup, the Alpine image's libraries, or image vulnerability status;
+record the actual PostgreSQL version and artifact identity with the results.

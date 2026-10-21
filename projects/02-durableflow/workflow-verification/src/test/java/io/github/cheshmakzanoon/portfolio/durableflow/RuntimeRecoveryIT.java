@@ -14,22 +14,16 @@ import java.util.concurrent.atomic.*;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.*;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RuntimeRecoveryIT {
-  PostgreSQLContainer pg;
+  PostgresTestDatabase pg;
   WorkflowStore store;
   final String tenant = "recovery";
 
   @BeforeAll
   void database() {
-    pg =
-        new PostgreSQLContainer(
-            DockerImageName.parse(
-                    "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
-                .asCompatibleSubstituteFor("postgres"));
+    pg = new PostgresTestDatabase();
     pg.start();
     store = open();
     store.migrate();
@@ -342,6 +336,7 @@ class RuntimeRecoveryIT {
   @Test
   void schedulerStorageOutageRecoversAndTerminalStorageErrorsPropagate() throws Exception {
     CountDownLatch refused = new CountDownLatch(1), recovered = new CountDownLatch(2);
+    CountDownLatch allowCommit = new CountDownLatch(1);
     AtomicBoolean outage = new AtomicBoolean(true);
     AtomicReference<Thread> owner = new AtomicReference<>();
     AtomicReference<Throwable> failure = new AtomicReference<>();
@@ -358,6 +353,19 @@ class RuntimeRecoveryIT {
                 throw new PersistenceFailure(new SQLException("injected storage outage", "08006"));
               }
               recovered.countDown();
+              // Discovery commits first; the second successful hook is still before the
+              // timer transition's commit. Hold that boundary so a transaction attempt
+              // cannot be mistaken for an acknowledged durable outcome.
+              if (recovered.getCount() == 0) {
+                try {
+                  if (!allowCommit.await(10, TimeUnit.SECONDS))
+                    throw new IllegalStateException("scheduler commit fixture deadline");
+                } catch (InterruptedException interrupted) {
+                  Thread.currentThread().interrupt();
+                  throw new IllegalStateException(
+                      "scheduler commit fixture interrupted", interrupted);
+                }
+              }
             })) {
       Thread runner =
           new Thread(
@@ -377,7 +385,24 @@ class RuntimeRecoveryIT {
         assertEquals(State.WAITING, store.get(tenant, id).state());
         outage.set(false);
         assertTrue(recovered.await(10, TimeUnit.SECONDS));
-        assertEquals(State.COMPLETED, store.get(tenant, id).state());
+        assertEquals(State.WAITING, store.get(tenant, id).state());
+        assertEquals(
+            0,
+            store.history(tenant, id).stream()
+                .filter(event -> event.type() == Interpreter.EventType.TIMER_FIRED)
+                .count(),
+            "a read-only inspection cannot expose or complete the held transaction");
+        allowCommit.countDown();
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+        WorkflowStore.View observed;
+        do {
+          assertNull(failure.get(), "scheduler failed before committing recovery");
+          assertTrue(runner.isAlive(), "scheduler stopped before committing recovery");
+          observed = store.get(tenant, id);
+          if (observed.state() == State.COMPLETED) break;
+          Thread.sleep(10);
+        } while (System.nanoTime() < deadline);
+        assertEquals(State.COMPLETED, observed.state(), "scheduler recovery commit deadline");
         runner.interrupt();
         runner.join(5000);
         assertFalse(runner.isAlive());
@@ -388,6 +413,7 @@ class RuntimeRecoveryIT {
                 .filter(event -> event.type() == Interpreter.EventType.TIMER_FIRED)
                 .count());
       } finally {
+        allowCommit.countDown();
         runner.interrupt();
         runner.join(5000);
       }

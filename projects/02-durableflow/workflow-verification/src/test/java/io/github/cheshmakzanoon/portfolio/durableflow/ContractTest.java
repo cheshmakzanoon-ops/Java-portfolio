@@ -42,6 +42,8 @@ class ContractTest {
     dto.put("Definition", Definition.class);
     dto.put("ExecutionInput", Data.ExecutionInput.class);
     dto.put("Output", Data.Output.class);
+    dto.put("HistoryPage", HistoryPage.class);
+    dto.put("HistoryEvent", Interpreter.Event.class);
     for (var entry : dto.entrySet()) {
       Map<String, Object> schema = (Map<String, Object>) schemas.get(entry.getKey());
       assertNotNull(schema, entry.getKey());

@@ -37,7 +37,8 @@ final class WorkflowHistory {
       if (!r.next()) throw new NoSuchElementException("execution missing");
       expectedVersion = r.getLong(1);
     }
-    if (expectedVersion >= 10000) throw new IllegalArgumentException("history cap");
+    if (expectedVersion >= WorkflowLimits.HISTORY_EVENTS)
+      throw new IllegalArgumentException("history cap");
     long seq;
     try (PreparedStatement s =
             statement(
@@ -62,12 +63,32 @@ final class WorkflowHistory {
   }
 
   List<Event> read(Connection c, UUID id) throws Exception {
+    return readRange(c, id, 0, WorkflowLimits.HISTORY_EVENTS, WorkflowLimits.HISTORY_EVENTS);
+  }
+
+  List<Event> read(Connection c, UUID id, long version) throws Exception {
+    List<Event> events = readRange(c, id, 0, version, WorkflowLimits.HISTORY_EVENTS);
+    if (events.size() != version)
+      throw new IllegalStateException("persisted history is incomplete");
+    return events;
+  }
+
+  List<Event> readPage(Connection c, UUID id, long after, long through, int limit)
+      throws Exception {
+    return readRange(c, id, after, through, limit);
+  }
+
+  private List<Event> readRange(Connection c, UUID id, long after, long through, int limit)
+      throws Exception {
     List<Event> events = new ArrayList<>();
     try (PreparedStatement s =
             statement(
                 c,
-                "SELECT sequence,type,task,value,at,result FROM workflow_history WHERE instance_id=? ORDER BY sequence",
-                id);
+                "SELECT sequence,type,task,value,at,result FROM workflow_history WHERE instance_id=? AND sequence>? AND sequence<=? ORDER BY sequence LIMIT ?",
+                id,
+                after,
+                through,
+                limit);
         ResultSet r = s.executeQuery()) {
       while (r.next())
         events.add(
@@ -79,6 +100,10 @@ final class WorkflowHistory {
                 r.getTimestamp(5).toInstant(),
                 json.readValue(r.getString(6), new TypeReference<List<Value>>() {})));
     }
-    return events;
+    long expected = after;
+    for (Event event : events)
+      if (event.sequence() != ++expected)
+        throw new IllegalStateException("persisted history is not contiguous");
+    return List.copyOf(events);
   }
 }

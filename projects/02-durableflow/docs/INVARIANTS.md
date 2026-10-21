@@ -17,8 +17,12 @@
 | A definition upgrade does not mutate a running pin | immutable version content and pinned hash/semantics | pinned-upgrade integration test and demo |
 | Tenant and role boundaries include protected token validation | Spring Security/OIDC and tenant SQL scope | protectedApiVerifiesRealOidcTokensAndTenantPermissions |
 | Every legitimate maximum-fan-in worker claim fits its bounded acknowledgement envelope; tampering cannot authorize dispatch | Shared task/body byte budgets and comparison with the authoritative leased row | `WorkerEnvelopeFixture.verify`, exercised by the protected HTTP integration test |
+| Viewer reads cannot schedule work or block on an instance writer lock | Database-enforced read-only repeatable snapshots; pure replay of values | `WorkflowInspectionIT.viewerReadsDoNotWaitBehindAnUncommittedWriter`; `inspectionIsEnforcedReadOnlyByPostgresAndUsesOneRepeatableSnapshot` |
+| History pagination includes each event of a frozen prefix exactly once despite later appends | Immutable version upper bound and exclusive sequence keyset; tenant lookup on every request | `WorkflowInspectionIT.firstPageFreezesHistoryWhileNewSignalsContinueToCommit`; `HistoryPageTest.everyAllowedPageSizeTraversesACompleteSnapshotExactlyOnce` |
+| Missing history rows cannot become an apparently successful final page | Contiguous sequence and expected-count checks | `WorkflowInspectionIT.missingPersistedRowsAreNotReportedAsTheEndOfAValidSnapshot` |
+| Prepared statement ownership survives timeout/bind failures | Close before propagating the original error, with cleanup failures suppressed | `WorkflowSqlTest` |
 
-Commands: `./mvnw -f projects/02-durableflow/pom.xml -B -ntp verify` and the same command with `-Pintegration`. Database tests require a working container engine and fail when it is unavailable.
+Commands: `./mvnw -f projects/02-durableflow/pom.xml -B -ntp verify` and the same command with `-Pintegration`. Database tests use the pinned container by default and fail when it is unavailable. The explicit loopback PostgreSQL 18 adapter described in [operations](OPERATIONS.md) executes the same tests in isolated disposable schemas; it does not substitute for image/container certification.
 
 ## Transaction failure and runtime isolation
 

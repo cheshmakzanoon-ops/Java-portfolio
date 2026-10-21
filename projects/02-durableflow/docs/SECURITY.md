@@ -13,3 +13,12 @@ The local provider accepts at most the task-input byte budget plus the longest c
 Definitions cap 128 nodes and 16-way fanout; starts cap 32 input fields/4 KiB; results cap 4 KiB; history caps 10,000 events. Active executions and queued tasks have tenant quotas. SQL uses parameters and statement timeouts. Results/signals reject credential-shaped secret fields/text, including markers in multiline text, and oversized content, and diagnostics omit token values and stack traces. Marker screening is a guardrail, not a general secret detector. Do not place secrets in workflow business inputs. Operator reasons are business evidence and must not contain credentials. [WorkflowLimits](../workflow-model/src/main/java/io/github/cheshmakzanoon/portfolio/durableflow/WorkflowLimits.java) defines the shared byte budgets; body limits apply before JSON parsing.
 
 Known boundary: authorization protects API callers. PostgreSQL and local process owners are trusted and can inspect/edit the demonstration database or provider log. No claim of tamper-evident audit storage, hostile multitenant worker isolation, automatic security certification or internet-safe Basic authentication is made.
+
+Viewer inspection uses database-enforced read-only repeatable snapshots and does
+not issue instance row locks or schedule work. The paginated history route limits
+each response to 200 events. A sequence cursor and snapshot version identify only
+a retained history prefix: they do not bypass tenant/scope authorization or grant
+access to another execution. Every page repeats the tenant-qualified lookup, and
+future/out-of-range snapshots fail before querying event bodies. Full-history
+compatibility responses remain capped at 10,000 events. History gaps are reported
+as integrity errors instead of silently truncating an export.

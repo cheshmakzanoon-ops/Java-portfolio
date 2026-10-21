@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: DurableFlow
-  version: 1.2.0
+  version: 1.3.0
   description: Finite typed workflow control plane; semantics 3 uses validated typed
     root/context values and predecessor dataflow. Existing semantics 1 and 2 remain pinned; semantics 3 cancellation records an INTEGER forward-lease count.
     Public requests are limited to 8192 UTF-8 bytes. Dispatch, heartbeat, complete,
@@ -57,7 +57,8 @@ paths:
     parameters:
     - $ref: '#/components/parameters/ExecutionId'
     get:
-      description: Viewer scope in authenticated tenant.
+      description: Viewer scope in authenticated tenant. Read-only repeatable snapshot;
+        inspection neither schedules work nor acquires an instance write lock.
       responses:
         '200':
           description: Pinned definition hash, semantic version, current state/version, and derived values
@@ -71,6 +72,47 @@ paths:
       responses:
         '200':
           description: Ordered append-only typed history
+  /v1/executions/{id}/history/page:
+    parameters:
+    - $ref: '#/components/parameters/ExecutionId'
+    get:
+      description: Viewer scope. Read an immutable history prefix without locking writers.
+        Omit snapshotVersion on the first page and reuse the returned snapshotVersion
+        and nextAfter on every subsequent page. Events appended later are excluded.
+        An explicitly requested snapshot may be any retained positive version not
+        greater than the current version. Every request rechecks the authenticated tenant.
+      parameters:
+      - name: after
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 10000
+          default: 0
+      - name: snapshotVersion
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10000
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 100
+      responses:
+        '200':
+          description: Contiguous bounded events and a stable append-only snapshot cursor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryPage'
+        '400':
+          $ref: '#/components/responses/Invalid'
+        '404':
+          description: Execution missing in authenticated tenant
   /v1/executions/{id}/signals:
     parameters:
     - $ref: '#/components/parameters/ExecutionId'
@@ -237,6 +279,80 @@ components:
           schema:
             $ref: '#/components/schemas/Claim'
   schemas:
+    HistoryPage:
+      type: object
+      additionalProperties: false
+      required:
+      - instance
+      - snapshotVersion
+      - after
+      - nextAfter
+      - hasMore
+      - events
+      properties:
+        instance:
+          type: string
+          format: uuid
+        snapshotVersion:
+          type: integer
+          minimum: 1
+          maximum: 10000
+        after:
+          type: integer
+          minimum: 0
+          maximum: 10000
+        nextAfter:
+          type: integer
+          minimum: 0
+          maximum: 10000
+        hasMore:
+          type: boolean
+        events:
+          type: array
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/HistoryEvent'
+    HistoryEvent:
+      type: object
+      additionalProperties: false
+      required:
+      - sequence
+      - type
+      - task
+      - value
+      - at
+      - result
+      properties:
+        sequence:
+          type: integer
+          minimum: 1
+          maximum: 10000
+        type:
+          type: string
+          enum:
+          - STARTED
+          - COMPLETED
+          - TIMER_FIRED
+          - SIGNAL
+          - FAILED
+          - CANCELLED
+          - DISPATCHED
+          - UNKNOWN_OUTCOME
+          - OPERATOR_RESOLVED
+          - OPERATOR_RETRY
+          - LATE_EVENT
+        task:
+          type: string
+        value:
+          type: string
+        at:
+          type: string
+          format: date-time
+        result:
+          type: array
+          maxItems: 128
+          items:
+            $ref: '#/components/schemas/Value'
     Claim:
       type: object
       additionalProperties: false
