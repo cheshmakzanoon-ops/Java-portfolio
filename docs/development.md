@@ -15,7 +15,7 @@ source scripts/cloud-env.sh
 
 `cloud-env.sh` sets `JAVA_HOME`, wrapper storage, Maven heap limits, secure proxy settings, and the system Java trust store. Preserve its `MAVEN_OPTS` when adding JVM options. Never disable TLS or checksum verification to resolve a dependency failure. Outside the managed workspace, install JDK 25 using your normal trusted distribution and use the wrapper directly.
 
-GitHub Actions uses `.github/actions/setup-toolchain` and the same checksum-pinned bootstrap, with `PORTFOLIO_TOOLS_DIR` under the runner's temporary directory. The exact vendor version `25.0.4.1+1` is not valid SemVer for `actions/setup-java`; do not truncate it or substitute an unpinned major version. The local action exports the verified runtime through `GITHUB_ENV`/`GITHUB_PATH` and verifies the Maven wrapper. Set `PORTFOLIO_TOOLS_DIR` explicitly when testing the bootstrap outside `/workspace`; this does not change `cloud-env.sh`'s managed-workspace path.
+GitHub Actions uses `.github/actions/setup-toolchain` and the same checksum-pinned bootstrap, with `PORTFOLIO_TOOLS_DIR` under the runner's temporary directory. The exact vendor version `25.0.4.1+1` is not valid SemVer for `actions/setup-java`; do not truncate it or substitute an unpinned major version. The local action exports the verified runtime through `GITHUB_ENV`/`GITHUB_PATH` and verifies the Maven wrapper. Set `PORTFOLIO_TOOLS_DIR` explicitly when testing outside `/workspace`; both bootstrap and `cloud-env.sh` use its `jdk-25` subdirectory. An unset or empty override retains `/workspace/.tools`. Keep the same override when bootstrapping and sourcing the activation script.
 
 ## Project verification
 

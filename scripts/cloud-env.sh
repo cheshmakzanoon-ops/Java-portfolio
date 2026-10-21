@@ -1,6 +1,6 @@
 # Source this file in the managed cloud environment. Local builds only need JDK 25.
 portfolio_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-export JAVA_HOME=/workspace/.tools/jdk-25
+export JAVA_HOME="${PORTFOLIO_TOOLS_DIR:-/workspace/.tools}/jdk-25"
 export PATH="$JAVA_HOME/bin:$PATH"
 export MAVEN_USER_HOME="$portfolio_root/.work/wrapper"
 export MAVEN_OPTS='-Xmx512m -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts'
