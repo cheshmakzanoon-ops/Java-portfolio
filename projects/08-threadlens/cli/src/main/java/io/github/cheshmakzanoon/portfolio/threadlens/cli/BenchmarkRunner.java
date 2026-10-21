@@ -171,7 +171,6 @@ public final class BenchmarkRunner {
                     == 0)
               throw new IllegalStateException(
                   "instrumented trial lacks actual transformed-method timing evidence");
-
           }
           JSON.writerWithDefaultPrettyPrinter()
               .writeValue(directory.resolve("run-order.json").toFile(), order);

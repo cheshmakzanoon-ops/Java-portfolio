@@ -101,9 +101,7 @@ class ObserverTrialStatusTest {
   @Test
   void incompleteAndUnhealthyFlagsCannotBeForgivenByThroughput() throws Exception {
     for (String name :
-        new String[] {
-          "statusComplete", "collectionHealthy", "incomplete", "producerQuiesced"
-        }) {
+        new String[] {"statusComplete", "collectionHealthy", "incomplete", "producerQuiesced"}) {
       Map<String, String> values = complete();
       values.put(name, name.equals("incomplete") ? "true" : "false");
       assertThrows(IOException.class, () -> ObserverTrialStatus.requireComplete(write(values)));
@@ -130,7 +128,8 @@ class ObserverTrialStatusTest {
 
   @Test
   void incorrectConfigurationCannotMasqueradeAsDeclaredProbe() throws Exception {
-    for (String name : new String[] {"statusVersion", "activeMethodIdLimit", "activeQueueCapacity"}) {
+    for (String name :
+        new String[] {"statusVersion", "activeMethodIdLimit", "activeQueueCapacity"}) {
       Map<String, String> values = complete();
       values.put(name, "4");
       assertThrows(

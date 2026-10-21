@@ -15,16 +15,58 @@ bounded and does not capture application objects or retain a process-wide thread
 A local Java 21 compilation and four executable concurrency scenarios passed:
 24 shutdown/ring-conservation rounds, paused publisher vs seal, 2,100
 short-lived participating threads exercising overflow registration, and failure
-cleanup. These are development smoke tests only; Java 25 Maven/JUnit, unchanged
-mutation gates, virtual-thread workloads, real packaged observer startup, and the
-**full 84-JVM overhead study** still require independent execution. P08-A5 remains
-FAIL until the documented gate is met.
+cleanup. These earlier checks were development smoke tests only. The 21 October
+Java 25 verification below now supplies ordinary tests, packaged observer startup
+and strict mutation evidence for the current probe. The **full 84-JVM overhead study**
+and long live stress remeasurement remain unexecuted. P08-A5 remains FAIL until
+the documented gate is met.
 
-## Current development validation
+## Current development validation: structured comparisons
 
-The current implementation separates live event processing, startup instrumentation ownership, child-JVM termination and report validation into explicit components. Regressions cover sealed admission, bounded drain, callback-triggered shutdown, failed startup rollback, duplicate agent declarations, directory-budget escapes, incomplete observations, immutable aggregation and adversarial report input. [Architecture](ARCHITECTURE.md) links all 36 production classes; [review findings](REVIEW.md) describes the concrete failure schedules and corrections.
+The Java 25 build completed on **2026-10-21 at 20:00:36 UTC** with **215 test methods:
+208 ordinary methods and seven packaged-JVM integration methods; zero failures,
+errors or skips**. The [source-bound receipt](../evidence/job-readiness-diagnostics-20261021.json)
+records source/build hashes, per-module test counts and strict mutation outcomes.
 
-The final build/integration run passed on **2026-10-20 at 09:44:12 UTC: 164 test methods, comprising 157 Surefire methods and seven packaged-JVM integration methods; zero failures, errors or skips**. The latter include real startup failure, duplicate-agent and host-survival checks. [Current verification](../evidence/mobile-report-verification.json) binds source/build hashes, commands, test suites, strict mutation outcomes and log identities.
+Differential reports now compare retained execution proportions, weighted allocation
+bytes, monitor durations, park durations and selected method timings in separate
+ranked tables. Optional JSON export preserves every timing quantile and both coverage
+summaries. Presence flags distinguish an absent aggregate from an observed zero;
+missing quantiles stay null, and no recording-span rate is invented. CLI publication
+protects input files and stages both requested outputs before individual atomic moves.
+
+New regressions exercise long-integer extremes, 20,000-subject comparison unions,
+independent sample denominators, immutable snapshots, null/zero baselines, missing
+timings, coverage losses, successful producer counters, differing collection limits,
+hostile identifiers, input/output aliases, hard links, invalid manifests and malformed
+reports. Report ingestion now rejects trailing documents and scalar coercions;
+aggregate validation rejects overlapping windows, duplicated window samples and
+positive measurements without an event. The standard 70% strict module thresholds
+are unchanged. The report and CLI mutation targets were expanded to cover the new
+comparison calculation and output ownership code.
+
+| Module | Killed / generated | Strict killed percentage |
+| --- | ---: | ---: |
+| probe | 97 / 103 | 94.17% |
+| analysis | 173 / 179 | 96.65% |
+| jfr | 125 / 152 | 82.24% |
+| agent | 115 / 135 | 85.19% |
+| report | 168 / 202 | 83.17% |
+| cli | 40 / 40 | 100.00% |
+| Total | 718 / 811 | 88.53% |
+
+All **74 survivors, 15 uncovered mutants and four timeouts** remain in the denominator.
+These results do not establish complete fault detection. Current HTML escaping,
+fragment navigation targets and local scrolling containers pass automated structural
+assertions. A fresh Chromium installation was attempted but its download returned
+truncated archives, so current browser layout/keyboard checks are not claimed.
+The full observer-overhead and long stress protocols were not rerun; P08-A5 remains FAIL.
+
+## Prior development validation (20 October)
+
+The 20 October implementation separated live event processing, startup instrumentation ownership, child-JVM termination and report validation into explicit components. Regressions covered sealed admission, bounded drain, callback-triggered shutdown, failed startup rollback, duplicate agent declarations, directory-budget escapes, incomplete observations, immutable aggregation and adversarial report input. [Architecture](ARCHITECTURE.md) links production components; [review findings](REVIEW.md) describes the concrete failure schedules and corrections.
+
+That build/integration run passed on **2026-10-20 at 09:44:12 UTC: 164 test methods, comprising 157 Surefire methods and seven packaged-JVM integration methods; zero failures, errors or skips**. The latter include real startup failure, duplicate-agent and host-survival checks. [20 October verification](../evidence/mobile-report-verification.json) binds source/build hashes, commands, test suites, strict mutation outcomes and log identities.
 
 ```bash
 source scripts/cloud-env.sh

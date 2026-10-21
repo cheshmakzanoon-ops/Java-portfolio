@@ -49,8 +49,7 @@ final class ObserverTrialStatus {
         throw new IOException("invalid observer status field");
       String name = line.substring(0, equals);
       String value = line.substring(equals + 1);
-      if (!name.matches("[a-zA-Z][a-zA-Z0-9]*")
-          || fields.putIfAbsent(name, value) != null)
+      if (!name.matches("[a-zA-Z][a-zA-Z0-9]*") || fields.putIfAbsent(name, value) != null)
         throw new IOException("duplicate or malformed observer status field");
     }
     if (!fields.keySet().containsAll(REQUIRED))

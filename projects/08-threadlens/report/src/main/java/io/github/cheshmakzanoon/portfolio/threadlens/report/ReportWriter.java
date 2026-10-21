@@ -1,16 +1,15 @@
 package io.github.cheshmakzanoon.portfolio.threadlens.report;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import io.github.cheshmakzanoon.portfolio.threadlens.analysis.ProfileComparator;
 import io.github.cheshmakzanoon.portfolio.threadlens.analysis.StackAggregator;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.List;
 
 /** Offline output; no scripts, remote resources, telemetry or unsanitized HTML. */
 public final class ReportWriter {
@@ -27,6 +26,23 @@ public final class ReportWriter {
                   .enable(com.fasterxml.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
                   .build())
           .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+          .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
+          .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+          .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+          .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+          .withCoercionConfig(
+              com.fasterxml.jackson.databind.type.LogicalType.Textual,
+              config -> {
+                config.setCoercion(
+                    com.fasterxml.jackson.databind.cfg.CoercionInputShape.Integer,
+                    com.fasterxml.jackson.databind.cfg.CoercionAction.Fail);
+                config.setCoercion(
+                    com.fasterxml.jackson.databind.cfg.CoercionInputShape.Float,
+                    com.fasterxml.jackson.databind.cfg.CoercionAction.Fail);
+                config.setCoercion(
+                    com.fasterxml.jackson.databind.cfg.CoercionInputShape.Boolean,
+                    com.fasterxml.jackson.databind.cfg.CoercionAction.Fail);
+              })
           .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
           .build();
 
@@ -262,18 +278,10 @@ public final class ReportWriter {
 
   public static void comparison(Path path, ReportDocument baseline, ReportDocument candidate)
       throws IOException {
-    ReportValidator.validate(baseline);
-    ReportValidator.validate(candidate);
-    if (baseline.eventSettings().containsKey("producerSettings")
-        || candidate.eventSettings().containsKey("producerSettings"))
-      throw new IllegalArgumentException(
-          "producer settings unknown; supply matching recording manifests before comparison");
-    if (!baseline.eventSettings().equals(candidate.eventSettings()))
-      throw new IllegalArgumentException(
-          "recording settings differ; comparison would be misleading");
+    ComparisonDocument comparison = ComparisonDocument.create(baseline, candidate);
     StringBuilder out = new StringBuilder(start("ThreadLens differential report"));
     out.append(
-        "<nav><a href=\"#samples\">Sample changes</a><a href=\"#allocation\">Allocations</a><a href=\"#contention\">Contention</a><a href=\"#limits\">Coverage and settings</a></nav>");
+        "<nav><a href=\"#samples\">Sample changes</a><a href=\"#allocation\">Allocations</a><a href=\"#contention\">Contention</a><a href=\"#parking\">Parking</a><a href=\"#timings\">Selected timings</a><a href=\"#limits\">Coverage and settings</a></nav>");
     out.append(
         "<p class=\"table-hint\">Scroll wide tables horizontally to inspect every column.</p>");
     out.append("<p>Baseline: ")
@@ -281,8 +289,12 @@ public final class ReportWriter {
         .append("; candidate: ")
         .append(escape(candidate.recordingId()))
         .append(
-            ".</p><p>Units: percentage points of self execution samples. Each run uses its own total observed samples as denominator; null means missing evidence. Different durations and workload rates confound absolute counts. Allocation weights and contention are observed coverage, not universal attribution.</p><h2 id=\"samples\">Self-sample changes</h2><table><caption>Self-sample proportion deltas</caption><tr><th>Method</th><th>Baseline samples</th><th>Candidate samples</th><th>Percentage-point delta</th></tr>");
-    for (var d : ProfileComparator.compare(baseline.profile(), candidate.profile()))
+            ".</p><p>Tables are ordered by absolute retained change, with subject names breaking ties. Each run uses its own total observed samples as denominator. Different durations and workload rates confound absolute counts.</p><ul>");
+    for (String note : comparison.interpretation())
+      out.append("<li>").append(escape(note)).append("</li>");
+    out.append(
+        "</ul><h2 id=\"samples\">Self-sample changes</h2><table><caption>Self-sample proportion deltas in percentage points</caption><tr><th>Method</th><th>Baseline samples</th><th>Candidate samples</th><th>Baseline proportion</th><th>Candidate proportion</th><th>Percentage-point delta</th></tr>");
+    for (var d : comparison.samples())
       out.append("<tr><td>")
           .append(escape(d.method()))
           .append("</td><td>")
@@ -290,32 +302,137 @@ public final class ReportWriter {
           .append("</td><td>")
           .append(d.candidateSamples())
           .append("</td><td>")
-          .append(d.percentagePointDelta() == null ? "missing" : d.percentagePointDelta())
+          .append(number(d.baselineProportion()))
+          .append("</td><td>")
+          .append(number(d.candidateProportion()))
+          .append("</td><td>")
+          .append(number(d.percentagePointDelta()))
           .append("</td></tr>");
-    out.append("</table><h2 id=\"allocation\">Allocation baseline → candidate</h2><pre>")
-        .append(escape(JSON.writeValueAsString(baseline.profile().allocations())))
-        .append("\n→\n")
-        .append(escape(JSON.writeValueAsString(candidate.profile().allocations())))
-        .append("</pre><h2 id=\"contention\">Monitor contention baseline → candidate</h2><pre>")
-        .append(escape(JSON.writeValueAsString(baseline.profile().monitors())))
-        .append("\n→\n")
-        .append(escape(JSON.writeValueAsString(candidate.profile().monitors())))
-        .append("</pre><h2 id=\"limits\">Settings, windows and loss</h2><pre>")
+    out.append(
+        "</table><h2 id=\"allocation\">Weighted allocation changes</h2><table><caption>Retained sampled allocation bytes; these are not exact object counts</caption><tr><th>Class</th><th>Observation presence</th><th>Baseline events</th><th>Candidate events</th><th>Baseline weighted bytes</th><th>Candidate weighted bytes</th><th>Byte change</th><th>Change %</th></tr>");
+    for (var delta : comparison.allocations()) {
+      out.append("<tr><td>")
+          .append(escape(delta.subject()))
+          .append("</td><td>")
+          .append(presence(delta.presence()))
+          .append("</td><td>")
+          .append(delta.baselineEvents())
+          .append("</td><td>")
+          .append(delta.candidateEvents())
+          .append("</td><td>")
+          .append(delta.baselineWeightedBytes())
+          .append("</td><td>")
+          .append(delta.candidateWeightedBytes())
+          .append("</td><td>")
+          .append(delta.weightedBytesChange())
+          .append("</td><td>")
+          .append(number(delta.weightedBytesPercentChange()))
+          .append("</td></tr>");
+    }
+    out.append("</table><h2 id=\"contention\">Monitor contention changes</h2>");
+    timingChanges(out, "Observed Java monitor-enter", comparison.monitors());
+    out.append("<h2 id=\"parking\">Parking changes</h2>");
+    timingChanges(out, "Observed thread parks", comparison.parks());
+    out.append(
+        "<h2 id=\"timings\">Selected method timing changes</h2><p>These observations use the separate agent collection interval. A different selected-method set or collection limit can change apparent coverage.</p>");
+    timingChanges(out, "Selected method timings", comparison.selectedTimings());
+    out.append("<h2 id=\"limits\">Coverage and declared settings</h2>");
+    coverageTable(out, comparison.baselineCoverage(), comparison.candidateCoverage());
+    out.append("<pre>")
         .append(
             escape(
-                JSON.writeValueAsString(
-                    java.util.Map.of(
-                        "settings",
-                        baseline.eventSettings(),
-                        "baselineWindow",
-                        List.of(baseline.startNanos(), baseline.endNanos()),
-                        "candidateWindow",
-                        List.of(candidate.startNanos(), candidate.endNanos()),
-                        "baselineLoss",
-                        baseline.lossCounters(),
-                        "candidateLoss",
-                        candidate.lossCounters()))))
+                JSON.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(
+                        java.util.Map.of(
+                            "settings",
+                            comparison.eventSettings(),
+                            "baselineCoverage",
+                            comparison.baselineCoverage(),
+                            "candidateCoverage",
+                            comparison.candidateCoverage()))))
         .append("</pre></main></body></html>");
     writeHtml(path, out);
+  }
+
+  /** Machine-readable counterpart of the differential HTML, with identical interpretation rules. */
+  public static void comparisonJson(Path path, ReportDocument baseline, ReportDocument candidate)
+      throws IOException {
+    ComparisonDocument comparison = ComparisonDocument.create(baseline, candidate);
+    Files.writeString(
+        path,
+        JSON.writerWithDefaultPrettyPrinter().writeValueAsString(comparison),
+        StandardCharsets.UTF_8);
+  }
+
+  private static String number(Number value) {
+    return value == null ? "unavailable" : value.toString();
+  }
+
+  private static String presence(ComparisonDocument.Presence presence) {
+    return switch (presence) {
+      case BOTH -> "both recordings";
+      case BASELINE_ONLY -> "baseline only; no retained candidate observations";
+      case CANDIDATE_ONLY -> "candidate only; no retained baseline observations";
+    };
+  }
+
+  private static void timingChanges(
+      StringBuilder out, String title, java.util.List<ComparisonDocument.TimingDelta> changes) {
+    out.append("<table><caption>")
+        .append(escape(title))
+        .append(
+            "; observed nanoseconds, histogram quantiles have two significant digits</caption><tr><th>Subject</th><th>Observation presence</th><th>Baseline events</th><th>Candidate events</th><th>Baseline total ns</th><th>Candidate total ns</th><th>Total change ns</th><th>Total change %</th><th>Baseline p99 ns</th><th>Candidate p99 ns</th><th>p99 change %</th></tr>");
+    for (var delta : changes) {
+      out.append("<tr><td>")
+          .append(escape(delta.subject()))
+          .append("</td><td>")
+          .append(presence(delta.presence()))
+          .append("</td><td>")
+          .append(delta.baselineEvents())
+          .append("</td><td>")
+          .append(delta.candidateEvents())
+          .append("</td><td>")
+          .append(delta.baselineTotalNanos())
+          .append("</td><td>")
+          .append(delta.candidateTotalNanos())
+          .append("</td><td>")
+          .append(delta.totalNanosChange())
+          .append("</td><td>")
+          .append(number(delta.totalNanosPercentChange()))
+          .append("</td><td>")
+          .append(number(delta.baselineP99Nanos()))
+          .append("</td><td>")
+          .append(number(delta.candidateP99Nanos()))
+          .append("</td><td>")
+          .append(number(delta.p99PercentChange()))
+          .append("</td></tr>");
+    }
+    out.append("</table>");
+  }
+
+  private static void coverageTable(
+      StringBuilder out, ComparisonDocument.Coverage before, ComparisonDocument.Coverage after) {
+    out.append(
+        "<table><caption>Observation coverage; event bounds are not recording duration</caption><tr><th>Measurement</th><th>Baseline</th><th>Candidate</th></tr>");
+    coverageRow(out, "Observed execution samples", before.samples(), after.samples());
+    coverageRow(
+        out,
+        "Samples without retained self attribution",
+        before.samplesWithoutRetainedSelfAttribution(),
+        after.samplesWithoutRetainedSelfAttribution());
+    coverageRow(out, "Retained event windows", before.retainedWindows(), after.retainedWindows());
+    coverageRow(
+        out, "Incomplete event windows", before.incompleteWindows(), after.incompleteWindows());
+    out.append("</table>");
+  }
+
+  private static void coverageRow(StringBuilder out, String label, long before, long after) {
+    out.append("<tr><td>")
+        .append(escape(label))
+        .append("</td><td>")
+        .append(before)
+        .append("</td><td>")
+        .append(after)
+        .append("</td></tr>");
   }
 }

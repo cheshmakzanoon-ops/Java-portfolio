@@ -14,4 +14,17 @@ Untrusted timing artifacts and reports undergo incremental/file/structure/cardin
 
 Producer settings manifests accept only bounded JFR setting declarations. They are not authenticated proof of how a recording was produced. Analyzer platform metadata and selected-timing intervals are labelled separately from recording identity/time. Unknown settings prevent comparison.
 
+Report JSON and producer manifests each contain exactly one document. Producer-setting
+values must be JSON strings; booleans and numbers are not silently converted into
+declarations. Report integer and boolean fields reject null, fractional numbers and
+scalar coercion. Cross-window sample totals and disjoint time intervals are checked so
+duplicated buckets cannot be rendered as independent measurements.
+
+Comparison output rejects file aliases of either input, including existing hard links.
+The CLI rejects symbolic-link files at the final input/output component and stages
+complete renders before individually atomic publication. These checks do not prevent
+an equally privileged concurrent writer from replacing filesystem objects after
+validation; dedicated directories remain required. HTML and optional JSON publication
+are two individual moves, not a multi-file transaction.
+
 Aggregate limits do not bound every JDK JFR-decoder/native allocation or eliminate parser CPU costs. The supplied CLI launcher sets a heap bound; analyze untrusted recordings/reports in an OS-limited process as well. Fatal VM/resource failures, invalid installation, hostile custom loaders and arbitrary JVM/native corruption are outside the recoverable host guarantee. Supported behavior and actual evidence are recorded in [operations](OPERATIONS.md) and [STATUS](STATUS.md).

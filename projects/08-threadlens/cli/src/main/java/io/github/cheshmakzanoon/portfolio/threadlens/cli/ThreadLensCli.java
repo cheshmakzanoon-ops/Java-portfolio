@@ -71,12 +71,14 @@ public final class ThreadLensCli {
         System.out.println(output.resolve("report.html").toAbsolutePath());
       }
       case "compare" -> {
-        if (args.length != 4)
-          throw new IllegalArgumentException("compare baseline.json candidate.json output.html");
-        ReportWriter.comparison(
+        if (args.length != 4 && !(args.length == 6 && args[4].equals("--json")))
+          throw new IllegalArgumentException(
+              "compare baseline.json candidate.json output.html [--json output.json]");
+        ComparisonCommand.run(
+            Path.of(args[1]),
+            Path.of(args[2]),
             Path.of(args[3]),
-            ReportWriter.read(Path.of(args[1])),
-            ReportWriter.read(Path.of(args[2])));
+            args.length == 6 ? Path.of(args[5]) : null);
         System.out.println(Path.of(args[3]).toAbsolutePath());
       }
       case "benchmark" -> {

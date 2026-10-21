@@ -36,6 +36,7 @@
               <skip>false</skip>
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.threadlens.report.ReportValidator</param>
+                <param>io.github.cheshmakzanoon.portfolio.threadlens.report.ComparisonDocument*</param>
               </targetClasses>
               <mutationThreshold>70</mutationThreshold>
               <threads>1</threads>

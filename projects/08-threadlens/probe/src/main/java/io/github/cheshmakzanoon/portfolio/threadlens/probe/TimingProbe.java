@@ -7,9 +7,9 @@ import java.util.concurrent.locks.LockSupport;
 
 /**
  * No argument/object capture, locks, I/O, or per-call allocation. Fatal VM failures are outside
- * scope. Long-lived threads use per-thread volatile quiescence marks instead of a contended
- * global read-modify-write on every exit. A bounded registry falls back to the original atomic
- * path when many short-lived threads participate.
+ * scope. Long-lived threads use per-thread volatile quiescence marks instead of a contended global
+ * read-modify-write on every exit. A bounded registry falls back to the original atomic path when
+ * many short-lived threads participate.
  */
 public final class TimingProbe {
   private static volatile boolean enabled;

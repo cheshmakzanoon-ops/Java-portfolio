@@ -91,4 +91,36 @@ Windows are half-open and assign an entire duration to its start bucket. Allocat
 
 JSON reports are limited to 32 MiB with duplicate-field detection, bounded nesting/string/number parsing and semantic validation. Root/sample/window coordinates, flame accounting, method denominators, cardinalities, nonnegative totals and quantile order must agree before rendering/comparison. Immutable sorted profiles preserve timeline order and prevent a later accumulator update or caller mutation from altering a snapshot.
 
+### Structured differential reports
+
+[ComparisonDocument](../report/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/report/ComparisonDocument.java)
+validates both input profiles and matching, nonempty producer declarations before
+building a bounded union of their observed subjects. It keeps self-sample proportions,
+sampled allocation bytes, monitor durations, park durations and selected method timings
+in separate collections. Rows sort by absolute retained change, then by subject name.
+There is no rate derived from the first and last observed event: those event bounds
+are not the recording duration, and agent timings have a different collection interval.
+
+An absent subject carries an explicit baseline-only or candidate-only presence value.
+Totals describe retained observations and can therefore have an absent side of zero;
+latency quantiles on an absent side stay null. Relative changes require a positive
+baseline. The output includes both coverage summaries and interpretation constraints,
+including incomplete windows, unattributed samples, loss counters and differing active
+collection limits. Positive producer-completion and invocation counters are displayed
+without being mistaken for lost events. These comparisons suggest places to inspect;
+they do not perform statistical testing or establish causation.
+
+[ComparisonCommand](../cli/src/main/java/io/github/cheshmakzanoon/portfolio/threadlens/cli/ComparisonCommand.java)
+owns input/output validation and optional JSON publication. It detects normalized and
+hard-link aliases so neither output can replace a report input or the other output.
+Both requested artifacts are fully rendered to same-directory temporary files before
+publication starts. Each file replacement is atomic; the two files are not a filesystem
+transaction, and failure during the second move may leave only the first newly published.
+Staging resources use suppressed-exception cleanup to preserve a primary failure.
+
+Report ingestion rejects trailing documents, null primitive coordinates, fractional
+integer fields, and scalar type coercion. Event windows must be nonoverlapping, intersect
+the observed event span and collectively account for no more than the profile's samples.
+Nonzero allocation weights or timing measurements require a corresponding event.
+
 HTML contains no scripts or external resources. Native details, fragment navigation, labelled scroll regions, keyboard focus and local table scrolling support offline inspection. Comparisons require matching declared settings; an adjacent manifest is an operator-provided declaration, not authenticated proof of the producer configuration. Analyzer platform metadata is labelled separately.

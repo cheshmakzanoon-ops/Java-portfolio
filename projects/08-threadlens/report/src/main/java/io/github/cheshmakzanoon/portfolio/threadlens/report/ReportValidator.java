@@ -52,6 +52,8 @@ final class ReportValidator {
       }
       require(self <= profile.sampleCount(), "self sample denominator");
       require(profile.windows().size() <= 900, "window cardinality");
+      long windowSamples = 0;
+      long previousEnd = -1;
       for (var entry : profile.windows().entrySet()) {
         var window = entry.getValue();
         nonnegative(
@@ -66,11 +68,21 @@ final class ReportValidator {
             entry.getKey() == window.startNanos() && window.startNanos() < window.endNanos(),
             "window coordinates");
         require(window.samples() <= profile.sampleCount(), "window sample denominator");
+        windowSamples = Math.addExact(windowSamples, window.samples());
+        require(windowSamples <= profile.sampleCount(), "windows duplicate observed samples");
+        require(window.startNanos() >= previousEnd, "overlapping event windows");
+        require(
+            window.startNanos() <= profile.endNanos() && window.endNanos() > profile.startNanos(),
+            "window outside observed event span");
+        previousEnd = window.endNanos();
       }
       require(profile.allocations().size() <= 10_000, "allocation cardinality");
       for (var entry : profile.allocations().entrySet()) {
         text(entry.getKey(), 256);
         nonnegative(entry.getValue().events(), entry.getValue().observedWeightedBytes());
+        require(
+            entry.getValue().events() != 0 || entry.getValue().observedWeightedBytes() == 0,
+            "allocation weight without an observed event");
       }
       timings(profile.monitors(), 64);
       timings(profile.parks(), 64);
@@ -110,6 +122,10 @@ final class ReportValidator {
       require(
           timing.p50Nanos() <= timing.p95Nanos() && timing.p95Nanos() <= timing.p99Nanos(),
           "histogram quantile order");
+      require(
+          timing.events() != 0 || timing.totalNanos() == 0 && timing.p99Nanos() == 0,
+          "timing measurement without an observed event");
+      require(timing.totalNanos() != 0 || timing.p99Nanos() == 0, "quantile without duration");
     }
   }
 

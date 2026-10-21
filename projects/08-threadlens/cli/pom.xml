@@ -46,6 +46,7 @@
               <skip>false</skip>
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.threadlens.cli.ChildJvm</param>
+                <param>io.github.cheshmakzanoon.portfolio.threadlens.cli.ComparisonCommand*</param>
               </targetClasses>
               <mutationThreshold>70</mutationThreshold>
               <threads>1</threads>

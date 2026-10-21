@@ -1,6 +1,6 @@
 package io.github.cheshmakzanoon.portfolio.threadlens.cli;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cheshmakzanoon.portfolio.threadlens.jfr.EventCapabilities;
 import java.io.IOException;
@@ -23,10 +23,18 @@ public final class SettingsManifest {
         com.fasterxml.jackson.core.JsonFactory.builder()
             .enable(com.fasterxml.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
             .build();
-    Map<String, String> settings =
-        new ObjectMapper(factory).readValue(bytes, new TypeReference<Map<String, String>>() {});
-    if (settings == null || settings.isEmpty())
+    var document =
+        new ObjectMapper(factory)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+            .readTree(bytes);
+    if (document == null || !document.isObject() || document.isEmpty() || document.size() > 128)
       throw new IOException("settings manifest must declare producer settings");
+    Map<String, String> settings = new java.util.TreeMap<>();
+    for (var entry : document.properties()) {
+      if (!entry.getValue().isTextual())
+        throw new IOException("declared JFR setting values must be strings");
+      settings.put(entry.getKey(), entry.getValue().textValue());
+    }
     for (var entry : settings.entrySet()) {
       String[] key = entry.getKey().split("#", -1);
       String value = entry.getValue();

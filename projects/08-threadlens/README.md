@@ -16,7 +16,7 @@ source scripts/cloud-env.sh
 
 The integration profile runs independent JVMs with the packaged instrumentation JAR and bytecode verification enabled. Selected algorithm mutation testing uses `-Pmutation`; the full overhead and 20-minute stress studies run separately from the development test suite.
 
-The current source passed 157 ordinary test methods and seven packaged-JVM integration methods. Strict mutation checks cover 19 critical production files across six modules. Standard and differential reports were exercised in Chromium at desktop and mobile sizes, including keyboard navigation and escaped hostile content. [Verification status](docs/STATUS.md) records exact outcomes, source identities and remaining limits.
+The 21 October development verification passed 208 ordinary test methods and seven packaged-JVM integration methods. Strict mutation checks passed across six modules, including the new comparison model and staged-output command. The earlier report implementation was exercised in Chromium; current differential rendering has structural, escaping and navigation regressions, with fresh browser layout verification still pending. [Verification status](docs/STATUS.md) records exact outcomes, source identities and remaining limits.
 
 ## Run the demonstration
 
@@ -35,7 +35,7 @@ CLI commands:
 | `capabilities` | Describe the current JVM's supported event schemas |
 | `analyze recording.jfr output-directory` | Normalize a recording and produce HTML/JSON reports |
 | `analyze recording.jfr output-directory --timings agent-directory` | Include separately collected selected-method timings |
-| `compare baseline.json candidate.json output.html` | Compare profiles with matching declared producer settings |
+| `compare baseline.json candidate.json output.html [--json output.json]` | Compare matching declared settings across sample proportions, weighted allocations, monitor waits, parks and selected timings |
 | `benchmark output-directory agent.jar [--smoke]` | Run the declared overhead protocol; smoke results are ineligible for acceptance |
 
 ## Configure startup instrumentation

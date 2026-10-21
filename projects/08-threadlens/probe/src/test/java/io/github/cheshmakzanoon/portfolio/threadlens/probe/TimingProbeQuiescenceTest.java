@@ -39,7 +39,8 @@ class TimingProbeQuiescenceTest {
                     }));
       }
       begin.countDown();
-      assertTrue(firstPublished.await(5, TimeUnit.SECONDS), "all workers must publish before disable");
+      assertTrue(
+          firstPublished.await(5, TimeUnit.SECONDS), "all workers must publish before disable");
       assertTrue(TimingProbe.disableAndAwait(2_000_000_000L));
       for (Thread thread : workers) {
         thread.join(2000);
