@@ -29,6 +29,9 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # The workflow token cannot write .github/workflows files. Preserve
+          # them in this push; an authorized connected GitHub write follows.
+          git restore --source=HEAD --staged --worktree -- .github/workflows/
           git add -A
           git diff --cached --check -- . ':(exclude)projects/**/evidence/**'
           if git diff --cached --quiet; then
