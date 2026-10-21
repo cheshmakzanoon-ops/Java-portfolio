@@ -161,8 +161,7 @@ class BookTest {
     full.apply(1, init("seller", 0, 10));
     full.apply(2, init("buyer", 1000, 0));
     assertEquals(
-        "RESTING",
-        full.apply(3, order("ask", "seller", Side.SELL, 100, 2, Tif.GTC, false)).code());
+        "RESTING", full.apply(3, order("ask", "seller", Side.SELL, 100, 2, Tif.GTC, false)).code());
     var resting = full.view().orders();
     var balances = full.view().accounts();
 
@@ -175,8 +174,7 @@ class BookTest {
     assertTrue(full.view().executions().isEmpty());
 
     // This aggressor executes two lots and reuses the removed maker's slot for its remainder.
-    Result partial =
-        full.apply(5, order("partial", "buyer", Side.BUY, 100, 3, Tif.GTC, false));
+    Result partial = full.apply(5, order("partial", "buyer", Side.BUY, 100, 3, Tif.GTC, false));
     assertEquals("RESTING", partial.code());
     assertEquals(2, partial.executions().getFirst().lots());
     assertEquals(1, full.view().orders().size());
@@ -186,8 +184,7 @@ class BookTest {
     assertEquals(800, full.view().accounts().get("buyer").cash());
 
     // The maker's fully executable incoming order likewise trades without allocating a slot.
-    Result completed =
-        full.apply(6, order("exact", "seller", Side.SELL, 100, 1, Tif.GTC, false));
+    Result completed = full.apply(6, order("exact", "seller", Side.SELL, 100, 1, Tif.GTC, false));
     assertEquals("FILLED", completed.code());
     assertEquals(1, completed.executions().getFirst().lots());
     assertTrue(full.view().orders().isEmpty());

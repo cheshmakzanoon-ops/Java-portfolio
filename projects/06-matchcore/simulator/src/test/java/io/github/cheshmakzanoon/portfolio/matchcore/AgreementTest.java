@@ -38,8 +38,13 @@ class AgreementTest {
     }
     assertEquals(
         List.of(
-            "INITIALIZED", "INITIALIZED", "RESTING", "OPEN_ORDER_CAP",
-            "RESTING", "RESTING", "SELF_TRADE_CANCELED"),
+            "INITIALIZED",
+            "INITIALIZED",
+            "RESTING",
+            "OPEN_ORDER_CAP",
+            "RESTING",
+            "RESTING",
+            "SELF_TRADE_CANCELED"),
         outcomes);
   }
 
@@ -77,8 +82,7 @@ class AgreementTest {
           ReferenceBook reference = new ReferenceBook(cap);
           List<Command> steps = new ArrayList<>();
           steps.add(Demo.init("buyer", 100_000, 0));
-          for (int level = 0; level < cap; level++)
-            steps.add(Demo.init("seller" + level, 0, 10));
+          for (int level = 0; level < cap; level++) steps.add(Demo.init("seller" + level, 0, 10));
           for (int level = 0; level < cap; level++)
             steps.add(
                 Demo.order(

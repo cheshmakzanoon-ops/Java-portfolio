@@ -190,8 +190,8 @@ public final class Book {
 
   /**
    * Simulate the indexed crossing order without changing state. A completed maker releases its
-   * existing slot before an incoming GTC remainder needs one; an incoming self-trade cancels
-   * the remainder without a new slot. Reject before performing any actual execution.
+   * existing slot before an incoming GTC remainder needs one; an incoming self-trade cancels the
+   * remainder without a new slot. Reject before performing any actual execution.
    */
   private boolean wouldExceedCapacity(Command c) {
     long left = c.quantityLots();
