@@ -1,0 +1,6 @@
+Exception in thread "main" java.io.IOException: wave2 changed identity: protocol
+	at io.github.cheshmakzanoon.portfolio.stacks.Wave2Study.check(Wave2Study.java:546)
+	at io.github.cheshmakzanoon.portfolio.stacks.Wave2Study.verifiedAudit(Wave2Study.java:106)
+	at io.github.cheshmakzanoon.portfolio.stacks.Wave2Study.fit(Wave2Study.java:113)
+	at io.github.cheshmakzanoon.portfolio.stacks.Wave2Study.run(Wave2Study.java:25)
+	at io.github.cheshmakzanoon.portfolio.stacks.StacksCli.main(StacksCli.java:17)
