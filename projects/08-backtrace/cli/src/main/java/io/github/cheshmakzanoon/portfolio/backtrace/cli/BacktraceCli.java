@@ -15,7 +15,7 @@ public final class BacktraceCli {
   public static void main(String[] args) throws Exception {
     if (args.length == 0)
       throw new IllegalArgumentException(
-          "capabilities | analyze input.jfr output-directory | compare baseline.json candidate.json output.html | benchmark output-directory agent.jar [--smoke]");
+          "capabilities | analyze input.jfr output-directory | compare baseline.json candidate.json output.html | export (see docs) | benchmark output-directory agent.jar [--smoke]");
     switch (args[0]) {
       case "capabilities" ->
           System.out.println(
@@ -80,6 +80,18 @@ public final class BacktraceCli {
             Path.of(args[3]),
             args.length == 6 ? Path.of(args[5]) : null);
         System.out.println(Path.of(args[3]).toAbsolutePath());
+      }
+      case "export" -> {
+        if (args.length < 2) throw new IllegalArgumentException(ExportCommand.USAGE);
+        boolean diff = args[1].equals("diff");
+        if (args.length != (diff ? 5 : 4)
+            || !(diff || args[1].equals("folded") || args[1].equals("speedscope")))
+          throw new IllegalArgumentException(ExportCommand.USAGE);
+        ExportCommand.run(
+            args[1],
+            diff ? new Path[] {Path.of(args[2]), Path.of(args[3])} : new Path[] {Path.of(args[2])},
+            Path.of(args[args.length - 1]));
+        System.out.println(Path.of(args[args.length - 1]).toAbsolutePath());
       }
       case "benchmark" -> {
         if (args.length < 3 || args.length > 4 || args.length == 4 && !args[3].equals("--smoke"))

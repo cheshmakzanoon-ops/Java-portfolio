@@ -3,6 +3,16 @@
 Backtrace has functional, transformation, privacy and boundedness evidence on Java 25 HotSpot/Linux x86-64. The first complete 84-JVM overhead study failed P08-A5. A complete study of the subsequent configuration remains unexecuted; no performance acceptance or speedup is claimed.
 
 
+## Stack export, flame graph and a flaky-test repair (2026-10-29)
+
+`report.html` gained a static SVG flame graph, and `export folded|speedscope|diff` converts a finished report's sampled stacks for flamegraph.pl, inferno and speedscope ([operations](OPERATIONS.md#exporting-stacks-to-other-profilers)). Every export sums to the report's sample count, with explicit `[truncated]` and `[unattributed]` leaves for samples the bounded tree kept only as a prefix. The text forms drop per-JVM numbers in hidden-class names so a baseline and a candidate recording align; speedscope keeps exact names. `ComparisonCommand`'s file rules moved into a shared `SafeFiles` helper that `export` reuses (the comparison tests pass unchanged).
+
+Executed against this source with `-Pintegration,mutation verify` (JDK 25.0.4.1): **236 ordinary test methods and 7 packaged-JVM integration methods, zero failures, errors or skips**; the repository's test and mutation checkers accepted the fresh reports. The new classes (`FlameExport`, `FlameSvg`, `ExportCommand`, `SafeFiles`) were added to the mutation scope rather than left outside it: strict mutation now reports **report 287 / 328 killed (87.50%) and cli 45 / 45**, with probe 93.20%, analysis 96.65%, jfr 82.24% and agent 85.19% unchanged in kind and all above the 70% gates (841 killed overall; 81 survivors, 16 uncovered and four timeouts remain in the denominator). The first mutation run of the new classes produced a memory-error outcome from a loop-increment mutant in descriptor parsing, which the repository checker treats as a failure; parameter parsing is now bounded at the JVM's 255-parameter limit and the mutant is killed. The per-mutant inventory in `evidence/deep-mutation-survivors.json` was **not** regenerated and describes the 21 October source.
+
+`ObserverStressTest.cleanupStopsBothHostThreadKindsEvenWhenTheCallerIsInterrupted` was flaky: it released the stress hosts immediately after interrupting the closing thread, so a late interrupt could arrive after the last blocking call and no `InterruptedException` was reported. Under four busy-loop processes it failed **132 of 400** repetitions; after the test waits for the interrupt to be consumed before releasing the hosts it passes **400 of 400** under the same load. This was a test race, not a product defect.
+
+Also run: `./scripts/portfolio.sh demo backtrace` (eight workload JVMs, real JFR recordings; its assertions passed) and `export folded|speedscope|diff` on its reports (folded totals equal each report's `sampleCount`: 243 and 246; aligning lambda names reduced the CPU differential from six lines to four). The flame graph was rendered in headless Chromium at 1280 px and 390 px for one demo report (no page overflow, no console errors); the differential page's layout was not re-inspected. No overhead study or benchmark was run.
+
 ## Development candidate: bounded per-thread probe quiescence
 
 The probe hot path no longer increments/decrements one globally shared atomic counter

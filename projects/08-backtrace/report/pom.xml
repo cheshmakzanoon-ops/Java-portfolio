@@ -37,6 +37,8 @@
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.backtrace.report.ReportValidator</param>
                 <param>io.github.cheshmakzanoon.portfolio.backtrace.report.ComparisonDocument*</param>
+                <param>io.github.cheshmakzanoon.portfolio.backtrace.report.FlameExport*</param>
+                <param>io.github.cheshmakzanoon.portfolio.backtrace.report.FlameSvg*</param>
               </targetClasses>
               <mutationThreshold>70</mutationThreshold>
               <threads>1</threads>

@@ -36,6 +36,9 @@ CLI commands:
 | `analyze recording.jfr output-directory` | Normalize a recording and produce HTML/JSON reports |
 | `analyze recording.jfr output-directory --timings agent-directory` | Include separately collected selected-method timings |
 | `compare baseline.json candidate.json output.html [--json output.json]` | Compare matching declared settings across sample proportions, weighted allocations, monitor waits, parks and selected timings |
+| `export folded report.json output.txt` | Collapsed stacks (`a;b;c N`) for flamegraph.pl, inferno and speedscope, with readable frame names |
+| `export speedscope report.json output.json` | A speedscope sampled profile with the exact frame names |
+| `export diff baseline.json candidate.json output.txt` | `stack baseline candidate` lines for a differential flame graph |
 | `benchmark output-directory agent.jar [--smoke]` | Run the declared overhead protocol; smoke results are ineligible for acceptance |
 
 ## Configure startup instrumentation
@@ -53,5 +56,9 @@ outputDirectory: target/observer-run-unique
 Use a dedicated empty output directory for each run. Existing artifacts and symbolic-link output ancestry disable collection before transformation begins; application startup continues with one bounded diagnostic. One startup attempt owns the process-wide probe: repeated agent declarations are ignored, and correcting a failed configuration requires a JVM restart. Configuration accepts a strict, small YAML subset. See [operations](docs/OPERATIONS.md) for bounds and output semantics.
 
 Constructors, initializers, JDK/tool classes, native/abstract methods, named modules and non-system loaders are skipped. Frame resolution reads class resources without initializing target classes. Unsupported array merges or unresolved metadata skip the affected class. Selected method timings exclude implicit synchronized-method lock acquisition before bytecode execution.
+
+## Stacks in other tools
+
+`report.html` now opens with a static flame graph (an icicle chart: root on top, width is the inclusive sample share, labels shorten but tooltips keep the full name and counts) above the navigable tree and tables; it is inline SVG with no script or external resource. `export` hands the same sampled stacks to other profilers. Every export sums to exactly the report's sample count: samples that the bounded stack tree recorded only in a prefix appear as an explicit `[truncated]` leaf (and sampleless ones as `[unattributed]`) instead of being dropped or credited to a frame that was not the leaf. The text forms drop the per-JVM numbers in hidden-class names (`Main$$Lambda.0x...`, `GeneratedMethodAccessor117`, `$Proxy42`) and the parameter descriptors' `;`, so the same code lines up between a baseline and a candidate recording; the speedscope form keeps every exact name. Sampled stacks remain sampled evidence, not call counts or CPU time, in every format.
 
 [Architecture](docs/ARCHITECTURE.md) describes module boundaries; [invariants](docs/INVARIANTS.md) and [security](docs/SECURITY.md) describe safety and privacy. JFR execution samples do not provide exact call counts or complete virtual-thread attribution. Raw recordings may contain data outside the normalized export allowlist.

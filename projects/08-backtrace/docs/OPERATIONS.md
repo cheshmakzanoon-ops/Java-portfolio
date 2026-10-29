@@ -61,6 +61,22 @@ are preserved as information, not automatically marked as data loss. Statistical
 significance, hardware equivalence and causal attribution remain outside this comparison.
 No rate divides agent counts by a JFR observation span.
 
+## Exporting stacks to other profilers
+
+~~~text
+export folded report.json stacks.txt
+export speedscope report.json stacks.speedscope.json
+export diff baseline.json candidate.json regression.txt
+~~~
+
+`export` reads finished `report.json` files only. Inputs must be regular, unlinked files that pass the same report validation as `compare`; the output must be a regular file in an existing directory, cannot alias any input, and is staged beside its destination and published by one atomic replacement (an unsupported atomic move fails instead of writing partially). A rejected input publishes nothing.
+
+Every export sums to the report's sample count. The stack tree is bounded (up to 10,000 nodes): a sample recorded only in a prefix is exported as an extra `[truncated]` leaf below that prefix, and a sample with no stack as a top-level `[unattributed]`. Treat a large `[truncated]` share as a sign that the recording had more distinct stacks than the report keeps, not as time spent in the prefix's last frame.
+
+`folded` and `diff` print frames as `pkg.Class.method(param.Types)`: return types are dropped (bridge methods that differ only by return type are summed), `;` and whitespace become `:` and `_`, and per-JVM numbers in hidden-class names are removed so that a baseline and a candidate recording of the same code line up. `speedscope` keeps the exact frame names. `diff` lists the union of both reports' stacks, `0` where one side has none, in the `stack baseline candidate` form that flamegraph.pl's differential mode reads. As with `compare`, differing workload length or rate confounds absolute counts; each side is its own sample total.
+
+The HTML report's flame graph is drawn from the same tree and the same residual accounting. Frames narrower than half a pixel are not drawn and are counted in a note; the navigable tree below lists them all.
+
 ## Startup instrumentation
 
 Pass one agent declaration per JVM: -javaagent:backtrace-agent-1.0.0-SNAPSHOT.jar=config=backtrace.yaml.

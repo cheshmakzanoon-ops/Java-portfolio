@@ -48,6 +48,12 @@ class ObserverStressTest {
           && System.nanoTime() < deadline) Thread.onSpinWait();
       assertEquals(Thread.State.TIMED_WAITING, closer.getState());
       closer.interrupt();
+      // Release the hosts only after the closer's join has actually thrown. Releasing straight
+      // away lets the hosts finish before a delayed interrupt reaches a blocking call, so the
+      // closer could then exit with the flag still set and no InterruptedException to report.
+      long consumed = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+      while (closer.isInterrupted() && System.nanoTime() < consumed) Thread.onSpinWait();
+      assertFalse(closer.isInterrupted(), "the closer never reached a blocking call");
       release.countDown();
       closer.join(2000);
       assertFalse(closer.isAlive());

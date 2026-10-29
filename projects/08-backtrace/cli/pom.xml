@@ -47,6 +47,8 @@
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.backtrace.cli.ChildJvm</param>
                 <param>io.github.cheshmakzanoon.portfolio.backtrace.cli.ComparisonCommand*</param>
+                <param>io.github.cheshmakzanoon.portfolio.backtrace.cli.ExportCommand*</param>
+                <param>io.github.cheshmakzanoon.portfolio.backtrace.cli.SafeFiles*</param>
               </targetClasses>
               <mutationThreshold>70</mutationThreshold>
               <threads>1</threads>

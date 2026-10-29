@@ -87,6 +87,7 @@ public final class ReportWriter {
           h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:.6rem 0 0;overflow-wrap:anywhere}h2{font-size:1.3rem;margin-top:2.5rem}p{max-width:85ch;color:var(--muted)}
           nav{position:sticky;top:0;z-index:1;display:flex;flex-wrap:wrap;gap:.5rem;padding:.75rem;background:#f3f6fa;border:1px solid var(--line);border-radius:8px}nav a{padding:.35rem .7rem;text-decoration:none;border-radius:4px}nav a:hover{background:#e0eafb}
           a{color:var(--accent)}:focus-visible{outline:3px solid #2456a6;outline-offset:3px}.skip-link{position:absolute;left:1rem;top:-5rem;padding:.6rem 1rem;background:white;z-index:2}.skip-link:focus{top:1rem}
+          .flame-graph{max-width:100%;overflow-x:auto;margin:1rem 0;border:1px solid var(--line);border-radius:8px}.flame-svg{display:block;min-width:700px;width:100%;height:auto;font:11px/1 ui-monospace,monospace}.flame-svg text{fill:var(--ink);pointer-events:none}.flame-svg g:hover rect{stroke:var(--ink);stroke-width:1}
           .table-scroll th:not(:first-child){min-width:6rem}.table-hint{font-size:.875rem}.table-scroll{max-width:100%;overflow-x:auto;margin:1rem 0 2rem}.flame-tree{max-height:48rem;max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:.5rem}table{min-width:40rem;border-collapse:collapse;width:100%;margin:1rem 0 2rem;font-size:.9rem;font-variant-numeric:tabular-nums}td,th{border:1px solid var(--line);padding:.65rem;text-align:left;overflow-wrap:anywhere}th{background:#edf2f8}tr:nth-child(even) td{background:#fafbfd}caption{text-align:left;font-weight:650;padding:.5rem 0}
           .epoch-nanos{min-width:12rem;white-space:nowrap;overflow-wrap:normal}
           summary{cursor:pointer;background:#edf2f8;border:1px solid var(--line);border-radius:4px;margin:3px 0;padding:.4rem .6rem;overflow-wrap:anywhere}details{margin-left:1rem}meter{display:block;width:100%;height:.6rem;accent-color:var(--accent)}
@@ -118,6 +119,10 @@ public final class ReportWriter {
         .append(report.sampleCount())
         .append(
             " observed execution samples. Inclusive prefixes include callees; self is the sampled leaf. These are sampled evidence, never exact call counts or CPU-time accounting.</p>");
+    out.append(
+            "<div class=\"flame-graph\" role=\"region\" aria-label=\"Flame graph\" tabindex=\"0\">")
+        .append(FlameSvg.render(report.profile().flame()))
+        .append("</div>");
     out.append(
         "<div class=\"flame-tree\" role=\"region\" aria-label=\"Execution stack tree\" tabindex=\"0\">");
     flame(out, report.profile().flame(), Math.max(1, report.sampleCount()));
