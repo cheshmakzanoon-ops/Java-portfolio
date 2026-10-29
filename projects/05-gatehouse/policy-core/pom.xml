@@ -72,9 +72,13 @@
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngine*</param>
                 <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyLanguage*</param>
+                <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyAnalyzer*</param>
               </targetClasses>
               <targetTests>
                 <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyEngineTest</param>
+                <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyAnalyzerTest</param>
+                <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyExplainTest</param>
+                <param>io.github.cheshmakzanoon.portfolio.gatehouse.PolicyFormatTest</param>
               </targetTests>
               <mutationThreshold>70</mutationThreshold>
               <threads>1</threads>

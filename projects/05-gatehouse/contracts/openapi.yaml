@@ -73,6 +73,18 @@ paths:
       operationId: simulate
       description: Current admin only; policy and example evaluated without state changes or permission grants.
       responses: {'200': {description: Simulated decision}, '403': {description: Admin permission required}}
+  /v1/tenants/{tenant}/explain:
+    parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
+    post:
+      operationId: explain
+      description: Current admin only. Same body as simulate. Returns the decision plus the effective role closure, whether an RBAC grant exists, and each applicable rule's three-valued result, canonical condition text and unsupplied attributes. No tenant state is read or written and no audit entry is created.
+      responses: {'200': {description: Decision with per-rule trace}, '400': {description: Invalid policy or example}, '403': {description: Admin permission required}}
+  /v1/tenants/{tenant}/lint:
+    parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
+    post:
+      operationId: lint
+      description: 'Current admin only. Body {"policy": Definition}. Statically analyses a draft. NEVER_MATCHES, DENY_ALWAYS_APPLIES, ALLOW_SHADOWED_BY_DENY, SCOPE_NEVER_ALLOWS, ALLOW_WITHOUT_GRANT and GRANT_WITHOUT_ALLOW_RULE are proofs over every possible input including absent attributes; ANALYSIS_LIMIT marks a check that exceeded its search budget and was not decided.'
+      responses: {'200': {description: 'digest, error and warning counts, and findings sorted by severity, code and rule'}, '400': {description: Invalid policy}, '403': {description: Admin permission required}}
   /v1/tenants/{tenant}/audit:
     parameters: [{name: tenant, in: path, required: true, schema: {type: string}}]
     get:

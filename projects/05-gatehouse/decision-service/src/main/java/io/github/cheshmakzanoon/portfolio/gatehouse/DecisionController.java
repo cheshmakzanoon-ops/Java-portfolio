@@ -43,6 +43,11 @@ public class DecisionController {
 
   public record Simulation(PolicyEngine.Definition policy, Example example) {}
 
+  public record Lint(PolicyEngine.Definition policy) {}
+
+  public record LintReport(
+      String policyDigest, int errors, int warnings, List<PolicyAnalyzer.Finding> findings) {}
+
   private final RequestBounds bounds;
   private final PolicyStore store;
   private final ObjectMapper mapper;
@@ -196,6 +201,48 @@ public class DecisionController {
           return PolicyEngine.decide(
               p, e.roles(), e.action(), e.resourceType(), normalize(e.fields()));
         });
+  }
+
+  /**
+   * Explains a hypothetical decision rule by rule, with the same administrative gate as simulate:
+   * nothing is read from or written to tenant state, and no audit record is created.
+   */
+  @PostMapping("/explain")
+  public PolicyEngine.Explanation explain(
+      @PathVariable String tenant, @AuthenticationPrincipal Jwt jwt, @RequestBody Simulation r) {
+    return store.simulate(
+        tenant,
+        principal(jwt),
+        m -> {
+          PolicyEngine.Compiled p = PolicyEngine.compile(r.policy());
+          Example e = r.example();
+          return PolicyEngine.explain(
+              p, e.roles(), e.action(), e.resourceType(), normalize(e.fields()));
+        });
+  }
+
+  /**
+   * Statically analyses a draft before publication. Findings are proofs about the policy text, not
+   * advice: see PolicyAnalyzer for what each code guarantees.
+   */
+  @PostMapping("/lint")
+  public LintReport lint(
+      @PathVariable String tenant, @AuthenticationPrincipal Jwt jwt, @RequestBody Lint r) {
+    return store.simulate(
+        tenant,
+        principal(jwt),
+        m -> {
+          PolicyAnalyzer.Report report = PolicyAnalyzer.analyze(PolicyEngine.compile(r.policy()));
+          return new LintReport(
+              report.policyDigest(),
+              count(report, PolicyAnalyzer.Severity.ERROR),
+              count(report, PolicyAnalyzer.Severity.WARNING),
+              report.findings());
+        });
+  }
+
+  private static int count(PolicyAnalyzer.Report report, PolicyAnalyzer.Severity severity) {
+    return (int) report.findings().stream().filter(f -> f.severity() == severity).count();
   }
 
   @GetMapping("/audit")

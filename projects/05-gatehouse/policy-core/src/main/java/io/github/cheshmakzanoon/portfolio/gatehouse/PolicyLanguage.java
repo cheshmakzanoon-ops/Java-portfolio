@@ -155,6 +155,71 @@ public final class PolicyLanguage {
     return e;
   }
 
+  /**
+   * Canonical source text for an expression. Compiling the result yields an equal tree: operands
+   * are parenthesized exactly where the parser would otherwise regroup them.
+   */
+  public static String format(Expr expression) {
+    StringBuilder out = new StringBuilder();
+    write(expression, out);
+    return out.toString();
+  }
+
+  private static void write(Expr e, StringBuilder out) {
+    switch (e) {
+      case Literal l -> out.append(literal(l));
+      case Field f -> out.append(f.name());
+      case Exists x -> out.append("exists(").append(x.field().name()).append(')');
+      case HasRole r -> out.append("hasRole(").append(quote(r.role())).append(')');
+      case Negate n -> {
+        out.append("not ");
+        boolean grouped = n.child() instanceof Binary;
+        if (grouped) out.append('(');
+        write(n.child(), out);
+        if (grouped) out.append(')');
+      }
+      case Binary b -> {
+        operand(b.left(), b.op(), false, out);
+        out.append(' ').append(b.op()).append(' ');
+        operand(b.right(), b.op(), true, out);
+      }
+      case Compare c -> {
+        write(c.left(), out);
+        out.append(' ').append(c.op()).append(' ');
+        write(c.right(), out);
+      }
+      case In n -> {
+        write(n.value(), out);
+        out.append(" in [");
+        for (int index = 0; index < n.values().size(); index++) {
+          if (index > 0) out.append(", ");
+          out.append(literal(n.values().get(index)));
+        }
+        out.append(']');
+      }
+    }
+  }
+
+  /** The parser is left-associative, so only a same-operator left child may omit parentheses. */
+  private static void operand(Expr child, String parentOp, boolean right, StringBuilder out) {
+    boolean grouped = child instanceof Binary inner && (!inner.op().equals(parentOp) || right);
+    if (grouped) out.append('(');
+    write(child, out);
+    if (grouped) out.append(')');
+  }
+
+  private static String literal(Literal l) {
+    return switch (l.type()) {
+      case STRING -> quote((String) l.value());
+      case INTEGER, BOOLEAN -> String.valueOf(l.value());
+      case ENUM -> ((Label) l.value()).name();
+    };
+  }
+
+  private static String quote(String text) {
+    return '"' + text.replace("\\", "\\\\").replace("\"", "\\\"") + '"';
+  }
+
   public static Truth evaluate(Expr expression, Inputs inputs) {
     Object value = eval(expression, inputs, new int[] {MAX_NODES * 2});
     return value == null ? Truth.UNKNOWN : (Boolean) value ? Truth.TRUE : Truth.FALSE;

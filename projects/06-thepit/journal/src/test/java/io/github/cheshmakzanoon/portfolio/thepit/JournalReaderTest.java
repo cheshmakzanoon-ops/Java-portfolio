@@ -135,6 +135,46 @@ class JournalReaderTest {
     return (int) crc.getValue();
   }
 
+  private static byte[] header(long sequence, int length) {
+    ByteBuffer b = ByteBuffer.allocate(Journal.HEADER);
+    b.putInt(Journal.MAGIC).putInt(Journal.VERSION).putLong(sequence).putInt(length);
+    b.putInt(checksum(b.array(), 20));
+    return b.array();
+  }
+
+  @Test
+  void headerBoundsAreEnforcedExactlyAndAHeaderOnlyFileIsStillValidated() throws Exception {
+    // Payload lengths 1 and 65,536 are the inclusive limits; a header with either is merely
+    // waiting for its payload, which makes it an incomplete tail rather than corruption.
+    for (int length : new int[] {1, Journal.MAX_PAYLOAD}) {
+      Path pending = dir.resolve("pending-" + length);
+      Files.write(pending, header(1, length));
+      JournalReader.Scan scan = JournalReader.inspect(pending);
+      assertEquals(0, scan.entries().size());
+      assertEquals(Journal.HEADER, scan.incompleteTailBytes());
+    }
+    for (int length : new int[] {0, Journal.MAX_PAYLOAD + 1, -1}) {
+      Path bad = dir.resolve("bad-length-" + length);
+      Files.write(bad, header(1, length));
+      assertEquals(
+          "corrupt frame header at 0",
+          assertThrows(IOException.class, () -> JournalReader.inspect(bad)).getMessage());
+    }
+    // Exactly one header's worth of bytes is validated before being called a tail.
+    byte[] damaged = header(1, 10);
+    damaged[9] ^= 1;
+    Path path = dir.resolve("damaged-header-only");
+    Files.write(path, damaged);
+    assertEquals(
+        "corrupt frame header at 0",
+        assertThrows(IOException.class, () -> JournalReader.inspect(path)).getMessage());
+    Path gap = dir.resolve("gap-header-only");
+    Files.write(gap, header(2, 10));
+    assertEquals(
+        "journal sequence gap",
+        assertThrows(IOException.class, () -> JournalReader.inspect(gap)).getMessage());
+  }
+
   @Test
   void aSequenceGapOrMixedRunIsRejected() throws Exception {
     byte[] one = Files.readAllBytes(journal("one", "alpha", init("a"), order("b")));

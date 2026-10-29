@@ -231,6 +231,34 @@ public final class PolicyEngine {
     return action + "\u0000" + type;
   }
 
+  /**
+   * How one applicable rule evaluated.
+   *
+   * @param truth the rule's three-valued result; UNKNOWN makes the whole decision INDETERMINATE
+   * @param missingFields attributes the condition reads that the request did not supply
+   * @param note set when evaluation itself failed (for example, the work budget was exhausted)
+   */
+  public record RuleTrace(
+      String ruleId,
+      Effect effect,
+      String condition,
+      Truth truth,
+      List<String> missingFields,
+      String note) {
+    public RuleTrace {
+      missingFields = List.copyOf(missingFields);
+    }
+  }
+
+  /** A decision together with everything that produced it. */
+  public record Explanation(
+      Decision decision, List<String> effectiveRoles, boolean granted, List<RuleTrace> rules) {
+    public Explanation {
+      effectiveRoles = List.copyOf(effectiveRoles);
+      rules = List.copyOf(rules);
+    }
+  }
+
   public static Decision decide(
       Compiled policy,
       Set<String> assigned,
@@ -238,16 +266,58 @@ public final class PolicyEngine {
       String resourceType,
       Map<String, Object> fields) {
     Set<String> roles = policy.roles(assigned);
-    Inputs inputs = new Inputs(fields, roles);
+    return evaluate(policy, roles, new Inputs(fields, roles), action, resourceType, null);
+  }
+
+  /**
+   * The same decision as {@link #decide}, with the effective role closure, whether an RBAC grant
+   * exists, and each applicable rule's truth value and unsupplied attributes. Both paths share one
+   * evaluation loop, so an explanation cannot disagree with the decision it explains.
+   */
+  public static Explanation explain(
+      Compiled policy,
+      Set<String> assigned,
+      String action,
+      String resourceType,
+      Map<String, Object> fields) {
+    Set<String> roles = policy.roles(assigned);
+    List<RuleTrace> trace = new ArrayList<>();
+    Decision decision =
+        evaluate(policy, roles, new Inputs(fields, roles), action, resourceType, trace);
+    return new Explanation(
+        decision,
+        new TreeSet<>(roles).stream().toList(),
+        policy.granted(roles, action, resourceType),
+        trace);
+  }
+
+  private static Decision evaluate(
+      Compiled policy,
+      Set<String> roles,
+      Inputs inputs,
+      String action,
+      String resourceType,
+      List<RuleTrace> trace) {
     List<String> matched = new ArrayList<>();
     boolean allow = false, deny = false, unknown = false;
     for (Candidate c : policy.index().getOrDefault(key(action, resourceType), List.of())) {
       Truth truth;
+      String note = null;
       try {
         truth = PolicyLanguage.evaluate(c.expression(), inputs);
       } catch (RuntimeException e) {
         truth = Truth.UNKNOWN;
+        note = "evaluation failed: " + e.getMessage();
       }
+      if (trace != null)
+        trace.add(
+            new RuleTrace(
+                c.rule().id(),
+                c.rule().effect(),
+                PolicyLanguage.format(c.expression()),
+                truth,
+                missing(c.expression(), inputs),
+                note));
       if (truth == Truth.UNKNOWN) unknown = true;
       else if (truth == Truth.TRUE) {
         matched.add(c.rule().id());
@@ -261,5 +331,33 @@ public final class PolicyEngine {
     return grant && allow
         ? new Decision(true, "MATCHED_ALLOW", matched)
         : new Decision(false, grant ? "NO_ABAC_ALLOW" : "NO_RBAC_GRANT", matched);
+  }
+
+  /** Attributes referenced by an expression that the request did not supply, sorted. */
+  private static List<String> missing(Expr expression, Inputs inputs) {
+    Set<String> referenced = new TreeSet<>();
+    collectFields(expression, referenced);
+    referenced.removeIf(inputs.fields()::containsKey);
+    return List.copyOf(referenced);
+  }
+
+  private static void collectFields(Expr e, Set<String> out) {
+    switch (e) {
+      case Field f -> out.add(f.name());
+      case Binary b -> {
+        collectFields(b.left(), out);
+        collectFields(b.right(), out);
+      }
+      case Negate n -> collectFields(n.child(), out);
+      case Compare c -> {
+        collectFields(c.left(), out);
+        collectFields(c.right(), out);
+      }
+      case In n -> collectFields(n.value(), out);
+      // exists() is total and never UNKNOWN, so the field it tests is not a missing input.
+      case Exists x -> {}
+      case Literal l -> {}
+      case HasRole r -> {}
+    }
   }
 }
