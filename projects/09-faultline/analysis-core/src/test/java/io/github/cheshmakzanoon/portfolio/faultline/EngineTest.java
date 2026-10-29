@@ -423,7 +423,9 @@ class EngineTest implements Opcodes {
     assertEquals(caller, caller.substitute(List.of(Taint.source("other")), "Callee.set()V"));
     assertEquals(
         Taint.BOTTOM,
-        callee.sanitize(7).substitute(List.of(Taint.source("source")), "Callee.set()V"));
+        callee
+            .sanitize(RuleModels.ALL_CONTEXTS)
+            .substitute(List.of(Taint.source("source")), "Callee.set()V"));
     HeapSummary heap = new HeapSummary();
     AbstractValue original = AbstractValue.reference(Taint.BOTTOM, "allocation");
     heap.writeField("Owner.field:[Ljava/lang/String;", original);
@@ -482,16 +484,17 @@ class EngineTest implements Opcodes {
   @Test
   void sanitizerSubstitutionAndOrderHaveActualContextMeaning() {
     Taint full = Taint.source("source");
-    assertEquals(Map.of("source", 6), full.sanitize(1).labels());
-    assertEquals(Map.of("source", 5), full.sanitize(2).labels());
-    assertEquals(Map.of("source", 3), full.sanitize(4).labels());
+    assertEquals(Map.of("source", 126), full.sanitize(1).labels());
+    assertEquals(Map.of("source", 125), full.sanitize(2).labels());
+    assertEquals(Map.of("source", 123), full.sanitize(4).labels());
+    assertEquals(Map.of("source", 119), full.sanitize(8).labels());
     assertFalse(full.sanitize(4).hasConcrete(4));
     assertFalse(full.hasConcrete(0));
     assertFalse(Taint.source("a").lessOrEqual(Taint.source("b")));
     assertFalse(Taint.unknownValue().lessOrEqual(Taint.BOTTOM));
     assertEquals(
-        Map.of("kept", 7),
-        new Taint(new TreeMap<>(Map.of("zero", 0, "high", 8, "kept", 15)), false).labels());
+        Map.of("kept", 127),
+        new Taint(new TreeMap<>(Map.of("zero", 0, "high", 128, "kept", 255)), false).labels());
     Taint symbolic = new Taint(new TreeMap<>(Map.of("P:0", 4)), false);
     Taint actual = new Taint(new TreeMap<>(Map.of("source", 3)), false);
     assertEquals(Taint.BOTTOM, symbolic.substitute(List.of(actual)));

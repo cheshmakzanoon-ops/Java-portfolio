@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.github.cheshmakzanoon.portfolio.faultline.rules.RuleModels;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -76,6 +77,23 @@ class ConfigurationBoundaryTest {
     refused(root -> root.put("version", "1.0.0"));
     refused(root -> root.put("version", 2.1));
     refused(root -> root.remove("version"));
+  }
+
+  @Test
+  void baselinesFromEverySupportedModelVersionKeepTheirIdentities() throws Exception {
+    for (String version : RuleModels.SUPPORTED_VERSIONS) {
+      ObjectNode root = baseline();
+      run(root).withObject("/tool/driver").put("version", version);
+      assertEquals(Set.of(FINGERPRINT), read(root), version);
+    }
+    for (String rule : RuleModels.CONTEXTS.keySet()) {
+      ObjectNode root = baseline();
+      result(root).put("ruleId", rule);
+      assertEquals(Set.of(FINGERPRINT), read(root), rule);
+    }
+    refused(root -> run(root).withObject("/tool/driver").put("version", "1.0.1"));
+    refused(root -> run(root).withObject("/tool/driver").put("version", 110));
+    refused(root -> result(root).put("ruleId", "BG-UNKNOWN"));
   }
 
   @Test

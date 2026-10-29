@@ -1,8 +1,12 @@
 package io.github.cheshmakzanoon.portfolio.faultline.dataflow;
 
+import io.github.cheshmakzanoon.portfolio.faultline.rules.RuleModels;
 import java.util.*;
 
-/** Finite powerset lattice; masks SQL=1,SHELL=2,PATH=4. Unknown is independent of bottom. */
+/**
+ * Finite powerset lattice over the context bits of {@link RuleModels#CONTEXTS}. Unknown is
+ * independent of bottom.
+ */
 public record Taint(SortedMap<String, Integer> labels, boolean unknown) {
   public static final Taint BOTTOM = new Taint(new TreeMap<>(), false);
 
@@ -13,13 +17,13 @@ public record Taint(SortedMap<String, Integer> labels, boolean unknown) {
     TreeMap<String, Integer> copy = new TreeMap<>();
     labels.forEach(
         (k, v) -> {
-          if ((v & 7) != 0) copy.put(k, v & 7);
+          if ((v & RuleModels.ALL_CONTEXTS) != 0) copy.put(k, v & RuleModels.ALL_CONTEXTS);
         });
     labels = Collections.unmodifiableSortedMap(copy);
   }
 
   public static Taint source(String id) {
-    return new Taint(new TreeMap<>(Map.of(id, 7)), false);
+    return new Taint(new TreeMap<>(Map.of(id, RuleModels.ALL_CONTEXTS)), false);
   }
 
   public static Taint unknownValue() {

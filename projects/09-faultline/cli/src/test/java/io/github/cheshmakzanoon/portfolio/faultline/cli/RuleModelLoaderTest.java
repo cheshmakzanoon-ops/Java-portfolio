@@ -25,9 +25,8 @@ class RuleModelLoaderTest {
     ObjectNode root = JSON.createObjectNode();
     root.put("model", "faultline-core").put("version", RuleModels.VERSION);
     ArrayNode rules = root.putArray("rules");
-    rules.addObject().put("id", "BG-SQL-TEXT").put("contextMask", 1);
-    rules.addObject().put("id", "BG-SHELL-COMMAND").put("contextMask", 2);
-    rules.addObject().put("id", "BG-PATH-ACCESS").put("contextMask", 4);
+    for (String id : new java.util.TreeSet<>(RuleModels.CONTEXTS.keySet()))
+      rules.addObject().put("id", id).put("contextMask", RuleModels.CONTEXTS.get(id));
     root.putArray("sources").add(SOURCE);
     root.putArray("sinks")
         .addObject()
@@ -72,6 +71,67 @@ class RuleModelLoaderTest {
     assertEquals(
         4, rules.sanitizer("fixtures/Safe.confinedPath(Ljava/lang/String;)Ljava/lang/String;"));
     assertEquals(0, rules.sink("java/sql/Statement.execute(Ljava/lang/String;)Z").argument());
+  }
+
+  @Test
+  void theShippedDocumentIsExactlyTheBuiltInModel() throws Exception {
+    RuleModels shipped = RuleModelLoader.read(Path.of("../rules/core.yaml"));
+    RuleModels builtIn = new RuleModels();
+    assertEquals(builtIn.sources(), shipped.sources());
+    assertEquals(builtIn.sinks(), shipped.sinks());
+    assertEquals(builtIn.sanitizers(), shipped.sanitizers());
+    assertEquals(29, shipped.sinks().size());
+    assertTrue(
+        shipped.source(
+            "jakarta/servlet/http/HttpServletRequest.getParameter(Ljava/lang/String;)Ljava/lang/String;"));
+  }
+
+  /** A 1.0.0 document written before the newer rules existed keeps loading and means the same. */
+  @Test
+  void aLegacyDocumentDeclaresExactlyTheOriginalThreeRules() throws Exception {
+    ObjectNode legacy = model();
+    legacy.put("version", RuleModels.LEGACY_VERSION);
+    ArrayNode rules = legacy.putArray("rules");
+    rules.addObject().put("id", "BG-SQL-TEXT").put("contextMask", 1);
+    rules.addObject().put("id", "BG-SHELL-COMMAND").put("contextMask", 2);
+    rules.addObject().put("id", "BG-PATH-ACCESS").put("contextMask", 4);
+    RuleModels rulesModel = read(legacy);
+    assertEquals(new RuleModels.Sink("BG-SQL-TEXT", 1, 0), rulesModel.sink(SINK));
+
+    for (String added :
+        List.of("BG-CLASS-LOAD", "BG-URL-FETCH", "BG-XPATH-QUERY", "BG-LDAP-FILTER")) {
+      int mask = RuleModels.CONTEXTS.get(added);
+      ObjectNode extra = legacy.deepCopy();
+      extra.withArray("rules").addObject().put("id", added).put("contextMask", mask);
+      assertThrows(IOException.class, () -> read(extra), added + " declared in a 1.0.0 document");
+      ObjectNode sink = legacy.deepCopy();
+      first(sink, "sinks").put("rule", added).put("mask", mask);
+      assertThrows(IOException.class, () -> read(sink), added + " sink in a 1.0.0 document");
+      ObjectNode sanitizer = legacy.deepCopy();
+      first(sanitizer, "sanitizers").put("contextMask", mask);
+      assertThrows(
+          IOException.class, () -> read(sanitizer), added + " sanitizer in a 1.0.0 document");
+    }
+    ObjectNode current = model();
+    current.withArray("rules").remove(0);
+    assertThrows(
+        IOException.class, () -> read(current), "a current document must declare all rules");
+  }
+
+  @Test
+  void everyNewRuleAcceptsItsOwnSinkAndSanitizerContext() throws Exception {
+    for (String rule : RuleModels.CONTEXTS.keySet()) {
+      int mask = RuleModels.CONTEXTS.get(rule);
+      ObjectNode root = model();
+      first(root, "sinks").put("rule", rule).put("mask", mask);
+      first(root, "sanitizers").put("contextMask", mask);
+      RuleModels loaded = read(root);
+      assertEquals(new RuleModels.Sink(rule, mask, 0), loaded.sink(SINK), rule);
+      assertEquals(mask, loaded.sanitizer(SANITIZER), rule);
+    }
+    refused(root -> first(root, "sanitizers").put("contextMask", 128));
+    refused(root -> first(root, "sanitizers").put("contextMask", 0));
+    refused(root -> first(root, "sinks").put("rule", "BG-URL-FETCH").put("mask", 8));
   }
 
   @Test
@@ -137,6 +197,8 @@ class RuleModelLoaderTest {
     refused(root -> root.put("model", 1));
     refused(root -> root.put("version", 1.0));
     refused(root -> root.put("version", "2.0.0"));
+    refused(root -> root.put("version", "1.0.1"));
+    refused(root -> root.put("version", "1.2.0"));
     refused(root -> root.put("model", "faultline-custom"));
     refused(root -> root.remove("version"));
   }

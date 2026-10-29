@@ -16,14 +16,13 @@ final class RuleModelLoader {
   private static final int MAX_ENTRIES = 4096;
   private static final Set<String> ROOT_FIELDS =
       Set.of("model", "version", "rules", "sources", "sinks", "sanitizers", "libraryModels");
-  private static final Map<String, Integer> CONTEXTS =
-      Map.of("BG-SQL-TEXT", 1, "BG-SHELL-COMMAND", 2, "BG-PATH-ACCESS", 4);
   private static final Set<String> LIBRARY_MODELS =
       Set.of(
           "StringConcatFactory",
           "LambdaMetafactory",
           "StringBuilder",
           "collections",
+          "URI",
           "shell",
           "unknown");
 
@@ -32,23 +31,25 @@ final class RuleModelLoader {
   static RuleModels read(Path path) throws IOException {
     JsonNode root = BoundedJson.object(path, 1024 * 1024, "rule model");
     fields(root, ROOT_FIELDS, "rule model");
-    if (!text(root, "model").equals("faultline-core")
-        || !text(root, "version").equals(RuleModels.VERSION))
+    String model = text(root, "model"), version = text(root, "version");
+    if (!model.equals("faultline-core") || !RuleModels.SUPPORTED_VERSIONS.contains(version))
       throw invalid("unsupported model or version");
+    // A model document declares exactly the rules of its own version: 1.0.0 documents keep
+    // working unchanged and cannot reach for rules that did not exist when they were written.
+    Set<String> supported = RuleModels.rulesFor(version);
 
     Set<String> rules = new HashSet<>();
     for (JsonNode node : array(root, "rules")) {
       fields(node, Set.of("id", "contextMask", "sink", "safe"), "rule declaration");
       String id = text(node, "id");
-      Integer expected = CONTEXTS.get(id);
+      Integer expected = supported.contains(id) ? RuleModels.CONTEXTS.get(id) : null;
       if (expected == null || integer(node, "contextMask") != expected)
         throw invalid("rule declaration/context mismatch");
       if (!rules.add(id)) throw invalid("duplicate rule declaration");
       optionalText(node, "sink");
       optionalText(node, "safe");
     }
-    if (!rules.equals(CONTEXTS.keySet()))
-      throw invalid("declare every supported rule exactly once");
+    if (!rules.equals(supported)) throw invalid("declare every supported rule exactly once");
 
     Set<String> sources = new TreeSet<>();
     for (JsonNode node : array(root, "sources")) {
@@ -63,6 +64,7 @@ final class RuleModelLoader {
       String descriptor = text(node, "descriptor");
       RuleModels.Sink sink =
           new RuleModels.Sink(text(node, "rule"), integer(node, "mask"), integer(node, "argument"));
+      if (!supported.contains(sink.id())) throw invalid("sink rule is not part of this model");
       if (sinks.putIfAbsent(descriptor, sink) != null) throw invalid("duplicate sink descriptor");
     }
 
@@ -73,7 +75,10 @@ final class RuleModelLoader {
           Set.of("descriptor", "contextMask", "trustedImplementation"),
           "sanitizer declaration");
       String descriptor = text(node, "descriptor");
-      if (sanitizers.putIfAbsent(descriptor, integer(node, "contextMask")) != null)
+      int context = integer(node, "contextMask");
+      if (supported.stream().noneMatch(rule -> RuleModels.CONTEXTS.get(rule) == context))
+        throw invalid("sanitizer context is not part of this model");
+      if (sanitizers.putIfAbsent(descriptor, context) != null)
         throw invalid("duplicate sanitizer descriptor");
       optionalText(node, "trustedImplementation");
     }

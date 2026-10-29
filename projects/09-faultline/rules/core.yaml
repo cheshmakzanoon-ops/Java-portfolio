@@ -1,6 +1,6 @@
 {
   "model": "faultline-core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "rules": [
     {
       "id": "BG-SQL-TEXT",
@@ -19,6 +19,30 @@
       "contextMask": 4,
       "sink": "Files.readString/readAllBytes(Path), FileInputStream(String)",
       "safe": "fixtures.Safe.confinedPath(String) trusted confinement contract"
+    },
+    {
+      "id": "BG-CLASS-LOAD",
+      "contextMask": 8,
+      "sink": "Class.forName(String...) / ClassLoader.loadClass(String...) / Lookup.findClass(String) with an external class name",
+      "safe": "fixtures.SafeExtension.className(String) trusted allowlist contract"
+    },
+    {
+      "id": "BG-URL-FETCH",
+      "contextMask": 16,
+      "sink": "new URL(String), new Socket(String,int) host, HttpRequest.newBuilder(URI) and Builder.uri(URI) with an external destination",
+      "safe": "fixtures.SafeExtension.httpUrl(String) trusted allowlist contract"
+    },
+    {
+      "id": "BG-XPATH-QUERY",
+      "contextMask": 32,
+      "sink": "XPath.evaluate/compile/evaluateExpression with an external expression",
+      "safe": "fixtures.SafeExtension.xpathLiteral(String) trusted literal-quoting contract"
+    },
+    {
+      "id": "BG-LDAP-FILTER",
+      "contextMask": 64,
+      "sink": "DirContext/InitialDirContext.search(name, filter, ...) with an external filter (argument 1)",
+      "safe": "fixtures.SafeExtension.ldapValue(String) trusted escaping contract"
     }
   ],
   "sources": [
@@ -26,7 +50,19 @@
     "java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;",
     "java/io/BufferedReader.readLine()Ljava/lang/String;",
     "java/util/Scanner.nextLine()Ljava/lang/String;",
-    "java/io/Console.readLine()Ljava/lang/String;"
+    "java/io/Console.readLine()Ljava/lang/String;",
+    "jakarta/servlet/ServletRequest.getParameter(Ljava/lang/String;)Ljava/lang/String;",
+    "jakarta/servlet/http/HttpServletRequest.getHeader(Ljava/lang/String;)Ljava/lang/String;",
+    "jakarta/servlet/http/HttpServletRequest.getParameter(Ljava/lang/String;)Ljava/lang/String;",
+    "jakarta/servlet/http/HttpServletRequest.getPathInfo()Ljava/lang/String;",
+    "jakarta/servlet/http/HttpServletRequest.getQueryString()Ljava/lang/String;",
+    "jakarta/servlet/http/HttpServletRequest.getRequestURI()Ljava/lang/String;",
+    "javax/servlet/ServletRequest.getParameter(Ljava/lang/String;)Ljava/lang/String;",
+    "javax/servlet/http/HttpServletRequest.getHeader(Ljava/lang/String;)Ljava/lang/String;",
+    "javax/servlet/http/HttpServletRequest.getParameter(Ljava/lang/String;)Ljava/lang/String;",
+    "javax/servlet/http/HttpServletRequest.getPathInfo()Ljava/lang/String;",
+    "javax/servlet/http/HttpServletRequest.getQueryString()Ljava/lang/String;",
+    "javax/servlet/http/HttpServletRequest.getRequestURI()Ljava/lang/String;"
   ],
   "sinks": [
     {
@@ -70,6 +106,138 @@
       "rule": "BG-PATH-ACCESS",
       "mask": 4,
       "argument": 0
+    },
+    {
+      "descriptor": "java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class;",
+      "rule": "BG-CLASS-LOAD",
+      "mask": 8,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/lang/Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;",
+      "rule": "BG-CLASS-LOAD",
+      "mask": 8,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/lang/ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class;",
+      "rule": "BG-CLASS-LOAD",
+      "mask": 8,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/lang/ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class;",
+      "rule": "BG-CLASS-LOAD",
+      "mask": 8,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/lang/invoke/MethodHandles$Lookup.findClass(Ljava/lang/String;)Ljava/lang/Class;",
+      "rule": "BG-CLASS-LOAD",
+      "mask": 8,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/net/Socket.<init>(Ljava/lang/String;I)V",
+      "rule": "BG-URL-FETCH",
+      "mask": 16,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/net/URL.<init>(Ljava/lang/String;)V",
+      "rule": "BG-URL-FETCH",
+      "mask": 16,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/net/http/HttpRequest$Builder.uri(Ljava/net/URI;)Ljava/net/http/HttpRequest$Builder;",
+      "rule": "BG-URL-FETCH",
+      "mask": 16,
+      "argument": 0
+    },
+    {
+      "descriptor": "java/net/http/HttpRequest.newBuilder(Ljava/net/URI;)Ljava/net/http/HttpRequest$Builder;",
+      "rule": "BG-URL-FETCH",
+      "mask": 16,
+      "argument": 0
+    },
+    {
+      "descriptor": "javax/naming/directory/DirContext.search(Ljava/lang/String;Ljava/lang/String;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/DirContext.search(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/DirContext.search(Ljavax/naming/Name;Ljava/lang/String;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/DirContext.search(Ljavax/naming/Name;Ljava/lang/String;[Ljava/lang/Object;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/InitialDirContext.search(Ljava/lang/String;Ljava/lang/String;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/InitialDirContext.search(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/InitialDirContext.search(Ljavax/naming/Name;Ljava/lang/String;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/naming/directory/InitialDirContext.search(Ljavax/naming/Name;Ljava/lang/String;[Ljava/lang/Object;Ljavax/naming/directory/SearchControls;)Ljavax/naming/NamingEnumeration;",
+      "rule": "BG-LDAP-FILTER",
+      "mask": 64,
+      "argument": 1
+    },
+    {
+      "descriptor": "javax/xml/xpath/XPath.compile(Ljava/lang/String;)Ljavax/xml/xpath/XPathExpression;",
+      "rule": "BG-XPATH-QUERY",
+      "mask": 32,
+      "argument": 0
+    },
+    {
+      "descriptor": "javax/xml/xpath/XPath.evaluate(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/String;",
+      "rule": "BG-XPATH-QUERY",
+      "mask": 32,
+      "argument": 0
+    },
+    {
+      "descriptor": "javax/xml/xpath/XPath.evaluate(Ljava/lang/String;Ljava/lang/Object;Ljavax/xml/namespace/QName;)Ljava/lang/Object;",
+      "rule": "BG-XPATH-QUERY",
+      "mask": 32,
+      "argument": 0
+    },
+    {
+      "descriptor": "javax/xml/xpath/XPath.evaluate(Ljava/lang/String;Lorg/xml/sax/InputSource;)Ljava/lang/String;",
+      "rule": "BG-XPATH-QUERY",
+      "mask": 32,
+      "argument": 0
+    },
+    {
+      "descriptor": "javax/xml/xpath/XPath.evaluateExpression(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;",
+      "rule": "BG-XPATH-QUERY",
+      "mask": 32,
+      "argument": 0
     }
   ],
   "sanitizers": [
@@ -87,6 +255,26 @@
       "descriptor": "fixtures/Safe.confinedPath(Ljava/lang/String;)Ljava/lang/String;",
       "contextMask": 4,
       "trustedImplementation": "corpus/src/fixtures/Safe.java"
+    },
+    {
+      "descriptor": "fixtures/SafeExtension.className(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 8,
+      "trustedImplementation": "corpus/extension-v1/src/fixtures/SafeExtension.java"
+    },
+    {
+      "descriptor": "fixtures/SafeExtension.httpUrl(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 16,
+      "trustedImplementation": "corpus/extension-v1/src/fixtures/SafeExtension.java"
+    },
+    {
+      "descriptor": "fixtures/SafeExtension.ldapValue(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 64,
+      "trustedImplementation": "corpus/extension-v1/src/fixtures/SafeExtension.java"
+    },
+    {
+      "descriptor": "fixtures/SafeExtension.xpathLiteral(Ljava/lang/String;)Ljava/lang/String;",
+      "contextMask": 32,
+      "trustedImplementation": "corpus/extension-v1/src/fixtures/SafeExtension.java"
     }
   ],
   "libraryModels": {
@@ -95,6 +283,7 @@
     "StringBuilder": "allocation-site object elements",
     "collections": "pass-through with argument-element write summaries",
     "shell": "separate finite shell-marker proof plus tainted argument-array elements; plain Runtime.exec(String) is not a shell rule",
-    "unknown": "union receiver/arguments and unknown bit; native/unresolved diagnostics"
+    "unknown": "union receiver/arguments and unknown bit; native/unresolved diagnostics",
+    "URI": "java.net.URI factories and accessors pass the taint of their arguments through, like String"
   }
 }

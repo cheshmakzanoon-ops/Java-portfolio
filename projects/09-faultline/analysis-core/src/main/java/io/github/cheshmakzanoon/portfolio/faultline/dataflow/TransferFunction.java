@@ -543,6 +543,7 @@ public final class TransferFunction implements Opcodes {
         || n.owner.equals("java/lang/CharSequence")
         || n.owner.equals("java/nio/file/Path")
         || n.owner.equals("java/nio/file/Paths")
+        || n.owner.equals("java/net/URI")
         || n.owner.equals("java/io/File")
         || n.owner.matches("java/lang/(Integer|Long|Double|Float|Boolean|Character|Short|Byte)")) {
       returned = joined;

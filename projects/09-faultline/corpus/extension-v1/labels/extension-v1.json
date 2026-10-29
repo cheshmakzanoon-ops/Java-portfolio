@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "frozenBeforeEngineEvaluation": true,
+  "revisionReason": "Additive extension for model 1.1.0 rules and web sources; the frozen v2 corpus is untouched.",
+  "supportFiles": {
+    "src/fixtures/SafeExtension.java": "6ca2b0d858a1f6ca7638e237996587c75235d679e85e6fbe9cdd4c64e6e38e2e",
+    "src/jakarta/servlet/ServletRequest.java": "1bb326182054474b7533522b190b607e213b41beb226dfe040f9e434cd436c89",
+    "src/jakarta/servlet/http/HttpServletRequest.java": "71586f63370434c3260580ff5392aae4cf82114ce324784d0cb94ef58be26031",
+    "src/javax/servlet/ServletRequest.java": "1bedf9f723efb22ba26f9a082a33df85ece7e1bfa8e28fab09758917d0a9ed40",
+    "src/javax/servlet/http/HttpServletRequest.java": "a9e5a58722ab635272f34dba889137f5e896d464e86940e054661e192c4af306"
+  },
+  "labels": [
+    {
+      "id": "CLASS01Negative",
+      "file": "src/fixtures/CLASS01Negative.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": false,
+      "pattern": "sanitized",
+      "rationale": "The trusted allowlist contract clears the class-loading context.",
+      "sha256": "75f68540276127187bec9f427c44b6f171deb7fd602e8b66402f85ef53365c8e"
+    },
+    {
+      "id": "CLASS01Positive",
+      "file": "src/fixtures/CLASS01Positive.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External input names the class passed to Class.forName(String).",
+      "sha256": "cf16b4b39f5a4afeb1b5216a6934f389112e6f581b8485e61dbc5ac57d982aa7"
+    },
+    {
+      "id": "CLASS02Negative",
+      "file": "src/fixtures/CLASS02Negative.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": false,
+      "pattern": "constant",
+      "rationale": "The loaded class name is a constant; the external value is unused.",
+      "sha256": "4c528b8e7814d163b35e187399310a0d2ec1da3a825b9081de3e8eef34646be5"
+    },
+    {
+      "id": "CLASS02Positive",
+      "file": "src/fixtures/CLASS02Positive.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": true,
+      "pattern": "branch",
+      "rationale": "One branch assigns the external name; the join keeps it tainted.",
+      "sha256": "77e4fc4891048c29649409efaacd5ebb49c93f905f810cc5f9dff9af159239ca"
+    },
+    {
+      "id": "CLASS03Negative",
+      "file": "src/fixtures/CLASS03Negative.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": false,
+      "pattern": "unrelated-use",
+      "rationale": "The external value is only printed; Class.forName receives a constant.",
+      "sha256": "e9738360b751995c45d1e95e8a979da2229549677ce0f559dd6679a04873035b"
+    },
+    {
+      "id": "CLASS03Positive",
+      "file": "src/fixtures/CLASS03Positive.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": true,
+      "pattern": "concat-three-argument",
+      "rationale": "A concatenation with an external suffix reaches the three-argument overload.",
+      "sha256": "c89290d5013a53a5d474e554362dd1c119cdb9a0d9dfc9055339df09d19bf36d"
+    },
+    {
+      "id": "CLASS04Negative",
+      "file": "src/fixtures/CLASS04Negative.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": false,
+      "pattern": "overwritten",
+      "rationale": "The external value is replaced by a constant before the sink.",
+      "sha256": "b57d642e75afaac48d8b27ec92202b4c2ecef15618e52bc819f749e6c12f161c"
+    },
+    {
+      "id": "CLASS04Positive",
+      "file": "src/fixtures/CLASS04Positive.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": true,
+      "pattern": "interprocedural-loadClass",
+      "rationale": "The external name crosses a helper before ClassLoader.loadClass(String).",
+      "sha256": "e2879f923f10b369de843ccbb7ffc009e077dc8ff482aa69d6fb26fa20f00958"
+    },
+    {
+      "id": "LDAP01Negative",
+      "file": "src/fixtures/LDAP01Negative.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": false,
+      "pattern": "sanitized",
+      "rationale": "The trusted escaping contract clears the LDAP context for the embedded value.",
+      "sha256": "ade93e8b97bc6fba6f3b41ed11b361c648f48ede1efe6e2fc61de092113d666a"
+    },
+    {
+      "id": "LDAP01Positive",
+      "file": "src/fixtures/LDAP01Positive.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External input is the filter argument of DirContext.search(String, String, SearchControls).",
+      "sha256": "f49dc71966eda1b45519e9fb65ac8159b72ed08632a2e81bbea05666a11c5a51"
+    },
+    {
+      "id": "LDAP02Negative",
+      "file": "src/fixtures/LDAP02Negative.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": false,
+      "pattern": "other-argument",
+      "rationale": "The external value is the search base, not the filter argument.",
+      "sha256": "48e37d60ae37ac915b29772bb92f5eacad60716623f92e371b61900b16d81592"
+    },
+    {
+      "id": "LDAP02Positive",
+      "file": "src/fixtures/LDAP02Positive.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": true,
+      "pattern": "branch-argument-array",
+      "rationale": "A branch assigns the external filter used with the argument-array overload.",
+      "sha256": "701d90a038eb6243fced7bc876b95010dcf36d0f2c87037b2a99d92e33112435"
+    },
+    {
+      "id": "LDAP03Negative",
+      "file": "src/fixtures/LDAP03Negative.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": false,
+      "pattern": "constant",
+      "rationale": "The filter is constant.",
+      "sha256": "ed5730dd494d4fd89ac40f45e3a42a555f2cccd5efdffae325d5fa1ea2308925"
+    },
+    {
+      "id": "LDAP03Positive",
+      "file": "src/fixtures/LDAP03Positive.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": true,
+      "pattern": "concat",
+      "rationale": "The classic (uid=<input>) filter concatenation.",
+      "sha256": "cb8a74661fbedeb19eb7fb72ab85c48445f3bed92256408cbcf322f4ff970306"
+    },
+    {
+      "id": "LDAP04Negative",
+      "file": "src/fixtures/LDAP04Negative.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": false,
+      "pattern": "overwritten",
+      "rationale": "The external value is replaced by a constant before the sink.",
+      "sha256": "e689ad8fa779aa441960614e917454536487a17a65455127734a3dbd5b5445f7"
+    },
+    {
+      "id": "LDAP04Positive",
+      "file": "src/fixtures/LDAP04Positive.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": true,
+      "pattern": "initial-context-owner",
+      "rationale": "The call site uses InitialDirContext as the static receiver type.",
+      "sha256": "cd18a99ee3c74b4569027e7dfe0777f3821bd352d50bde844edba434a7894540"
+    },
+    {
+      "id": "URL01Negative",
+      "file": "src/fixtures/URL01Negative.java",
+      "rule": "BG-URL-FETCH",
+      "positive": false,
+      "pattern": "sanitized",
+      "rationale": "The trusted destination allowlist clears the URL context.",
+      "sha256": "2575da1230e90735e1d7cc0afaf211b9fe35015136fe9817109d1a57c6fe11ca"
+    },
+    {
+      "id": "URL01Positive",
+      "file": "src/fixtures/URL01Positive.java",
+      "rule": "BG-URL-FETCH",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External input is the string given to new URL(String).",
+      "sha256": "3987555addaceb14dcd9aedfdc80493cb523e2a258c69b73a41b253f4d9f94a2"
+    },
+    {
+      "id": "URL02Negative",
+      "file": "src/fixtures/URL02Negative.java",
+      "rule": "BG-URL-FETCH",
+      "positive": false,
+      "pattern": "constant",
+      "rationale": "The destination is a constant URI.",
+      "sha256": "6c8aa46fe20ec7b9e981666b6e5692da9b1fda7ebab69ab4e48e0642a3144506"
+    },
+    {
+      "id": "URL02Positive",
+      "file": "src/fixtures/URL02Positive.java",
+      "rule": "BG-URL-FETCH",
+      "positive": true,
+      "pattern": "uri-factory",
+      "rationale": "URI.create keeps the taint and HttpRequest.newBuilder(URI) is the sink.",
+      "sha256": "2a809574d71cc7db1016c824c3f41bc15110c712890f708ad9b985dfc2f57094"
+    },
+    {
+      "id": "URL03Negative",
+      "file": "src/fixtures/URL03Negative.java",
+      "rule": "BG-URL-FETCH",
+      "positive": false,
+      "pattern": "other-argument",
+      "rationale": "Only the port, not the host argument, depends on the external input.",
+      "sha256": "ac998c2379f3a86b1b7f525e5650d2e487fc5652287d632eb61078088e959c6c"
+    },
+    {
+      "id": "URL03Positive",
+      "file": "src/fixtures/URL03Positive.java",
+      "rule": "BG-URL-FETCH",
+      "positive": true,
+      "pattern": "builder-concat",
+      "rationale": "An external host fragment reaches HttpRequest.Builder.uri(URI).",
+      "sha256": "f379a3cb5c1463e1373cdc5ff5f7db8f80b4a528bc007edfc8e171a60c5fa9ce"
+    },
+    {
+      "id": "URL04Negative",
+      "file": "src/fixtures/URL04Negative.java",
+      "rule": "BG-URL-FETCH",
+      "positive": false,
+      "pattern": "overwritten",
+      "rationale": "The external value is replaced by a constant before the sink.",
+      "sha256": "07f22528360927d7eb89bcb92c6c1f68c3cf1e4297a530a55d0043540bc9930b"
+    },
+    {
+      "id": "URL04Positive",
+      "file": "src/fixtures/URL04Positive.java",
+      "rule": "BG-URL-FETCH",
+      "positive": true,
+      "pattern": "socket-host",
+      "rationale": "The tainted conditional host flows to the Socket host argument.",
+      "sha256": "0279cbafa62da9a0cc5e66bfb9937d4c74c75d8cc1763603118e88dc4543f572"
+    },
+    {
+      "id": "WEB01Negative",
+      "file": "src/fixtures/WEB01Negative.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": false,
+      "pattern": "sanitized",
+      "rationale": "The allowlist contract clears the class-loading context for a web parameter.",
+      "sha256": "3ac94b35c7df2c5594c99c682301f293bf2fb4fd7e4cae91b1066ac9331c638d"
+    },
+    {
+      "id": "WEB01Positive",
+      "file": "src/fixtures/WEB01Positive.java",
+      "rule": "BG-CLASS-LOAD",
+      "positive": true,
+      "pattern": "javax-parameter",
+      "rationale": "A javax HttpServletRequest parameter names the class to load.",
+      "sha256": "4d512a368f1e2511382a494b8956ea0cabcdafe22bbf5f13c1d702577fc731cd"
+    },
+    {
+      "id": "WEB02Negative",
+      "file": "src/fixtures/WEB02Negative.java",
+      "rule": "BG-URL-FETCH",
+      "positive": false,
+      "pattern": "other-argument",
+      "rationale": "The parameter is only the port; the Socket host is constant.",
+      "sha256": "f8af8074c68dba9c2efd15af762aecafc4235e8ec3bbbc93a05ad629e1466f5b"
+    },
+    {
+      "id": "WEB02Positive",
+      "file": "src/fixtures/WEB02Positive.java",
+      "rule": "BG-URL-FETCH",
+      "positive": true,
+      "pattern": "jakarta-header",
+      "rationale": "A jakarta request header chooses the URL that is fetched.",
+      "sha256": "ab05e9976c25d6db707a576ffe28ba0855bf462d6935875bbea688af7ff4f94e"
+    },
+    {
+      "id": "WEB03Positive",
+      "file": "src/fixtures/WEB03Positive.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": true,
+      "pattern": "servlet-request-type",
+      "rationale": "The call site's static type is ServletRequest rather than HttpServletRequest.",
+      "sha256": "8e7711d3c296372d06c1622a02a333a60e74010cbb4ab693869fc2913cfd55c4"
+    },
+    {
+      "id": "WEB04Positive",
+      "file": "src/fixtures/WEB04Positive.java",
+      "rule": "BG-LDAP-FILTER",
+      "positive": true,
+      "pattern": "jakarta-query-string",
+      "rationale": "The raw query string is concatenated into an LDAP filter.",
+      "sha256": "b8bbb02b962b44efe39445730fe81f795abc38df984d365ed651d82f5e96a71d"
+    },
+    {
+      "id": "XPATH01Negative",
+      "file": "src/fixtures/XPATH01Negative.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": false,
+      "pattern": "sanitized",
+      "rationale": "The trusted literal contract clears the XPath context for the embedded value.",
+      "sha256": "b68a24994f679c187d3353fc62eadfd7922c62a569ca582a5687a2084d04e499"
+    },
+    {
+      "id": "XPATH01Positive",
+      "file": "src/fixtures/XPATH01Positive.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": true,
+      "pattern": "direct",
+      "rationale": "External input is the expression of XPath.evaluate(String, Object).",
+      "sha256": "da2d1d514fed21920c5a6e36838bf9767106a0709d6af0ea62bd03229360ca98"
+    },
+    {
+      "id": "XPATH02Negative",
+      "file": "src/fixtures/XPATH02Negative.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": false,
+      "pattern": "constant",
+      "rationale": "The compiled expression is constant.",
+      "sha256": "1a402024f115ced040a82e63b4190e6456743d636e56a0ed5f27078abef1c7d7"
+    },
+    {
+      "id": "XPATH02Positive",
+      "file": "src/fixtures/XPATH02Positive.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": true,
+      "pattern": "branch-compile",
+      "rationale": "A branch assigns the external expression compiled by XPath.compile.",
+      "sha256": "eabff067956b356065ff41391b1caf1558cb1c70f993a9a026bb2f909fc70b6d"
+    },
+    {
+      "id": "XPATH03Negative",
+      "file": "src/fixtures/XPATH03Negative.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": false,
+      "pattern": "other-argument",
+      "rationale": "The external value is the context item, not the expression argument.",
+      "sha256": "237fc3abfc4a5209cca5287749411e7c7072621f49ef86a513c8389ca1ac746e"
+    },
+    {
+      "id": "XPATH03Positive",
+      "file": "src/fixtures/XPATH03Positive.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": true,
+      "pattern": "string-builder",
+      "rationale": "The classic quote-breaking predicate built with StringBuilder.",
+      "sha256": "0ddaecd1ac1933f5e520def3975c9627bc6112b582c93b1c89a1f7e16bd30b98"
+    },
+    {
+      "id": "XPATH04Negative",
+      "file": "src/fixtures/XPATH04Negative.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": false,
+      "pattern": "overwritten",
+      "rationale": "The external value is replaced by a constant before the sink.",
+      "sha256": "64f0d8c3e4930e7072260b3b8aa87be7f4f5062936a419fdd6ddfede69ddb749"
+    },
+    {
+      "id": "XPATH04Positive",
+      "file": "src/fixtures/XPATH04Positive.java",
+      "rule": "BG-XPATH-QUERY",
+      "positive": true,
+      "pattern": "qname-overload",
+      "rationale": "The QName-returning overload receives an expression with external text.",
+      "sha256": "f3498e65fcb73b374d5444669552836f5cdb40b658fc0809a7a2f3427245b093"
+    }
+  ]
+}

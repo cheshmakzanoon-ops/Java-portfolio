@@ -16,7 +16,7 @@ import picocli.CommandLine.*;
     name = "faultline",
     mixinStandardHelpOptions = true,
     version = "Faultline 1.0.0",
-    subcommands = {Faultline.Scan.class})
+    subcommands = {Faultline.Scan.class, Faultline.Rules.class})
 public final class Faultline implements Runnable {
   public void run() {
     CommandLine.usage(this, System.out);
@@ -36,6 +36,33 @@ public final class Faultline implements Runnable {
           return 2;
         });
     return cmd.execute(args);
+  }
+
+  @Command(
+      name = "rules",
+      mixinStandardHelpOptions = true,
+      description = "List the sources, sinks and sanitizers a scan would use")
+  public static final class Rules implements Callable<Integer> {
+    @Option(names = "--rules", description = "Rule model document; the built-in model if omitted")
+    Path rules;
+
+    @Spec Model.CommandSpec spec;
+
+    public Integer call() {
+      try {
+        RuleModels models = rules == null ? new RuleModels() : RuleModelLoader.read(rules);
+        spec.commandLine()
+            .getOut()
+            .print(ModelListing.describe(models, rules == null ? "built-in" : rules.toString()));
+        spec.commandLine().getOut().flush();
+        return 0;
+      } catch (IOException | IllegalArgumentException e) {
+        spec.commandLine()
+            .getErr()
+            .println("Faultline INVALID/FAILED: " + e.getMessage() + "; exit 2");
+        return 2;
+      }
+    }
   }
 
   @Command(
@@ -89,8 +116,8 @@ public final class Faultline implements Runnable {
       try {
         OutputGuard.validate(out, explainDir, input, classpath, rules, baseline);
         outputSafe = true;
-        if (!Set.of("sarif", "json").contains(format))
-          throw new IllegalArgumentException("format must be sarif or json");
+        if (!Set.of("sarif", "json", "text").contains(format))
+          throw new IllegalArgumentException("format must be sarif, json or text");
         RuleModels models = rules == null ? new RuleModels() : RuleModelLoader.read(rules);
         SarifExporter exporter = new SarifExporter();
         Set<String> previous = baseline == null ? Set.of() : exporter.baseline(baseline);
@@ -108,22 +135,30 @@ public final class Faultline implements Runnable {
         if (explainDir != null) new AnalysisExplainer().write(analysis, explainDir, explainMethod);
         List<Finding> findings = new FindingReporter().findings(analysis);
         Object report =
-            format.equals("sarif")
-                ? exporter.report(analysis, findings, previous)
-                : Map.of(
-                    "schemaVersion",
-                    1,
-                    "partial",
-                    analysis.analysis().partial(),
-                    "findings",
+            format.equals("text")
+                ? TextReport.render(
                     findings,
-                    "diagnostics",
-                    analysis.analysis().diagnostics(),
-                    "unfinishedFrontier",
+                    previous,
+                    analysis.analysis().partial(),
                     analysis.analysis().unfinished(),
-                    "workUnits",
-                    analysis.analysis().work());
-        exporter.write(out, report);
+                    analysis.analysis().diagnostics().size())
+                : format.equals("sarif")
+                    ? exporter.report(analysis, findings, previous)
+                    : Map.of(
+                        "schemaVersion",
+                        1,
+                        "partial",
+                        analysis.analysis().partial(),
+                        "findings",
+                        findings,
+                        "diagnostics",
+                        analysis.analysis().diagnostics(),
+                        "unfinishedFrontier",
+                        analysis.analysis().unfinished(),
+                        "workUnits",
+                        analysis.analysis().work());
+        if (report instanceof String text) exporter.writeText(out, text);
+        else exporter.write(out, report);
         long fresh = findings.stream().filter(f -> !previous.contains(f.fingerprint())).count();
         int code = analysis.analysis().partial() ? 3 : fresh > 0 ? 1 : 0;
         spec.commandLine()
@@ -160,19 +195,22 @@ public final class Faultline implements Runnable {
         if (!outputSafe) return code;
         try {
           SarifExporter exporter = new SarifExporter();
-          exporter.write(
-              out,
-              format.equals("sarif")
-                  ? exporter.failure(e.getMessage(), partial)
-                  : Map.of(
-                      "schemaVersion",
-                      1,
-                      "partial",
-                      partial,
-                      "diagnostic",
-                      e.getMessage(),
-                      "exitCode",
-                      code));
+          if (format.equals("text"))
+            exporter.writeText(out, TextReport.failure(e.getMessage(), partial));
+          else
+            exporter.write(
+                out,
+                format.equals("sarif")
+                    ? exporter.failure(e.getMessage(), partial)
+                    : Map.of(
+                        "schemaVersion",
+                        1,
+                        "partial",
+                        partial,
+                        "diagnostic",
+                        e.getMessage(),
+                        "exitCode",
+                        code));
         } catch (IOException ignored) {
           spec.commandLine().getErr().println("Unable to write failure report");
         }

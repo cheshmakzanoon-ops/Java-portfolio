@@ -116,7 +116,12 @@ public final class SarifExporter {
     return switch (rule) {
       case "BG-SQL-TEXT" -> "External input in SQL command text";
       case "BG-SHELL-COMMAND" -> "External input in modeled shell -c command";
-      default -> "External input in filesystem access path";
+      case "BG-PATH-ACCESS" -> "External input in filesystem access path";
+      case "BG-CLASS-LOAD" -> "External input selects a class to load";
+      case "BG-URL-FETCH" -> "External input chooses a network destination";
+      case "BG-XPATH-QUERY" -> "External input in an XPath expression";
+      case "BG-LDAP-FILTER" -> "External input in an LDAP search filter";
+      default -> throw new IllegalArgumentException("undescribed rule " + rule);
     };
   }
 
@@ -134,6 +139,13 @@ public final class SarifExporter {
     OwnedOutput.write(
         path,
         temporary -> mapper.writerWithDefaultPrettyPrinter().writeValue(temporary.toFile(), value));
+  }
+
+  /** Writes a text report with the same owned-replacement guarantees as the JSON writers. */
+  public void writeText(Path path, String text) throws IOException {
+    OwnedOutput.write(
+        path,
+        temporary -> Files.writeString(temporary, text, java.nio.charset.StandardCharsets.UTF_8));
   }
 
   public Set<String> baseline(Path path) throws IOException {

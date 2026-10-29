@@ -1,6 +1,6 @@
 # Faultline
 
-Faultline is an offline Java bytecode analyzer. It reads explicitly selected classfiles and archives without loading their classes, then traces modeled external inputs into SQL command text, shell `-c` commands, and filesystem paths. Each finding includes a source, sink, bytecode identity, and bounded witness.
+Faultline is an offline Java bytecode analyzer. It reads explicitly selected classfiles and archives without loading their classes, then traces modeled external inputs into seven kinds of sink: SQL command text, shell `-c` commands, filesystem paths, class names given to `Class.forName`/`ClassLoader.loadClass`, network destinations (`URL`, `Socket`, `HttpRequest`), XPath expressions and LDAP search filters. External inputs are environment and property reads, console input and, since model 1.1.0, servlet request parameters, headers and URL parts (`javax` and `jakarta`). Each finding includes a source, sink, bytecode identity, and bounded witness.
 
 The analyzer implements its own control-flow graph, frame interpreter, taint lattice, fixed-point worklists, and interprocedural summaries. ASM supplies structural classfile parsing. Findings describe the declared model; they do not prove exploitability or establish that a program is secure.
 
@@ -45,4 +45,4 @@ Unknown-library uncertainty differs from clean values and from partial coverage.
 
 Read [architecture](docs/ARCHITECTURE.md) and the [engine walkthrough](docs/ENGINE.md) for implementation details, [security](docs/SECURITY.md) for trust boundaries, and [operations](docs/OPERATIONS.md) for scan controls. The [corpus methodology](corpus/README.md) explains fixed labels and accuracy limits. [Verification status](docs/STATUS.md) separates current checks from historical results; [performance evidence](docs/PERFORMANCE.md) applies only to its recorded source revision.
 
-The historical frozen corpus recorded 60 true positives and 60 true negatives. It does not estimate field accuracy. Object-insensitive aliases and coarse shell-array modeling have known false positives outside that corpus; see the [threat model](docs/THREAT-MODEL.md).
+The historical frozen corpus recorded 60 true positives and 60 true negatives for the original three rules. A separate, additive [extension corpus](corpus/README.md#extension-corpus-for-model-110) of 38 hash-pinned fixtures covers the four newer rules and the web sources (20 positives, 18 negatives, 0 misclassified). Neither estimates field accuracy. Object-insensitive aliases and coarse shell-array modeling have known false positives outside that corpus; see the [threat model](docs/THREAT-MODEL.md).

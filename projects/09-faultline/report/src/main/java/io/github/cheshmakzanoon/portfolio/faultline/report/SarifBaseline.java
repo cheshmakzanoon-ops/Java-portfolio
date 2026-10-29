@@ -23,7 +23,9 @@ final class SarifBaseline {
       if (!run.isObject()) throw invalid("each run must be an object");
       JsonNode driver = run.path("tool").path("driver");
       if (!textEquals(driver.get("name"), "Faultline")
-          || !textEquals(driver.get("version"), RuleModels.VERSION))
+          || driver.get("version") == null
+          || !driver.get("version").isTextual()
+          || !RuleModels.SUPPORTED_VERSIONS.contains(driver.get("version").textValue()))
         throw invalid("tool name and model version must match Faultline");
       JsonNode results = run.get("results");
       if (results == null || !results.isArray()) throw invalid("results must be an explicit array");
