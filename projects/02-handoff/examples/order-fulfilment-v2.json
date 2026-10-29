@@ -1,0 +1,87 @@
+{
+  "name": "order-fulfilment",
+  "version": 2,
+  "variables": {
+    "order": "TEXT"
+  },
+  "nodes": [
+    {
+      "id": "reserve",
+      "kind": "ACTIVITY",
+      "requires": [],
+      "activity": "reserve",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": "release",
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": null,
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "approval",
+      "kind": "SIGNAL",
+      "requires": [
+        "reserve"
+      ],
+      "activity": null,
+      "safety": null,
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 3600,
+      "signal": "approval",
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "ship",
+      "kind": "ACTIVITY",
+      "requires": [
+        "approval"
+      ],
+      "activity": "ship",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": "refund",
+      "inputType": "TEXT",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": null,
+      "expression": null,
+      "when": null
+    },
+    {
+      "id": "timed-out",
+      "kind": "BRANCH",
+      "requires": [
+        "approval"
+      ],
+      "activity": null,
+      "safety": null,
+      "compensation": null,
+      "inputType": "TEXT",
+      "outputType": "BOOLEAN",
+      "delaySeconds": 0,
+      "signal": null,
+      "expression": "status.approval==TIMED_OUT",
+      "when": null
+    },
+    {
+      "id": "release-on-timeout",
+      "kind": "ACTIVITY",
+      "requires": [
+        "timed-out"
+      ],
+      "activity": "release",
+      "safety": "IDEMPOTENT_WITH_KEY",
+      "compensation": null,
+      "inputType": "BOOLEAN",
+      "outputType": "TEXT",
+      "delaySeconds": 0,
+      "signal": null,
+      "expression": null,
+      "when": "timed-out==true"
+    }
+  ]
+}

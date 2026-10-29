@@ -90,6 +90,8 @@
             <configuration>
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.handoff.Data*</param>
+                <param>io.github.cheshmakzanoon.portfolio.handoff.DefinitionAnalyzer*</param>
+                <param>io.github.cheshmakzanoon.portfolio.handoff.DefinitionGraph*</param>
               </targetClasses>
               <targetTests>
                 <param>io.github.cheshmakzanoon.portfolio.handoff.*Test</param>

@@ -49,6 +49,14 @@ Back up the disposable database with `docker compose -f projects/02-handoff/infr
 
 The PostgreSQL adapter uses a Hikari pool capped at four connections per process, with ten-second acquisition and three-second validation budgets. The resource suite explicitly injects expired database deadlines while giving active operations generous leases, so CPU contention cannot silently turn a live successor into the stale worker being tested. The live demo separately waits for real 30-second lease expiry after worker death.
 
+## Check a definition before deploying it
+
+`scripts/definition.sh lint|graph|simulate FILE` (after a build) works on the JSON that `POST` of a definition accepts and touches no database or service. Input files must be regular, unlinked and at most 1 MiB; unknown fields are rejected. Exit codes: `lint` 0 clean, 1 warnings, 2 invalid or unreadable; `graph` and `simulate` 0 or 2.
+
+`lint` is advisory. Its findings are consequences of the documented semantics, not rules the engine enforces: `TIMEOUT_LEAVES_EFFECT_APPLIED` (a signal timeout skips its dependants and the workflow completes with an effect applied, because compensation runs only on failure or cancellation), `EFFECT_NEVER_UNDONE`, `SIGNAL_TIMES_OUT_IMMEDIATELY`, `UNUSED_BRANCH`, `NON_IDEMPOTENT_EFFECT`, `TIMER_WITHOUT_DELAY`, and `NEAR_*_LIMIT` notes. An invalid definition is reported as a single `INVALID_DEFINITION` error carrying the engine's own reason, which names no node because `Definition.validate()` stops at its first failure.
+
+`simulate FILE [SCENARIO]` replays the real interpreter against scripted outcomes. A scenario file may contain `payload`, `context` (declared variables only, as text literals parsed by type), `fail` (task ids, `comp-<node>` for a compensation), `unknown` (task id to `APPLIED`, `NOT_APPLIED` or `UNRESOLVED`), `signals` (name to value) and `cancelAfterEvents`. Unlisted activities succeed and unlisted signals never arrive, so they time out. Its report lists the compensated nodes in order, anything still waiting on an operator, and effects that completed with their declared compensation not run; an explicit undo step written into the definition is not recognised as the compensation, so read that line with the node outcomes. The clock is virtual (`t+3600s` is the signal timeout, not wall time) and the result says nothing about throughput.
+
 ## Interpret execution results
 
 New starts provide a typed root payload plus the exact declared context schema. Signals carry a typed value; worker completions and APPLIED resolutions carry homogeneous typed result vectors. Wrong types fail before history/state commits. A normal timer preserves its arguments; a signal timeout exposes TIMED_OUT, and only an explicit status predicate handles that path. COMPLETED means the finite graph settled, including intentionally skipped/timed-out outcomes; inspect returned outcomes when business completion requires successful values.

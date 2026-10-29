@@ -20,6 +20,22 @@ Ordinary verification runs model, replay, provider, build-artifact, and contract
 
 The disposable runtime starts an API, two schedulers, three workers, PostgreSQL, and the provider simulator. Loopback ports are 18200 (API), 18201 (provider), and 18202 (PostgreSQL). `down` retains state; `./scripts/portfolio.sh reset-demo handoff` deletes this project's disposable database volume and provider log. Never reset data that is still needed to reconcile an unknown effect.
 
+## Review, draw and play a definition without a database
+
+Three commands work on a definition file (the same JSON the API accepts) and need neither PostgreSQL nor Docker. [`examples/`](examples) holds an order workflow with a latent flaw, its repaired version, a parallel media workflow and scenario files.
+
+```bash
+scripts/definition.sh lint examples/order-fulfilment.json            # exit 1: warns about a timeout trap
+scripts/definition.sh graph examples/order-fulfilment-v2.json        # Mermaid; --format dot for Graphviz
+scripts/definition.sh simulate examples/order-fulfilment.json examples/order-ship-fails.scenario.json
+```
+
+- **`lint`** reviews a definition that already validates and reports every concern with the node it concerns: an effect that a later failure cannot undo, a signal timeout that skips its dependants and lets the workflow *complete* with an effect still applied (compensation runs only on failure or cancellation), a zero-timeout signal, an unused branch, non-idempotent effects, and distance to the engine's bounds. The shipped order example triggers exactly that timeout warning; the v2 example repairs it with a branch on `status.approval==TIMED_OUT`. Exit 0 clean, 1 warnings, 2 invalid.
+- **`graph`** draws the `requires` graph with a shape per node kind, guards as dashed edges and compensations as dotted ones.
+- **`simulate`** plays the definition through the real `Interpreter` with a virtual clock: it acts as the scheduler and workers, appends the events they would, and replays the whole history after each, so every step is validated by the engine that validates production histories. A scenario can fail an activity (or its compensation), lose an acknowledgement and have an operator resolve it, deliver or withhold signals, set input values and cancel after N events. It shows what the *semantics* do (event order, compensation order, final state, which effects were never compensated); provider latency, retries and lease expiry are outside it.
+
+The analyzer and simulator are pure and live beside the model and engine; the command line lives in `workflow-verification`.
+
 ## Execution guarantees
 
 - Each instance pins a definition content hash and interpreter semantics version. Upgrading a definition does not change running instances.

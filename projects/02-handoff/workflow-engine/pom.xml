@@ -81,6 +81,7 @@
             <configuration>
               <targetClasses>
                 <param>io.github.cheshmakzanoon.portfolio.handoff.Interpreter</param>
+                <param>io.github.cheshmakzanoon.portfolio.handoff.WorkflowSimulator*</param>
               </targetClasses>
               <targetTests>
                 <param>io.github.cheshmakzanoon.portfolio.handoff.*Test</param>

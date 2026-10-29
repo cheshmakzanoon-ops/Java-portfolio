@@ -1,0 +1,11 @@
+{
+  "context": {
+    "order": "synthetic-1"
+  },
+  "unknown": {
+    "reserve": "APPLIED"
+  },
+  "signals": {
+    "approval": "go"
+  }
+}

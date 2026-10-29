@@ -2,6 +2,16 @@
 
 Handoff has executable replay, persistence, security, process-crash, and standalone recovery checks. The prescribed three-run performance baseline is incomplete, so no stable capacity budget or production-readiness claim is made.
 
+## Definition review, graph export and database-free simulation (2026-10-29)
+
+Three design-time commands were added (`scripts/definition.sh lint|graph|simulate`; see [operations](OPERATIONS.md#check-a-definition-before-deploying-it)): a definition analyzer, a Mermaid/Graphviz renderer and a deterministic simulator that drives the real `Interpreter` through scripted outcomes (failures, lost acknowledgements with operator resolution, signals, input values, cancellation) on a virtual clock. None changes engine semantics, persistence or the API; the analyzer and simulator are pure classes beside the model and engine, and the command line is in `workflow-verification`.
+
+The analyzer's headline finding is a real property of the documented semantics, shown by the shipped order example and reproduced by the simulator: when the `approval` signal times out, its dependants are skipped and the workflow *completes* with the reservation still applied, because compensation runs only on failure or cancellation. The repaired `order-fulfilment-v2.json` handles it with a branch on `status.approval==TIMED_OUT`.
+
+Executed against this source in the sandbox (JDK 25.0.4.1; no Docker, no PostgreSQL): `-Pmutation verify` passed with **168 ordinary test methods, zero failures, errors or skips**, the repository's test and mutation checkers accepting the fresh reports, and the unchanged 85% / 75% coverage gates met. The new classes are inside the mutation scope: **model 134 / 142 killed (94.37%)**, **engine 223 / 234 (95.30%)**, persistence 60 / 61 (98.36%), all above the 70% gates (417 killed overall; 17 survivors and three uncovered mutants remain in the denominator). The packaged `exec` jar was run through `scripts/definition.sh` for `lint`, `simulate` and `graph`. **The 33 native-PostgreSQL integration tests were not run for this change**, nor any process-crash or performance workload, so the 21 October integration and performance results below describe the earlier source. The formatting gate was also repaired in `handoff-workflow-verification` (two files; whitespace only), where `spotless:check` was failing at the previous HEAD.
+
+Limits of what the commands tell you: `lint` is advisory (its findings are consequences of the semantics, not engine rules) and cannot name the node behind an invalid definition because `validate()` stops at its first failure; `simulate` shows event order and state transitions, not latency, retries, leases or throughput, and an explicit undo step written into a definition is not recognised as the declared compensation.
+
 ## Current CSRF and recovery verification, 2026-10-21
 
 The complete current-source reactor passed **123 ordinary tests and 33 native

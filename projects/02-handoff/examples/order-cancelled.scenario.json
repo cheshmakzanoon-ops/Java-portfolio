@@ -1,0 +1,6 @@
+{
+  "context": {
+    "order": "synthetic-1"
+  },
+  "cancelAfterEvents": 3
+}

@@ -1,0 +1,11 @@
+{
+  "context": {
+    "order": "synthetic-1"
+  },
+  "signals": {
+    "approval": "go"
+  },
+  "fail": [
+    "ship"
+  ]
+}
