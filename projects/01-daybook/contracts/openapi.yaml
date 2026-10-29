@@ -14,6 +14,14 @@ paths:
       responses:
         '200': {description: Adapter readiness}
   /v1/accounts:
+    get:
+      description: Requires ledger.read. Accounts in identity order with authoritative cumulative debits and credits and the balance on the normal side. Exact decimal strings; page with `after` (the last returned id) and `limit` 1..500. `next` is empty on the last page.
+      parameters:
+        - {in: query, name: after, schema: {type: string, format: uuid, default: '00000000-0000-0000-0000-000000000000'}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 500, default: 100}}
+      responses:
+        '200': {description: Accounts and cursor}
+        '422': {$ref: '#/components/responses/Invalid'}
     post:
       description: Requires ledger.write; currency immutable after creation.
       requestBody:
@@ -62,6 +70,13 @@ paths:
         '200': {description: Stable reversal journalId}
         '409': {description: Original already reversed or key conflict}
         '422': {$ref: '#/components/responses/Invalid'}
+  /v1/accounts/{id}:
+    get:
+      description: Requires ledger.read. One account with its authoritative cumulative debits, credits and normal-side balance.
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '200': {description: Account}
+        '404': {description: NOT_FOUND; the account does not exist for this tenant}
   /v1/accounts/{id}/statement:
     get:
       description: Requires ledger.read. Authoritative immutable source. Reuse snapshot and boundary plus the last row's date/id/line cursor on every subsequent page. Balances are debit-minus-credit, presented by normal side.
@@ -76,6 +91,39 @@ paths:
       responses:
         '200':
           description: Rows ordered by effective_date,id,line_no. Contains consistency, snapshot, boundary, account, rows, next and applied filters. Monetary minor units are strings.
+        '422': {$ref: '#/components/responses/Invalid'}
+  /v1/journals/{id}:
+    get:
+      description: Requires ledger.read. A posted journal with its numbered lines, exact amounts, and links to the journal it reverses and the journal that reverses it.
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '200': {description: Journal detail}
+        '404': {description: NOT_FOUND; the journal does not exist for this tenant}
+  /v1/periods:
+    get:
+      description: Requires ledger.read. The tenant's accounting periods in date order (at most 1000), with their closed flag.
+      responses:
+        '200': {description: Periods}
+    post:
+      description: Requires ledger.write. Opens an accounting period for an inclusive date range of at most 3661 days. An identical existing range returns its id (idempotent); any other overlap is PERIOD_OVERLAP_CONFLICT. Periods cannot be created or widened by any other runtime path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [start, end]
+              properties: {start: {type: string, format: date}, end: {type: string, format: date}}
+      responses:
+        '200': {description: periodId}
+        '409': {description: PERIOD_OVERLAP_CONFLICT}
+        '422': {description: PERIOD_RANGE or TENANT_NOT_FOUND}
+  /v1/trial-balance:
+    get:
+      description: Requires ledger.read. Authoritative trial balance computed from posted lines in one statement, as of an effective date (default today, UTC). Journals effective on or before `asOf` are included, so a later back-dated posting changes an earlier date's report. Per currency it gives total debits, total credits and `balanced`; every journal balances, so a `balanced` of false indicates damaged data. More than 10000 accounts is rejected as ACCOUNT_BOUND.
+      parameters: [{in: query, name: asOf, schema: {type: string, format: date}}]
+      responses:
+        '200': {description: Per-currency totals and per-account normal-side balances}
         '422': {$ref: '#/components/responses/Invalid'}
   /v1/requests/{key}:
     get:

@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
 
@@ -299,6 +300,109 @@ public final class LedgerStore implements AutoCloseable {
               presented.toString(),
               "normalBalanceDecimal",
               new Money(accountInfo.get("currency"), presented).decimal());
+        });
+  }
+
+  /** Opens an accounting period; an identical existing range returns its identity. */
+  public UUID openPeriod(UUID tenant, LocalDate start, LocalDate end) {
+    if (tenant == null || start == null || end == null)
+      throw new IllegalArgumentException("MISSING_FIELD");
+    return tx(
+        c ->
+            UUID.fromString(
+                query(c, "SELECT ledger.open_period(?,?,?) AS id", tenant, start, end)
+                    .getFirst()
+                    .get("id")));
+  }
+
+  public List<Map<String, String>> periods(UUID tenant) {
+    return tx(
+        c ->
+            query(
+                c,
+                "SELECT id,start_date::text AS start_date,end_date::text AS end_date,closed::text AS closed FROM ledger.accounting_period WHERE tenant_id=? ORDER BY start_date,id LIMIT 1000",
+                tenant));
+  }
+
+  /** Accounts in identity order with their authoritative cumulative debits and credits. */
+  public List<Map<String, String>> accounts(UUID tenant, UUID after, int limit) {
+    if (limit < 1 || limit > 500) throw new IllegalArgumentException("PAGE_BOUND");
+    return tx(
+        c ->
+            query(
+                c,
+                "SELECT a.id,a.name,a.currency,a.normal_side,coalesce(b.debits,0)::text AS debits,coalesce(b.credits,0)::text AS credits FROM ledger.account a LEFT JOIN ledger.account_balance b ON b.tenant_id=a.tenant_id AND b.account_id=a.id WHERE a.tenant_id=? AND a.id>? ORDER BY a.id LIMIT ?",
+                tenant,
+                after,
+                limit));
+  }
+
+  public Optional<Map<String, String>> account(UUID tenant, UUID id) {
+    return tx(
+        c ->
+            query(
+                    c,
+                    "SELECT a.id,a.name,a.currency,a.normal_side,coalesce(b.debits,0)::text AS debits,coalesce(b.credits,0)::text AS credits FROM ledger.account a LEFT JOIN ledger.account_balance b ON b.tenant_id=a.tenant_id AND b.account_id=a.id WHERE a.tenant_id=? AND a.id=?",
+                    tenant,
+                    id)
+                .stream()
+                .findFirst());
+  }
+
+  /** A journal with its lines, or empty when it does not exist for this tenant. */
+  public Optional<JournalDetail> journal(UUID tenant, UUID id) {
+    return tx(
+        c -> {
+          var header =
+              query(
+                  c,
+                  "SELECT j.period_id,j.currency,j.effective_date::text AS effective_date,j.recorded_at::text AS recorded_at,j.reference,j.reverses,(SELECT r.id FROM ledger.journal r WHERE r.tenant_id=j.tenant_id AND r.reverses=j.id) AS reversed_by FROM ledger.journal j WHERE j.tenant_id=? AND j.id=?",
+                  tenant,
+                  id);
+          if (header.isEmpty()) return Optional.<JournalDetail>empty();
+          var lines =
+              query(
+                  c,
+                  "SELECT line_no,account_id,side,amount::text AS amount FROM ledger.posting WHERE tenant_id=? AND journal_id=? ORDER BY line_no",
+                  tenant,
+                  id);
+          return Optional.of(new JournalDetail(id, header.getFirst(), lines));
+        });
+  }
+
+  public record JournalDetail(
+      UUID id, Map<String, String> header, List<Map<String, String>> lines) {}
+
+  /**
+   * Cumulative debits and credits per account over journals effective on or before {@code asOf}. A
+   * single statement, so every account is read from one snapshot. More accounts than the bound is a
+   * rejection rather than a silently partial report.
+   */
+  public TrialBalance trialBalance(UUID tenant, LocalDate asOf) {
+    if (tenant == null || asOf == null) throw new IllegalArgumentException("MISSING_FIELD");
+    return tx(
+        c -> {
+          var rows =
+              query(
+                  c,
+                  "WITH totals AS (SELECT p.account_id,sum(p.amount) FILTER (WHERE p.side='DEBIT') AS debits,sum(p.amount) FILTER (WHERE p.side='CREDIT') AS credits FROM ledger.posting p JOIN ledger.journal j ON j.tenant_id=p.tenant_id AND j.id=p.journal_id WHERE p.tenant_id=? AND j.effective_date<=? GROUP BY p.account_id) SELECT a.id,a.name,a.currency,a.normal_side,coalesce(t.debits,0)::text AS debits,coalesce(t.credits,0)::text AS credits FROM ledger.account a LEFT JOIN totals t ON t.account_id=a.id WHERE a.tenant_id=? ORDER BY a.currency,a.name,a.id LIMIT 10001",
+                  tenant,
+                  asOf,
+                  tenant);
+          if (rows.size() > 10000) throw new IllegalArgumentException("ACCOUNT_BOUND");
+          return TrialBalance.of(
+              asOf,
+              rows.stream()
+                  .map(
+                      r ->
+                          new TrialBalance.Row(
+                              UUID.fromString(r.get("id")),
+                              r.get("name"),
+                              r.get("currency"),
+                              Journal.Side.valueOf(r.get("normal_side")),
+                              new BigInteger(r.get("debits")),
+                              new BigInteger(r.get("credits"))))
+                  .toList());
         });
   }
 

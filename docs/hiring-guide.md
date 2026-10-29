@@ -27,6 +27,8 @@ The Pit Java demo with an isolated synthetic journal. Native Windows execution h
 **not yet been independently certified**; report any toolchain or path failure rather
 than treating this command as verified by Linux CI.
 
+For a narrated version of the same ideas (price-time priority, queue priority under replacement, durable rejections, idempotent retry, restart from the journal and an independent replay audit), run `projects/06-thepit/scripts/pit.sh tour`; `pit.sh verify <journal>` replays any journal against a structurally independent matcher.
+
 The demo asserts four executions, eight traded lots, exact end balances, no open orders,
 idempotent commands and recovery from an interrupted cancellation. Follow the
 [order-book implementation](../projects/06-thepit/matching-core/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Book.java),

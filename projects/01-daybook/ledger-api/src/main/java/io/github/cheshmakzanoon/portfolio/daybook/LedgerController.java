@@ -60,6 +60,8 @@ public class LedgerController {
 
   public record ReversalInput(LocalDate date) {}
 
+  public record PeriodInput(LocalDate start, LocalDate end) {}
+
   public record Decision(UUID journal, int line, String reason, String evidence) {}
 
   @GetMapping("/health")
@@ -76,6 +78,53 @@ public class LedgerController {
   @PostMapping("/v1/accounts")
   Map<String, UUID> account(@AuthenticationPrincipal Jwt p, @RequestBody AccountInput in) {
     return Map.of("id", store.account(tenant(p), in.currency(), in.normalSide(), in.name()));
+  }
+
+  @PostMapping("/v1/periods")
+  Map<String, UUID> openPeriod(@AuthenticationPrincipal Jwt p, @RequestBody PeriodInput in) {
+    return Map.of("periodId", store.openPeriod(tenant(p), in.start(), in.end()));
+  }
+
+  @GetMapping("/v1/periods")
+  Map<String, Object> periods(@AuthenticationPrincipal Jwt p) {
+    return Map.of("periods", store.periods(tenant(p)).stream().map(ReadModels::period).toList());
+  }
+
+  @GetMapping("/v1/accounts")
+  Map<String, Object> accounts(
+      @AuthenticationPrincipal Jwt p,
+      @RequestParam(defaultValue = "00000000-0000-0000-0000-000000000000") UUID after,
+      @RequestParam(defaultValue = "100") int limit) {
+    var rows = store.accounts(tenant(p), after, limit);
+    return Map.of(
+        "accounts",
+        ReadModels.accounts(rows),
+        "next",
+        rows.size() < limit ? Map.of() : Map.of("after", rows.getLast().get("id")));
+  }
+
+  @GetMapping("/v1/accounts/{id}")
+  ResponseEntity<Object> account(@AuthenticationPrincipal Jwt p, @PathVariable UUID id) {
+    return store
+        .account(tenant(p), id)
+        .<ResponseEntity<Object>>map(row -> ResponseEntity.ok(ReadModels.account(row)))
+        .orElseGet(LedgerController::notFound);
+  }
+
+  @GetMapping("/v1/journals/{id}")
+  ResponseEntity<Object> journal(@AuthenticationPrincipal Jwt p, @PathVariable UUID id) {
+    return store
+        .journal(tenant(p), id)
+        .<ResponseEntity<Object>>map(detail -> ResponseEntity.ok(ReadModels.journal(detail)))
+        .orElseGet(LedgerController::notFound);
+  }
+
+  /** Authoritative: computed from posted lines in one statement, not from reporting projections. */
+  @GetMapping("/v1/trial-balance")
+  Map<String, Object> trialBalance(
+      @AuthenticationPrincipal Jwt p, @RequestParam(required = false) LocalDate asOf) {
+    var date = asOf == null ? LocalDate.now(java.time.ZoneOffset.UTC) : asOf;
+    return ReadModels.trialBalance(store.trialBalance(tenant(p), date));
   }
 
   @PostMapping("/v1/journals")
@@ -212,5 +261,10 @@ public class LedgerController {
   })
   ResponseEntity<Map<String, String>> malformed(Exception e) {
     return ResponseEntity.badRequest().body(Map.of("code", "MALFORMED_REQUEST"));
+  }
+
+  /** The one 404 shape for authoritative reads of an absent or foreign identity. */
+  private static ResponseEntity<Object> notFound() {
+    return ResponseEntity.status(404).body(Map.of("code", "NOT_FOUND"));
   }
 }

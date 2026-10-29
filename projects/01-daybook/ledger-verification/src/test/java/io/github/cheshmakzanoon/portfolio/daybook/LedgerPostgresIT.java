@@ -9,7 +9,6 @@ import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 import org.junit.jupiter.api.*;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 
 class LedgerPostgresIT extends LedgerPostgresFixture {
   @Test
@@ -293,8 +292,7 @@ class LedgerPostgresIT extends LedgerPostgresFixture {
   void projectionHandlesEarlierAllocatedEventCommittedLater() throws Exception {
     var projector = new Projector(store);
     try (var delayed =
-        DriverManager.getConnection(
-            pg.getJdbcUrl(), "daybook_runtime", "local-only-daybook")) {
+        DriverManager.getConnection(pg.getJdbcUrl(), "daybook_runtime", "local-only-daybook")) {
       delayed.setAutoCommit(false);
       LedgerStore.postOn(
           delayed,
@@ -512,59 +510,28 @@ class LedgerPostgresIT extends LedgerPostgresFixture {
   @Test
   void backupRestoreReauditsImmutableSource() throws Exception {
     store.post(tenant, "backup", journal(321, "backup"));
-    var dump = pg.execInContainer("pg_dump", "-U", "postgres", "-d", "daybook", "--no-owner");
-    assertEquals(0, dump.getExitCode());
-    try (var clean =
-        new PostgreSQLContainer(
-                org.testcontainers.utility.DockerImageName.parse(
-                        "postgres@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
-                    .asCompatibleSubstituteFor("postgres"))
-            .withDatabaseName("restored")
-            .withUsername("postgres")
-            .withPassword("restore-only")) {
-      clean.start();
-      var provisioned =
-          clean.execInContainer(
-              "psql",
-              "-v",
-              "ON_ERROR_STOP=1",
-              "-U",
-              "postgres",
-              "-d",
-              "restored",
-              "-c",
-              "CREATE ROLE daybook_runtime LOGIN PASSWORD 'local-only-daybook'");
-      assertEquals(0, provisioned.getExitCode(), provisioned.getStderr());
-      clean.copyFileToContainer(
-          org.testcontainers.images.builder.Transferable.of(dump.getStdout()), "/tmp/backup.sql");
-      var restored =
-          clean.execInContainer(
-              "psql",
-              "-v",
-              "ON_ERROR_STOP=1",
-              "-U",
-              "postgres",
-              "-d",
-              "restored",
-              "-f",
-              "/tmp/backup.sql");
-      assertEquals(0, restored.getExitCode(), restored.getStderr());
-      var restoredStore = new LedgerStore(clean.getJdbcUrl(), "postgres", "restore-only");
-      assertEquals(store.balances(tenant), restoredStore.balances(tenant));
-      var violations = SourceAudit.journals(restoredStore);
-      assertTrue(violations.isEmpty());
-      try (var runtimeRestored =
-          new LedgerStore(clean.getJdbcUrl(), "daybook_runtime", "local-only-daybook")) {
-        new Projector(runtimeRestored).replay();
-        assertThrows(
-            LedgerStore.LedgerException.class,
-            () ->
-                runtimeRestored.tx(
-                    c ->
-                        LedgerStore.execute(
-                            c, "DELETE FROM ledger.posting WHERE tenant_id=?", tenant)));
+    try (var clean = pg.createRestoreTarget()) {
+      try {
+        pg.dumpInto(clean);
+        var restoredStore = new LedgerStore(clean.jdbcUrl(), clean.username(), clean.password());
+        assertEquals(store.balances(tenant), restoredStore.balances(tenant));
+        var violations = SourceAudit.journals(restoredStore);
+        assertTrue(violations.isEmpty());
+        try (var runtimeRestored =
+            new LedgerStore(clean.jdbcUrl(), "daybook_runtime", "local-only-daybook")) {
+          new Projector(runtimeRestored).replay();
+          assertThrows(
+              LedgerStore.LedgerException.class,
+              () ->
+                  runtimeRestored.tx(
+                      c ->
+                          LedgerStore.execute(
+                              c, "DELETE FROM ledger.posting WHERE tenant_id=?", tenant)));
+        }
+        restoredStore.close();
+      } finally {
+        pg.dropRestoreTarget(clean);
       }
-      restoredStore.close();
     }
   }
 
@@ -820,8 +787,7 @@ class LedgerPostgresIT extends LedgerPostgresFixture {
   void statementSnapshotExcludesLaterCommittedJournal() throws Exception {
     String snapshot;
     try (var delayed =
-        DriverManager.getConnection(
-            pg.getJdbcUrl(), "daybook_runtime", "local-only-daybook")) {
+        DriverManager.getConnection(pg.getJdbcUrl(), "daybook_runtime", "local-only-daybook")) {
       delayed.setAutoCommit(false);
       LedgerStore.postOn(
           delayed, tenant, "late-statement", journal(5, "late"), null, UUID.randomUUID());

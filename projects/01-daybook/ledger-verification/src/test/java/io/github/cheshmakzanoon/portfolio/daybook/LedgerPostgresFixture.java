@@ -4,24 +4,16 @@ import java.math.*;
 import java.time.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class LedgerPostgresFixture {
-  PostgreSQLContainer pg;
+  PostgresTestDatabase pg;
   LedgerStore store, admin;
   UUID tenant, other, period, a, b;
 
   @BeforeAll
   void boot() {
-    pg =
-        new PostgreSQLContainer(
-                org.testcontainers.utility.DockerImageName.parse(
-                        "postgres@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873")
-                    .asCompatibleSubstituteFor("postgres"))
-            .withDatabaseName("daybook")
-            .withUsername("postgres")
-            .withPassword("local-only-admin");
+    pg = new PostgresTestDatabase();
     pg.start();
     LedgerStore.migrate(pg.getJdbcUrl(), pg.getUsername(), pg.getPassword());
     store = new LedgerStore(pg.getJdbcUrl(), "daybook_runtime", "local-only-daybook");

@@ -20,6 +20,19 @@ The API listens on `127.0.0.1:18100`; PostgreSQL uses `127.0.0.1:18101`. The lif
 
 The demo asserts live HTTP results, recovers a committed JVM writer after termination, imports the same CSV twice, leaves ambiguous reconciliation candidates for review, and checks shadow reporting. `reset-demo.sh` resets only the named synthetic tenant. `down` stops services and retains the database volume.
 
+## Read the books
+
+Beyond posting and statements, the API exposes the authoritative state directly (all `ledger.read`, all computed from posted lines rather than from reporting projections):
+
+| Route | Purpose |
+| --- | --- |
+| `GET /v1/trial-balance?asOf=2026-06-30` | Per-currency total debits, total credits and a `balanced` flag, with every account's normal-side balance |
+| `GET /v1/accounts`, `GET /v1/accounts/{id}` | Accounts with cumulative debits, credits and balance on the normal side; cursor paging |
+| `GET /v1/journals/{id}` | A journal with numbered lines, exact amounts and links to the journal it reverses or is reversed by |
+| `GET /v1/periods`, `POST /v1/periods` | List periods; open one (`ledger.write`) for an inclusive date range |
+
+Opening a period used to need administrative SQL. `POST /v1/periods` calls a restricted `SECURITY DEFINER` function (migration V4), so the runtime role still has no table-level write privilege. An identical range is idempotent, any other overlap is `PERIOD_OVERLAP_CONFLICT`, and tenant creation remains a platform action. The trial balance includes every journal effective on or before `asOf`, so back-dating a posting changes the report for any later date; it is a statement of the books now, not a record of what was known on that date. Because every journal balances within one currency, a report whose `balanced` is false is a data-damage signal, not an accounting position.
+
 ## Design boundaries
 
 - **Exact amounts:** HTTP inputs are decimal strings; the domain uses `BigInteger` minor units. CAD and USD have two decimal places; JPY has none. The versioned [currency fixture](fixtures/currency-scales-v1.csv) defines those scales. Individual amounts and cumulative debit/credit balances are bounded by `10^30 − 1` minor units; journals contain 2–100 lines.

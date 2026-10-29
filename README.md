@@ -17,6 +17,14 @@ The [21 October engineering pass](docs/job-readiness-20261021.md) records the la
 authorization, recovery, diagnostics, and configuration fixes, with current local test
 counts and the acceptance work that remains open.
 
+A short, no-Docker tour of the newest capabilities:
+
+```bash
+projects/06-thepit/scripts/pit.sh tour    # The Pit: price-time priority, restart from the journal, independent audit
+```
+
+The Pit can now replay and verify any command journal against an independent oracle (`pit.sh verify`) and serves market data and an anonymous trade tape; Gatehouse can explain a decision rule by rule and statically prove that a draft policy contains dead, shadowed or all-denying rules before it is published; Daybook serves an authoritative trial balance, journal and account reads, and can open accounting periods through a restricted database function. Each project README documents its additions, and each project's status page records what was executed and what was not.
+
 ## Choose a project
 
 | Project | Engineering focus | Start here |

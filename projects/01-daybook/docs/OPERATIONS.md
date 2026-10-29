@@ -132,6 +132,12 @@ docker compose -f infra/compose.yaml exec -T postgres \
 
 A zero-row audit establishes the documented journal predicates in that snapshot. Independently recompute grouped posting totals and compare both debit and credit totals with authoritative balances. Investigate mismatches before accepting further writes. A backup without its roles/grants and retained source is not a verified recovery plan.
 
+## Integration tests without Docker
+
+The integration classes use the pinned PostgreSQL container by default. To run the same methods against a disposable native PostgreSQL 16 or later server instead, set all three of `DAYBOOK_TEST_JDBC_URL`, `DAYBOOK_TEST_DB_USER` and `DAYBOOK_TEST_DB_PASSWORD`, then run `./mvnw -f projects/01-daybook/pom.xml -B -ntp -Pintegration verify`. The URL must name an explicit loopback host, port and maintenance database (for example `jdbc:postgresql://127.0.0.1:55418/postgres`) with no parameters or credentials, and the role needs permission to create databases and roles because the migration creates `daybook_runtime`. Each test class creates its own randomly named database and drops only that database. Absent settings select the container; partial settings, a server older than 16, an invalid endpoint or a failed connection fail setup and never skip a test or substitute another backend.
+
+The backup/restore test needs `pg_dump` and `psql` of the server's major version, which a native run cannot assume, so name their directory in `DAYBOOK_TEST_PG_BIN`; without it that test fails with an explanatory message instead of being skipped. A native run does not exercise container startup, the pinned image's libraries or its vulnerability status. Record the server version it prints with the results; the pinned container remains the reference environment.
+
 ## Artifact ownership
 
 Launchers reuse artifacts only when input, POM, dependency, and output hashes match a receipt written after verified preparation. A source/artifact change requires preparation with owned Java processes stopped. An untracked healthy port, unhealthy tracked API, or lost PID file is refused rather than silently reused. Inspect the exact reported PID before terminating it. This cache is confined to lifecycle commands: ordinary, integration, and mutation verification still execute their checks.
