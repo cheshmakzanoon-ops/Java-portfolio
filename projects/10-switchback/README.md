@@ -37,6 +37,7 @@ Performance runs use `scripts/benchmark.sh` on an otherwise idle host. The [perf
 ## Engineering boundaries
 
 - Integer units and checked arithmetic govern distance, time, load, and objective calculations.
+- The local search that precedes Timefold prunes moves by an exactly computed cost change before validating them, and widens to Or-opt and tail-exchange moves once the original moves converge; every accepted candidate is still validated independently (see [architecture](docs/ARCHITECTURE.md#local-search-before-the-solver)).
 - An independent validator checks the complete directed route, return arc, assigned/unassigned partition, skills, capacity, windows, and frozen work.
 - Leases and fencing protect durable job writes. Publication separately compares the active problem version and published-plan revision.
 - Replanning begins at observed stop boundaries. Cargo stays on its observed vehicle; failed onboard cargo is reported as stranded.

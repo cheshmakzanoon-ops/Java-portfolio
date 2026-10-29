@@ -44,6 +44,15 @@ The objective minimizes hard violations, then weighted unassigned priority, then
 
 [ExactOracle](../switchback-verification/src/main/java/io/github/cheshmakzanoon/portfolio/switchback/ExactOracle.java) enumerates an explicit unassigned choice and every vehicle insertion position for up to seven jobs/two vehicles. Each invocation owns its search frontier, leaf budget and optimum; a shared oracle instance cannot mix concurrent searches. Only exhausted enumeration returns an optimum. A leaf-limit result is inconclusive and has no optimum.
 
+## Local search before the solver
+
+`Heuristics.improve` runs between the insertion baseline and the Timefold phase. Every candidate it accepts is validated by the independent `Validator` and must strictly lower the lexicographic score (hard violations, unassigned priority, then operating cost plus disruption).
+
+- **Exact cost pruning.** Moves that reassign no job cannot change the hard or unassigned score components, and the soft component is plain arithmetic over the moved routes: weighted directed arcs from the vehicle's position through its stops and back to the depot, plus the disruption weight for stops whose previous vehicle or index changed. `Heuristics.Estimator` computes exactly that change from job-id lists. A move whose soft change is not negative could never be accepted, so it is skipped before a `Route` is built, before validation and before it is counted against the evaluation limit; with an unlimited limit the result is identical to validating every candidate (checked on 30 instances, including ones with disruption), and `new Heuristics(false)` keeps the original accounting. The evaluation limit therefore counts validated, potentially improving candidates.
+- **Wider neighbourhoods.** After relocate, swap and intra-route reversal reach a local optimum, `improve` tries Or-opt (two- and three-stop segments, forward or reversed, within or across routes) and cross-route tail exchange, skipping combinations the validator would reject structurally (failed vehicle, missing skill, cargo aboard another vehicle, depot cargo for a moving vehicle, the frozen prefix), and returns to the original moves after any gain. With the same limit it is never worse than `improveBasic`, which keeps only the original moves.
+
+Neither change alters what may be published: the incumbent, fence, lease and publication rules are unchanged, and the estimator is a pruning device that never decides validity or acceptance.
+
 ## Durable state and transaction order
 
 ```mermaid
