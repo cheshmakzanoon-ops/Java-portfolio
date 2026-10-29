@@ -44,12 +44,9 @@ class JwtSecurityTest {
     try {
       String base = "http://127.0.0.1:" + server.getAddress().getPort();
       String issuer = base + "/trusted";
-      JwtDecoder decoder =
-          DecisionApplication.trustedDecoder(issuer, base + "/jwks", "gatehouse");
+      JwtDecoder decoder = DecisionApplication.trustedDecoder(issuer, base + "/jwks", "gatehouse");
       assertThat(
-              decoder
-                  .decode(sign(key, claims(issuer, "gatehouse", 0, 60, 0, true)))
-                  .getSubject())
+              decoder.decode(sign(key, claims(issuer, "gatehouse", 0, 60, 0, true))).getSubject())
           .isEqualTo("alice");
       for (JWTClaimsSet claims :
           List.of(

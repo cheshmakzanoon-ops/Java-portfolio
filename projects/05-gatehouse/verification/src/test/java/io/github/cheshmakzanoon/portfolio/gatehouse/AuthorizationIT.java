@@ -79,11 +79,7 @@ class AuthorizationIT {
                     .withStartupTimeout(Duration.ofMinutes(5)));
     keycloak.start();
     issuer =
-        "http://"
-            + keycloak.getHost()
-            + ":"
-            + keycloak.getMappedPort(8080)
-            + "/realms/gatehouse";
+        "http://" + keycloak.getHost() + ":" + keycloak.getMappedPort(8080) + "/realms/gatehouse";
     seed();
     HikariConfig hc = new HikariConfig();
     hc.setJdbcUrl(db.getJdbcUrl());

@@ -13,7 +13,6 @@ class ArchitectureTest {
         .dependOnClassesThat()
         .resideInAnyPackage("org.springframework..", "java.sql..", "com.zaxxer..", "org.flywaydb..")
         .check(
-            new ClassFileImporter()
-                .importPackages("io.github.cheshmakzanoon.portfolio.gatehouse"));
+            new ClassFileImporter().importPackages("io.github.cheshmakzanoon.portfolio.gatehouse"));
   }
 }

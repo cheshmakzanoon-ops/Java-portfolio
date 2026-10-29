@@ -39,10 +39,7 @@ class ProtectedClaimsTest {
               new MapPropertySource(
                   "test",
                   Map.of(
-                      "gatehouse.oidc.issuer",
-                      issuer,
-                      "gatehouse.oidc.jwks",
-                      issuer + "/jwks")));
+                      "gatehouse.oidc.issuer", issuer, "gatehouse.oidc.jwks", issuer + "/jwks")));
       JwtDecoder decoder = new ProtectedDocuments(env).decoder(env);
       Map<String, Object> valid = new LinkedHashMap<>();
       valid.put("iss", issuer);
