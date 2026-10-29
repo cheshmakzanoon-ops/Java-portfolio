@@ -25,6 +25,24 @@ projects/06-thepit/scripts/pit.sh tour    # The Pit: price-time priority, restar
 
 The Pit can now replay and verify any command journal against an independent oracle (`pit.sh verify`) and serves market data and an anonymous trade tape; Gatehouse can explain a decision rule by rule and statically prove that a draft policy contains dead, shadowed or all-denying rules before it is published; Daybook serves an authoritative trial balance, journal and account reads, and can open accounting periods through a restricted database function. Each project README documents its additions, and each project's status page records what was executed and what was not.
 
+A later pass on the seven projects that had not changed since the 21 October rename added one substantial capability to each, with tests that check it against an independent reference where one exists:
+
+- **Majority** gains Raft pre-vote, check-quorum and operator-driven leadership transfer (an isolated member no longer inflates the cluster's term, a stranded leader steps down, and a planned leader change costs one term and tens of milliseconds); it also fixes a deposed leader campaigning again on its next tick.
+- **Faultline** gains four more sink rules (class loading, URL/socket destinations, XPath, LDAP filters), servlet request sources, a text report and `faultline rules`; model `1.0.0` rule files and baselines still load.
+- **Backtrace** gains a flame graph in its HTML report and `export folded|speedscope|diff` for other profilers.
+- **Handoff** gains `lint`, `graph` and a deterministic `simulate` for workflow definitions that run without a database; its linter finds that the shipped order workflow completes with a reservation never released when its approval signal times out.
+- **Late Arrival** gains `explain`, which replays events through the real engine and says why each was accepted, late, duplicate or rejected, checked against its independent oracle.
+- **Switchback**'s local search converges about 50 times faster and removes 10-20 times more cost at the production evaluation limit, with an exactly lossless pruning rule.
+- **Stacks** gains `explain-query` and positioned query syntax errors.
+
+```bash
+projects/02-handoff/scripts/definition.sh lint projects/02-handoff/examples/order-fulfilment.json
+projects/04-latearrival/scripts/explain.sh projects/04-latearrival/examples/late-data.jsonl
+java -jar projects/07-stacks/cli/target/stacks-cli-1.0.0-SNAPSHOT.jar explain-query 'a b AND c'
+```
+
+The same pass repaired verification failures that the rename had left at HEAD: formatting gates in four projects, the 240 frozen Faultline corpus files whose bytes had been rewritten, a stale hash-vector test and a flaky Backtrace test. Each project's status page records exactly what was executed, including the PostgreSQL and Kafka integration suites that were not run in the environment used.
+
 ## Choose a project
 
 | Project | Engineering focus | Start here |

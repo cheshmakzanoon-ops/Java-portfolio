@@ -67,15 +67,23 @@ identity services. Check each project's security and operations guide before exp
 ## Other specializations
 
 - **Distributed systems:** [Majority](../projects/03-majority/README.md) shows Raft
-  transitions, snapshots, and simulated failure schedules; [Late Arrival](../projects/04-latearrival/README.md)
+  transitions, snapshots, pre-vote, check-quorum, leadership transfer and simulated
+  failure schedules run in both classic and hardened modes; [Late Arrival](../projects/04-latearrival/README.md)
   shows event-time watermarks and PostgreSQL/Kafka recovery.
 - **JVM internals and security analysis:** [Faultline](../projects/09-faultline/README.md)
-  builds bounded bytecode control-flow and taint analysis; [Backtrace](../projects/08-backtrace/README.md)
-  handles JFR traces and instrumentation lifecycle.
+  builds bounded bytecode control-flow and taint analysis (seven sink classes, with a
+  versioned, backward-compatible rule model); [Backtrace](../projects/08-backtrace/README.md)
+  handles JFR traces, instrumentation lifecycle, a flame graph and profiler export.
 - **Algorithms and performance:** [The Pit](../projects/06-thepit/README.md),
   [Stacks](../projects/07-stacks/README.md), and
   [Switchback](../projects/10-switchback/README.md) exercise matching, retrieval,
-  and constrained planning respectively.
+  and constrained planning respectively; Switchback's local search prunes moves by an
+  exactly computed cost change and is checked against an exhaustive oracle.
+- **Developer tooling without infrastructure:** [Handoff](../projects/02-handoff/README.md#review-draw-and-play-a-definition-without-a-database)
+  lints, draws and simulates workflow definitions through the real interpreter;
+  [Late Arrival](../projects/04-latearrival/README.md#see-why-an-event-was-late-without-kafka-or-postgresql)
+  explains event-time outcomes; [Stacks](../projects/07-stacks/README.md#understand-a-query-before-running-it)
+  explains how a query parses.
 
 ## What the portfolio proves — and what it does not
 
