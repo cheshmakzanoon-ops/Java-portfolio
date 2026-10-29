@@ -79,16 +79,64 @@ final class PolicyFuzz {
   }
 
   String condition(int depth) {
-    int pick = random.nextInt(depth <= 0 ? 7 : 10);
+    int pick = random.nextInt(depth <= 0 ? 8 : 11);
     return switch (pick) {
       case 0, 1, 2, 3 -> comparison();
       case 4 -> "exists(" + field() + ")";
       case 5 -> "hasRole(\"" + ROLES.get(random.nextInt(ROLES.size())) + "\")";
       case 6 ->
           relations && random.nextBoolean() ? relation() : random.nextBoolean() ? "true" : "false";
-      case 7 -> "not " + wrapped(condition(depth - 1));
-      case 8 -> "(" + condition(depth - 1) + " and " + condition(depth - 1) + ")";
+      case 7 -> special();
+      case 8 -> "not " + wrapped(condition(depth - 1));
+      case 9 -> "(" + condition(depth - 1) + " and " + condition(depth - 1) + ")";
       default -> "(" + condition(depth - 1) + " or " + condition(depth - 1) + ")";
+    };
+  }
+
+  /**
+   * Shapes the other generators rarely reach: comparisons and set tests between constants, and
+   * comparisons or set tests on total boolean predicates such as exists() and hasRole().
+   */
+  private String special() {
+    String role = "hasRole(\"" + ROLES.get(random.nextInt(ROLES.size())) + "\")";
+    String presence = "exists(" + field() + ")";
+    String total = random.nextBoolean() ? role : presence;
+    String other = random.nextBoolean() ? role : presence;
+    return switch (random.nextInt(8)) {
+      case 0 -> {
+        Type type = random.nextBoolean() ? Type.INTEGER : Type.STRING;
+        String[] operators = {"==", "!=", "<", "<=", ">", ">="};
+        yield literal(type)
+            + " "
+            + operators[random.nextInt(operators.length)]
+            + " "
+            + literal(type);
+      }
+      case 1 ->
+          literal(Type.ENUM)
+              + " "
+              + (random.nextBoolean() ? "==" : "!=")
+              + " "
+              + literal(Type.ENUM);
+      case 2 -> {
+        Type type = Type.values()[random.nextInt(Type.values().length)];
+        yield literal(type) + " in [" + literal(type) + ", " + literal(type) + "]";
+      }
+      case 3 ->
+          total
+              + " "
+              + (random.nextBoolean() ? "==" : "!=")
+              + " "
+              + (random.nextBoolean() ? "true" : "false");
+      case 4 -> total + " " + (random.nextBoolean() ? "==" : "!=") + " " + other;
+      case 5 -> total + " in [" + (random.nextBoolean() ? "true" : "false") + "]";
+      case 6 -> total + " in [true, false]";
+      default ->
+          (random.nextBoolean() ? "true" : "false")
+              + " "
+              + (random.nextBoolean() ? "==" : "!=")
+              + " "
+              + total;
     };
   }
 

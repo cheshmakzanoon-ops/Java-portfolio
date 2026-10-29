@@ -62,7 +62,13 @@ class PolicyAnalyzerTest {
                 "value-needs-presence", "subject.clearance > 1 and not exists(subject.clearance)"),
             allow("constant", "false"),
             allow("kleene", "not (subject.clearance > 3) and subject.clearance > 3"),
-            allow("self", "subject.clearance < subject.clearance"));
+            allow("self", "subject.clearance < subject.clearance"),
+            allow("above-max", "subject.clearance > 9223372036854775807"),
+            allow("below-min", "subject.clearance < -9223372036854775808"),
+            allow("constants", "1 > 2"),
+            allow("literal-in", "\"a\" in [\"b\", \"c\"]"),
+            allow("total-in", "hasRole(\"reader\") in [false] and hasRole(\"reader\")"),
+            allow("total-compare", "exists(subject.clearance) != exists(subject.clearance)"));
     for (String id :
         List.of(
             "integers-gap",
@@ -91,7 +97,12 @@ class PolicyAnalyzerTest {
             allow("absent-ok", "not exists(subject.clearance)"),
             allow("kleene-or", "not (subject.clearance > 3) or subject.clearance > 3"),
             allow("self-equal", "subject.clearance == subject.clearance"),
-            allow("two-fields", "resource.department == subject.department"));
+            allow("two-fields", "resource.department == subject.department"),
+            allow("at-max", "subject.clearance >= 9223372036854775807"),
+            allow("at-min", "subject.clearance <= -9223372036854775808"),
+            allow("true-constants", "1 < 2 and \"a\" in [\"a\"]"),
+            allow("total-in", "hasRole(\"reader\") in [true]"),
+            allow("total-compare", "hasRole(\"reader\") == exists(subject.clearance)"));
     assertThat(report.findings()).noneMatch(f -> f.code().equals("NEVER_MATCHES"));
   }
 
@@ -117,10 +128,12 @@ class PolicyAnalyzerTest {
                 "total",
                 "subject.clearance > 3 or subject.clearance <= 3 or not exists(subject.clearance)"),
             deny("constant", "true"),
+            deny("presence", "exists(subject.department) or not exists(subject.department)"),
             allow("roles", "hasRole(\"reader\") or not hasRole(\"reader\")"));
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "not-total")).isFalse();
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "total")).isTrue();
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "constant")).isTrue();
+    assertThat(has(report, "DENY_ALWAYS_APPLIES", "presence")).isTrue();
     assertThat(has(report, "ALLOW_UNCONDITIONAL", "roles")).isTrue();
   }
 
@@ -222,6 +235,60 @@ class PolicyAnalyzerTest {
   }
 
   @Test
+  void aScopeWhoseOnlyAllowRuleCanNeverMatchIsAnError() {
+    Report report = report(allow("dead", "subject.clearance > 5 and subject.clearance < 3"));
+    assertThat(has(report, "NEVER_MATCHES", "dead")).isTrue();
+    assertThat(has(report, "SCOPE_NEVER_ALLOWS", null)).isTrue();
+    assertThat(report.hasErrors()).isTrue();
+    // A second, live allow rule keeps the scope reachable.
+    Report alive = report(allow("dead", "false"), allow("live", "subject.clearance > 3"));
+    assertThat(has(alive, "SCOPE_NEVER_ALLOWS", null)).isFalse();
+    assertThat(alive.hasErrors()).isFalse();
+  }
+
+  @Test
+  void warningsAloneAreNotErrors() {
+    Report report =
+        report(allow("one", "subject.clearance > 1"), allow("two", "subject.clearance > 1"));
+    assertThat(report.findings()).isNotEmpty();
+    assertThat(report.findings()).allMatch(f -> f.severity() != Severity.ERROR);
+    assertThat(report.hasErrors()).isFalse();
+  }
+
+  @Test
+  void nestedConstructsAreInspectedForDuplicateSetsAndRoleTests() {
+    Report sets =
+        report(
+            allow("in-and", "subject.suspended and subject.department in [\"a\", \"a\"]"),
+            allow("in-not", "not subject.department in [\"b\", \"c\", \"b\"]"),
+            allow(
+                "in-or",
+                "subject.suspended or (exists(resource.id) and resource.id in [\"x\", \"x\"])"));
+    for (String id : List.of("in-and", "in-not", "in-or"))
+      assertThat(has(sets, "DUPLICATE_SET_ELEMENT", id)).as(id).isTrue();
+
+    // A role that is only named inside nested conditions still counts as used.
+    Definition definition =
+        new Definition(
+            Map.of(
+                "granted", Set.of(), "n1", Set.of(), "n2", Set.of(), "n3", Set.of(), "n4", Set.of(),
+                "idle", Set.of()),
+            List.of(new Grant("granted", "read", "doc")),
+            List.of(
+                allow("deep", "subject.suspended or (not hasRole(\"n1\") and exists(resource.id))"),
+                allow("compare", "hasRole(\"n2\") == exists(resource.id)"),
+                allow("member", "hasRole(\"n3\") in [true]"),
+                allow("both", "hasRole(\"n4\") != hasRole(\"n4\")")));
+    List<String> unused =
+        analyze(compile(definition)).findings().stream()
+            .filter(f -> f.code().equals("UNUSED_ROLE"))
+            .map(Finding::message)
+            .toList();
+    assertThat(unused).hasSize(1);
+    assertThat(unused.getFirst()).contains("idle");
+  }
+
+  @Test
   void unusedRolesAreOnlyThoseWithNoGrantNoInheritedGrantAndNoRoleTest() {
     Definition definition =
         new Definition(
@@ -257,6 +324,9 @@ class PolicyAnalyzerTest {
     Report report = report(allow("explosive", condition.toString()));
     assertThat(has(report, "ANALYSIS_LIMIT", "explosive")).isTrue();
     assertThat(has(report, "NEVER_MATCHES", "explosive")).isFalse();
+    // An undecided rule must never be turned into a claim that the scope cannot allow.
+    assertThat(has(report, "SCOPE_NEVER_ALLOWS", null)).isFalse();
+    assertThat(report.hasErrors()).isFalse();
     // An easily refuted version of the same shape is decided.
     assertThat(
             has(

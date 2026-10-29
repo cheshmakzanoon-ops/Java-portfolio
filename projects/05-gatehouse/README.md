@@ -34,6 +34,34 @@ Each decision and its mandatory audit commit in one repeatable-read transaction.
 
 Policy publication and rollback require one strong `If-Match` tag containing the prior active version, such as `"7"`; initial publication uses `"0"`. Malformed, weak, multiple, wildcard, and out-of-range tags return 400 before database access. A valid but stale version returns 409. Rollback creates and publishes a new immutable revision rather than moving the active pointer backward.
 
+## Explain and lint a policy before publishing it
+
+Two administrator-only routes work on a draft and touch no tenant state or audit log. Like `simulate`, they require current administrative membership.
+
+`POST /v1/tenants/{tenant}/explain` takes the same body as `simulate` and returns the decision together with its cause: the effective role closure, whether an RBAC grant exists, and for every applicable rule its three-valued result, the canonical condition text, and the attributes the request did not supply. For a request that supplies only `subject.clearance` it reports, for example:
+
+```text
+INDETERMINATE  roles=[editor, reader]  granted=true
+  clearance  ALLOW  UNKNOWN  missing=[resource.classification, subject.suspended]
+             subject.clearance >= resource.classification and not subject.suspended
+  freeze     DENY   UNKNOWN  missing=[subject.suspended]
+             subject.suspended
+```
+
+`POST /v1/tenants/{tenant}/lint` takes `{"policy": Definition}` and returns the policy digest, error and warning counts and the findings. Each finding is a statement about the policy, proved over every possible input including requests that omit attributes (which make a comparison UNKNOWN, never TRUE):
+
+| Code | Severity | What is proved |
+| --- | --- | --- |
+| `NEVER_MATCHES` | warning | The condition cannot be TRUE for any input, so the rule has no effect |
+| `DENY_ALWAYS_APPLIES` | warning | The DENY condition is TRUE for every request, so its whole scope is denied |
+| `ALLOW_SHADOWED_BY_DENY` | warning | Whenever the ALLOW rule is TRUE, some DENY rule is TRUE or UNKNOWN (alone or together), so it can never lead to ALLOW |
+| `SCOPE_NEVER_ALLOWS` | error | Every ALLOW rule in an action/resource scope is unreachable, so no request can be allowed |
+| `ALLOW_WITHOUT_GRANT`, `GRANT_WITHOUT_ALLOW_RULE` | warning | An ALLOW rule has no role grant, or a grant has no ALLOW rule, so the scope can never allow |
+| `ALLOW_UNCONDITIONAL`, `DUPLICATE_RULE`, `DUPLICATE_SET_ELEMENT`, `UNUSED_ROLE` | info or warning | Redundancy and dead structure |
+| `ANALYSIS_LIMIT` | info | A bounded search was not settled; no claim is made about that rule |
+
+For the draft `open: ALLOW subject.clearance >= 3` with `freeze: DENY subject.clearance >= 1`, it reports `ALLOW_SHADOWED_BY_DENY` for `open` and `SCOPE_NEVER_ALLOWS` for the scope. Findings never rely on a guess: the search is exhaustive over a finite set of representative attribute values (every constant in the policy, its neighbours and the absent state) and role sets, and an undecided search is reported as `ANALYSIS_LIMIT`. Comparisons between two different attributes, such as `resource.department == subject.department`, are treated as free propositions, so the analysis stays sound but may miss a finding that depends on how two attributes relate. See [architecture](docs/ARCHITECTURE.md#static-policy-analysis) for the method and its verification.
+
 ## Verify changes
 
 ```bash
