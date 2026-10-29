@@ -110,8 +110,7 @@ public final class Workload {
     var intents = new ArrayList<Intent>();
     var random = new Random(20261017);
     try (var admin = new LedgerStore(url, "postgres", adminPassword, 1);
-        var store =
-            new LedgerStore(url, "daybook_runtime", "local-only-daybook", writers)) {
+        var store = new LedgerStore(url, "daybook_runtime", "local-only-daybook", writers)) {
       admin.tx(
           c -> {
             for (int t = 0; t < 20; t++) {

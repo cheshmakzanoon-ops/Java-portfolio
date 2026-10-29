@@ -145,8 +145,7 @@ public final class Projector {
   public static void main(String[] args) throws Exception {
     try (var store =
         new LedgerStore(
-            System.getenv()
-                .getOrDefault("LEDGER_URL", "jdbc:postgresql://localhost:18101/daybook"),
+            System.getenv().getOrDefault("LEDGER_URL", "jdbc:postgresql://localhost:18101/daybook"),
             "daybook_runtime",
             System.getenv().getOrDefault("LEDGER_PASSWORD", "local-only-daybook"))) {
       var projector = new Projector(store);
