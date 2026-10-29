@@ -47,6 +47,12 @@ public class SearchController implements AutoCloseable {
 
   public record SuggestRequest(String prefix) {}
 
+  public record ExplainRequest(String text) {}
+
+  /** {@code position} is the 0-based offset where an invalid query stopped parsing, else null. */
+  public record ExplainResponse(
+      boolean valid, String canonical, List<String> notes, String error, Integer position) {}
+
   private final SearchEngine engine;
   private final AuthorizationFilter auth;
   private final Path sources;
@@ -83,6 +89,22 @@ public class SearchController implements AutoCloseable {
     var a = context(jwt, false);
     tenantSearches.computeIfAbsent(a.tenant(), ignored -> new AtomicLong()).incrementAndGet();
     return engine.search(a, request);
+  }
+
+  /**
+   * Explains how a query parses. It reads no index and no repository data, so a result depends only
+   * on the submitted text; it is still authenticated like every /v1 route.
+   */
+  @PostMapping("/v1/query/explain")
+  ExplainResponse explain(@AuthenticationPrincipal Jwt jwt, @RequestBody ExplainRequest request) {
+    context(jwt, false);
+    QueryAst.Explanation explanation = QueryAst.explain(request.text());
+    return new ExplainResponse(
+        explanation.valid(),
+        explanation.canonical(),
+        explanation.notes(),
+        explanation.error(),
+        explanation.valid() ? null : explanation.position());
   }
 
   @PostMapping("/v1/suggest")

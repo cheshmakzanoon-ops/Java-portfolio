@@ -9,6 +9,13 @@ public final class StacksCli {
   public static void main(String[] args) throws Exception {
     validate(args);
     String command = args[0];
+    if (command.equals("explain-query")) {
+      // No data directory: the argument is the query itself.
+      QueryAst.Explanation explanation = QueryAst.explain(args[1]);
+      System.out.print(QueryExplainer.render(args[1], explanation));
+      if (!explanation.valid()) throw new IllegalArgumentException("invalid query");
+      return;
+    }
     Path data = Path.of(args[1]);
     if (command.equals("prepare-api-catalog")) {
       if (args.length != 3)
@@ -140,6 +147,10 @@ public final class StacksCli {
         min = 3;
         max = 3;
       }
+      case "explain-query" -> {
+        min = 2;
+        max = 2;
+      }
       case "demo" -> {
         min = 2;
         max = 3;
@@ -186,7 +197,12 @@ public final class StacksCli {
         && args.length == 5
         && !Set.of("development", "final").contains(args[4]))
       throw new IllegalArgumentException("evaluate phase must be development or final");
-    if (args[0].equals("search")) QueryAst.parse(args[4]);
+    if (args[0].equals("search")) {
+      QueryAst.Explanation query = QueryAst.explain(args[4]);
+      if (!query.valid())
+        throw new IllegalArgumentException(
+            "invalid search query at position " + query.position() + ": " + query.error());
+    }
     if (args[0].equals("resume") && !args[4].matches("[a-f0-9]{64}"))
       throw new IllegalArgumentException("resume requires a SHA256 job id");
   }

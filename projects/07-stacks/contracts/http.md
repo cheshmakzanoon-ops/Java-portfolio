@@ -32,6 +32,7 @@ Source acquisition happens before background queue admission and has separate fi
 | `DELETE /v1/ingestions/{id}` | Requests authorized cooperative cancellation and returns `id` and `state`; a durable completion receipt takes precedence. It cannot reverse a committed generation. |
 | `POST /v1/search` | Body and response described below. |
 | `POST /v1/suggest` | `{"prefix":"atom"}` returns an array of authorized identifier completions. |
+| `POST /v1/query/explain` | `{"text":"a b AND c"}` returns `{"valid":true,"canonical":"a OR (b AND c)","notes":[…],"error":null,"position":null}`. An invalid query is still `200` with `"valid":false`, a fixed explanatory `error` sentence and the 0-based `position` where parsing stopped. It reads no index or repository data and returns nothing but a function of the submitted text; it needs the same token as every `/v1` route. |
 | `POST /v1/reindexes` | No body. Requires tenant administration and returns `202`. Rebuilds the tenant through the same publication path, preserving source revisions. |
 | `GET /v1/metrics` | Requires tenant administration. Returns `searches`, `jobFailures` and `queuedJobs` for that tenant. Counters reset on process restart; the queue count is a point-in-time gauge. |
 

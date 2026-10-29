@@ -6,6 +6,7 @@ All commands exit nonzero on failure. Unknown commands, missing/extra positional
 up DATA
 ingest DATA TENANT REPOSITORY SOURCE_ROOT RELATIVE_PATH REVISION IDEMPOTENCY_KEY [DELETED_PATH ...]
 search DATA TENANT REPOSITORY 'QUERY'
+explain-query 'QUERY'
 resume DATA TENANT REPOSITORY JOB_ID
 reindex DATA TENANT REPOSITORY
 verify-generation DATA TENANT REPOSITORY
@@ -14,6 +15,8 @@ evaluate DATA FIXTURES OUTPUT final
 demo DATA [DOCUMENTS=20000]
 benchmark DATA NEW_OUTPUT [DOCUMENTS=100000] [SECONDS_PER_RUN=30]
 ```
+
+`explain-query` needs no data directory and opens nothing: it prints how the query parses, with every grouping and operator explicit (`a b AND c` is `a OR (b AND c)`, `a NOT b` is `a AND NOT b`), plus notes on behaviour readers commonly get wrong (adjacent terms are combined with OR; operators must be uppercase; `path`, `repository`, `language`, `kind`, `coordinates` and `version` match the whole stored value exactly; `NOT` inside an `OR` matches nearly everything). For an invalid query it prints a caret under the offending position and the reason, and exits nonzero. `search` rejects invalid queries before opening data with the same position and reason in its message. The printed canonical form is itself a valid query that parses to the same tree, except that its added grouping can exceed the 8-level nesting limit for a query already near it.
 
 RELATIVE_PATH selects a directory or one UTF-8 file within SOURCE_ROOT. Every resulting document path stays relative to SOURCE_ROOT: selecting `src/Foo.java` or directory `src` preserves `src/Foo.java`, so later partial selections replace the same stable key. Resume rebuilds persisted immutable input without reading the original checkout. Ingest imports a partial upload; absent files are preserved. Listed deletion paths are explicit. HTTP supports complete snapshots, where every missing earlier path requires a matching deletion. Evaluate requires the frozen fixture checksums and an independently approved review marker. `development` writes a selection bound to compiled ranking/retrieval bytecode and frozen fixture digests before `final` may execute held-out queries. The first final run creates HELDOUT-OPENED.txt; replay requires the same fixed model identity. No ranking output is a license to relabel data. No fixture is downloaded or executed.
 

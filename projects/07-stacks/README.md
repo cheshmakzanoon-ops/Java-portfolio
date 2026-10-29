@@ -24,6 +24,14 @@ projects/07-stacks/scripts/down.sh
 - A lifecycle owner coordinates durable jobs, tenant writers and shutdown; serving and offline exports share one ranking/ablation policy.
 - Source analysis is bounded and conservative. Unsupported syntax or uncertain dispatch produces unknown observations, rather than guessed bindings.
 
+## Understand a query before running it
+
+```bash
+java -jar cli/target/stacks-cli-1.0.0-SNAPSHOT.jar explain-query 'repository:public a b AND NOT c'
+```
+
+`explain-query` shows how Stacks reads a query: `a OR (b AND c)` for `a b AND c`, which fields match exactly rather than word by word, whether an operator was typed in lowercase (and is therefore an ordinary word), and, for an invalid query, the position and reason. It needs no data directory or index; the [CLI contract](contracts/cli.md) has the rules it explains.
+
 ## Evidence and limits
 
 The [validation status](docs/STATUS.md) distinguishes current checks from historical measurements. The published relevance experiments failed the stated quality targets; the baseline remains the selected configuration. Historical performance results apply to their frozen artifact and application boundary, excluding HTTP transport. This is a portfolio implementation, with no production deployment or certification claim.

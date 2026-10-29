@@ -1,5 +1,13 @@
 # Validation status
 
+## Query explanation and positioned syntax errors — 2026-10-29
+
+`stacks-cli explain-query '<text>'` and `POST /v1/query/explain` show how the query parser reads a query: the fully parenthesised form, a note when adjacent terms were combined with an implicit OR, or the exact character offset and a fixed sentence for a syntax error. `search` rejections now carry the same offset. The HTTP route is admitted exactly like `/v1/search` (bearer token with the search scope, no ambient cookies, the strict JSON policy) and, because it only parses, touches no index, tenant or permission state. The response contains only fixed sentences and an offset, never an exception message. Parser behaviour is unchanged: `QuerySyntaxException` extends `IllegalArgumentException` and the accepted language and limits are the same.
+
+Executed against this source with `-Pintegration verify` (JDK 25.0.4.1): **256 ordinary and 12 integration test cases, zero failures, errors or skips**, and the repository's test checker accepted the fresh reports. New cases: seven in `QueryExplainTest` (including 3,000 generated queries whose canonical form re-parses to an equal tree and is a fixed point), one CLI case and one signed-HTTP integration case. The first run of the HTTP case failed because my expected offset was a miscount (19 for an 11-character query); the product value, the end of the text, was correct and the test was corrected.
+
+Not done: the query parser's compiled code changed, so the earlier ranking, relevance and performance receipts below do not describe this artifact; none were rerun. `QueryAst`, `QueryExplainer` and `QuerySyntaxException` were never in the query module's mutation scope (it targets cursors, ranking, snippets and request identity), so the strict-kill table below is unaffected and says nothing about the new code; no mutation campaign was run. No hosted-CI result is claimed.
+
 ## Current authenticated tenant verification — 2026-10-21
 
 The full Java 25 reactor passed **259 cases: 248 ordinary cases and 11 integration cases, with zero failures, errors or skips**. Formatting, the unchanged core coverage gates, real HTTP/OIDC/JWKS requests, Linux `/dev/full` handling and packaged CLI integration all passed. The current-report completeness checker independently confirmed every selected module's fresh reports. [The tenant-binding receipt](../evidence/tenant-binding-20261021/validation.json) records the exact command, report hashes and a complete source manifest.
