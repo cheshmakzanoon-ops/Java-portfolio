@@ -16,9 +16,35 @@ public final class Gateway implements AutoCloseable {
 
   private record Committed(Command command, Result result) {}
 
+  /** One volatile reference keeps a view and the statistics of the same sequence together. */
+  private record Published(View view, MarketData.Stats stats) {}
+
+  /** Append-only per-account fills in sequence order; one writer, many short readers. */
+  private static final class AccountExecutions {
+    private final List<Execution> fills = new ArrayList<>();
+
+    synchronized void add(Execution execution) {
+      fills.add(execution);
+    }
+
+    synchronized List<Execution> page(long offset, int limit, long maximumSequence) {
+      int low = 0, high = fills.size();
+      while (low < high) {
+        int middle = (low + high) >>> 1;
+        if (fills.get(middle).sequence() <= maximumSequence) low = middle + 1;
+        else high = middle;
+      }
+      long from = Math.min(offset, low), to = Math.min(low, from + limit);
+      return List.copyOf(fills.subList((int) from, (int) to));
+    }
+  }
+
   private final Book book = new Book();
   private final ConcurrentMap<String, Committed> committed = new ConcurrentHashMap<>();
-  private final ConcurrentLinkedQueue<Execution> executions = new ConcurrentLinkedQueue<>();
+  private final ConcurrentMap<String, AccountExecutions> accountExecutions =
+      new ConcurrentHashMap<>();
+  private final MarketData.Tracker tracker = new MarketData.Tracker();
+  private final MarketData.Tape tape = new MarketData.Tape();
   private final Journal journal;
   private final BlockingQueue<Pending> queue;
   private final Map<String, Pending> pending = new HashMap<>();
@@ -26,7 +52,7 @@ public final class Gateway implements AutoCloseable {
   private int admitted;
   private final Thread writer;
   private final Journal.Fault fault;
-  private volatile View view;
+  private volatile Published published;
   private volatile boolean accepting = true, closed;
   private volatile Throwable failure;
 
@@ -57,19 +83,14 @@ public final class Gateway implements AutoCloseable {
           checkpoint = null;
         }
       }
-      if (checkpoint != null) {
-        executions.addAll(checkpoint.view().executions());
-      }
       long restored = checkpoint == null ? 0 : checkpoint.view().sequence();
       for (Journal.Entry entry : recovered) {
         Result result;
         if (entry.sequence() <= restored)
           result = checkpoint.view().results().get(entry.command().key());
-        else {
-          result = book.apply(entry.sequence(), entry.command());
-          executions.addAll(result.executions());
-        }
+        else result = book.apply(entry.sequence(), entry.command());
         committed.put(entry.command().key(), new Committed(entry.command(), result));
+        record(entry.command(), result);
       }
     } catch (RuntimeException e) {
       IOException failure = new IOException("invalid replay", e);
@@ -80,8 +101,22 @@ public final class Gateway implements AutoCloseable {
       throw failure;
     }
     admitted = journal.entries().size();
-    view = book.publicView();
+    published = new Published(book.publicView(), tracker.snapshot());
     writer = Thread.ofPlatform().name("thepit-single-writer").start(this::run);
+  }
+
+  /** Feeds fill-derived read models; called only by the constructor and the single writer. */
+  private void record(Command command, Result result) {
+    for (Execution execution : result.executions()) {
+      accountExecutions
+          .computeIfAbsent(execution.makerAccount(), account -> new AccountExecutions())
+          .add(execution);
+      accountExecutions
+          .computeIfAbsent(execution.takerAccount(), account -> new AccountExecutions())
+          .add(execution);
+      tracker.accept(execution);
+      tape.accept(result.sequence(), command.side(), execution);
+    }
   }
 
   private void closeAfterReplayFailure(Throwable primary) {
@@ -128,12 +163,12 @@ public final class Gateway implements AutoCloseable {
       while (!closed || !queue.isEmpty()) {
         Pending next = queue.poll(50, TimeUnit.MILLISECONDS);
         if (next == null) continue;
-        long sequence = view.sequence() + 1;
+        long sequence = published.view().sequence() + 1;
         journal.appendAndForce(sequence, next.command());
         Result result = book.apply(sequence, next.command());
         committed.put(next.command().key(), new Committed(next.command(), result));
-        executions.addAll(result.executions());
-        view = book.publicView();
+        record(next.command(), result);
+        published = new Published(book.publicView(), tracker.snapshot());
         fault.at("AFTER_APPLY");
         synchronized (this) {
           pending.remove(next.command().key());
@@ -162,13 +197,13 @@ public final class Gateway implements AutoCloseable {
       throws InterruptedException, TimeoutException {
     long deadline = System.nanoTime() + timeout.toNanos();
     synchronized (this) {
-      while (view.sequence() < minimumSequence) {
+      while (published.view().sequence() < minimumSequence) {
         long remaining = deadline - System.nanoTime();
         if (remaining <= 0) throw new TimeoutException("minimum sequence not applied");
         if (failure != null) throw new IllegalStateException("RECOVERY_REQUIRED", failure);
         TimeUnit.NANOSECONDS.timedWait(this, remaining);
       }
-      return view;
+      return published.view();
     }
   }
 
@@ -178,7 +213,21 @@ public final class Gateway implements AutoCloseable {
   }
 
   public View view() {
-    return view;
+    return published.view();
+  }
+
+  /** Top of book, depth and statistics as of one applied sequence; never blocks the writer. */
+  public MarketData.Market market(int depth) {
+    Published current = published;
+    return MarketData.market(current.view(), current.stats(), depth);
+  }
+
+  /** Anonymous recent fills, newest first; the cutoff sequence bounds every returned fill. */
+  public record TradeTape(long lastAppliedSequence, List<MarketData.Trade> trades) {}
+
+  public TradeTape trades(int limit) {
+    long applied = published.view().sequence();
+    return new TradeTape(applied, tape.recent(limit, applied));
   }
 
   public synchronized View fullView() {
@@ -188,14 +237,8 @@ public final class Gateway implements AutoCloseable {
 
   public java.util.List<Execution> executions(
       String account, int offset, int limit, long maximumSequence) {
-    return executions.stream()
-        .filter(
-            e ->
-                e.sequence() <= maximumSequence
-                    && (e.makerAccount().equals(account) || e.takerAccount().equals(account)))
-        .skip(offset)
-        .limit(limit)
-        .toList();
+    AccountExecutions fills = accountExecutions.get(account);
+    return fills == null ? List.of() : fills.page(Math.max(0, offset), limit, maximumSequence);
   }
 
   public boolean healthy() {

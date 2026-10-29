@@ -9,7 +9,11 @@ The standalone server binds `127.0.0.1:18600` by default (`THEPIT_PORT`). Protec
 | `GET /book?depth=20&minimumSequence=0` | `thepit:read` | Aggregate bid/ask depth and applied sequence; waits at most two seconds |
 | `GET /account` | `thepit:read` | Subject's cash, lots, reservations and applied sequence |
 | `GET /executions?offset=0&limit=20` | `thepit:read` | Subject's maker/taker executions and applied-sequence cutoff |
+| `GET /market?depth=5` | `thepit:read` | Best bid/ask, spread, mid, aggregate depth, level and lot totals, and run statistics, all as of one applied sequence |
+| `GET /trades?limit=20` | `thepit:read` | Anonymous recent fills, newest first, with the aggressor side and the applied-sequence cutoff |
 | `GET /health` | Public | 200 healthy or 503 recovery required |
+
+`/market` and `/trades` are read-only derivations of already-published state. They add no journal field and change no persisted hash. Prices are integral ticks. `spreadTicks` and `midTicks` are `null` unless both sides rest; `midTicks` is an exact decimal string because a mid can fall on a half tick. Traded lots and notional recycle a finite supply and can exceed a signed 64-bit value, so `volumeLots` and `notionalTicks` are exact decimal strings; `vwapTicks` is `notional / volume` rounded half-even to four places, or `null` before the first fill. Statistics cover the current run only (open, high, low and last are the first, extreme and latest execution prices). The tape retains the 1,024 most recent fills; a fill carries sequence, price, lots and `takerSide` and never an account, order or command identity. A view and its statistics are published together, so `stats` always describes `lastAppliedSequence`.
 
 Commands always require subject/account equality, including admin INIT. Cancel/replace order lookup uses the command's account. Read responses contain immutable sequence-tagged state; execution pagination excludes fills above its returned sequence.
 
@@ -34,7 +38,7 @@ HTTP REPLACE requires `newRemainingQtyLots` and rejects `quantityLots` to preven
 
 ## Queries and outcomes
 
-Query names/values are URL-decoded once. Book accepts only `depth` (1..100) and `minimumSequence` (nonnegative); executions accepts only `offset` (nonnegative signed int) and `limit` (1..100); commands, result lookup and account accept no query parameters. Unknown names and repeated decoded names return 400. Scope checks precede query diagnostics.
+Query names/values are URL-decoded once. Book accepts only `depth` (1..100) and `minimumSequence` (nonnegative); market accepts only `depth` (1..100); trades accepts only `limit` (1..100); executions accepts only `offset` (nonnegative signed int) and `limit` (1..100); commands, result lookup and account accept no query parameters. Unknown names and repeated decoded names return 400. Scope checks precede query diagnostics.
 
 | Status | Meaning |
 | --- | --- |

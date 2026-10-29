@@ -56,6 +56,7 @@
               </targetClasses>
               <targetTests>
                 <param>io.github.cheshmakzanoon.portfolio.thepit.GatewayTest</param>
+                <param>io.github.cheshmakzanoon.portfolio.thepit.GatewayMarketTest</param>
               </targetTests>
               <mutationThreshold>70</mutationThreshold>
               <threads>1</threads>

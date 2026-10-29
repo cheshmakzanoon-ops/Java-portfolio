@@ -106,12 +106,7 @@ public final class HttpApi implements AutoCloseable {
         send(x, 403, Map.of("code", "SCOPE_REQUIRED"));
         return;
       }
-      Map<String, String> parameters =
-          query(
-              x,
-              path.equals("/book")
-                  ? Set.of("depth", "minimumSequence")
-                  : path.equals("/executions") ? Set.of("offset", "limit") : Set.of());
+      Map<String, String> parameters = query(x, allowedParameters(path));
       if (path.equals("/commands") && write) {
         byte[] body = x.getRequestBody().readNBytes(65537);
         if (body.length > 65536) {
@@ -179,6 +174,10 @@ public final class HttpApi implements AutoCloseable {
                 v.sequence(),
                 "executions",
                 gateway.executions(identity, offset, limit, v.sequence())));
+      } else if (path.equals("/market") && method.equals("GET")) {
+        send(x, 200, gateway.market(boundedInt(parameters, "depth", 5, 1, 100)));
+      } else if (path.equals("/trades") && method.equals("GET")) {
+        send(x, 200, gateway.trades(boundedInt(parameters, "limit", 20, 1, 100)));
       } else send(x, 404, Map.of("code", "NOT_FOUND"));
     } catch (JwtException e) {
       send(x, 401, Map.of("code", "INVALID_TOKEN"));
@@ -206,6 +205,16 @@ public final class HttpApi implements AutoCloseable {
       handlerPermits.release();
       x.close();
     }
+  }
+
+  private static Set<String> allowedParameters(String path) {
+    return switch (path) {
+      case "/book" -> Set.of("depth", "minimumSequence");
+      case "/market" -> Set.of("depth");
+      case "/trades" -> Set.of("limit");
+      case "/executions" -> Set.of("offset", "limit");
+      default -> Set.of();
+    };
   }
 
   private Map<String, String> query(HttpExchange x, Set<String> allowed) {
