@@ -40,12 +40,15 @@ class StableIdentityTest {
   @Test
   void structuredHashesRetainIndependentPublishedTupleVectors() {
     // Generated independently with Python struct: NUL, u16 ASCII domain length,
-    // domain bytes, i32 field count, then i32 UTF-16 unit length + UTF-16BE fields.
+    // domain bytes, i32 field count, then i32 UTF-16 unit length + UTF-16BE fields. The domain is
+    // "faultline/structured/v1/<kind>"; the project's rename from its earlier name changed it, so
+    // structured fingerprints (names containing '|' or an unpaired surrogate) differ from any
+    // produced before the rename. Ordinary names keep their legacy hashes, tested above.
     assertEquals(
-        "40730ca2450575b0704ac85c8dd0a7fc41a1b0657eb40d248c34fb8a9ce55f86",
+        "7fc0f0987207a98029093c9e26bdb0507e201d987f754183a8e03916813d6525",
         StableIdentity.method("C.read\uD800()V"));
     assertEquals(
-        "5762c2571ac1d196f835befe03d04fcb6fbc126260abc4379f34a1b3d5cf54d9",
+        "4342f62485f82e9892d0a673114f512233cb73698a6ce97fef7f881220c3e2d9",
         StableIdentity.finding(
             "BG-SQL-TEXT", new InstructionId("C.s()I@0|X()V", 0), new InstructionId("Y.t()V", 0)));
   }

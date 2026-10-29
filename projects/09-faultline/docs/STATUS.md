@@ -2,6 +2,10 @@
 
 Faultline's current correctness and packaged-CLI checks pass. Performance, mutation results, and earlier demo receipts apply to their recorded source revisions; they are not automatically inherited by later changes. Repository-wide clean-checkout restoration, hosted CI, and final release remain separate checks.
 
+## Post-rename repair (2026-10-29)
+
+Running `verify` on the renamed tree showed two failures that the 21 October results below predate. (1) The rename had rewritten the `BYTEGUARD_INPUT` literal in all 240 frozen corpus fixtures, so `CorpusTest` failed its source-hash check; the original bytes were restored and checked against both frozen label sets, and the corpus labels, results and thresholds are untouched ([corpus note](../corpus/README.md#byte-immutability-across-project-renames)). (2) `StableIdentityTest.structuredHashesRetainIndependentPublishedTupleVectors` still held vectors computed for the old hash domain (`byteguard/structured/v1/...`). The production code is self-consistent with an independent Python computation for the new domain `faultline/structured/v1/...`, so the vectors were regenerated rather than the code changed. The consequence is real and bounded: fingerprints of findings or methods whose names contain `|` or an unpaired UTF-16 surrogate differ from any produced before the rename; ordinary names keep their legacy hashes and are unaffected. After both repairs, ordinary `verify` passes for the whole reactor (JDK 25.0.4.1).
+
 ## Current verification
 
 The configuration-boundary pass completed on **2026-10-21 at 20:15:49 UTC** with **143 ordinary tests and 3 packaged-CLI integration tests**, zero failures, errors, or skips. The full `-Pintegration,mutation verify` reactor and independent freshness/completeness readers passed. Core aggregate coverage was **1,735 / 1,822 lines (95.23%)** and **1,111 / 1,303 branches (85.26%)**, above unchanged 85% / 75% gates. The frozen 120-case corpus and its labels remain unchanged.
