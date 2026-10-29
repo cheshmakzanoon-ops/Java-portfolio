@@ -28,13 +28,13 @@ public final class Gateway implements AutoCloseable {
     }
 
     synchronized List<Execution> page(long offset, int limit, long maximumSequence) {
-      int low = 0, high = fills.size();
-      while (low < high) {
-        int middle = (low + high) >>> 1;
-        if (fills.get(middle).sequence() <= maximumSequence) low = middle + 1;
-        else high = middle;
-      }
-      long from = Math.min(offset, low), to = Math.min(low, from + limit);
+      // The comparator never reports equality, so the result encodes the insertion point: the
+      // number of leading fills whose sequence does not exceed the cutoff.
+      int visible =
+          -Collections.binarySearch(
+                  fills, null, (fill, ignored) -> fill.sequence() <= maximumSequence ? -1 : 1)
+              - 1;
+      long from = Math.min(offset, visible), to = Math.min(visible, from + limit);
       return List.copyOf(fills.subList((int) from, (int) to));
     }
   }

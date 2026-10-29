@@ -16,7 +16,7 @@ public final class Journal implements AutoCloseable {
       MAX_PAYLOAD = 65536,
       MAX_SNAPSHOT = 16 * 1024 * 1024,
       MAX_ENTRIES = 1_100_000;
-  private static final int MAGIC = 0x4d434f52, VERSION = 1;
+  static final int MAGIC = 0x4d434f52, VERSION = 1;
   private static final ObjectMapper JSON = CommandJson.create();
 
   public interface Fault {
@@ -114,68 +114,22 @@ public final class Journal implements AutoCloseable {
           state == State.FAILED ? "journal recovery required" : "journal closed", failure);
   }
 
-  private static int crc(byte[] bytes, int length) {
+  static int crc(byte[] bytes, int length) {
     CRC32C c = new CRC32C();
     c.update(bytes, 0, length);
     return (int) c.getValue();
   }
 
   private void recover() throws IOException {
-    long position = 0, size = channel.size();
-    while (position < size) {
-      if (entries.size() >= MAX_ENTRIES) throw new IOException("journal run cap exceeded");
-      long start = position;
-      if (size - position < HEADER) {
-        truncate(start);
-        break;
-      }
-      ByteBuffer h = ByteBuffer.allocate(HEADER);
-      readFully(h, position);
-      byte[] hb = h.array();
-      h.flip();
-      int magic = h.getInt(), version = h.getInt();
-      long sequence = h.getLong();
-      int length = h.getInt(), checksum = h.getInt();
-      if (magic != MAGIC
-          || version != VERSION
-          || checksum != crc(hb, 20)
-          || length < 1
-          || length > MAX_PAYLOAD) throw new IOException("corrupt frame header at " + start);
-      if (sequence != entries.size() + 1L) throw new IOException("journal sequence gap");
-      if (size - position < HEADER + (long) length + 4) {
-        truncate(start);
-        break;
-      }
-      ByteBuffer data = ByteBuffer.allocate(length + 4);
-      readFully(data, position + HEADER);
-      data.flip();
-      byte[] payload = new byte[length];
-      data.get(payload);
-      if (data.getInt() != crc(payload, length))
-        throw new IOException("corrupt payload at " + start);
-      Payload p = JSON.readValue(payload, Payload.class);
-      if (p == null || !runId.equals(p.runId())) throw new IOException("invalid payload run ID");
-      try {
-        p.command().validate();
-      } catch (RuntimeException e) {
-        throw new IOException("invalid durable command", e);
-      }
-      entries.add(new Entry(sequence, p.command()));
-      position += HEADER + (long) length + 4;
-    }
+    JournalReader.Scan scan = JournalReader.scan(channel, runId);
+    entries.addAll(scan.entries());
+    if (scan.incompleteTailBytes() > 0) truncate(scan.validBytes());
     channel.position(channel.size());
   }
 
   private void truncate(long size) throws IOException {
     channel.truncate(size);
     channel.force(true);
-  }
-
-  private void readFully(ByteBuffer b, long pos) throws IOException {
-    while (b.hasRemaining()) {
-      int n = channel.read(b, pos + b.position());
-      if (n < 0) throw new IOException("unexpected EOF");
-    }
   }
 
   public synchronized void appendAndForce(long sequence, Command command) throws IOException {

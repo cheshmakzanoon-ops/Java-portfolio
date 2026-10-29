@@ -29,11 +29,13 @@
           <targetClasses>
             <param>io.github.cheshmakzanoon.portfolio.thepit.Book*</param>
                 <param>io.github.cheshmakzanoon.portfolio.thepit.Model*</param>
+            <param>io.github.cheshmakzanoon.portfolio.thepit.MarketData*</param>
           </targetClasses>
           <targetTests>
             <param>io.github.cheshmakzanoon.portfolio.thepit.BookTest</param>
             <param>io.github.cheshmakzanoon.portfolio.thepit.InvariantsTest</param>
             <param>io.github.cheshmakzanoon.portfolio.thepit.BookCheckpointTest</param>
+            <param>io.github.cheshmakzanoon.portfolio.thepit.MarketDataTest</param>
           </targetTests>
           <mutationThreshold>70</mutationThreshold>
           <threads>1</threads>

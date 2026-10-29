@@ -140,6 +140,10 @@ class MarketDataTest {
     assertTrue(tape.recent(10, 2).isEmpty());
     assertTrue(new Tape().recent(10, 99).isEmpty());
     assertThrows(IllegalArgumentException.class, () -> new Tape(0));
+    Tape single = new Tape(1);
+    single.accept(1, Side.BUY, fill(100, 1));
+    single.accept(2, Side.SELL, fill(101, 2));
+    assertEquals(List.of(new Trade(2, 101, 2, Side.SELL)), single.recent(5, 9));
     assertThrows(UnsupportedOperationException.class, () -> tape.recent(1, 5).clear());
   }
 
