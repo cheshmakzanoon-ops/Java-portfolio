@@ -209,6 +209,9 @@ public final class Model {
   public sealed interface Rpc
       permits VoteRequest,
           VoteResponse,
+          PreVoteRequest,
+          PreVoteResponse,
+          TimeoutNow,
           AppendRequest,
           AppendResponse,
           SnapshotRequest,
@@ -222,6 +225,19 @@ public final class Model {
       implements Rpc {}
 
   public record VoteResponse(long term, long request, boolean granted) implements Rpc {}
+
+  /**
+   * Probe sent before a real election. {@code term} is the term the sender would campaign in; the
+   * receiver neither adopts it, records a vote, nor restarts its election timer.
+   */
+  public record PreVoteRequest(
+      long term, long request, int candidate, long lastIndex, long lastTerm) implements Rpc {}
+
+  /** {@code term} is the responder's own current term, so a stale prober can learn it. */
+  public record PreVoteResponse(long term, long request, boolean granted) implements Rpc {}
+
+  /** Leader's instruction to a caught-up follower to campaign immediately in the next term. */
+  public record TimeoutNow(long term, long request, int leader) implements Rpc {}
 
   public record AppendRequest(
       long term,

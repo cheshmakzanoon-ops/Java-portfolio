@@ -35,7 +35,8 @@ The shipped client's retry identity is process-local. Applications needing retry
 | Failure | Expected behavior | Operational response |
 | --- | --- | --- |
 | Startup cannot load TLS or bind its port | Construction/startup reports the original failure and attempts all owned cleanup; later cleanup errors are suppressed. | Resolve the certificate/port conflict, inspect any suppressed cleanup failure, then retry. |
-| One member stops or is partitioned | A timely majority can elect/commit. The isolated leader cannot acknowledge new quorum operations. | Restore connectivity or restart the member; confirm quorum operations, not only status. |
+| One member stops or is partitioned | A timely majority can elect/commit. The isolated leader cannot acknowledge new quorum operations and steps down within about 500 ms; an isolated follower keeps its term (pre-vote), so it joins quietly on return. | Restore connectivity or restart the member; confirm quorum operations, not only status. |
+| Planned leader maintenance | `transfer` hands leadership to a named, caught-up member in tens of milliseconds, with exactly one new term. Writes pause for that interval. | Run the transfer, wait for its OK, then stop the old leader. A `TRANSFER_TIMEOUT` changes nothing; diagnose the target and retry. |
 | Reply is lost after commit | Client sees uncertainty; the repeated latest identity returns its committed result. | Retry the unchanged command. |
 | Snapshot reply takes several heartbeat periods | The same outstanding chunk is retried; delayed/duplicate replies remain correlated. | Allow transfer to finish; inspect storage/network errors if it cannot progress. |
 | Member crashes during a snapshot | Manifest still selects the old complete generation or the newly published complete generation. Partial transfer state is never active. | Restart against the retained directory. Preserve all artifacts on any validation failure. |
@@ -64,7 +65,9 @@ Keep `tls/` and the healthy node directories unchanged. A new node-1 directory s
 
 [Journal](../raft-storage/src/main/java/io/github/cheshmakzanoon/portfolio/majority/Journal.java) holds one directory lock. Each transaction calls `force(true)`. Snapshot publication verifies/flushed temporary content, publishes a fresh WAL generation, flushes the directory, then atomically publishes and flushes the manifest. Old recovery artifacts retire only after publication is durable. WAL generations rotate after 8 MiB; records are capped at 64 MiB. Monitor free space before workloads and preserve complete generations when backing up.
 
-Status exposes node/role/term/commit/applied/snapshot positions, state digest, disk barrier state, pending requests and snapshot/flush counters. `commit` and `applied` should converge after recovery, but digests/status alone cannot establish current read authority. `FAIL_CLOSED` identifies a terminal protocol or persistence failure; diagnose the first message and corresponding member log before restarting.
+Administrative requests use the separate administration role credential (the demo's `ClusterTool` shows the calls); `status`, `snapshot`, `partition`, `heal` and `transfer <member>` are the actions. This revision adds RPC tags 7–9 to wire version 1 and needs no storage migration, but members must be upgraded together: an older member rejects the new messages and drops the connection.
+
+Status exposes node/role/leader/term/commit/applied/snapshot positions, state digest, disk barrier state, pending requests and snapshot/flush counters. `commit` and `applied` should converge after recovery, but digests/status alone cannot establish current read authority. `FAIL_CLOSED` identifies a terminal protocol or persistence failure; diagnose the first message and corresponding member log before restarting.
 
 Back up a stopped member's complete directory or a coordinated stable generation. Copying a live WAL without synchronization is unsupported. The storage and wire versions remain 1, so this revision needs no data migration. New validation may refuse previously accepted malformed or internally inconsistent state; preserve it for diagnosis rather than editing it to pass.
 

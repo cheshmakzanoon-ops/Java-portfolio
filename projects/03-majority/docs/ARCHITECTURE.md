@@ -26,7 +26,31 @@ stateDiagram-v2
   Follower --> Follower: persist granted vote before replying
 ```
 
-The implementation uses randomized election deadlines of 250–499 ms and 50-ms heartbeat scheduling. These are liveness parameters, not a safety lease. It has no pre-vote or check-quorum optimization: an isolated member may raise its term, and a healed higher-term member can force a new election. An isolated leader can remain locally labelled leader while its reads and writes fail to obtain quorum confirmation.
+The implementation uses randomized election deadlines of 250–499 ms and 50-ms heartbeat scheduling. These are liveness parameters, not a safety lease.
+
+### Liveness hardening: pre-vote, check-quorum and leadership transfer
+
+`Raft.Options.HARDENED` is what `NodeMain` runs; `Options.CLASSIC` (the three-argument constructor's default) is kept so the plain protocol stays testable and comparable. None of the three mechanisms changes what is persisted or when a real vote is granted, so election safety, log matching and the persistence barrier are identical in both modes. Only availability under partitions differs.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Follower
+  Follower --> Probing: election timeout (no persistent change)
+  Probing --> Candidate: majority would vote (persist term + self-vote)
+  Probing --> Follower: leader heard, newer term seen, or no majority
+  Follower --> Candidate: TimeoutNow from the current leader
+  Candidate --> Leader: matching current-term majority votes
+  Leader --> Follower: higher-term RPC
+  Leader --> Follower: no majority acknowledged within 500 ms
+```
+
+- **Pre-vote (thesis §9.6).** On timeout a member asks its peers whether they *would* vote for it at `term + 1`, without raising its term, recording a vote or touching anyone's timer. A voter says yes only if the proposed term is newer, the sender's log is at least as current, it is not itself a leader, and it has not heard from a leader within 250 ms. A partitioned member therefore keeps probing without inflating its term, and a member that returns cannot depose a healthy leader.
+- **Check-quorum.** A leader that has not received any reply (even a rejection) from a majority within 500 ms — the longest a follower may wait before campaigning — steps down without changing its term and replies `UNKNOWN_OUTCOME` to its pending clients. An isolated leader no longer labels itself leader indefinitely.
+- **Leadership transfer.** An operator asks the leader to hand over to a named member. The leader stops accepting writes (clients get `UNAVAILABLE` with the target as the hint), brings the target's log up to its own, then sends `TimeoutNow`; the target campaigns at once, skipping the probe. The request is answered when the target's first `AppendEntries` arrives (OK) or after one second (`TRANSFER_TIMEOUT`); an unreachable target costs the leader a one-second write pause and nothing else. `TimeoutNow` is only honoured from the member the receiver currently follows, in the receiver's term.
+
+Stepping down from leadership now always draws a fresh election deadline. Previously a deposed leader kept the deadline from before it won, which was normally long past, so it campaigned on its very next tick; the regression is `RaftHardeningTest.aDeposedLeaderWaitsOutAFreshElectionTimeoutBeforeCampaigning`, which fails for both option sets without the change.
+
+Pre-vote and check-quorum are liveness aids, not leases: a stale leader may still briefly believe it leads (reads and writes still need a quorum confirmation), and the 250/500 ms constants assume clocks that advance at similar rates.
 
 `Raft.accept` emits a single `Persist` effect for dirty durable state. Dependent sends, replies and application are held until the matching `Persisted` token. Up to 256 incoming events can wait behind that barrier; excess client work gets resource exhaustion, while dropped peer work behaves as network loss. Acknowledgments from another token cannot release the barrier.
 

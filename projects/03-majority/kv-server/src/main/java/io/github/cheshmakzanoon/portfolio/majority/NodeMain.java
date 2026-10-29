@@ -30,7 +30,12 @@ public final class NodeMain implements AutoCloseable {
     Journal opened = new Journal(directory);
     TlsTransport initialized = null;
     try {
-      raft = new Raft(id, new SecureRandom().nextInt(Integer.MAX_VALUE), opened.recovered());
+      raft =
+          new Raft(
+              id,
+              new SecureRandom().nextInt(Integer.MAX_VALUE),
+              opened.recovered(),
+              Raft.Options.HARDENED);
       initialized = new TlsTransport(id, settings, this::receive);
       transport = initialized;
       execution =
@@ -158,6 +163,12 @@ public final class NodeMain implements AutoCloseable {
         drive(new TakeSnapshot());
         response.accept(new Result("OK", null, raft.leader()));
       }
+      case "transfer" -> {
+        // The reply is the transfer's outcome, not an acknowledgment that it began.
+        long request = ++serial;
+        waiting.put(request, new Waiting(response, System.nanoTime() / 1_000_000 + 1200));
+        drive(new Transfer(request, admin.peer()));
+      }
       default -> response.accept(new Result("INVALID_ADMIN", null, raft.leader()));
     }
   }
@@ -173,6 +184,8 @@ public final class NodeMain implements AutoCloseable {
           + raft.id()
           + " role="
           + raft.role()
+          + " leader="
+          + raft.leader()
           + " term="
           + raft.term()
           + " commit="

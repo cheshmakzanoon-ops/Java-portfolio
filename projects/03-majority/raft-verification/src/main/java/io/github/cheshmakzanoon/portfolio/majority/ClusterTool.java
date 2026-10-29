@@ -43,6 +43,21 @@ public final class ClusterTool {
     throw new AssertionError("NO_LEADER_WITHIN_20_SECONDS");
   }
 
+  public static long term(KvClient client, int node) throws Exception {
+    return Long.parseLong(status(client, node).get("term"));
+  }
+
+  /** Polls until the member no longer labels itself leader; returns its role at that point. */
+  public static String awaitNotLeader(KvClient client, int node) throws Exception {
+    long until = System.nanoTime() + 10_000_000_000L;
+    while (System.nanoTime() < until) {
+      String role = status(client, node).get("role");
+      if (!role.equals("LEADER")) return role;
+      Thread.sleep(30);
+    }
+    throw new AssertionError("ISOLATED_LEADER_STILL_LEADING_AFTER_10_SECONDS");
+  }
+
   public static void converge(KvClient client) throws Exception {
     long until = System.nanoTime() + 15_000_000_000L;
     while (System.nanoTime() < until) {
@@ -121,6 +136,18 @@ public final class ClusterTool {
                 "one",
                 new String(cas.value(), StandardCharsets.UTF_8),
                 cas.code()));
+        // Planned hand-off: the reply is the outcome, and exactly one election must result.
+        int target = (old + 1) % 3;
+        long termBeforeTransfer = term(client, old);
+        long transferStart = System.nanoTime();
+        Result transfer = client.admin(old, "transfer", target);
+        long transferMs = (System.nanoTime() - transferStart) / 1_000_000;
+        require(
+            transfer.code().equals("OK") && transfer.leader() == target, "transfer " + transfer);
+        require(leader(client, -1) == target, "target is not the leader after transfer");
+        require(
+            term(client, target) == termBeforeTransfer + 1, "transfer must cost exactly one term");
+        old = target;
         long failureStart = System.nanoTime();
         for (int n = 0; n < 3; n++)
           if (n != old) {
@@ -139,6 +166,15 @@ public final class ClusterTool {
         history.add(
             new Call(unknownStart, unknownEnd, Operation.PUT, "unknown", null, null, "TIMEOUT"));
         int replacement = leader(client, old);
+        // Check-quorum: the stranded member stops calling itself leader, and with pre-vote its
+        // unanswerable campaigns never raise its term past the replacement's predecessor term.
+        String strandedRole = awaitNotLeader(client, old);
+        long strandedTerm = term(client, old);
+        Thread.sleep(1500);
+        require(term(client, old) == strandedTerm, "isolated member inflated its term");
+        require(
+            strandedTerm < term(client, replacement),
+            "isolated member term " + strandedTerm + " vs " + term(client, replacement));
         long recoveryStart = System.nanoTime();
         Result majority =
             durable.mutate(
@@ -150,6 +186,12 @@ public final class ClusterTool {
         long recoveryMs = (System.nanoTime() - failureStart) / 1_000_000;
         for (int n = 0; n < 3; n++) client.admin(n, "heal", -1);
         converge(client);
+        long termAfterHeal = term(client, replacement);
+        Thread.sleep(1500);
+        require(
+            leader(client, -1) == replacement && term(client, replacement) == termAfterHeal,
+            "healing the partition deposed the replacement leader");
+        require(term(client, old) == termAfterHeal, "healed member did not adopt the leader term");
         long getStart = System.nanoTime();
         Result value = client.get(key);
         long getEnd = System.nanoTime();
@@ -195,8 +237,16 @@ public final class ClusterTool {
         String json =
             "{\"schemaVersion\":1,\"project\":\"majority\",\"processes\":3,\"tls\":\"TLSv1.3\",\"oldLeader\":"
                 + old
+                + ",\"transferTarget\":"
+                + target
+                + ",\"transferMs\":"
+                + transferMs
                 + ",\"replacementLeader\":"
                 + replacement
+                + ",\"strandedLeaderRole\":\""
+                + strandedRole
+                + "\",\"termAfterHeal\":"
+                + termAfterHeal
                 + ",\"isolatedRead\":\""
                 + isolatedRead.code()
                 + "\",\"isolatedMutation\":\""

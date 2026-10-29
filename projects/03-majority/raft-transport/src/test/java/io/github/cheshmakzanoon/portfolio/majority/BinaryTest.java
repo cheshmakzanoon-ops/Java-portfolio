@@ -33,6 +33,9 @@ class BinaryTest {
         List.of(
             new VoteRequest(1, 1, 0, 3, 1),
             new VoteResponse(1, 2, true),
+            new PreVoteRequest(2, 5, 1, 7, 2),
+            new PreVoteResponse(1, 5, false),
+            new TimeoutNow(3, 6, 2),
             new AppendRequest(
                 2,
                 3,

@@ -102,6 +102,9 @@ public final class Binary {
           case AppendResponse ignored -> 4;
           case SnapshotRequest ignored -> 5;
           case SnapshotResponse ignored -> 6;
+          case PreVoteRequest ignored -> 7;
+          case PreVoteResponse ignored -> 8;
+          case TimeoutNow ignored -> 9;
         });
     out.writeLong(rpc.term());
     out.writeLong(rpc.request());
@@ -112,6 +115,13 @@ public final class Binary {
         out.writeLong(r.lastTerm());
       }
       case VoteResponse r -> out.writeBoolean(r.granted());
+      case PreVoteRequest r -> {
+        out.writeInt(r.candidate());
+        out.writeLong(r.lastIndex());
+        out.writeLong(r.lastTerm());
+      }
+      case PreVoteResponse r -> out.writeBoolean(r.granted());
+      case TimeoutNow r -> out.writeInt(r.leader());
       case AppendRequest r -> {
         out.writeInt(r.leader());
         out.writeLong(r.previousIndex());
@@ -170,6 +180,9 @@ public final class Binary {
               in.readInt(),
               Objects.requireNonNull(Codec.bytes(in, 16384)));
       case 6 -> new SnapshotResponse(term, request, in.readLong(), in.readInt(), in.readBoolean());
+      case 7 -> new PreVoteRequest(term, request, in.readInt(), in.readLong(), in.readLong());
+      case 8 -> new PreVoteResponse(term, request, in.readBoolean());
+      case 9 -> new TimeoutNow(term, request, in.readInt());
       default -> throw new IOException("RPC_TYPE");
     };
   }

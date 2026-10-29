@@ -14,7 +14,7 @@ The review covers every production class in all six modules. The [architecture m
 | Medium | A repeated snapshot chunk arrives after its reply was lost. The old assembler restarted or rejected already received bytes. | `SnapshotAssembler` owns transfer identity, declared length, exact last-chunk comparison and bounded assembly. Duplicate, overlapping, missing-prefix, conflicting and corrupted schedules preserve activation boundaries. |
 | Medium | Checksum-valid snapshot metadata duplicates a client ID or contains malformed retry receipts/coordinates. | Reject ambiguous identities and invalid sequences/digests/results before activation; retain the earlier adversarial recovery fixtures. |
 
-No election algorithm or acknowledgment rule was replaced. Persistent single votes, current-term majority commitment and fresh quorum reads remain explicit. There is no pre-vote, check-quorum lease or dynamic membership. New validation and refactoring retain wire/WAL version 1; no data migration is required for valid existing state.
+No election algorithm or acknowledgment rule was replaced. Persistent single votes, current-term majority commitment and fresh quorum reads remain explicit. There was no pre-vote, check-quorum lease or dynamic membership when this review was written; pre-vote, check-quorum and leadership transfer were added afterwards (see [architecture](ARCHITECTURE.md#liveness-hardening-pre-vote-check-quorum-and-leadership-transfer)). Dynamic membership is still absent. New validation and refactoring retain wire/WAL version 1; no data migration is required for valid existing state.
 
 ## Transport, lifecycle and verification findings
 

@@ -4,27 +4,33 @@ import static io.github.cheshmakzanoon.portfolio.majority.Model.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.*;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class SimulationTest {
   @Test
   void recordedSeededFaultSchedules() throws Exception {
     int seeds = Integer.getInteger("majority.seeds", 30);
-    for (int seed = 0; seed < seeds; seed++) {
-      Simulator s = new Simulator(seed);
-      try {
-        s.faultSchedule(180);
-      } catch (Throwable error) {
-        Path p = Path.of("target", "failure-seed-" + seed + ".trace");
-        Files.createDirectories(p.getParent());
-        Files.writeString(p, s.trace());
-        throw new AssertionError("seed=" + seed + " trace=" + p, error);
+    for (Raft.Options options : List.of(Raft.Options.CLASSIC, Raft.Options.HARDENED)) {
+      String mode = options.preVote() ? "hardened" : "classic";
+      for (int seed = 0; seed < seeds; seed++) {
+        Simulator s = new Simulator(seed, options);
+        try {
+          s.faultSchedule(180);
+        } catch (Throwable error) {
+          Path p = Path.of("target", "failure-" + mode + "-seed-" + seed + ".trace");
+          Files.createDirectories(p.getParent());
+          Files.writeString(p, s.trace());
+          throw new AssertionError(mode + " seed=" + seed + " trace=" + p, error);
+        }
       }
     }
     Files.createDirectories(Path.of("target"));
     Files.writeString(
         Path.of("target", "simulation-seeds.txt"),
-        "seeds=0.." + (seeds - 1) + " actions=180 all invariants checked after every event\n");
+        "seeds=0.."
+            + (seeds - 1)
+            + " actions=180 modes=classic,hardened all invariants checked after every event\n");
   }
 
   @Test

@@ -16,6 +16,7 @@ public final class Simulator {
   }
 
   private final Random random;
+  private final Options options;
   private final PriorityQueue<Scheduled> queue = new PriorityQueue<>();
   private final Raft[] nodes = new Raft[3];
   private final Durable[] disks = {Durable.empty(), Durable.empty(), Durable.empty()};
@@ -30,8 +31,13 @@ public final class Simulator {
   private double loss = .08;
 
   public Simulator(long seed) {
+    this(seed, Options.CLASSIC);
+  }
+
+  public Simulator(long seed, Options options) {
     random = new Random(seed);
-    for (int i = 0; i < 3; i++) nodes[i] = new Raft(i, boots[i], disks[i]);
+    this.options = options;
+    for (int i = 0; i < 3; i++) nodes[i] = new Raft(i, boots[i], disks[i], options);
   }
 
   public void reliable() {
@@ -58,7 +64,7 @@ public final class Simulator {
 
   public void restart(int node) {
     if (nodes[node] == null) {
-      nodes[node] = new Raft(node, ++boots[node], disks[node]);
+      nodes[node] = new Raft(node, ++boots[node], disks[node], options);
       record("restart " + node);
     }
   }
@@ -72,6 +78,13 @@ public final class Simulator {
   public long read(int node, Key key) {
     long r = ++request;
     deliver(node, new Read(r, key));
+    return r;
+  }
+
+  /** Ask {@code node}, if it leads, to hand leadership to {@code target}. */
+  public long transfer(int node, int target) {
+    long r = ++request;
+    deliver(node, new Transfer(r, target));
     return r;
   }
 
@@ -134,6 +147,11 @@ public final class Simulator {
         }
         case 9 -> {
           if (nodes[node] != null) read(node, new Key(new byte[] {0}));
+        }
+        case 10 -> {
+          // Only hardened schedules transfer, and the target is chosen without drawing from the
+          // generator, so classic seeds replay exactly as they did before transfer existed.
+          if (options.preVote() && nodes[node] != null) transfer(node, (node + 1 + n % 2) % 3);
         }
         default -> {}
       }

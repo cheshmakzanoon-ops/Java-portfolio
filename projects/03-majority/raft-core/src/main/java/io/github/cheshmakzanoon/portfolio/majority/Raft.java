@@ -5,7 +5,14 @@ import static io.github.cheshmakzanoon.portfolio.majority.Model.*;
 import java.io.*;
 import java.util.*;
 
-/** Figure-2 Raft transition owner. Effects depending on stable state wait for Persisted. */
+/**
+ * Figure-2 Raft transition owner. Effects depending on stable state wait for Persisted.
+ *
+ * <p>{@link Options#HARDENED} adds the thesis §9.6 pre-vote phase and a leader check-quorum rule.
+ * Neither changes what is persisted or when a vote is granted, so election safety, log matching and
+ * the persistence barrier are the same in both modes; only liveness under partitions differs.
+ * Leadership transfer is independent of the options and is always available to an operator.
+ */
 public final class Raft {
   public enum Role {
     FOLLOWER,
@@ -13,7 +20,28 @@ public final class Raft {
     LEADER
   }
 
-  public sealed interface Event permits Tick, Receive, Persisted, Mutate, Read, TakeSnapshot {}
+  /**
+   * Optional liveness hardening.
+   *
+   * @param preVote campaign for a real term only after a majority says it would vote for us
+   * @param checkQuorum a leader that has not heard from a majority recently steps down
+   */
+  public record Options(boolean preVote, boolean checkQuorum) {
+    public static final Options CLASSIC = new Options(false, false);
+    public static final Options HARDENED = new Options(true, true);
+  }
+
+  /** Followers refuse pre-votes for this long after the last leader message. */
+  static final long LEADER_LEASE_MS = 250;
+
+  /** A leader steps down when fewer than a majority acknowledged anything within this window. */
+  static final long QUORUM_WINDOW_MS = 500;
+
+  /** A leadership transfer that has not produced the target as leader by now is abandoned. */
+  static final long TRANSFER_TIMEOUT_MS = 1000;
+
+  public sealed interface Event
+      permits Tick, Receive, Persisted, Mutate, Read, TakeSnapshot, Transfer {}
 
   public record Tick(long now) implements Event {}
 
@@ -27,6 +55,9 @@ public final class Raft {
 
   public record TakeSnapshot() implements Event {}
 
+  /** Operator request that {@code target} take over leadership; answered with a {@link Reply}. */
+  public record Transfer(long request, int target) implements Event {}
+
   public sealed interface Effect permits Persist, Send, Reply, Applied {}
 
   public record Persist(long token, Durable durable) implements Effect {}
@@ -38,6 +69,8 @@ public final class Raft {
   public record Applied(long index, long term, Command command, Result result) implements Effect {}
 
   private record Sent(long term, long previous, long last, long read) {}
+
+  private record Handoff(long request, int target, long deadline) {}
 
   private static final class Reading {
     final long request, safe, expires;
@@ -55,6 +88,7 @@ public final class Raft {
 
   private final int id;
   private final long boot;
+  private final Options options;
   private final Random electionRandom;
   private long term,
       commit,
@@ -64,7 +98,8 @@ public final class Raft {
       heartbeat,
       serial,
       persistSerial,
-      pendingPersist;
+      pendingPersist,
+      leaderContact;
   private int vote, leader = -1;
   private Snapshot snapshot;
   private final ArrayList<Entry> log = new ArrayList<>();
@@ -72,6 +107,11 @@ public final class Raft {
   private Role role = Role.FOLLOWER;
   private final Set<Integer> votes = new HashSet<>();
   private final Map<Integer, Long> voteRequests = new HashMap<>();
+  private final Set<Integer> preVotes = new HashSet<>();
+  private final Map<Integer, Long> preVoteRequests = new HashMap<>();
+  private final Map<Integer, Long> acknowledged = new HashMap<>();
+  private boolean preCandidate;
+  private Handoff handoff;
   private final Map<Integer, SnapshotRequest> snapshotRequests = new HashMap<>();
   private final Map<Integer, Long> next = new HashMap<>(), match = new HashMap<>();
   private final Map<Integer, Map<Long, Sent>> sent =
@@ -87,9 +127,14 @@ public final class Raft {
   private final Map<Integer, Integer> snapshotOffsets = new HashMap<>();
 
   public Raft(int id, long boot, Durable d) {
+    this(id, boot, d, Options.CLASSIC);
+  }
+
+  public Raft(int id, long boot, Durable d, Options options) {
     if (id < 0 || id > 2) throw new IllegalArgumentException("MEMBER");
     this.id = id;
     this.boot = boot;
+    this.options = Objects.requireNonNull(options);
     electionRandom = new Random(boot * 0x9e3779b97f4a7c15L + id);
     term = d.term();
     vote = d.vote();
@@ -138,6 +183,7 @@ public final class Raft {
       case Mutate m -> mutate(m);
       case Read r -> read(r);
       case TakeSnapshot ignored -> compact();
+      case Transfer t -> transfer(t);
       case Persisted ignored -> throw new AssertionError();
     }
     if (dirty) {
@@ -184,6 +230,10 @@ public final class Raft {
     return pendingPersist != 0;
   }
 
+  public Options options() {
+    return options;
+  }
+
   private long request() {
     return (boot << 32) ^ (++serial);
   }
@@ -206,6 +256,23 @@ public final class Raft {
     deadline = clock + 250 + electionRandom.nextInt(250);
   }
 
+  private boolean upToDate(long lastTerm, long lastIndex) {
+    return lastTerm > termAt(last()) || (lastTerm == termAt(last()) && lastIndex >= last());
+  }
+
+  /** A leader, or a follower that heard a leader recently, must not help anyone depose it. */
+  private boolean inLeaderLease() {
+    return role == Role.LEADER || (leader != -1 && clock - leaderContact < LEADER_LEASE_MS);
+  }
+
+  private boolean quorumActive() {
+    int active = 1;
+    for (int p = 0; p < 3; p++)
+      if (p != id && clock - acknowledged.getOrDefault(p, Long.MIN_VALUE / 2) < QUORUM_WINDOW_MS)
+        active++;
+    return active >= 2;
+  }
+
   private void tick(long now) {
     clock = Math.max(clock, now);
     var pendingReads = reads.values().iterator();
@@ -216,11 +283,36 @@ public final class Raft {
         pendingReads.remove();
       }
     }
-    if (role != Role.LEADER && clock >= deadline) elect();
-    else if (role == Role.LEADER && clock >= heartbeat) {
+    if (handoff != null && clock >= handoff.deadline()) {
+      out.add(new Reply(handoff.request(), new Result("TRANSFER_TIMEOUT", null, leader)));
+      handoff = null;
+    }
+    if (role == Role.LEADER && options.checkQuorum() && !quorumActive()) {
+      stepDown(term);
+    } else if (role != Role.LEADER && clock >= deadline) {
+      if (options.preVote()) preElect();
+      else elect();
+    } else if (role == Role.LEADER && clock >= heartbeat) {
       broadcast(0);
       heartbeat = clock + 50;
     }
+  }
+
+  /** Ask for pre-votes at term + 1 without touching term, vote or persistent state. */
+  private void preElect() {
+    role = Role.FOLLOWER;
+    votes.clear();
+    resetDeadline();
+    preCandidate = true;
+    preVotes.clear();
+    preVotes.add(id);
+    preVoteRequests.clear();
+    for (int p = 0; p < 3; p++)
+      if (p != id) {
+        long req = request();
+        preVoteRequests.put(p, req);
+        out.add(new Send(p, new PreVoteRequest(term + 1, req, id, last(), termAt(last()))));
+      }
   }
 
   private void elect() {
@@ -228,6 +320,9 @@ public final class Raft {
     vote = id;
     role = Role.CANDIDATE;
     leader = -1;
+    preCandidate = false;
+    preVotes.clear();
+    preVoteRequests.clear();
     votes.clear();
     votes.add(id);
     reads.clear();
@@ -243,6 +338,9 @@ public final class Raft {
   }
 
   private void stepDown(long newTerm) {
+    // A leader never consults its election deadline, so it is long past. Without a fresh one,
+    // a deposed leader would campaign again on its very next tick.
+    if (role == Role.LEADER) resetDeadline();
     if (newTerm > term) {
       term = newTerm;
       vote = -1;
@@ -250,6 +348,7 @@ public final class Raft {
     }
     role = Role.FOLLOWER;
     leader = -1;
+    preCandidate = false;
     votes.clear();
     reads
         .values()
@@ -266,10 +365,14 @@ public final class Raft {
 
   private void receive(int peer, Rpc rpc) {
     if (peer < 0 || peer > 2 || peer == id) return;
-    if (rpc.term() > term) stepDown(rpc.term());
+    // A pre-vote carries the term its sender *would* use; adopting it would defeat the purpose.
+    if (rpc.term() > term && !(rpc instanceof PreVoteRequest)) stepDown(rpc.term());
     switch (rpc) {
       case VoteRequest r -> vote(peer, r);
       case VoteResponse r -> voted(peer, r);
+      case PreVoteRequest r -> preVote(peer, r);
+      case PreVoteResponse r -> preVoted(peer, r);
+      case TimeoutNow r -> timeoutNow(peer, r);
       case AppendRequest r -> append(peer, r);
       case AppendResponse r -> appended(peer, r);
       case SnapshotRequest r -> install(peer, r);
@@ -282,14 +385,35 @@ public final class Raft {
         r.term() == term
             && r.candidate() == peer
             && (vote == -1 || vote == peer)
-            && (r.lastTerm() > termAt(last())
-                || (r.lastTerm() == termAt(last()) && r.lastIndex() >= last()));
+            && upToDate(r.lastTerm(), r.lastIndex());
     if (grant) {
       vote = peer;
       dirty = true;
       resetDeadline();
     }
     out.add(new Send(peer, new VoteResponse(term, r.request(), grant)));
+  }
+
+  private void preVote(int peer, PreVoteRequest r) {
+    boolean grant =
+        r.candidate() == peer
+            && r.term() > term
+            && !inLeaderLease()
+            && upToDate(r.lastTerm(), r.lastIndex());
+    out.add(new Send(peer, new PreVoteResponse(term, r.request(), grant)));
+  }
+
+  private void preVoted(int peer, PreVoteResponse r) {
+    if (!preCandidate || !r.granted() || !Objects.equals(preVoteRequests.get(peer), r.request()))
+      return;
+    preVotes.add(peer);
+    if (preVotes.size() >= 2) elect();
+  }
+
+  /** The leader vouched that this follower holds its entire log: campaign without waiting. */
+  private void timeoutNow(int peer, TimeoutNow r) {
+    if (role != Role.FOLLOWER || r.term() != term || r.leader() != peer || leader != peer) return;
+    elect();
   }
 
   private void voted(int peer, VoteResponse r) {
@@ -304,6 +428,7 @@ public final class Raft {
     for (int p = 0; p < 3; p++) {
       next.put(p, last() + 1);
       match.put(p, p == id ? last() : 0L);
+      acknowledged.put(p, clock);
     }
     log.add(new Entry(last() + 1, term, null));
     match.put(id, last());
@@ -312,14 +437,28 @@ public final class Raft {
     heartbeat = clock + 50;
   }
 
+  /** A current-term leader spoke: refresh the lease, abandon any pre-vote, settle a handoff. */
+  private void leaderSeen(int peer) {
+    leader = peer;
+    leaderContact = clock;
+    preCandidate = false;
+    resetDeadline();
+    if (handoff != null) {
+      boolean target = peer == handoff.target();
+      out.add(
+          new Reply(
+              handoff.request(), new Result(target ? "OK" : "TRANSFER_SUPERSEDED", null, peer)));
+      handoff = null;
+    }
+  }
+
   private void append(int peer, AppendRequest r) {
     if (r.term() != term || r.leader() != peer) {
       out.add(new Send(peer, new AppendResponse(term, r.request(), false, last(), r.read())));
       return;
     }
     if (role != Role.FOLLOWER) stepDown(term);
-    leader = peer;
-    resetDeadline();
+    leaderSeen(peer);
     if (termAt(r.previousIndex()) != r.previousTerm()) {
       out.add(new Send(peer, new AppendResponse(term, r.request(), false, last(), r.read())));
       return;
@@ -351,6 +490,7 @@ public final class Raft {
     if (role != Role.LEADER || r.term() != term) return;
     Sent s = sent.get(peer).remove(r.request());
     if (s == null || s.term() != term) return;
+    acknowledged.put(peer, clock);
     if (r.success()) {
       if (r.match() != s.last() || r.read() != s.read()) return;
       match.put(peer, Math.max(match.get(peer), r.match()));
@@ -364,6 +504,7 @@ public final class Raft {
         }
       }
       if (next.get(peer) <= last()) replicate(peer, 0);
+      else if (handoff != null && handoff.target() == peer) offerLeadership();
     } else if (s.previous() >= match.get(peer) && s.last() >= next.get(peer) - 1) {
       next.put(peer, Math.max(match.get(peer) + 1, Math.min(next.get(peer) - 1, s.previous())));
       replicate(peer, s.read());
@@ -418,6 +559,11 @@ public final class Raft {
   private void mutate(Mutate m) {
     if (role != Role.LEADER) {
       out.add(new Reply(m.request(), new Result("NOT_LEADER", null, leader)));
+      return;
+    }
+    if (handoff != null) {
+      // Writes stop so the target can reach our last entry; clients retry and find the new leader.
+      out.add(new Reply(m.request(), new Result("UNAVAILABLE", null, handoff.target())));
       return;
     }
     if (clients.size() >= MAX_PENDING || log.size() > 4096) {
@@ -479,6 +625,26 @@ public final class Raft {
     completeReads();
   }
 
+  private void transfer(Transfer t) {
+    if (role != Role.LEADER) {
+      out.add(new Reply(t.request(), new Result("NOT_LEADER", null, leader)));
+    } else if (t.target() < 0 || t.target() > 2 || t.target() == id) {
+      out.add(new Reply(t.request(), new Result("INVALID_TRANSFER", null, id)));
+    } else if (handoff != null) {
+      out.add(new Reply(t.request(), new Result("TRANSFER_IN_PROGRESS", null, id)));
+    } else {
+      handoff = new Handoff(t.request(), t.target(), clock + TRANSFER_TIMEOUT_MS);
+      if (match.getOrDefault(t.target(), 0L) >= last()) offerLeadership();
+      else replicate(t.target(), 0);
+    }
+  }
+
+  /** Called only when the target's match index equals our last entry. */
+  private void offerLeadership() {
+    if (match.getOrDefault(handoff.target(), 0L) >= last())
+      out.add(new Send(handoff.target(), new TimeoutNow(term, request(), id)));
+  }
+
   private void compact() {
     if (applied <= snapshot.index()) return;
     snapshot = registers.snapshot(applied, termAt(applied));
@@ -521,8 +687,7 @@ public final class Raft {
     if (r.term() != term || r.leader() != peer) return;
     if (r.index() < 1 || r.snapshotTerm() < 1 || r.snapshotTerm() > term) return;
     if (role != Role.FOLLOWER) stepDown(term);
-    leader = peer;
-    resetDeadline();
+    leaderSeen(peer);
     if (r.index() <= commit) {
       out.add(new Send(peer, new SnapshotResponse(term, r.request(), r.index(), r.total(), true)));
       return;
@@ -560,6 +725,7 @@ public final class Raft {
         || r.index() != snapshot.index()
         || request == null
         || request.request() != r.request()) return;
+    acknowledged.put(peer, clock);
     if (r.done()) {
       if (r.nextOffset() != request.total()) return;
       match.put(peer, Math.max(match.get(peer), r.index()));
