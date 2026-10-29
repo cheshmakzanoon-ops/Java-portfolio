@@ -128,12 +128,21 @@ class PolicyAnalyzerTest {
                 "total",
                 "subject.clearance > 3 or subject.clearance <= 3 or not exists(subject.clearance)"),
             deny("constant", "true"),
+            deny(
+                "membership",
+                "subject.department in [\"a\"] or not subject.department in [\"a\"] or not exists(subject.department)"),
+            deny(
+                "membership-gap",
+                "subject.department in [\"a\"] or not subject.department in [\"b\"]"),
             deny("presence", "exists(subject.department) or not exists(subject.department)"),
             allow("roles", "hasRole(\"reader\") or not hasRole(\"reader\")"));
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "not-total")).isFalse();
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "total")).isTrue();
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "constant")).isTrue();
     assertThat(has(report, "DENY_ALWAYS_APPLIES", "presence")).isTrue();
+    assertThat(has(report, "DENY_ALWAYS_APPLIES", "membership")).isTrue();
+    // Not "a" or not "b" covers every present value, but an absent attribute makes it UNKNOWN.
+    assertThat(has(report, "DENY_ALWAYS_APPLIES", "membership-gap")).isFalse();
     assertThat(has(report, "ALLOW_UNCONDITIONAL", "roles")).isTrue();
   }
 
@@ -195,6 +204,7 @@ class PolicyAnalyzerTest {
             .orElseThrow();
     assertThat(finding.ruleId()).isEqualTo("range");
     assertThat(finding.message()).startsWith("Together");
+    assertThat(has(report, "SCOPE_NEVER_ALLOWS", null)).isTrue();
 
     // Dropping one deny reopens the gap, so the finding disappears.
     assertThat(
@@ -263,20 +273,24 @@ class PolicyAnalyzerTest {
             allow("in-not", "not subject.department in [\"b\", \"c\", \"b\"]"),
             allow(
                 "in-or",
-                "subject.suspended or (exists(resource.id) and resource.id in [\"x\", \"x\"])"));
-    for (String id : List.of("in-and", "in-not", "in-or"))
+                "subject.suspended or (exists(resource.id) and resource.id in [\"x\", \"x\"])"),
+            allow("in-left", "subject.department in [\"p\", \"p\"] and subject.suspended"),
+            allow("clean", "subject.department in [\"a\", \"b\"] and resource.id in [\"x\"]"));
+    for (String id : List.of("in-and", "in-not", "in-or", "in-left"))
       assertThat(has(sets, "DUPLICATE_SET_ELEMENT", id)).as(id).isTrue();
+    assertThat(has(sets, "DUPLICATE_SET_ELEMENT", "clean")).isFalse();
 
     // A role that is only named inside nested conditions still counts as used.
     Definition definition =
         new Definition(
             Map.of(
                 "granted", Set.of(), "n1", Set.of(), "n2", Set.of(), "n3", Set.of(), "n4", Set.of(),
-                "idle", Set.of()),
+                "n5", Set.of(), "idle", Set.of()),
             List.of(new Grant("granted", "read", "doc")),
             List.of(
                 allow("deep", "subject.suspended or (not hasRole(\"n1\") and exists(resource.id))"),
                 allow("compare", "hasRole(\"n2\") == exists(resource.id)"),
+                allow("compare-right", "exists(resource.id) == hasRole(\"n5\")"),
                 allow("member", "hasRole(\"n3\") in [true]"),
                 allow("both", "hasRole(\"n4\") != hasRole(\"n4\")")));
     List<String> unused =

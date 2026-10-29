@@ -8,8 +8,8 @@ This update adds code after the 2026-10-20 receipt below, so that receipt does n
 
 | Check | Result |
 | --- | --- |
-| `verify` (formatting, JaCoCo gates, all modules) | passed; 78 ordinary methods: matching-core 25, journal 18, gateway 19, simulator 16 |
-| `-Pmutation` (unchanged 70% gate) | passed; matching-core 306 killed of 336, journal 136 of 159, gateway 85 of 93 |
+| `portfolio.sh verify thepit` (formatting, JaCoCo gates, report-freshness checks, all modules) | passed; 79 ordinary methods: matching-core 25, journal 18, gateway 19, simulator 16, benchmarks 1 |
+| `-Pmutation` (unchanged 70% gate) | passed; matching-core 306 killed of 336, journal 138 of 159, gateway 85 of 93 |
 | Asserted demo | still prints `PASS executions=4 lots=8 aliceCash=19200 aliceLots=8 openOrders=0 results=12` with digest `4e226aa1…959e3` |
 | Architecture scan, source and bytecode | 0 violations |
 

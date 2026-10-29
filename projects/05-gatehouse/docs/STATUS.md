@@ -2,6 +2,22 @@
 
 Gatehouse has executable coverage for policy semantics, OIDC identity validation, tenant isolation, revocation, immutable publication, and mandatory audit. Results below distinguish current hardening from historical correctness and measurement evidence; historical source fingerprints do not certify subsequent code changes.
 
+## Update 2026-10-29: explanations, static analysis and formatting
+
+This update adds code after the receipts below, so they do not describe the current source. It was executed on JDK 25.0.4.1 and the wrapper's Maven 3.10.0 without Docker.
+
+| Check | Result |
+| --- | --- |
+| `portfolio.sh verify gatehouse` (formatting, JaCoCo gates, report-freshness checks) | passed; 77 ordinary methods: 43 policy-core, 30 decision-service, four protected-service |
+| `-Pmutation` on policy-core (unchanged 70% gate) | 501 of 518 killed, with the analyzer at 197 of 209; the survivors are equivalent boundary and overflow guards and the pre-existing parser |
+| PostgreSQL/Keycloak integration | **not run**: it needs Docker, which the sandbox lacked |
+
+The committed baseline failed the formatting gate in four test files, so the ordinary build stopped before any test ran; whitespace-only fixes restored it in a separate commit.
+
+Not covered by integration: the new `/explain` and `/lint` routes are unit-tested with a mocked store, which verifies their shapes, their use of the same administrative gate as `/simulate` (the gate itself is integration-tested for `/simulate`) and their error mapping; a request through the real HTTP, OIDC and PostgreSQL stack has not been made. No threshold, finding or earlier result changed.
+
+What the analyzer's tests establish: every impossibility or certainty claim is confirmed against an independent exhaustive decision procedure, evaluated through the production interpreter, over 420 generated policies (at least five confirmed claims of each of seven kinds), and without two-attribute relations the findings are exact, not only sound. Reintroducing an unsound approximation that was considered and rejected during development makes a named regression and the generated oracle fail. The search is bounded and reports `ANALYSIS_LIMIT` rather than guessing; a test asserts that an undecided rule never becomes a scope-level error. `explain` and `decide` share one evaluation loop and are compared at more than 50,000 grid points. These are properties of the modelled language only: analysis says nothing about the policy's intent, and relations between two different attributes are treated as free, so some real findings are missed by design.
+
 ## Current CSRF enforcement, 2026-10-21
 
 The complete ordinary reactor passed **49 methods: 19 policy-core, 26 decision-service and four protected-service**, with zero failures, errors or skips. Fresh-report completeness checks passed. Six new configured-chain regressions cover bearer plus cookie, raw Cookie headers, mutation and safe methods, browser Basic credentials, valid/invalid CSRF tokens, and retained authentication requirements.

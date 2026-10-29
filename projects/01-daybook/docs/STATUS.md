@@ -2,6 +2,21 @@
 
 Daybook implements atomic posting, tenant-scoped idempotency, full reversals, period closure, statement reconciliation, and reporting replay. The full performance study and clean-checkout release validation remain incomplete. The project makes no production-capacity or regulatory claim.
 
+## Update 2026-10-29: authoritative reads, period opening and native integration
+
+This update adds code after the receipts below, so they do not describe the current source. It was executed on JDK 25.0.4.1 and the wrapper's Maven 3.10.0. The sandbox had no Docker, so PostgreSQL ran as a disposable native server (see [operations](OPERATIONS.md#integration-tests-without-docker)); the pinned container remains the reference environment and was **not** exercised here.
+
+| Check | Result |
+| --- | --- |
+| Ordinary reactor (`verify`, including formatting and JaCoCo gates) | passed; 68 methods: 19 domain, 29 persistence, 11 API, 9 verification |
+| Integration against native PostgreSQL **18.6** | passed; 30 methods: `LedgerBoundaryIT` 6, `LedgerPostgresIT` 16, `LedgerReadModelsIT` 8 |
+| `backupRestoreReauditsImmutableSource` against native PostgreSQL **16.15** with matching `pg_dump`/`psql` | passed. It was excluded from the 18.6 run because the available 18.6 build ships no dump tools |
+| Domain mutation testing (unchanged 70% gate) | 48 of 49 killed; every `TrialBalance` mutant killed; the one survivor is in the pre-existing `Money` |
+
+The 18.6 server is the repository's pinned minor version, but it is a different build from the pinned image, and the one restore test ran on a different major. Neither run is a claim about the container image, its libraries or its vulnerability status. The sandbox's integration database ran with `fsync` off, so no durability or crash-recovery claim follows from it; the existing process-kill checks were not rerun. The demo script, the performance study and the OIDC/Keycloak-backed lifecycle were not run.
+
+What the new tests establish: the trial balance is compared with an independent recomputation after random books with reversals, at cutoffs on, before and after real journal dates, and the test fails when the SQL's inclusive date bound is made exclusive; it is cross-checked against the separately maintained balance table and for tenant leakage. Journals expose reversal links in both directions and never cross tenants. Period opening is idempotent, refuses overlap, is bounded, needs no table privilege, and concurrent opens agree. The new routes are asserted on the finished security chain: reads need only `ledger.read`, opening a period needs `ledger.write`, and reporting routes keep their stricter scope.
+
 ## Current CSRF enforcement, 2026-10-21
 
 The complete ordinary reactor passed **52 methods: 10 domain, 29 persistence, eight API and five verification**, with zero failures, errors or skips. Fresh-report completeness checks passed. Six new configured-chain regressions cover bearer plus cookie, raw Cookie headers, mutation and safe methods, browser Basic credentials, valid/invalid CSRF tokens, and retained authentication requirements.

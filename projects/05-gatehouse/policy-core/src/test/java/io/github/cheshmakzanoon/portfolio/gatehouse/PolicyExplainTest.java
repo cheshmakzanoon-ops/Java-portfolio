@@ -68,6 +68,41 @@ class PolicyExplainTest {
   }
 
   @Test
+  void aMissingAttributeIsReportedOnEitherSideOfAComparisonAndInsideSetTests() {
+    Compiled policy =
+        compile(
+            new Definition(
+                Map.of("reader", Set.of()),
+                List.of(new Grant("reader", "read", "doc")),
+                List.of(
+                    new Rule(
+                        "compare",
+                        "read",
+                        "doc",
+                        Effect.ALLOW,
+                        "subject.clearance >= resource.classification"),
+                    new Rule(
+                        "member",
+                        "read",
+                        "doc",
+                        Effect.ALLOW,
+                        "not resource.type in [\"a\", \"b\"]"))));
+    Explanation onlyRight =
+        explain(policy, Set.of("reader"), "read", "doc", Map.of("resource.classification", 1L));
+    assertThat(onlyRight.rules().get(0).missingFields()).containsExactly("subject.clearance");
+    assertThat(onlyRight.rules().get(1).missingFields()).containsExactly("resource.type");
+    Explanation onlyLeft =
+        explain(
+            policy,
+            Set.of("reader"),
+            "read",
+            "doc",
+            Map.of("subject.clearance", 1L, "resource.type", "c"));
+    assertThat(onlyLeft.rules().get(0).missingFields()).containsExactly("resource.classification");
+    assertThat(onlyLeft.rules().get(1).missingFields()).isEmpty();
+  }
+
+  @Test
   void denyAndMissingGrantAreExplained() {
     Explanation denied =
         explain(sample(), Set.of("reader"), "read", "doc", Map.of("subject.suspended", true));
