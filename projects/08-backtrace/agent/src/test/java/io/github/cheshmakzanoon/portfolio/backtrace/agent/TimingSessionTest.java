@@ -184,7 +184,6 @@ class TimingSessionTest {
     assertTrue(
         Thread.getAllStackTraces().keySet().stream()
             .noneMatch(
-                thread ->
-                    thread.isAlive() && thread.getName().equals("backtrace-probe-consumer")));
+                thread -> thread.isAlive() && thread.getName().equals("backtrace-probe-consumer")));
   }
 }

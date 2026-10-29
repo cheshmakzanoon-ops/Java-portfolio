@@ -18,8 +18,7 @@ class ArchitectureTest {
         .dependOnClassesThat()
         .resideInAnyPackage("org.springframework..", "java.sql..", "java.net..", "org.flywaydb..")
         .check(
-            new ClassFileImporter()
-                .importPackages("io.github.cheshmakzanoon.portfolio.handoff"));
+            new ClassFileImporter().importPackages("io.github.cheshmakzanoon.portfolio.handoff"));
     assertNotNull(Fixtures.media().validate());
     assertNotNull(Fixtures.order(1, Definition.Safety.PURE).validate());
   }

@@ -37,9 +37,7 @@ class SecurityTest {
     assertTrue(Security.claims("switchback").validate(token(Map.of("tenant", 42))).hasErrors());
     assertTrue(Security.claims("switchback").validate(token(Map.of("sub", ""))).hasErrors());
     assertTrue(
-        Security.claims("switchback")
-            .validate(token(Map.of("aud", List.of("other"))))
-            .hasErrors());
+        Security.claims("switchback").validate(token(Map.of("aud", List.of("other")))).hasErrors());
     Map<String, Object> missing = new HashMap<>();
     missing.put("exp", null);
     assertTrue(Security.claims("switchback").validate(token(missing)).hasErrors());

@@ -255,8 +255,7 @@ class PostgresIT {
           404, client.send(cross, java.net.http.HttpResponse.BodyHandlers.ofString()).statusCode());
       var scope =
           java.net.http.HttpRequest.newBuilder(java.net.URI.create(base + "/v1/problems"))
-              .header(
-                  "Authorization", "Bearer " + issuer.token(Map.of("scope", "switchback.read")))
+              .header("Authorization", "Bearer " + issuer.token(Map.of("scope", "switchback.read")))
               .header("Content-Type", "application/json")
               .POST(java.net.http.HttpRequest.BodyPublishers.ofString(Json.write(problem("other"))))
               .build();

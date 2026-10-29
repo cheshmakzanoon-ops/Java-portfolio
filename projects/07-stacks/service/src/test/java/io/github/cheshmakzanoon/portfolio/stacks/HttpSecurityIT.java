@@ -157,9 +157,7 @@ class HttpSecurityIT {
             "spring.main.banner-mode",
             "off"));
     try (ConfigurableApplicationContext context =
-        app.run(
-            "--stacks.ranking-mode=NO_COVERAGE",
-            "--stacks.ranking-profile=BM25_NO_LENGTH")) {
+        app.run("--stacks.ranking-mode=NO_COVERAGE", "--stacks.ranking-profile=BM25_NO_LENGTH")) {
       String base = "http://127.0.0.1:" + context.getEnvironment().getProperty("local.server.port");
       HttpClient client = HttpClient.newHttpClient();
       LocalOidcIssuer issuer = context.getBean(LocalOidcIssuer.class);

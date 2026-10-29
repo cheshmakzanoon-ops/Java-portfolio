@@ -182,8 +182,7 @@ public class Security {
           AuthorizationFilter.class);
     } else {
       if (issuer.isBlank())
-        throw new IllegalArgumentException(
-            "protected profile requires switchback.issuer OIDC URL");
+        throw new IllegalArgumentException("protected profile requires switchback.issuer OIDC URL");
       JwtDecoder decoder = protectedDecoder(issuer, audience);
       http.oauth2ResourceServer(o -> o.jwt(j -> j.decoder(decoder)));
     }

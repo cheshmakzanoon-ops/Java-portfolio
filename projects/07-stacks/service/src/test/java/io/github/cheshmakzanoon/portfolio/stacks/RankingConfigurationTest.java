@@ -50,7 +50,6 @@ class RankingConfigurationTest {
     environment.setProperty("stacks.ranking-strategy", "PAIRWISE");
     Files.write(path, new byte[] {1});
     assertThrows(
-        java.io.IOException.class,
-        () -> new StacksApplication().searchEngine(environment, auth));
+        java.io.IOException.class, () -> new StacksApplication().searchEngine(environment, auth));
   }
 }

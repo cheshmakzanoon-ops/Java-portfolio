@@ -172,8 +172,7 @@ class SourceFeaturePacketTest {
     packet(true).writeNew(valid);
     String text = Files.readString(valid);
     int newline = text.indexOf('\n');
-    assertEquals(
-        "stacks-source-export-v1\t" + SourceRelations.SCHEMA, text.substring(0, newline));
+    assertEquals("stacks-source-export-v1\t" + SourceRelations.SCHEMA, text.substring(0, newline));
     assertEquals(40, SourceFeaturePacket.read(valid).queries().size());
     Path invalid = root.resolve("wrong-schema");
     for (String header :

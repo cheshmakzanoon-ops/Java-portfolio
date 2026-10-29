@@ -453,18 +453,14 @@ class PostgresWorkflowIT {
         assertEquals(200, status(client, endpoint, valid));
         assertEquals(
             404,
-            status(
-                client, endpoint, jwt(key, issuer, "handoff", "other-tenant", "viewer", 60)));
+            status(client, endpoint, jwt(key, issuer, "handoff", "other-tenant", "viewer", 60)));
         assertEquals(
             403, status(client, endpoint, jwt(key, issuer, "handoff", tenant, "worker", 60)));
         assertEquals(
             401, status(client, endpoint, jwt(wrong, issuer, "handoff", tenant, "viewer", 60)));
         assertEquals(
             401,
-            status(
-                client,
-                endpoint,
-                jwt(key, issuer + "/wrong", "handoff", tenant, "viewer", 60)));
+            status(client, endpoint, jwt(key, issuer + "/wrong", "handoff", tenant, "viewer", 60)));
         assertEquals(
             401, status(client, endpoint, jwt(key, issuer, "wrong", tenant, "viewer", 60)));
         assertEquals(
