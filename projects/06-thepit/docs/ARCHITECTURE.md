@@ -24,11 +24,14 @@ flowchart LR
 | [Book](../matching-core/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Book.java) | Thread-confined matching, reservations, result retention and atomic restore |
 | [BookCheckpoint](../matching-core/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/BookCheckpoint.java) | Account, reservation, order/index, priority, terminal identity and complete result/execution invariants |
 | [CommandJson](../journal/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/CommandJson.java) | Shared strict HTTP/journal JSON types |
+| [MarketData](../matching-core/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/MarketData.java) | Pure derivation of top of book, depth, exact run statistics and a bounded anonymous tape; every accumulator is total so it can never fail the writer that feeds it |
+| [JournalReader](../journal/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/JournalReader.java) | The single parser of v1 frames, shared by writer recovery and by offline inspection that never locks, truncates, forces or writes |
 | [Journal](../journal/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Journal.java) | Exclusive file lock, serialized frame ownership, force, recovery and checkpoint ancestry/ledger checks |
 | [Gateway](../gateway/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Gateway.java) | Admission, single writer, private pending promises, publication and shutdown |
 | [HttpApi](../gateway/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/HttpApi.java) | Account/scoped HTTP boundary, bounded handlers, unknown outcomes and owned CLI server defaults |
 | [StrictIdentityDecoder](../gateway/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/StrictIdentityDecoder.java) | Original signed JSON claim-shape checks after mature JWT verification |
 | [ReferenceBook](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/ReferenceBook.java) | Structurally independent flat-list matching oracle and recomputed holds |
+| [PitCli](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/PitCli.java) / [JournalAudit](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/JournalAudit.java) / [Ladder](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Ladder.java) / [Tour](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Tour.java) | Read-only operator tool: replays a journal through the engine and the independent oracle, checks conservation, reservations and an uncrossed book, and presents ladders and a narrated walkthrough |
 | [Demo](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/Demo.java) | Asserted FIFO/replacement/retry/recovery fixture |
 | [CrashProcess](../simulator/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/CrashProcess.java) | Child JVM paused at an explicitly selected durable boundary |
 | [SeededHistory](../benchmarks/src/main/java/io/github/cheshmakzanoon/portfolio/thepit/SeededHistory.java) | Reproducible workload with actual live-order targets and independent tracking |
@@ -64,6 +67,10 @@ An identical pending retry coalesces the durable operation but receives a distin
 Admission has an explicit accepted-command count, initialized from recovered journal entries and incremented once per successful queue offer. Publishing an applied result while its response is still pending does not count that identity twice. The queue bound includes the currently executing pending command. Malformed input, ownership failure, overload and run-cap rejection allocate no sequence. Well-formed business rejections, such as RISK or FOK_UNFILLED, are sequenced and forced like successful operations.
 
 BlockingQueue handoff, volatile view publication and future completion provide happens-before edges. Public readers never traverse mutable FIFO nodes. A minimum-sequence read waits for a published immutable view; account/depth share that sequence. Full history/checkpoint access requires idle admission. A finite run retains at most 1,100,000 unique command outcomes and 100,000 open orders; identities are never silently evicted.
+
+## Read models
+
+Fill-derived read models are fed only by the constructor's replay and by the single writer, after a result is committed and before the next view is published. A view and the run statistics for the same sequence are held in one immutable record behind one volatile reference, so a reader can never pair a view with statistics from another sequence. Per-account fills are an append-only list searched by sequence, and the public tape is a bounded ring of 1,024 anonymous fills. None of this changes a journal field, a persisted hash or a `Book` transition; after any restart the models are rebuilt from the same results the journal already determines.
 
 ## Matching and risk
 

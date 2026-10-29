@@ -28,6 +28,21 @@ certification; it creates an isolated synthetic journal for each run.
 
 The CLI demo asserts FIFO allocation, priority-preserving reduction, priority-losing increase, retry deduplication, and recovery after an unacknowledged cancellation. Final state must contain four executions, eight lots traded, Alice cash 19,200, inventory eight, no open orders, twelve command results, and the same reference/replay digest. The ordinary demo injects a storage fault; it does not claim to perform the separate process-kill test.
 
+## Inspect and verify a journal
+
+`scripts/pit.sh` is a read-only operator tool for a durable command log. It builds through the project's own verified-source gate, then runs:
+
+```bash
+projects/06-thepit/scripts/pit.sh tour                       # narrated scenario on a fresh journal, ending in an independent audit
+projects/06-thepit/scripts/pit.sh book   <journal> --depth 5 # ladder, run statistics, balances and queue positions
+projects/06-thepit/scripts/pit.sh replay <journal> --from 5 --to 11 --book
+projects/06-thepit/scripts/pit.sh verify <journal>           # engine versus independent oracle plus invariants
+```
+
+`tour` is the quickest way to see price-time priority, execution at the resting maker's price, queue priority under replacement, durable rejections, idempotent retry and restart from the journal alone. `verify` replays the log through the production `Book` and the structurally independent `ReferenceBook`, compares every result and the complete state (after every command up to 2,000 records, then at an even stride and at the end), and checks that cash and lots are conserved, reservations equal resting orders and the book is uncrossed. Run on the asserted demo's journal it reproduces the digest recorded in the committed evidence.
+
+Inspection never locks, truncates, forces or writes: it shares the writer's frame parser but only reads, so it is safe against the log of a live gateway. A frame still being appended is reported as an incomplete final frame and ignored. Exit status is 0 for success, 1 for a failed verification and 2 for usage errors or an unreadable journal. Corruption is reported with the writer's own diagnostic and the file is left untouched.
+
 ## Interfaces and guarantees
 
 | Boundary | Contract |
@@ -35,6 +50,7 @@ The CLI demo asserts FIFO allocation, priority-preserving reduction, priority-lo
 | Matching | Best price, then admission sequence; execution at the resting maker's price; GTC, IOC, FOK and post-only GTC |
 | Replacement | Reduction preserves priority; increased quantity or a new price loses priority; rejection leaves the existing order and holds unchanged |
 | Risk | Cash-only balances, no borrowing or short sales, checked reservations, explicit incoming self-trade prevention |
+| Market data | Read-only derivations of already-published state: best bid/ask, spread, mid, aggregate depth, exact run statistics and an anonymous trade tape with the aggressor side; a view and its statistics are published together |
 | Admission | Bounded queue, exact run admission count, stable account/command identity, retry coalescing with caller-owned futures, conflicting-payload rejection |
 | Durability | Force the complete command before apply, publish, or response; retained local storage must honor `FileChannel.force(true)` |
 | Recovery | Fail-stop journal after admitted I/O failure; validate complete records; truncate only an incomplete final frame; atomically validate optional checkpoints against state and prefix ledger |
@@ -50,6 +66,8 @@ projects/06-thepit/scripts/serve.sh
 ```
 
 The default `trusted-local-demo` mode binds to `127.0.0.1:18600` and trusts `X-Demo-Account: alice`. This header is not authentication. Keep this mode local. Setting `THEPIT_ISSUER` selects protected mode with RS256/JWKS verification, issuer/audience/time validation, scopes, and subject/account ownership.
+
+`GET /market` and `GET /trades` serve the market-data surface described in the [HTTP contract](contracts/http.md); the tape never carries an account, order or command identity. Account fill pages are served from an append-only per-account index, so a request no longer scans every fill in the run.
 
 Command enums must use their documented string values; scalar coercion, fractional integers, null primitives, duplicate JSON keys, and trailing input are rejected. Query names are URL-decoded before validation; duplicate or unknown parameters and negative sequence/pagination bounds return 400. HTTP REPLACE uses `newRemainingQtyLots` to avoid ambiguous total-versus-remaining quantity. Responses prevent caching. The standalone server defaults request/response time budgets to five seconds; explicit JVM settings override these global JDK defaults, and embedded hosts own that policy.
 

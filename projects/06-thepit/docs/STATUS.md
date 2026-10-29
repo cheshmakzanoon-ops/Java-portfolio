@@ -2,6 +2,19 @@
 
 Current evidence covers deterministic matching, exact retry ownership, checkpoint consistency, fail-stop durability, bounded admission and HTTP identity/resource boundaries. Historical measurements below retain their original source identities; no new performance study was run.
 
+## Update 2026-10-29: market data and operator tooling
+
+This update adds code after the 2026-10-20 receipt below, so that receipt does not describe the current source. Executed on JDK 25.0.4.1 (checksum-pinned Temurin) and the wrapper's Maven 3.10.0, no Docker:
+
+| Check | Result |
+| --- | --- |
+| `verify` (formatting, JaCoCo gates, all modules) | passed; 78 ordinary methods: matching-core 25, journal 18, gateway 19, simulator 16 |
+| `-Pmutation` (unchanged 70% gate) | passed; matching-core 306 killed of 336, journal 136 of 159, gateway 85 of 93 |
+| Asserted demo | still prints `PASS executions=4 lots=8 aliceCash=19200 aliceLots=8 openOrders=0 results=12` with digest `4e226aa1…959e3` |
+| Architecture scan, source and bytecode | 0 violations |
+
+New code is covered by independent checks rather than self-comparison: market data against recomputation from raw orders and executions over 60 generated histories, account fill pages against an independent filter for every offset, limit and cutoff, checkpoint and replay recovery equivalence, a concurrent-reader test that fails when stale statistics are published with a newer view, every torn byte and corruption offset against both journal readers, and a replay of the asserted demo journal that must reproduce its recorded digest. Mutation survivors in the new code are two equivalent boundary mutants in `Tracker`; the remaining survivors in `JournalReader` are boundaries of the frame parser moved unchanged from `Journal` (run-cap and short-read limits that cannot be reached with a bounded test). Recorded mutation counts are for this source only; the integration profile, the process-kill checks and the performance study were not rerun.
+
 ## Current verification: 2026-10-20
 
 Executable/build-input fingerprint: `385404601a15385beaf36830dd0ce4628038164f21ef6fdcfd5bcbb061ea13fb`.
