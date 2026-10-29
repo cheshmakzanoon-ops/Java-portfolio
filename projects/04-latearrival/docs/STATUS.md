@@ -2,6 +2,14 @@
 
 Late Arrival implements bounded event-time processing, atomic SQL recovery, fenced run ownership, tenant-authorized queries, and at-least-once output delivery. Historical measurements passed within their recorded scope. Final clean-checkout and repository release validation remain incomplete.
 
+## Event-time replay explainer (2026-10-29)
+
+`scripts/explain.sh events.jsonl` replays a file of v1 records through the real `Engine`, one record per transition, and reports each record's verdict (accepted, duplicate, or rejected with the engine's reason), records that were accepted but too late for a finalized window, every watermark movement, every published result revision, and a final table of windows with their `OPEN` / `PROVISIONAL` / `FINAL` status and the watermarks at which they publish and finalize (see the [README](../README.md#see-why-an-event-was-late-without-kafka-or-postgresql)). The engine, persistence, transport and API are unchanged.
+
+Executed against this source in the sandbox (JDK 25.0.4.1; no Docker): ordinary `verify` passed with **49 test methods (37 existing + 12 new), zero failures, errors or skips**, the repository's test-report checker and the unchanged coverage gates accepting it. The new tests include a differential check: 25 seeded random streams of 250 records (reordering, extra-late events, exact duplicates, id reuse with a different payload, progress records) are replayed and every window's count, sum, minimum and maximum, plus the final watermark, must equal what the independent `BatchOracle` computes. The packaged jars were run through `explain.sh` on the shipped example. `Explainer` and `ExplainMain` live in `verification`, which has no mutation scope, so their mutation strength has not been measured.
+
+**Not run:** the 11 real Kafka/PostgreSQL integration tests, the lifecycle demo and the benchmarks, so the 20 October integration and performance results describe the earlier source. The explainer shows event-time behaviour only: no batching, durability, recovery, fencing, source idleness (no broker observations are supplied) or output delivery.
+
 ## Current verification, 2026-10-20
 
 Project integration verification passed at **08:59:08 UTC** with **48 methods: 37 ordinary and 11 real Kafka/PostgreSQL integration, zero failures, errors, or skips**. The property suites also generated 120 event-time histories and 80 independent progress/control histories. [Current application evidence](../evidence/engineering-verification-2026-10-20.json) records source/POM hashes, individual methods, image identities, and execution limits.

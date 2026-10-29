@@ -26,6 +26,14 @@ The deterministic replay uses an injected clock, real Kafka/PostgreSQL, and proc
 
 The unit and property tests exercise half-open boundaries, checked aggregate arithmetic, monotonic watermarks, source-idle eligibility, finality, and finite quotas. The integration suite tests SQL/checkpoint atomicity, obsolete-owner fencing, partial outbox publication and retries, source retention gaps, topic identity, database outages, interrupted shutdown, and protected HTTP identities. Transaction and snapshot responsibilities have separate ordinary regressions and mutation targets.
 
+## See why an event was late, without Kafka or PostgreSQL
+
+```bash
+projects/04-latearrival/scripts/explain.sh projects/04-latearrival/examples/late-data.jsonl
+```
+
+`explain` feeds a file of v1 records (one JSON object per line) through the real `Engine`, one record per transition, and says what happened to each: accepted, a duplicate, rejected with the engine's own reason (`MALFORMED_JSON`, `INVALID_RECORD`, `CONFLICTING_EVENT_ID`, quotas), or accepted but *too late for a finalized window* while still counted in the windows that remain open. It prints each watermark movement and each published result revision, and finishes with every window: its aggregate, whether it is `OPEN` (watermark has not reached its end), `PROVISIONAL` (published, revisable) or `FINAL`, and the watermark at which it publishes and finalizes. `--partitions N` routes records with the production Murmur2 rule (an unseen partition holds the watermark back, as in the real system), `--now MILLIS` sets the processing time (default: the largest event time, so nothing is "from the future"), `--format json` is structured. Replays are checked against the independent `BatchOracle` on random streams. It shows event-time behaviour only: no batching, durability, recovery, fencing, source idleness (no observations are supplied) or delivery.
+
 ## Design map
 
 | Module | Responsibility |

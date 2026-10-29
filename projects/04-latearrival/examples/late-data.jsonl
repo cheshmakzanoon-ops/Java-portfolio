@@ -1,0 +1,11 @@
+{"schemaVersion":1,"runId":"demo","eventId":"e1","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225610000,"valueMilliUnits":5000}
+{"schemaVersion":1,"runId":"demo","eventId":"e2","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225603000,"valueMilliUnits":2000}
+{"schemaVersion":1,"runId":"demo","eventId":"e2","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225603000,"valueMilliUnits":2000}
+{"schemaVersion":1,"runId":"demo","eventId":"e3","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225670000,"valueMilliUnits":9000}
+{"schemaVersion":1,"runId":"demo","eventId":"e4","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225695000,"valueMilliUnits":1000}
+{"schemaVersion":1,"runId":"demo","eventId":"e5","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225620000,"valueMilliUnits":4000}
+{"schemaVersion":1,"runId":"demo","eventId":"e6","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225620000,"valueMilliUnits":7000}
+{"schemaVersion":1,"runId":"demo","eventId":"e6","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225620000,"valueMilliUnits":8000}
+this line is not json
+{"schemaVersion":1,"runId":"other","eventId":"e7","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225620000,"valueMilliUnits":1}
+{"schemaVersion":1,"runId":"demo","eventId":"progress-1","tenantId":"acme","sensorId":"boiler","eventTimeEpochMillis":1767225900000,"valueMilliUnits":0,"recordType":"PROGRESS"}
